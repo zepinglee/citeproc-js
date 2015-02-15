@@ -10,9 +10,8 @@ CSL.tokenExec = function (token, Item, item) {
     if (debug) {
         CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
     }
-    //print("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
     //SNIP-END
-    
+
     var record = function (result) {
         if (result) {
             this.tmp.jump.replace("succeed");
@@ -33,7 +32,7 @@ CSL.tokenExec = function (token, Item, item) {
         }
     }
     //SNIP-START
-    if (false) {
+    if (true) {
         CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
     }
     //SNIP-END
@@ -44,7 +43,7 @@ CSL.tokenExec = function (token, Item, item) {
  * Macro expander.
  * <p>Called on the state object.</p>
  */
-CSL.expandMacro = function (macro_key_token) {
+CSL.expandMacro = function (macro_key_token, target) {
     var mkey, start_token, key, end_token, navi, macro_nodes, newoutput, mergeoutput, end_of_macro, func;
 
     mkey = macro_key_token.postponed_macro;
@@ -88,9 +87,11 @@ CSL.expandMacro = function (macro_key_token) {
 
     // XXX The special runtime handling will have be go into
     // XXX group (which is already a mess, but there you go).
-    macro_key_token.juris = mkey;
+    if (mkey.slice(0, 6) === "juris-") {
+        macro_key_token.juris = mkey;
+    }
 
-    CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
+    CSL.Node.group.build.call(macro_key_token, this, target);
 
     //
     // Xml: test for node existence
@@ -110,7 +111,6 @@ CSL.expandMacro = function (macro_key_token) {
 	if (macro_key_token.decorations) {
 		end_of_macro.decorations = macro_key_token.decorations.slice();
     }
-
     if (hasDate) {
         func = function (state, Item) {
             if (state.tmp.extension) {
@@ -119,7 +119,14 @@ CSL.expandMacro = function (macro_key_token) {
         };
         end_of_macro.execs.push(func);
     }
-    CSL.Node.group.build.call(end_of_macro, this, this[this.build.area].tokens, true);
+    if (mkey.slice(0, 6) === "juris-") {
+        end_of_macro.juris = mkey;
+    }
+
+    // XXX To parameterize this, it should receive the array to use as target,
+    // XXX rather than relying on this.build.area
+
+    CSL.Node.group.build.call(end_of_macro, this, target);
 
     this.build.macro_stack.pop();
 
@@ -142,7 +149,7 @@ CSL.expandMacro = function (macro_key_token) {
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
-CSL.XmlToToken = function (state, tokentype) {
+CSL.XmlToToken = function (state, tokentype, explicitTarget) {
     var name, txt, attrfuncs, attributes, decorations, token, key, target;
     name = state.sys.xml.nodename(this);
     //CSL.debug(tokentype + " : " + name);
@@ -195,7 +202,11 @@ CSL.XmlToToken = function (state, tokentype) {
     // token list (formerly used for reading in macros
     // and terms).
     //
-    target = state[state.build.area].tokens;
+    if (explicitTarget) {
+        target = explicitTarget;
+    } else {
+        target = state[state.build.area].tokens;
+    }
     CSL.Node[name].build.call(token, state, target);
 };
 

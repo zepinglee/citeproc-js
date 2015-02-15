@@ -62,7 +62,8 @@ CSL.Node.key = {
         if (this.variables.length) {
             var variable = this.variables[0];
             // Set flag if sorting citations by citation-number
-            // XXXXX: This will assume citation-number sorting if
+
+            // Nit: This will assume citation-number sorting if
             // that variable is set as key in ANY position.  Could
             // be a little more conservative, but secondary sorts
             // by this variable seem unlikely.
@@ -147,7 +148,7 @@ CSL.Node.key = {
             // if it's not a variable, it's a macro
             var token = new CSL.Token("text", CSL.SINGLETON);
             token.postponed_macro = this.postponed_macro;
-            CSL.expandMacro.call(state, token);
+            CSL.expandMacro.call(state, token, target);
         }
         //
         // ops to output the key string result to an array go

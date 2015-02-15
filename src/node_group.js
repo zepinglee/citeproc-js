@@ -69,52 +69,6 @@ CSL.Node.group = {
                 this.execs.push(func);
             }
 
-            // "Special handling" for jurisdiction macros
-            // We try to instantiate these as standalone token lists.
-            // If available, the token list is executed,
-            // the result is written directly into output,
-            // and control returns here.
-            if (this.juris) {
-                print("XXX juris="+this.juris);
-                func = function (state, Item) {
-                    // Actually, this won't work. Execution target and
-                    // sequence for these functions is controlled by
-                    // tokenExec() in util_nodes.js
-
-                    // ???
-
-                    // Or maybe we can divert and return with this:
-
-                    // So we'll have something like this:
-                    // * expandMacro() in util_node.js flags juris- macros
-                    //   on build. [DONE]
-                    // * Those are picked up here, and
-                    //   - A runtime function attempts to fetch and instantiate
-                    //     the macros in separate token lists under a segment
-                    //     opened for the jurisdiction. We assume that the
-                    //     jurisdiction has a full set of macros. That will need
-                    //     to be enforced by validation. [DONE HERE, function is TODO]
-                    //   - Success or failure is marked in a runtime flag object
-                    //     (in citeproc.opt). [DONE]
-                    //   - After the instantiation function comes a test, for
-                    //     juris- macros only, which either runs diverted code,
-                    //     or proceeds as per normal through the token list. [TODO]
-                    // I think that's all there is to it.
-
-                    // Code for fetching an instantiating?
-                    var jurisdictionTop = Item.jurisdiction.split(":")[0];
-                    state.opt[jurisdictionTop] = state.sys.retrieveJurisdictionCsl(jurisdictionTop);
-                }
-                this.execs.push(func);
-
-                
-                    // This will run the juris- token list.
-                    while (next < this.juris[jurisdictionTop][this.juris].length) {
-                        next = CSL.tokenExec.call(this, this.juris[jurisdictionTop][this.juris][next], Item, item);
-                    }
-
-                }
-            }
         } else {
 
             // Unbundle and print publisher lists
@@ -189,7 +143,103 @@ CSL.Node.group = {
         }
         target.push(this);
 
+        if (this.tokentype === CSL.START) {
+            if (this.juris) {
+                // "Special handling" for jurisdiction macros
+                // We try to instantiate these as standalone token lists.
+                // If available, the token list is executed,
+                // the result is written directly into output,
+                // and control returns here.
+                if (this.juris) {
+
+                    // Actually, this won't work. Execution target and
+                    // sequence for these functions is controlled by
+                    // tokenExec() in util_nodes.js
+                    
+                    // ???
+                    
+                    // Or maybe we can divert and return with this:
+                    
+                    // So we'll have something like this:
+                    // * expandMacro() in util_node.js flags juris- macros
+                    //   on build. [DONE]
+                    // * Those are picked up here, and
+                    //   - A runtime function attempts to fetch and instantiate
+                    //     the macros in separate token lists under a segment
+                    //     opened for the jurisdiction. We assume that the
+                    //     jurisdiction has a full set of macros. That will need
+                    //     to be enforced by validation. [DONE HERE, function is TODO]
+                    //   - Success or failure is marked in a runtime flag object
+                    //     (in citeproc.opt). [DONE]
+                    //   - After the instantiation function comes a test, for
+                    //     juris- macros only, which either runs diverted code,
+                    //     or proceeds as per normal through the token list. [TODO]
+                    // I think that's all there is to it.
+                    
+                    // Code for fetching an instantiating?
+
+                    var choose_start = new CSL.Token("choose", CSL.START);
+                    CSL.Node.choose.build.call(choose_start, state, target);
+                    
+                    var if_start = new CSL.Token("if", CSL.START);
+                    
+                    
+
+                    func = function (Item) {
+                        var jurisdiction = Item.jurisdiction;
+                        if (!state.opt.jurisdictions_seen[jurisdiction]) {
+                            var res = state.sys.retrieveStyleModule(state, jurisdiction);
+                            if (res) {
+                                state.juris[jurisdiction] = {};
+                                var myXml = state.sys.xml.makeXml(res);
+                                var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
+                                for (var i=0,ilen=myNodes.length;i<ilen;i++) {
+                                    var myNode = myNodes[i];
+                                    var myName = state.sys.nodename(myNode);
+                                    state.juris[jurisdiction][myName] = [];
+                                    CSL.buildTokenLists(myNodes[i], state.juris[jurisdiction]);
+                                }
+                            }
+                            state.opt.jurisdictions_seen[jurisdiction] = true;
+                        }
+                        if (state.juris[Item.jurisdiction]) {
+                            return true;
+                        }
+                        return false;
+                    };
+                    if_start.tests.push(func);
+                    if_start.test = if_start.test = state.fun.match.any(if_start, state, if_start.tests);
+                    target.push(if_start);
+                    
+                    var text_node = new CSL.Token("text", CSL.SINGLETON);
+                    func = function (state, Item) {
+                        print("TO BE IMPLEMENTED SOON");
+                        // This will run the juris- token list.
+                        var next = 0;
+                        while (next < state.juris[Item.jurisdiction][this.juris].length) {
+                            print("   try");
+                            next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
+                        }
+                    }
+                    text_node.juris = this.juris;
+                    text_node.execs.push(func);
+                    target.push(text_node);
+
+                    var if_end = new CSL.Token("if", CSL.END);
+                    CSL.Node.if.build.call(if_end, state, target);
+                    var else_start = new CSL.Token("else", CSL.START);
+                    CSL.Node.else.build.call(else_start, state, target);
+                }
+            }
+        }
+
         if (this.tokentype === CSL.END) {
+            if (this.juris) {
+                var else_end = new CSL.Token("else", CSL.END);
+                CSL.Node.else.build.call(else_end, state, target);
+                var choose_end = new CSL.Token("choose", CSL.END);
+                CSL.Node.choose.build.call(choose_end, state, target);
+            }
             if (state.build.substitute_level.value()) {
                 state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
             }

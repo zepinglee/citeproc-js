@@ -209,9 +209,18 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     this.registry = new CSL.Registry(this);
 
-    this.buildTokenLists("citation");
+    // XXX For modular jurisdiction support, parameterize buildTokenLists().
+    // XXX Feed as arguments:
+    // XXX * actual node to be walked (cslXml)
+    // XXX * actual target array
 
-    this.buildTokenLists("bibliography");
+    this.build.area = "citation";
+    var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
+    this.buildTokenLists(area_nodes, this[this.build.area].tokens);
+
+    this.build.area = "bibliography";
+    var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
+    this.buildTokenLists(area_nodes, this[this.build.area].tokens);
 
     this.juris = {};
 
@@ -260,15 +269,15 @@ CSL.Engine.prototype.setCloseQuotesArray = function () {
     this.opt.close_quotes_array = ret;
 };
 
-CSL.makeBuilder = function (me) {
+CSL.makeBuilder = function (me, target) {
     function enterFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.START);
+        CSL.XmlToToken.call(node, me, CSL.START, target);
     };
     function leaveFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.END);
+        CSL.XmlToToken.call(node, me, CSL.END, target);
     };
     function singletonFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.SINGLETON);
+        CSL.XmlToToken.call(node, me, CSL.SINGLETON, target);
     };
     function buildStyle (node) {
         var starttag, origparent;
@@ -295,14 +304,9 @@ CSL.makeBuilder = function (me) {
 };
 
 
-CSL.Engine.prototype.buildTokenLists = function (area) {
-    var builder = CSL.makeBuilder(this);
-    var area_nodes;
-    area_nodes = this.sys.xml.getNodesByName(this.cslXml, area);
-    if (!this.sys.xml.getNodeValue(area_nodes)) {
-        return;
-    }
-    this.build.area = area;
+CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
+    if (!this.sys.xml.getNodeValue(area_nodes)) return;
+    var builder = CSL.makeBuilder(this, target);
     var mynode = area_nodes[0];
     builder(mynode);
 };
@@ -483,7 +487,6 @@ CSL.Engine.prototype.configureTokenLists = function () {
                 token.dateparts = dateparts;
             }
             token.next = (ppos + 1);
-            //CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
             if (token.name && CSL.Node[token.name].configure) {
                 CSL.Node[token.name].configure.call(token, this, ppos);
             }

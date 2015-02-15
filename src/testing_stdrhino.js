@@ -281,6 +281,10 @@ StdRhinoTest.prototype.run = function(){
     return ret;
 };
 
+StdRhinoTest.prototype.retrieveStyleModule = function(state, jurisdiction) {
+    return false;
+}
+
 //
 // Retrieve locale object from filesystem
 // (Deployments must provide an instance object with
