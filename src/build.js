@@ -465,37 +465,42 @@ CSL.Engine.prototype.configureTokenLists = function () {
     for (pos = 0; pos < len; pos += 1) {
         //var ret = [];
         area = CSL.AREAS[pos];
-        llen = this[area].tokens.length - 1;
-        for (ppos = llen; ppos > -1; ppos += -1) {
-            token = this[area].tokens[ppos];
-            //token.pos = ppos;
-            //ret.push(token);
-            if ("date" === token.name && CSL.END === token.tokentype) {
-                dateparts = [];
-            }
-            if ("date-part" === token.name && token.strings.name) {
-                lllen = dateparts_master.length;
-                for (pppos = 0; pppos < lllen; pppos += 1) {
-                    part = dateparts_master[pppos];
-                    if (part === token.strings.name) {
-                        dateparts.push(token.strings.name);
-                    }
-                }
-            }
-            if ("date" === token.name && CSL.START === token.tokentype) {
-                dateparts.reverse();
-                token.dateparts = dateparts;
-            }
-            token.next = (ppos + 1);
-            if (token.name && CSL.Node[token.name].configure) {
-                CSL.Node[token.name].configure.call(token, this, ppos);
-            }
-        }
+        var tokens = this[area].tokens;
+        this.configureTokenList(tokens);
     }
     this.version = CSL.version;
     return this.state;
 };
 
+CSL.Engine.prototype.configureTokenList = function (tokens) {
+    var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
+    llen = tokens.length - 1;
+    for (ppos = llen; ppos > -1; ppos += -1) {
+        token = tokens[ppos];
+        //token.pos = ppos;
+        //ret.push(token);
+        if ("date" === token.name && CSL.END === token.tokentype) {
+            dateparts = [];
+        }
+        if ("date-part" === token.name && token.strings.name) {
+            lllen = dateparts_master.length;
+            for (pppos = 0; pppos < lllen; pppos += 1) {
+                part = dateparts_master[pppos];
+                if (part === token.strings.name) {
+                    dateparts.push(token.strings.name);
+                }
+            }
+        }
+        if ("date" === token.name && CSL.START === token.tokentype) {
+            dateparts.reverse();
+            token.dateparts = dateparts;
+        }
+        token.next = (ppos + 1);
+        if (token.name && CSL.Node[token.name].configure) {
+            CSL.Node[token.name].configure.call(token, this, ppos);
+        }
+    }
+}
 
 CSL.Engine.prototype.retrieveItems = function (ids) {
     var ret, pos, len;

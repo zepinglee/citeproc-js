@@ -282,9 +282,16 @@ StdRhinoTest.prototype.run = function(){
 };
 
 StdRhinoTest.prototype.retrieveStyleModule = function(state, jurisdiction) {
-    return false;
+    var ret = null;
+    try {
+        var ret = readFile("./tests/fixtures/std/styles/juris-us.csl");
+        return ret ? ret : false;
+    } catch (e) {
+        print("XXX OUCH "+e);
+        return false;
+    }
 }
-
+ 
 //
 // Retrieve locale object from filesystem
 // (Deployments must provide an instance object with
