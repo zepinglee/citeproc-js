@@ -2,7 +2,7 @@
 
 CSL.tokenExec = function (token, Item, item) {
     // Called on state object
-    var next, maybenext, exec, pos, len, debug;
+    var next, maybenext, exec, debug;
     debug = false;
     next = token.next;
     maybenext = false;
@@ -10,9 +10,8 @@ CSL.tokenExec = function (token, Item, item) {
     if (debug) {
         CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
     }
-    //print("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
     //SNIP-END
-    
+
     var record = function (result) {
         if (result) {
             this.tmp.jump.replace("succeed");
@@ -22,20 +21,18 @@ CSL.tokenExec = function (token, Item, item) {
             return token.fail;
         }
     }
-
     if (token.test) {
         next = record.call(this,token.test(Item, item));
     }
-    len = token.execs.length;
-    for (pos = 0; pos < len; pos += 1) {
-        exec = token.execs[pos];
+    for (var i=0,ilen=token.execs.length;i<ilen;i++) {
+        exec = token.execs[i];
         maybenext = exec.call(token, this, Item, item);
         if (maybenext) {
             next = maybenext;
         }
     }
     //SNIP-START
-    if (false) {
+    if (true) {
         CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
     }
     //SNIP-END
@@ -46,10 +43,11 @@ CSL.tokenExec = function (token, Item, item) {
  * Macro expander.
  * <p>Called on the state object.</p>
  */
-CSL.expandMacro = function (macro_key_token) {
+CSL.expandMacro = function (macro_key_token, target) {
     var mkey, start_token, key, end_token, navi, macro_nodes, newoutput, mergeoutput, end_of_macro, func;
 
     mkey = macro_key_token.postponed_macro;
+
     if (this.build.macro_stack.indexOf(mkey) > -1) {
         throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
     } else {
@@ -84,7 +82,13 @@ CSL.expandMacro = function (macro_key_token) {
     // (true as the last argument suppresses quashing)
     macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
-    CSL.Node.group.build.call(macro_key_token, this, this[this.build.area].tokens, true);
+
+    //if (this.sys.xml.getAttributeValue(macro_nodes[0], "prefer-jurisdiction")) {
+    if (mkey.slice(0,6) === "juris-") {
+        macro_key_token.juris = mkey;
+    }
+
+    CSL.Node.group.build.call(macro_key_token, this, target);
 
     //
     // Xml: test for node existence
@@ -92,7 +96,7 @@ CSL.expandMacro = function (macro_key_token) {
     if (!this.sys.xml.getNodeValue(macro_nodes)) {
         throw "CSL style error: undefined macro \"" + mkey + "\"";
     }
-    var builder = CSL.makeBuilder(this);
+    var builder = CSL.makeBuilder(this, target);
     builder(macro_nodes[0]);
 
     //
@@ -104,7 +108,6 @@ CSL.expandMacro = function (macro_key_token) {
 	if (macro_key_token.decorations) {
 		end_of_macro.decorations = macro_key_token.decorations.slice();
     }
-
     if (hasDate) {
         func = function (state, Item) {
             if (state.tmp.extension) {
@@ -113,7 +116,15 @@ CSL.expandMacro = function (macro_key_token) {
         };
         end_of_macro.execs.push(func);
     }
-    CSL.Node.group.build.call(end_of_macro, this, this[this.build.area].tokens, true);
+
+    if (macro_key_token.juris) {
+        end_of_macro.juris = mkey;
+    }
+
+    // XXX To parameterize this, it should receive the array to use as target,
+    // XXX rather than relying on this.build.area
+
+    CSL.Node.group.build.call(end_of_macro, this, target);
 
     this.build.macro_stack.pop();
 
@@ -136,7 +147,7 @@ CSL.expandMacro = function (macro_key_token) {
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
-CSL.XmlToToken = function (state, tokentype) {
+CSL.XmlToToken = function (state, tokentype, explicitTarget) {
     var name, txt, attrfuncs, attributes, decorations, token, key, target;
     name = state.sys.xml.nodename(this);
     //CSL.debug(tokentype + " : " + name);
@@ -189,7 +200,11 @@ CSL.XmlToToken = function (state, tokentype) {
     // token list (formerly used for reading in macros
     // and terms).
     //
-    target = state[state.build.area].tokens;
+    if (explicitTarget) {
+        target = explicitTarget;
+    } else {
+        target = state[state.build.area].tokens;
+    }
     CSL.Node[name].build.call(token, state, target);
 };
 

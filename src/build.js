@@ -209,9 +209,20 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     this.registry = new CSL.Registry(this);
 
-    this.buildTokenLists("citation");
+    // XXX For modular jurisdiction support, parameterize buildTokenLists().
+    // XXX Feed as arguments:
+    // XXX * actual node to be walked (cslXml)
+    // XXX * actual target array
 
-    this.buildTokenLists("bibliography");
+    this.build.area = "citation";
+    var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
+    this.buildTokenLists(area_nodes, this[this.build.area].tokens);
+
+    this.build.area = "bibliography";
+    var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
+    this.buildTokenLists(area_nodes, this[this.build.area].tokens);
+
+    this.juris = {};
 
     this.configureTokenLists();
 
@@ -258,15 +269,15 @@ CSL.Engine.prototype.setCloseQuotesArray = function () {
     this.opt.close_quotes_array = ret;
 };
 
-CSL.makeBuilder = function (me) {
+CSL.makeBuilder = function (me, target) {
     function enterFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.START);
+        CSL.XmlToToken.call(node, me, CSL.START, target);
     };
     function leaveFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.END);
+        CSL.XmlToToken.call(node, me, CSL.END, target);
     };
     function singletonFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.SINGLETON);
+        CSL.XmlToToken.call(node, me, CSL.SINGLETON, target);
     };
     function buildStyle (node) {
         var starttag, origparent;
@@ -293,14 +304,9 @@ CSL.makeBuilder = function (me) {
 };
 
 
-CSL.Engine.prototype.buildTokenLists = function (area) {
-    var builder = CSL.makeBuilder(this);
-    var area_nodes;
-    area_nodes = this.sys.xml.getNodesByName(this.cslXml, area);
-    if (!this.sys.xml.getNodeValue(area_nodes)) {
-        return;
-    }
-    this.build.area = area;
+CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
+    if (!this.sys.xml.getNodeValue(area_nodes)) return;
+    var builder = CSL.makeBuilder(this, target);
     var mynode = area_nodes[0];
     builder(mynode);
 };
@@ -454,43 +460,47 @@ CSL.Engine.getField = function (mode, hash, term, form, plural, gender) {
 CSL.Engine.prototype.configureTokenLists = function () {
     var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
     //for each (var area in ["citation", "citation_sort", "bibliography","bibliography_sort"]) {
-    dateparts_master = ["year", "month", "day"];
     len = CSL.AREAS.length;
     for (pos = 0; pos < len; pos += 1) {
         //var ret = [];
         area = CSL.AREAS[pos];
-        llen = this[area].tokens.length - 1;
-        for (ppos = llen; ppos > -1; ppos += -1) {
-            token = this[area].tokens[ppos];
-            //token.pos = ppos;
-            //ret.push(token);
-            if ("date" === token.name && CSL.END === token.tokentype) {
-                dateparts = [];
-            }
-            if ("date-part" === token.name && token.strings.name) {
-                lllen = dateparts_master.length;
-                for (pppos = 0; pppos < lllen; pppos += 1) {
-                    part = dateparts_master[pppos];
-                    if (part === token.strings.name) {
-                        dateparts.push(token.strings.name);
-                    }
-                }
-            }
-            if ("date" === token.name && CSL.START === token.tokentype) {
-                dateparts.reverse();
-                token.dateparts = dateparts;
-            }
-            token.next = (ppos + 1);
-            //CSL.debug("setting: "+(pos+1)+" ("+token.name+")");
-            if (token.name && CSL.Node[token.name].configure) {
-                CSL.Node[token.name].configure.call(token, this, ppos);
-            }
-        }
+        var tokens = this[area].tokens;
+        this.configureTokenList(tokens);
     }
     this.version = CSL.version;
     return this.state;
 };
 
+CSL.Engine.prototype.configureTokenList = function (tokens) {
+    var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
+    dateparts_master = ["year", "month", "day"];
+    llen = tokens.length - 1;
+    for (ppos = llen; ppos > -1; ppos += -1) {
+        token = tokens[ppos];
+        //token.pos = ppos;
+        //ret.push(token);
+        if ("date" === token.name && CSL.END === token.tokentype) {
+            dateparts = [];
+        }
+        if ("date-part" === token.name && token.strings.name) {
+            lllen = dateparts_master.length;
+            for (pppos = 0; pppos < lllen; pppos += 1) {
+                part = dateparts_master[pppos];
+                if (part === token.strings.name) {
+                    dateparts.push(token.strings.name);
+                }
+            }
+        }
+        if ("date" === token.name && CSL.START === token.tokentype) {
+            dateparts.reverse();
+            token.dateparts = dateparts;
+        }
+        token.next = (ppos + 1);
+        if (token.name && CSL.Node[token.name].configure) {
+            CSL.Node[token.name].configure.call(token, this, ppos);
+        }
+    }
+}
 
 CSL.Engine.prototype.retrieveItems = function (ids) {
     var ret, pos, len;

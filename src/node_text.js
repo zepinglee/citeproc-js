@@ -8,7 +8,8 @@ CSL.Node.text = {
             //    print("XXX macro_name: "+this.postponed_macro);
             //}
             //this.execs.push(func);
-            return CSL.expandMacro.call(state, this);
+
+            return CSL.expandMacro.call(state, this, target);
         } else {
             CSL.Util.substituteStart.call(this, state, target);
             // ...

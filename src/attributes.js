@@ -854,6 +854,11 @@ CSL.Attributes["@macro"] = function (state, arg) {
     this.postponed_macro = arg;
 };
 
+/*
+ * CSL.Attributes["@prefer-jurisdiction"] = function (state, arg) {
+ *    this.prefer_jurisdiction = true;
+ * };
+ */
 
 CSL.Attributes["@term"] = function (state, arg) {
     if (arg === "sub verbo") {
