@@ -2,12 +2,16 @@
 
 CSL.Node.key = {
     build: function (state, target) {
+        
+        target = state[state.build.root + "_sort"].tokens;
+
         var func, i, ilen;
         var debug = false;
         var start_key = new CSL.Token("key", CSL.START);
         start_key.strings["et-al-min"] = this.strings["et-al-min"];
         start_key.strings["et-al-use-first"] = this.strings["et-al-use-first"];
         start_key.strings["et-al-use-last"] = this.strings["et-al-use-last"];
+
         // initialize done vars
         func = function (state, Item) {
             state.tmp.done_vars = [];
@@ -183,7 +187,7 @@ CSL.Node.key = {
                 keystring = undefined;
                 state.tmp.empty_date = false;
             }
-            state[state.tmp.area].keys.push(keystring);
+            state[state[state.tmp.area].root + "_sort"].keys.push(keystring);
             state.tmp.value = [];
         };
         end_key.execs.push(func);

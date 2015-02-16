@@ -173,42 +173,62 @@ CSL.Node.group = {
                 CSL.Node.choose.build.call(choose_start, state, target);
                 
                 var if_start = new CSL.Token("if", CSL.START);
-                
-                
 
-                func = function (Item) {
-                    var jurisdiction = Item.jurisdiction;
-                    if (!state.opt.jurisdictions_seen[jurisdiction]) {
-                        var res = state.sys.retrieveStyleModule(state, jurisdiction);
-                        if (res) {
-                            state.juris[jurisdiction] = {};
-                            var myXml = state.sys.xml.makeXml(res);
-                            var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
-                            for (var i=0,ilen=myNodes.length;i<ilen;i++) {
-                                var myNode = myNodes[i];
-                                var myName = state.sys.xml.getAttributeValue(myNode, "name");
-                                state.juris[jurisdiction][myName] = [];
-                                state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
-                                state.configureTokenList(state.juris[jurisdiction][myName]);
+                var stdMacros = {
+                    "juris-title": true,
+                    "juris-title-short": true,
+                    "juris-main": true,
+                    "juris-main-short": true,
+                    "juris-comma-pinpoint": true,
+                    "juris-space-pinpoint": true,
+                    "juris-tail": true,
+                    "juris-tail-short": true
+                };
+
+                func = function (macroName) {
+                    return function (Item) {
+                        if (!stdMacros[macroName] || !Item.jurisdiction) return false;
+                        var jurisdiction = Item.jurisdiction;
+                        if (!state.opt.jurisdictions_seen[jurisdiction]) {
+                            var res = state.sys.retrieveStyleModule(state, jurisdiction);
+                            if (res) {
+                                state.juris[jurisdiction] = {};
+                                var myXml = state.sys.xml.makeXml(res);
+                                var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
+                                var myCount = 0;
+                                for (var i=0,ilen=myNodes.length;i<ilen;i++) {
+                                    var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
+                                    if (!stdMacros[myName]) continue;
+                                    myCount++;
+                                    state.juris[jurisdiction][myName] = [];
+                                    state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
+                                    state.configureTokenList(state.juris[jurisdiction][myName]);
+                                }
+                            }
+                            state.opt.jurisdictions_seen[jurisdiction] = true;
+                            if (myCount < Object.keys(stdMacros).length) {
+                                throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
                             }
                         }
-                        state.opt.jurisdictions_seen[jurisdiction] = true;
-                    }
-                    if (state.juris[Item.jurisdiction]) {
-                        return true;
-                    }
-                    return false;
-                };
+                        if (state.juris[Item.jurisdiction]) {
+                            return true;
+                        }
+                        return false;
+                    };
+                }(this.juris, stdMacros);
+                
                 if_start.tests.push(func);
-                if_start.test = if_start.test = state.fun.match.any(if_start, state, if_start.tests);
+                if_start.test = state.fun.match.any(if_start, state, if_start.tests);
                 target.push(if_start);
                 
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item) {
                     // This will run the juris- token list.
                     var next = 0;
-                    while (next < state.juris[Item.jurisdiction][this.juris].length) {
-                        next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
+                    if (state.juris[Item.jurisdiction][this.juris]) {
+                        while (next < state.juris[Item.jurisdiction][this.juris].length) {
+                            next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
+                        }
                     }
                 }
                 text_node.juris = this.juris;

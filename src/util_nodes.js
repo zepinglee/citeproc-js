@@ -47,6 +47,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     var mkey, start_token, key, end_token, navi, macro_nodes, newoutput, mergeoutput, end_of_macro, func;
 
     mkey = macro_key_token.postponed_macro;
+
     if (this.build.macro_stack.indexOf(mkey) > -1) {
         throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
     } else {
@@ -82,12 +83,8 @@ CSL.expandMacro = function (macro_key_token, target) {
     macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
 
-    // XXX If macro name starts with "juris-", then flag it
-    // XXX on the start and end nodes.
-
-    // XXX The special runtime handling will have be go into
-    // XXX group (which is already a mess, but there you go).
-    if (mkey.slice(0, 6) === "juris-") {
+    //if (this.sys.xml.getAttributeValue(macro_nodes[0], "prefer-jurisdiction")) {
+    if (mkey.slice(0,6) === "juris-") {
         macro_key_token.juris = mkey;
     }
 
@@ -99,7 +96,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     if (!this.sys.xml.getNodeValue(macro_nodes)) {
         throw "CSL style error: undefined macro \"" + mkey + "\"";
     }
-    var builder = CSL.makeBuilder(this);
+    var builder = CSL.makeBuilder(this, target);
     builder(macro_nodes[0]);
 
     //
@@ -119,7 +116,8 @@ CSL.expandMacro = function (macro_key_token, target) {
         };
         end_of_macro.execs.push(func);
     }
-    if (mkey.slice(0, 6) === "juris-") {
+
+    if (macro_key_token.juris) {
         end_of_macro.juris = mkey;
     }
 

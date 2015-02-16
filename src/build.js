@@ -460,7 +460,6 @@ CSL.Engine.getField = function (mode, hash, term, form, plural, gender) {
 CSL.Engine.prototype.configureTokenLists = function () {
     var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
     //for each (var area in ["citation", "citation_sort", "bibliography","bibliography_sort"]) {
-    dateparts_master = ["year", "month", "day"];
     len = CSL.AREAS.length;
     for (pos = 0; pos < len; pos += 1) {
         //var ret = [];
@@ -474,6 +473,7 @@ CSL.Engine.prototype.configureTokenLists = function () {
 
 CSL.Engine.prototype.configureTokenList = function (tokens) {
     var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
+    dateparts_master = ["year", "month", "day"];
     llen = tokens.length - 1;
     for (ppos = llen; ppos > -1; ppos += -1) {
         token = tokens[ppos];
