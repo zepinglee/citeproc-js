@@ -169,6 +169,8 @@ CSL.Node.group = {
                 
                 // Code for fetching an instantiating?
 
+                var macroGroupToken = target.pop()
+
                 var choose_start = new CSL.Token("choose", CSL.START);
                 CSL.Node.choose.build.call(choose_start, state, target);
                 
@@ -221,6 +223,8 @@ CSL.Node.group = {
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
                 target.push(if_start);
                 
+                target.push(macroGroupToken);
+
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item) {
                     // This will run the juris- token list.
@@ -235,10 +239,17 @@ CSL.Node.group = {
                 text_node.execs.push(func);
                 target.push(text_node);
 
+                var group_end = new CSL.Token("group", CSL.END);
+                CSL.Node.group.build.call(group_end, state, target);
+
                 var if_end = new CSL.Token("if", CSL.END);
                 CSL.Node.if.build.call(if_end, state, target);
                 var else_start = new CSL.Token("else", CSL.START);
                 CSL.Node.else.build.call(else_start, state, target);
+
+                var group_start = CSL.Util.cloneToken(macroGroupToken);
+                CSL.Node.group.build.call(group_start, state, target);
+
             }
         }
 

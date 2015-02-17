@@ -323,6 +323,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                             // trim off leading @
                             this.locale[lang_out].opts[attrname.slice(1)] = false;
                         }
+                    } else if (attrname === "@jurisdiction-preference") {
+                        var jurisdiction_preference = attributes[attrname].split(/\s*,\s*/);
+                        this.locale[lang_out].opts[attrname.slice(1)] = jurisdiction_preference;
                     } else if (attrname === "@skip-words") {
                         var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;

@@ -80,6 +80,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     //
     //
     // (true as the last argument suppresses quashing)
+    macro_key_token.name = "group";
     macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
 
