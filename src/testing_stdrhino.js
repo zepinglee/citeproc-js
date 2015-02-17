@@ -283,13 +283,25 @@ StdRhinoTest.prototype.run = function(){
 
 StdRhinoTest.prototype.retrieveStyleModule = function(state, jurisdiction) {
     var ret = null;
-    try {
-        var ret = readFile("./tests/fixtures/std/styles/juris-us.csl");
-        return ret ? ret : false;
-    } catch (e) {
-        print("XXX OUCH "+e);
-        return false;
+    var jurisdictions = jurisdiction.split(":");
+    var preferences = state.locale[state.opt.lang].opts["jurisdiction-preference"];
+    preferences = preferences ? preferences : [];
+    for (var i=0,ilen=preferences.length;i<jlen;i++) {
+        var preference = preferences.slice(0,i).join(":");
+        for (var j=jurisdictions.length-1;j>-1;j--) {
+            var jurisdiction = jurisdictions[j];
+            try {
+                ret = readFile("./tests/fixtures/std/styles/juris-" + jurisdiction + "-" + preference + ".csl");
+                break;
+            } catch (e) {}
+        }
+        if (!ret) {
+            try {
+                ret = readFile("./tests/fixtures/std/styles/juris-" + jurisdiction + ".csl");
+            } catch (e) {}
+        }
     }
+    return ret ? ret : false;
 }
  
 //
