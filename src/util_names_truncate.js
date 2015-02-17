@@ -51,15 +51,15 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
                     this._please_chop = chopvar;
                 }
             }
-            for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-                if (this.persons[v][i].length) {
+            for (var j=0,jlen = this.persons[v].length;j<jlen;j++) {
+                if (this.persons[v][j].length) {
                     if (this._please_chop === v) {
-                        this.persons[v][i] = this.persons[v][i].slice(1);
-                        this.persons_count[v][i] += -1;
+                        this.persons[v][j] = this.persons[v][j].slice(1);
+                        this.persons_count[v][j] += -1;
                         this._please_chop = false;
                         break;
                     } else if (chopvar && !this._please_chop) {
-                        this.freeters[v] = this.persons[v][i].slice(0, 1);
+                        this.freeters[v] = this.persons[v][j].slice(0, 1);
                         this.freeters_count[v] = 1;
                         this.institutions[v] = [];
                         this.persons[v] = [];
@@ -117,8 +117,8 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
         if (this.institutions[v].length) {
             this.nameset_offset += 1;
         }
-        for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-            if (this.persons[v][i].length) {
+        for (var j=0,jlen=this.persons[v].length;j<jlen;j++) {
+            if (this.persons[v][j].length) {
                 this.nameset_offset += 1;
             }
             // this.institutions[v][i] = this._splitInstitution(this.institutions[v][i], v, i);
