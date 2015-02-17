@@ -226,7 +226,7 @@ CSL.Node.group = {
                 target.push(macroGroupToken);
 
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
-                func = function (state, Item) {
+                func = function (state, Item, item) {
                     // This will run the juris- token list.
                     var next = 0;
                     if (state.juris[Item.jurisdiction][this.juris]) {
