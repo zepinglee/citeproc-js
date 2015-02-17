@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.557",
+    PROCESSOR_VERSION: "1.0.558",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -732,6 +732,7 @@ CSL.expandMacro = function (macro_key_token, target) {
         };
         macro_key_token.execs.push(func);
     }
+    macro_key_token.name = "group";
     macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
     if (mkey.slice(0,6) === "juris-") {
@@ -5023,6 +5024,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                         } else {
                             this.locale[lang_out].opts[attrname.slice(1)] = false;
                         }
+                    } else if (attrname === "@jurisdiction-preference") {
+                        var jurisdiction_preference = attributes[attrname].split(/\s*,\s*/);
+                        this.locale[lang_out].opts[attrname.slice(1)] = jurisdiction_preference;
                     } else if (attrname === "@skip-words") {
                         var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
@@ -5597,6 +5601,7 @@ CSL.Node.group = {
         target.push(this);
         if (this.tokentype === CSL.START) {
             if (this.juris) {
+                var macroGroupToken = target.pop()
                 var choose_start = new CSL.Token("choose", CSL.START);
                 CSL.Node.choose.build.call(choose_start, state, target);
                 var if_start = new CSL.Token("if", CSL.START);
@@ -5644,6 +5649,7 @@ CSL.Node.group = {
                 if_start.tests.push(func);
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
                 target.push(if_start);
+                target.push(macroGroupToken);
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item) {
                     var next = 0;
@@ -5656,10 +5662,14 @@ CSL.Node.group = {
                 text_node.juris = this.juris;
                 text_node.execs.push(func);
                 target.push(text_node);
+                var group_end = new CSL.Token("group", CSL.END);
+                CSL.Node.group.build.call(group_end, state, target);
                 var if_end = new CSL.Token("if", CSL.END);
                 CSL.Node.if.build.call(if_end, state, target);
                 var else_start = new CSL.Token("else", CSL.START);
                 CSL.Node.else.build.call(else_start, state, target);
+                var group_start = CSL.Util.cloneToken(macroGroupToken);
+                CSL.Node.group.build.call(group_start, state, target);
             }
         }
         if (this.tokentype === CSL.END) {
@@ -6606,15 +6616,15 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
                     this._please_chop = chopvar;
                 }
             }
-            for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-                if (this.persons[v][i].length) {
+            for (var j=0,jlen = this.persons[v].length;j<jlen;j++) {
+                if (this.persons[v][j].length) {
                     if (this._please_chop === v) {
-                        this.persons[v][i] = this.persons[v][i].slice(1);
-                        this.persons_count[v][i] += -1;
+                        this.persons[v][j] = this.persons[v][j].slice(1);
+                        this.persons_count[v][j] += -1;
                         this._please_chop = false;
                         break;
                     } else if (chopvar && !this._please_chop) {
-                        this.freeters[v] = this.persons[v][i].slice(0, 1);
+                        this.freeters[v] = this.persons[v][j].slice(0, 1);
                         this.freeters_count[v] = 1;
                         this.institutions[v] = [];
                         this.persons[v] = [];
@@ -6642,8 +6652,8 @@ CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
         if (this.institutions[v].length) {
             this.nameset_offset += 1;
         }
-        for (i = 0, ilen = this.persons[v].length; i < ilen; i += 1) {
-            if (this.persons[v][i].length) {
+        for (var j=0,jlen=this.persons[v].length;j<jlen;j++) {
+            if (this.persons[v][j].length) {
                 this.nameset_offset += 1;
             }
         }
