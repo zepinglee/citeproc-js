@@ -1,0 +1,109 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+???
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1",
+                    "locator": "103",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <locale>
+    <style-options jurisdiction-preference="babyblue"/>
+  </locale>
+  <macro name="juris-title">
+    <text value="DUMMY-TITLE"/>
+  </macro>
+  <macro name="juris-title-short">
+    <text value="DUMMY-TITLE-SHORT"/>
+  </macro>
+  <macro name="juris-main">
+    <text value="DUMMY-MAIN"/>
+  </macro>
+  <macro name="juris-main-short">
+    <text value="DUMMY-MAIN-SHORT"/>
+  </macro>
+  <macro name="juris-comma-pinpoint">
+    <text value="DUMMY-COMMA-PINPOINT"/>
+  </macro>
+  <macro name="juris-space-pinpoint">
+    <text value="DUMMY-SPACE-PINPOINT"/>
+  </macro>
+  <macro name="juris-tail">
+    <text value="DUMMY-TAIL"/>
+  </macro>
+  <macro name="juris-tail-short">
+    <text value="DUMMY-TAIL-SHORT"/>
+  </macro>
+  <citation>
+    <layout>
+      <group delimiter=", ">
+        <text macro="juris-title"/>
+        <group delimiter=" ">
+          <group delimiter=", ">
+            <text macro="juris-main"/>
+            <text macro="juris-comma-pinpoint"/>
+          </group>
+          <text macro="juris-space-pinpoint"/>
+          <text macro="juris-tail"/>
+        </group>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "ITEM-1", 
+        "type": "legal_case",
+        "title": "Smith v. Jones",
+        "authority": "District Court",
+        "volume": "200",
+        "container-title": "F.",
+        "page": "100",
+        "jurisdiction": "us:c9:ca",
+        "issued": {
+          "date-parts": [
+            [2000, 10, 1]
+          ]
+        }
+    }
+]
+<<===== INPUT =====<<

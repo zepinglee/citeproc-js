@@ -287,17 +287,17 @@ StdRhinoTest.prototype.retrieveStyleModule = function(state, jurisdiction) {
     var preferences = state.locale[state.opt.lang].opts["jurisdiction-preference"];
     preferences = preferences ? preferences : [];
     for (var i=0,ilen=preferences.length;i<ilen;i++) {
-        var preference = preferences.slice(0,i).join(":");
+        var preference = preferences[i];
         for (var j=jurisdictions.length-1;j>-1;j--) {
-            var jurisdiction = jurisdictions[j];
+            var jurisdiction = jurisdictions.slice(0,j).join(":");
             try {
-                ret = readFile("./tests/fixtures/std/styles/juris-" + jurisdiction + "-" + preference + ".csl");
+                ret = readFile("./tests/fixtures/local/styles/juris-" + jurisdiction + "-" + preference + ".csl");
                 break;
             } catch (e) {}
         }
         if (!ret) {
             try {
-                ret = readFile("./tests/fixtures/std/styles/juris-" + jurisdiction + ".csl");
+                ret = readFile("./tests/fixtures/local/styles/juris-" + jurisdiction + ".csl");
             } catch (e) {}
         }
     }
