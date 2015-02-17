@@ -286,7 +286,7 @@ StdRhinoTest.prototype.retrieveStyleModule = function(state, jurisdiction) {
     var jurisdictions = jurisdiction.split(":");
     var preferences = state.locale[state.opt.lang].opts["jurisdiction-preference"];
     preferences = preferences ? preferences : [];
-    for (var i=0,ilen=preferences.length;i<jlen;i++) {
+    for (var i=0,ilen=preferences.length;i<ilen;i++) {
         var preference = preferences.slice(0,i).join(":");
         for (var j=jurisdictions.length-1;j>-1;j--) {
             var jurisdiction = jurisdictions[j];
