@@ -88,19 +88,27 @@
   </macro>
 
   <macro name="juris-space-pinpoint">
-    <number variable="locator"/>
+    <choose>
+      <if position="subsequent">
+        <group delimiter=" ">
+          <text value="at"/>
+          <number variable="locator"/>
+        </group>
+      </if>
+    </choose>
   </macro>
 
-  <macro name="juris-comma-pinpoint"> 
-    <number variable="locator"/>
+  <macro name="juris-comma-pinpoint">
+    <choose>
+      <if position="first">
+        <number variable="locator"/>
+      </if>
+    </choose>
   </macro>
 
   <macro name="juris-tail">
     <group delimiter=" " prefix="(" suffix=")">
-      <names variable="jurisdiction">
-        <name/>
-        <institution institution-parts="short"/>
-      </names>
+      <text variable="jurisdiction"/>
       <names variable="authority">
         <name/>
         <institution institution-parts="short"/>
@@ -110,6 +118,7 @@
   </macro>
 
   <macro name="juris-tail-short">
+    <text value=""/>
   </macro>
 
   <citation>

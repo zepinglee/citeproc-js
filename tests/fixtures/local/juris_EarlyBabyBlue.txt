@@ -27,6 +27,23 @@ citation
         }, 
         [], 
         []
+    ],
+    [
+        {
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1",
+                    "locator": "110",
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2
+            }
+        }, 
+        [["CITATION-1",1]], 
+        []
     ]
 ]
 <<===== CITATIONS =====<<
