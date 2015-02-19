@@ -78,7 +78,6 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
     var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
     if (this.use_parallels) {
-        //print("StartCite: "+Item.id);
         if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
             this.ComposeSet();
         }
@@ -220,6 +219,7 @@ CSL.Parallel.prototype.StartVariable = function (variable, real_variable) {
         } else {
             this.variable = variable;
         }
+
         if (this.ignoreVars.indexOf(variable) > -1) {
             return;
         }

@@ -120,7 +120,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 CSL.Attributes["@position"] = function (state, arg) {
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
-    state.parallel.use_parallels = true;
+    state.parallel.use_parallels = null;
     var trypositions = arg.split(/\s+/);
     var maketest = function(tryposition) {
         return function (Item, item) {

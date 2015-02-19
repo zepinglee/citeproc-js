@@ -805,8 +805,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
         }
     }
     this.tmp.area = "citation";
-    use_parallels = this.parallel.use_parallels;
-    this.parallel.use_parallels = false;
+    this.parallel.use_parallels = this.parallel.use_parallels === true ? null : false;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
     CSL.getCite.call(this, Item, itemSupp);
@@ -825,7 +824,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
     ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
     this.tmp.suppress_decorations = false;
-    this.parallel.use_parallels = use_parallels;
+    this.parallel.use_parallels = this.parallel.use_parallels === null ? true : false;
     // Cache the result.
     this.tmp.group_context.replace(oldTermSiblingLayer, "literal");
     return ret;
