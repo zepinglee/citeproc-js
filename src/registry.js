@@ -713,7 +713,7 @@ CSL.getSortKeys = function (Item, key_type) {
     this.tmp.extension = "_sort";
     this.tmp.disambig_override = true;
     this.tmp.disambig_request = false;
-    this.parallel.use_parallels = this.parallel.use_parallels === true ? null : false;
+    this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
     this.tmp.suppress_decorations = true;
     CSL.getCite.call(this, Item);
     this.tmp.suppress_decorations = false;

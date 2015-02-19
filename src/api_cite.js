@@ -805,7 +805,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
         }
     }
     this.tmp.area = "citation";
-    this.parallel.use_parallels = this.parallel.use_parallels === true ? null : false;
+    this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
     CSL.getCite.call(this, Item, itemSupp);
