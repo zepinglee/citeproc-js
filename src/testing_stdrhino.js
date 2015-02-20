@@ -131,8 +131,8 @@ StdRhinoTest.prototype.run = function(){
 
     // XXX Uncomment for local sys_VariableWrapper.txt test.
 
-/*
-    this.variableWrapper = function (params, prePunct, str, postPunct) {
+
+    function variableWrapper(params, prePunct, str, postPunct) {
         //print(JSON.stringify(params,null,2));
         if (params.variableNames[0] === 'title' 
             && params.itemData.URL 
@@ -149,10 +149,13 @@ StdRhinoTest.prototype.run = function(){
             return (prePunct + str + postPunct);
         }
     };
-*/
+
 
     // this.csl_reverse_lookup_support = true;
 
+    if (this.test.options.variableWrapper) {
+        this.variableWrapper = variableWrapper;
+    }
     this.style = new CSL.Engine(this,this.test.csl);
     //this.style.setOutputFormat("rtf");
     //this.style.setParseNames(true);
@@ -161,6 +164,7 @@ StdRhinoTest.prototype.run = function(){
     this.style.opt.development_extensions.handle_parallel_articles = true;
     this.style.opt.development_extensions.rtl_support = false;
 	for (var opt in this.test.options) {
+        if (opt === "variableWrapper") continue;
 		this.style.opt.development_extensions[opt] = this.test.options[opt];
 	}
 

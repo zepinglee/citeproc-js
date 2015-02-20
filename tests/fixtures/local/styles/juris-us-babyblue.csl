@@ -87,22 +87,33 @@
     </choose>
   </macro>
 
-  <macro name="juris-space-pinpoint">
+  <macro name="juris-space-locator">
     <choose>
       <if position="subsequent">
         <group delimiter=" ">
           <text value="at"/>
-          <number variable="locator"/>
+          <text macro="juris-locator"/>
         </group>
       </if>
     </choose>
   </macro>
 
-  <macro name="juris-comma-pinpoint">
+  <macro name="juris-comma-locator">
     <choose>
       <if position="first">
-        <number variable="locator"/>
+        <text macro="juris-locator"/>
       </if>
+    </choose>
+  </macro>
+
+  <macro name="juris-locator">
+    <choose>
+      <if locator="paragraph" variable="collection-number" match="all">
+        <number variable="locator" prefix="[" suffix="]"/>
+      </if>
+      <else>
+        <number variable="locator"/>
+      </else>
     </choose>
   </macro>
 

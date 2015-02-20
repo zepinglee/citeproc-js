@@ -1,18 +1,18 @@
 /*global CSL: true */
 
 CSL.NameOutput.prototype.renderAllNames = function () {
-
     // Note that et-al/ellipsis parameters are set on the basis
     // of rendering order through the whole cite.
     var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
+        
         pos = this.nameset_base + i;
         if (this.freeters[v].length) {
-            this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
+            this.freeters[v] = this._renderNames(v, this.freeters[v], pos);
         }
         for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-            this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos, j);
+            this.persons[v][j] = this._renderNames(v, this.persons[v][j], pos, j);
         }
     }
     this.renderInstitutionNames();
@@ -27,6 +27,8 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
             var institution, institution_short, institution_long, short_style, long_style;
 
             var name = this.institutions[v][j];
+
+            
 
             // XXX Start here for institutions
             // Figure out the three segments: primary, secondary, tertiary
@@ -67,69 +69,78 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
             // true invokes fallback
             var res;
             this.setRenderedName(name);
-            res = this.getName(name, slot.primary, true);
-            var primary = res.name;
-            var usedOrig = res.usedOrig;
-            if (primary) {
-                primary = this.fixupInstitution(primary, v, j);
-            }
 
-			secondary = false;
-			if (slot.secondary) {
-                res = this.getName(name, slot.secondary, false, usedOrig);
-                secondary = res.name;
-                usedOrig = res.usedOrig;
-                if (secondary) {
-				    secondary = this.fixupInstitution(secondary, v, j);
-                }
-			}
-            //Zotero.debug("XXX [2] secondary: "+secondary["long"].literal+", slot.secondary: "+slot.secondary);
-			tertiary = false;
-			if (slot.tertiary) {
-                res = this.getName(name, slot.tertiary, false, usedOrig);
-                tertiary = res.name;
-                if (tertiary) {
-				    tertiary = this.fixupInstitution(tertiary, v, j);
-                }
-			}
-            switch (this.institution.strings["institution-parts"]) {
-            case "short":
-                // No multilingual for pure short form institution names.
-                if (primary["short"].length) {
-                    short_style = this._getShortStyle();
-                    institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
-                } else {
-                    // Fail over to long.
-
-                    long_style = this._getLongStyle(primary, v, j);
-                    institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
-                }
-                break;
-            case "short-long":
-                long_style = this._getLongStyle(primary, v, j);
-                short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
-                // true is to include multilingual supplement
-                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
-                institution = [institution_short, institution_long];
-                break;
-            case "long-short":
-                long_style = this._getLongStyle(primary, v, j);
-                short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
-                // true is to include multilingual supplement
-                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style, true);
-                institution = [institution_long, institution_short];
-                break;
-            default:
-                long_style = this._getLongStyle(primary, v, j);
-                // true is to include multilingual supplement
-                institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style)];
-                break;
-            }
-            this.institutions[v][j] = this._join(institution, "");
+            // XXXX FROM HERE (instututions)
+            var institution = this._renderInstitutionName(v, name, slot, j);
+            //this.institutions[v][j] = this._join(institution, "");
+            this.institutions[v][j] = institution;
         }
     }
+}
+
+CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
+    res = this.getName(name, slot.primary, true);
+    var primary = res.name;
+    var usedOrig = res.usedOrig;
+    if (primary) {
+        //print("primary, v, j = "+primary+", "+v+", "+j);
+        primary = this.fixupInstitution(primary, v, j);
+    }
+
+	secondary = false;
+	if (slot.secondary) {
+        res = this.getName(name, slot.secondary, false, usedOrig);
+        secondary = res.name;
+        usedOrig = res.usedOrig;
+        if (secondary) {
+			secondary = this.fixupInstitution(secondary, v, j);
+        }
+	}
+    //Zotero.debug("XXX [2] secondary: "+secondary["long"].literal+", slot.secondary: "+slot.secondary);
+	tertiary = false;
+	if (slot.tertiary) {
+        res = this.getName(name, slot.tertiary, false, usedOrig);
+        tertiary = res.name;
+        if (tertiary) {
+			tertiary = this.fixupInstitution(tertiary, v, j);
+        }
+	}
+    switch (this.institution.strings["institution-parts"]) {
+    case "short":
+        // No multilingual for pure short form institution names.
+        if (primary["short"].length) {
+            short_style = this._getShortStyle();
+            institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
+        } else {
+            // Fail over to long.
+
+            long_style = this._getLongStyle(primary, v, j);
+            institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
+        }
+        break;
+    case "short-long":
+        long_style = this._getLongStyle(primary, v, j);
+        short_style = this._getShortStyle();
+        institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+        // true is to include multilingual supplement
+        institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
+        institution = [institution_short, institution_long];
+        break;
+    case "long-short":
+        long_style = this._getLongStyle(primary, v, j);
+        short_style = this._getShortStyle();
+        institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+        // true is to include multilingual supplement
+        institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style, true);
+        institution = [institution_long, institution_short];
+        break;
+    default:
+        long_style = this._getLongStyle(primary, v, j);
+        // true is to include multilingual supplement
+        institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style)];
+        break;
+    }
+    return this._join(institution, " ");
 };
 
 CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, style) {
@@ -215,7 +226,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     return this._join(blobs, this.institution.strings["part-separator"]);
 };
 
-CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
+CSL.NameOutput.prototype._renderNames = function (v, values, pos, j) {
     //
     var ret = false;
     if (values.length) {
@@ -260,63 +271,75 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
             // primary
             // true is for fallback
             this.setRenderedName(name);
-            var res = this.getName(name, slot.primary, true);
-            var primary = this._renderOnePersonalName(res.name, pos, i, j);
-			secondary = false;
-			if (slot.secondary) {
-                res = this.getName(name, slot.secondary, false, res.usedOrig);
-                if (res.name) {
-				    secondary = this._renderOnePersonalName(res.name, pos, i, j);
-                }
-			}
-			tertiary = false;
-			if (slot.tertiary) {
-                res = this.getName(name, slot.tertiary, false, res.usedOrig);
-                if (res.name) {
-				    tertiary = this._renderOnePersonalName(res.name, pos, i, j);
-                }
-			}
-            // Now compose them to a unit
-            var personblob;
-            if (secondary || tertiary) {
 
-                this.state.output.openLevel("empty");
-
-                this.state.output.append(primary);
-
-                secondary_tok = new CSL.Token();
-                if (slot.secondary) {
-                    secondary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.secondary].prefix;
-                    secondary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.secondary].suffix;
-                    // Add a space if empty
-                    if (!secondary_tok.strings.prefix) {
-                        secondary_tok.strings.prefix = " ";
-                    }
-                }
-                this.state.output.append(secondary, secondary_tok);
-
-                tertiary_tok = new CSL.Token();
-                if (slot.tertiary) {
-                    tertiary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.tertiary].prefix;
-                    tertiary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.tertiary].suffix;
-                    // Add a space if empty
-                    if (!tertiary_tok.strings.prefix) {
-                        tertiary_tok.strings.prefix = " ";
-                    }
-                }
-                this.state.output.append(tertiary, tertiary_tok);
-
-                this.state.output.closeLevel();
-
-                personblob = this.state.output.pop();
+            if (!name.literal && !name.isInstitution) {
+                names.push(this._renderPersonalName(v, name, slot, pos, i, j));
             } else {
-                personblob = primary;
+                names.push(this._renderInstitutionName(v, name, slot, j));
             }
-            names.push(personblob);
         }
         ret = this.joinPersons(names, pos, j);
     }
-    return ret;
+    return ret
+}
+
+
+CSL.NameOutput.prototype._renderPersonalName = function (v, name, slot, pos, i, j) {
+    // XXXX FROM HERE (persons)
+
+    var res = this.getName(name, slot.primary, true);
+    var primary = this._renderOnePersonalName(res.name, pos, i, j);
+	secondary = false;
+	if (slot.secondary) {
+        res = this.getName(name, slot.secondary, false, res.usedOrig);
+        if (res.name) {
+			secondary = this._renderOnePersonalName(res.name, pos, i, j);
+        }
+	}
+	tertiary = false;
+	if (slot.tertiary) {
+        res = this.getName(name, slot.tertiary, false, res.usedOrig);
+        if (res.name) {
+			tertiary = this._renderOnePersonalName(res.name, pos, i, j);
+        }
+	}
+    // Now compose them to a unit
+    var personblob;
+    if (secondary || tertiary) {
+
+        this.state.output.openLevel("empty");
+
+        this.state.output.append(primary);
+
+        secondary_tok = new CSL.Token();
+        if (slot.secondary) {
+            secondary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.secondary].prefix;
+            secondary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.secondary].suffix;
+            // Add a space if empty
+            if (!secondary_tok.strings.prefix) {
+                secondary_tok.strings.prefix = " ";
+            }
+        }
+        this.state.output.append(secondary, secondary_tok);
+
+        tertiary_tok = new CSL.Token();
+        if (slot.tertiary) {
+            tertiary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.tertiary].prefix;
+            tertiary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.tertiary].suffix;
+            // Add a space if empty
+            if (!tertiary_tok.strings.prefix) {
+                tertiary_tok.strings.prefix = " ";
+            }
+        }
+        this.state.output.append(tertiary, tertiary_tok);
+
+        this.state.output.closeLevel();
+
+        personblob = this.state.output.pop();
+    } else {
+        personblob = primary;
+    }
+    return personblob;
 };
 
 CSL.NameOutput.prototype._isRomanesque = function (name) {
@@ -961,6 +984,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
         }
     }
     splitInstitution.reverse();
+    //print("into _trimInstitution with splitInstitution, v, i = "+splitInstitution+", "+v+", "+i);
     ret["long"] = this._trimInstitution(splitInstitution, v, i);
     return ret;
 };
@@ -1007,6 +1031,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     if (stop_last) {
         append_last = 0;
     }
+
     // This could be more clear. use-last takes priority
     // in the event of overlap, because of adjustment above
     subunits = subunits.slice(0, use_first);

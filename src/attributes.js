@@ -548,7 +548,8 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
             var institutions = 0;
             var last_is_person = false;
             for (var i = 0, ilen = nameList.length; i < ilen; i += 1) {
-                if (nameList[i].isInstitution && (nameList[i].literal || (nameList[i].family && !nameList[i].given))) {
+                if (state.opt.development_extensions.spoof_institutional_affiliations
+                    && (nameList[i].literal || (nameList[i].isInstitution && nameList[i].family && !nameList[i].given))) {
                     institutions += 1;
                     last_is_person = false;
                 } else {

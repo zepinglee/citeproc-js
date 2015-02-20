@@ -52,14 +52,24 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 
 CSL.NameOutput.prototype._getFreeters = function (v, values) {
     this.freeters[v] = [];
-    for (var i = values.length - 1; i > -1; i += -1) {
-        if (this.isPerson(values[i])) {
-            var value = this._checkNickname(values.pop());
-            if (value) {
-                this.freeters[v].push(value);
+    if (this.state.opt.development_extensions.spoof_institutional_affiliations) {
+        for (var i=values.length-1;i>-1;i--) {
+            if (this.isPerson(values[i])) {
+                var value = this._checkNickname(values.pop());
+                if (value) {
+                    this.freeters[v].push(value);
+                }
+            } else {
+                break;
             }
-        } else {
-            break;
+        }
+    } else {
+        for (var i=values.length-1;i>-1;i--) {
+            var value = values.pop();
+            if (this.isPerson(value)) {
+                var value = this._checkNickname(value);
+            }
+            this.freeters[v].push(value);
         }
     }
     this.freeters[v].reverse();
@@ -71,6 +81,7 @@ CSL.NameOutput.prototype._getFreeters = function (v, values) {
 CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
     this.persons[v] = [];
     this.institutions[v] = [];
+    if (!this.state.opt.development_extensions.spoof_institutional_affiliations) return;
     var persons = [];
     var has_affiliates = false;
     var first = true;

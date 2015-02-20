@@ -3,6 +3,13 @@ citation
 <<===== MODE =====<<
 
 
+>>===== OPTIONS =====>>
+{
+   "variableWrapper": true
+
+}
+<<===== OPTIONS =====<<
+
 
 >>===== RESULT =====>>
 ..[0] Silicott Smith, <a href="http://bimplekrup.com/">Book Title</a>, 2009

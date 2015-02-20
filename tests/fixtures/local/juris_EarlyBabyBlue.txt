@@ -3,6 +3,11 @@ citation
 <<===== MODE =====<<
 
 
+>>===== OPTIONS =====>>
+{
+  "require_explicit_legal_case_title_short": true
+}
+<<===== OPTIONS =====<<
 
 >>===== RESULT =====>>
 ???
@@ -74,11 +79,14 @@ citation
   <macro name="juris-main-short">
     <text value="DUMMY-MAIN-SHORT"/>
   </macro>
-  <macro name="juris-comma-pinpoint">
-    <text value="DUMMY-COMMA-PINPOINT"/>
+  <macro name="juris-comma-locator">
+    <text value="DUMMY-COMMA-LOCATOR"/>
   </macro>
-  <macro name="juris-space-pinpoint">
-    <text value="DUMMY-SPACE-PINPOINT"/>
+    <macro name="juris-space-locator">
+    <text value="DUMMY-SPACE-LOCATOR"/>
+  </macro>
+  <macro name="juris-locator">
+    <text value="DUMMY-LOCATOR"/>
   </macro>
   <macro name="juris-tail">
     <text value="DUMMY-TAIL"/>
@@ -88,17 +96,34 @@ citation
   </macro>
   <citation>
     <layout>
-      <group delimiter=", ">
-        <text macro="juris-title"/>
-        <group delimiter=" ">
+      <choose>
+        <if position="first">
           <group delimiter=", ">
-            <text macro="juris-main"/>
-            <text macro="juris-comma-pinpoint"/>
+            <text macro="juris-title"/>
+            <group delimiter=" ">
+              <group delimiter=", ">
+                <text macro="juris-main"/>
+                <text macro="juris-comma-locator"/>
+              </group>
+              <text macro="juris-space-locator"/>
+              <text macro="juris-tail"/>
+            </group>
           </group>
-          <text macro="juris-space-pinpoint"/>
-          <text macro="juris-tail"/>
-        </group>
-      </group>
+        </if>
+        <else-if position="subsequent">
+          <group delimiter=", ">
+            <text macro="juris-title-short"/>
+            <group delimiter=" ">
+              <group delimiter=", ">
+                <text macro="juris-main-short"/>
+                <text macro="juris-comma-locator"/>
+              </group>
+              <text macro="juris-space-locator"/>
+              <text macro="juris-tail-short"/>
+            </group>
+          </group>
+        </else-if>
+      </choose>
     </layout>
   </citation>
 </style>
@@ -111,8 +136,10 @@ citation
         "id": "ITEM-1", 
         "type": "legal_case",
         "title": "Smith v. Jones",
+        "title-short": "Smith",
         "authority": "District Court",
         "volume": "200",
+        "collection-number": "2000",
         "container-title": "F.",
         "page": "100",
         "jurisdiction": "us:c9:ca",

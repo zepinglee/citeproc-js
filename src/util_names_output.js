@@ -220,37 +220,42 @@ CSL.NameOutput.prototype.outputNames = function () {
         var v = variables[i];
         var institution_sets = [];
         var institutions = false;
-        //SNIP-START
-        if (this.debug) {
-            print("(11a)");
-        }
-        //SNIP-END
-        for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-            institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
-        }
-        //SNIP-START
-        if (this.debug) {
-            print("(11b)");
-        }
-        //SNIP-END
-        if (this.institutions[v].length) {
-            var pos = this.nameset_base + this.variable_offset[v];
-            if (this.freeters[v].length) {
-                pos += 1;
+        var varblob = null;
+        if (!this.state.opt.development_extensions.spoof_institutional_affiliations) {
+            varblob = this._join([this.freeters[v]], "");
+        } else {
+            //SNIP-START
+            if (this.debug) {
+                print("(11a)");
             }
-            institutions = this.joinInstitutionSets(institution_sets, pos);
+            //SNIP-END
+            for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
+                institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
+            }
+            //SNIP-START
+            if (this.debug) {
+                print("(11b)");
+            }
+            //SNIP-END
+            if (this.institutions[v].length) {
+                var pos = this.nameset_base + this.variable_offset[v];
+                if (this.freeters[v].length) {
+                    pos += 1;
+                }
+                institutions = this.joinInstitutionSets(institution_sets, pos);
+            }
+            //SNIP-START
+            if (this.debug) {
+                print("(11c)");
+            }
+            //SNIP-END
+            var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
+            //SNIP-START
+            if (this.debug) {
+                print("(11d)");
+            }
+            //SNIP-END
         }
-        //SNIP-START
-        if (this.debug) {
-            print("(11c)");
-        }
-        //SNIP-END
-        var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
-        //SNIP-START
-        if (this.debug) {
-            print("(11d)");
-        }
-        //SNIP-END
         if (varblob) {
             // Apply labels, if any
             if (this.state.tmp.area.slice(-5) !== "_sort") {

@@ -2,6 +2,7 @@
 
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos, j) {
     var ret;
+
     if ("undefined" === typeof j) {
         if (this.etal_spec[pos].freeters === 1) {
             ret = this._joinEtAl(blobs, "name");
