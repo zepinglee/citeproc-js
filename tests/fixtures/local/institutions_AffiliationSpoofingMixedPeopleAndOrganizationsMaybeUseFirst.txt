@@ -1,24 +1,23 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 citation
 <<===== MODE =====<<
 
 
-At the first stage of full processor deployment, let's eliminate
-the implicit chop behavior. If there is merit in the implicit
-chop of namesets after the first personal author, as this test
-had it originally, that will emerge in feedback on processor
-behavior.
-
 
 >>===== RESULT =====>>
-Roe et al. eds.
+Doe et al., Big Ministry
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.1mlz1"
       default-locale="en">
   <info>
@@ -30,14 +29,13 @@ Roe et al. eds.
     et-al-min="3"
     et-al-use-first="1">
     <layout>
-      <names variable="editor" delimiter=", ">
-        <name form="short" delimiter=", " and="text"/>
+      <names variable="author" delimiter=", ">
+        <name form="short" and="symbol" delimiter-precedes-last="never" delimiter=", "/>
         <institution 
           institution-parts="long" 
           delimiter=", "
-          use-first="1"
+          substitute-use-first="1"
           use-last="1"/>
-        <label form="short" prefix=" "/>
       </names>
     </layout>
   </citation>
@@ -48,14 +46,7 @@ Roe et al. eds.
 >>===== INPUT =====>>
 [
     {
-        "editor": [
-            {
-                "family": "Roe", 
-                "given": "Jane"
-            }, 
-            {
-                "literal": "Big Ministry|Busy Committee|Tiny Subcommittee"
-            }, 
+        "author": [
             {
                 "family": "Doe", 
                 "given": "John"
@@ -69,13 +60,10 @@ Roe et al. eds.
                 "given": "Richard"
             }, 
             {
-                "literal": "Wasteful Enterprise|Evil Division|Trivial Working Group"
-            }, 
-            {
-                "family": "Noakes", 
-                "given": "John"
+                "literal": "Big Ministry|Busy Committee|Tiny Subcommittee"
             }
         ], 
+        "id": "ITEM-1", 
         "type": "book"
     }
 ]

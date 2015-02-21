@@ -1,24 +1,23 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 citation
 <<===== MODE =====<<
 
 
-At the first stage of full processor deployment, let's eliminate
-the implicit chop behavior. If there is merit in the implicit
-chop of namesets after the first personal author, as this test
-had it originally, that will emerge in feedback on processor
-behavior.
-
 
 >>===== RESULT =====>>
-Roe et al. eds.
+Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working Group, Wasteful Enterprise eds.
 <<===== RESULT =====<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.1mlz1"
       default-locale="en">
   <info>
@@ -31,7 +30,7 @@ Roe et al. eds.
     et-al-use-first="1">
     <layout>
       <names variable="editor" delimiter=", ">
-        <name form="short" delimiter=", " and="text"/>
+        <name form="short" delimiter=", " and="symbol"/>
         <institution 
           institution-parts="long" 
           delimiter=", "

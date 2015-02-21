@@ -2,8 +2,16 @@
 citation
 <<===== MODE =====<<
 
+>>===== OPTIONS =====>>
+{
+    "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
+
+
+
 >>===== RESULT =====>>
-(Institution01 &#38; Institution02, 2003)
+(Institution01 and Institution02, 2003)
 <<===== RESULT =====<<
 
 >>===== CSL =====>>

@@ -1,16 +1,18 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 citation
 <<===== MODE =====<<
 
 
-In the default configuration (i.e. with spoof_institutional_affiliations="false"),
-the "and" attribute on the institution node (by default and="text") has no effect.
-
 
 >>===== RESULT =====>>
 John Doe &#38; Jane Roe
-Doe John Co, Roe Jane Co, &#38; Noakes Richard Co
-John Doe, Jane Roe, Richard Noakes, &#38; Deacon Snoakes
+Doe John Co, Roe Jane Co, and Noakes Richard Co
+John Doe, Jane Roe, Richard Noakes, and Deacon Snoakes
 <<===== RESULT =====<<
 
 

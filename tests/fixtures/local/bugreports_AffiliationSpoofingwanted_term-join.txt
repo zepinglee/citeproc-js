@@ -2,6 +2,15 @@
 bibliography
 <<===== MODE =====<<
 
+>>===== OPTIONS =====>>
+{
+    "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
+
+
+
+
 Test by Carles Pina.  Was throwing nesting mismatch
 error to console in citeproc-js.
 
@@ -12,12 +21,9 @@ and the "isInstitution" flag as institutional authors
 (which should trigger an "and" join, in citeproc-js).
 
 
-In the default configuration (i.e. with spoof_institutional_affiliations="false"),
-the "and" attribute on cs:institution (and="text" by default) has no effect.
-
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">test01 &#38; test02,</div>
+  <div class="csl-entry">test01 and test02,</div>
 </div>
 <<===== RESULT =====<<
 

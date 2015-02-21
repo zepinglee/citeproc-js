@@ -1,3 +1,8 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 bibliography
 <<===== MODE =====<<
@@ -6,7 +11,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Merwe, Wikus van der (as primary author) -- Multi-National United and Prawn, Christopher the</div>
+  <div class="csl-entry">Prawn, Christopher the (as primary author) -- Merwe, Wikus van der, Multi-National United</div>
 </div>
 <<===== RESULT =====<<
 
@@ -42,7 +47,7 @@ bibliography
         </names>
         <group delimiter=" ">
           <names variable="author">
-            <name and="text" sort-separator=", " name-as-sort-order="all" et-al-min="0"/>
+            <name sort-separator=", " name-as-sort-order="all" et-al-min="0"/>
           </names>
         </group>
       </group>

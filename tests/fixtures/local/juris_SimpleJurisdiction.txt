@@ -1,0 +1,67 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+>>[0] From module: MY TITLE
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <locale>
+    <style-options jurisdiction-preference="simple"/>
+  </locale>
+  <macro name="juris-title">
+    <text variable="title"/>
+  </macro>
+  <citation>
+    <layout delimiter="; ">
+      <text macro="juris-title"/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+   {
+        "id": "ITEM-1", 
+        "jurisdiction": "us:ak",
+        "title": "My Title",
+        "type": "legal_case"
+    }
+]
+<<===== INPUT =====<<

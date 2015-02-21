@@ -2,11 +2,17 @@
 bibliography
 <<===== MODE =====<<
 
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
+
 
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Doe, Jane Roe, Department of Alien Weapons Vivisection, Multi-National United, &#38; John Noakes</div>
+  <div class="csl-entry"><span style="font-variant:small-caps;">John Doe</span>, <span style="font-variant:small-caps;">Jane Roe</span>, <span style="font-variant:small-caps;">Big Outfit</span></div>
 </div>
 <<===== RESULT =====<<
 
@@ -24,14 +30,14 @@ bibliography
   <citation>
     <layout>
       <names variable="author">
-        <name/>
+        <name font-variant="small-caps"/>
       </names>
     </layout>
   </citation>
   <bibliography>
     <layout>
       <names variable="author">
-        <name and="symbol" />
+        <name font-variant="small-caps"/>
       </names>
     </layout>
   </bibliography>
@@ -45,21 +51,14 @@ bibliography
         "author": [
             {
                 "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false
-            }, 
+                "given": "John"
+            },
             {
                 "family": "Roe", 
-                "given": "Jane", 
-                "static-ordering": false
-            }, 
+                "given": "Jane"
+            },
             {
-                "literal": "Multi-National United|Department of Alien Weapons Vivisection"
-            }, 
-            {
-                "family": "Noakes", 
-                "given": "John", 
-                "static-ordering": false
+                "literal": "Big Outfit"
             }
         ], 
         "id": "ITEM-1", 

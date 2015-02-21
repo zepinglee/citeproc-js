@@ -1,3 +1,8 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 citation
 <<===== MODE =====<<
@@ -7,7 +12,7 @@ no longer required, and have been removed from citeproc-js.
 
 
 >>===== RESULT =====>>
-Ministry of Fear, Loathing and Error &#38; Mercuricon Spittle
+Mercuricon Spittle with Ministry of Fear, Loathing and Error
 <<===== RESULT =====<<
 
 

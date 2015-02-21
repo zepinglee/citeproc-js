@@ -2,11 +2,17 @@
 bibliography
 <<===== MODE =====<<
 
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
+
 
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Doe, Jane Roe, Department of Alien Weapons Vivisection, Multi-National United, &#38; John Noakes</div>
+  <div class="csl-entry">John Noakes with John Doe &#38; Jane Roe, Multi-National United</div>
 </div>
 <<===== RESULT =====<<
 

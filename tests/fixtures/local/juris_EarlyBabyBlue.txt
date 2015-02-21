@@ -10,7 +10,8 @@ citation
 <<===== OPTIONS =====<<
 
 >>===== RESULT =====>>
-???
+..[0] Smith v. Jones, [2000] 200 F. 100, 103 (us:c9:ca District Court)
+>>[1] Smith, [2000] 200 F. at 110
 <<===== RESULT =====<<
 
 

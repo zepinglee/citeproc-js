@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Doe, John &#38; Jane Roe, Doe &#38; Co. and John Noakes &#38; Wurzle Gummidge, Noakes Corp.</div>
+  <div class="csl-entry">Doe, John, Jane Roe, Doe &#38; Co., John Noakes, Wurzle Gummidge, &#38; Noakes Corp.</div>
 </div>
 <<===== RESULT =====<<
 

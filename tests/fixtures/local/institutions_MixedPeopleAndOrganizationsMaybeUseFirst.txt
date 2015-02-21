@@ -5,9 +5,11 @@ citation
 
 
 >>===== RESULT =====>>
-Doe et al., Big Ministry
+Doe, Roe, Snoakes &#38; Tiny Subcommittee of Big Ministry
 <<===== RESULT =====<<
 
+In the default configuration (i.e. with spoof_institutional_affiliations="false"),
+substitute-use-first always includes the requested institution name parts.
 
 >>===== CSL =====>>
 <style 
@@ -21,7 +23,7 @@ Doe et al., Big Ministry
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation
-    et-al-min="3"
+    et-al-min="6"
     et-al-use-first="1">
     <layout>
       <names variable="author" delimiter=", ">
@@ -29,6 +31,7 @@ Doe et al., Big Ministry
         <institution 
           institution-parts="long" 
           delimiter=", "
+          part-separator=" of "
           substitute-use-first="1"
           use-last="1"/>
       </names>

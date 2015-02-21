@@ -14,7 +14,7 @@ selectively if there are requests to do so.
 
 
 >>===== RESULT =====>>
-(Doe, <i>Facebook</i> 2000; <i>Facebook</i> 2000)
+(Doe &#38; <i>Facebook</i> 2000; <i>Facebook</i> 2000)
 <<===== RESULT =====<<
 
 

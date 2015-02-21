@@ -4,9 +4,13 @@ bibliography
 
 
 
+In the default configuration (i.e. without spoof_institutional_affiliations),
+the suppress-min="0" option is meaningless, and has no effect.
+
+
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Doe &#38; Co. and Noakes Corp.</div>
+  <div class="csl-entry">John Doe, Jane Roe, Doe &#38; Co., John Noakes, Noakes Corp., &#38; Wurzle Gummidge</div>
 </div>
 <<===== RESULT =====<<
 

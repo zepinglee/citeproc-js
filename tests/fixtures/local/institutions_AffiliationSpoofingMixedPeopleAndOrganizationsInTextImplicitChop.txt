@@ -1,3 +1,8 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 citation
 <<===== MODE =====<<
@@ -11,7 +16,7 @@ behavior.
 
 
 >>===== RESULT =====>>
-Roe et al. eds.
+Noakes with Roe, Tiny Subcommittee, Big Ministry and Doe et al., Trivial Working Group, Wasteful Enterprise eds.
 <<===== RESULT =====<<
 
 

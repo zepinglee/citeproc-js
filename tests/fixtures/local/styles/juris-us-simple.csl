@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" version="1.0" class="in-text">
+  <info>
+    <title>United States (Baby Blue)</title>
+    <id>http://citationstylist.org/modules/us-babyblue</id>
+    <link href="http://citationstylist/modules/us-babyblue" rel="self"/>
+    <link href="http://citationstylist" rel="documentation"/>
+    <author>
+      <name>Frank Bennett</name>
+      <email>bennett@nagoya-u.jp</email>
+    </author>
+    <category citation-format="module"/>
+    <category field="law"/>
+    <summary>CSL-m style module for US legal references</summary>
+    <updated>2013-01-26T22:06:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+  <macro name="juris-title">
+    <text variable="title" text-case="uppercase" prefix="From module: "/>
+  </macro>
+  <macro name="juris-title-short">
+    <text value="NAME-SHORT!"/>
+  </macro>
+  <macro name="juris-main">
+    <text value="MAIN!"/>
+  </macro>
+  <macro name="juris-main-short">
+    <text value="MAIN-SHORT!"/>
+  </macro>
+  <macro name="juris-space-locator">
+    <text value="SPACE-PINPOINT!"/>
+  </macro>
+  <macro name="juris-comma-locator">
+    <text value="COMMA-PINPOINT!"/>
+  </macro>
+  <macro name="juris-locator">
+    <text value="COMMA-PINPOINT!"/>
+  </macro>
+  <macro name="juris-tail">
+    <text value="TAIL!"/>
+  </macro>
+  <macro name="juris-tail-short">
+    <text value="TAIL-SHORT!"/>
+  </macro>
+  <citation>
+    <layout>
+      <text value="Hello"/>
+    </layout>
+  </citation>
+</style>

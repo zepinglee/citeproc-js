@@ -1,9 +1,11 @@
 >>===== MODE =====>>
 citation
 <<===== MODE===== <<
+
 >>===== RESULT =====>>
->>[0] <i>Convention on the Elimination of All Forms of Discrimination against Women</i>, 1 March 1980, 1 UNTS 13, 1111 Canadian TS 2222 (Entered into force 03 September 1981, ratification by Canada 10 Dec 1981) [<i>CEDAW</i>].
+>>[0] Convention on the Elimination of All Forms of Discrimination against Women, 1 March 1980, 1 UNTS 13, 1111 Canadian TS 2222.
 <<===== RESULT===== <<
+
 >>===== CITATIONS =====>>
 [
   [
@@ -2545,6 +2547,7 @@ citation
       "_keys": {}
     },
     "title": "Convention on the Elimination of All Forms of Discrimination against Women",
+    "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
     "container-title": "UNTS",
     "page": "13",
     "volume": "1",
@@ -2566,6 +2569,7 @@ citation
       "_keys": {}
     },
     "title": "Convention on the Elimination of All Forms of Discrimination against Women",
+    "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
     "container-title": "Canadian TS",
     "page": "2222",
     "volume": "1111",

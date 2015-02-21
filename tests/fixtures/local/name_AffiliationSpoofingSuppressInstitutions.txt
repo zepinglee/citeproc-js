@@ -1,3 +1,8 @@
+>>===== OPTIONS =====>>
+{
+  "spoof_institutional_affiliations": true
+}
+<<===== OPTIONS =====<<
 >>===== MODE =====>>
 bibliography
 <<===== MODE =====<<
@@ -6,7 +11,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">John Doe, Jane Roe, Department of Alien Weapons Vivisection, Multi-National United, &#38; John Noakes</div>
+  <div class="csl-entry">Wurzle Gummidge, John Doe, Jane Roe, &#38; John Noakes</div>
 </div>
 <<===== RESULT =====<<
 
@@ -32,6 +37,7 @@ bibliography
     <layout>
       <names variable="author">
         <name and="symbol" />
+		<institution suppress-min="0"/>
       </names>
     </layout>
   </bibliography>
@@ -45,21 +51,27 @@ bibliography
         "author": [
             {
                 "family": "Doe", 
-                "given": "John", 
-                "static-ordering": false
+                "given": "John"
             }, 
             {
                 "family": "Roe", 
-                "given": "Jane", 
-                "static-ordering": false
+                "given": "Jane"
             }, 
-            {
-                "literal": "Multi-National United|Department of Alien Weapons Vivisection"
-            }, 
+			{ 
+			  "family": "Doe & Co.",
+			  "isInstitution": true
+			},
             {
                 "family": "Noakes", 
-                "given": "John", 
-                "static-ordering": false
+                "given": "John"
+            },
+			{ 
+			  "family": "Noakes Corp.",
+			  "isInstitution": true
+			},
+            {
+                "family": "Gummidge", 
+                "given": "Wurzle"
             }
         ], 
         "id": "ITEM-1", 
