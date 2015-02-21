@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.558",
+    PROCESSOR_VERSION: "1.0.559",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -737,6 +737,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     macro_key_token.cslid = macroid;
     if (mkey.slice(0,6) === "juris-") {
         macro_key_token.juris = mkey;
+        this.opt.update_mode = CSL.POSITION;
     }
     CSL.Node.group.build.call(macro_key_token, this, target);
     if (!this.sys.xml.getNodeValue(macro_nodes)) {
@@ -3253,6 +3254,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.strict_page_numbers = false;
     this.development_extensions.expect_and_symbol_form = false;
     this.development_extensions.require_explicit_legal_case_title_short = false;
+    this.development_extensions.spoof_institutional_affiliations = false;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -3915,8 +3917,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
         }
     }
     this.tmp.area = "citation";
-    use_parallels = this.parallel.use_parallels;
-    this.parallel.use_parallels = false;
+    this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
     CSL.getCite.call(this, Item, itemSupp);
@@ -3934,7 +3935,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
     ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
     this.tmp.suppress_decorations = false;
-    this.parallel.use_parallels = use_parallels;
+    this.parallel.use_parallels = this.parallel.use_parallels === null ? true : false;
     this.tmp.group_context.replace(oldTermSiblingLayer, "literal");
     return ret;
 };
@@ -5610,8 +5611,9 @@ CSL.Node.group = {
                     "juris-title-short": true,
                     "juris-main": true,
                     "juris-main-short": true,
-                    "juris-comma-pinpoint": true,
-                    "juris-space-pinpoint": true,
+                    "juris-comma-locator": true,
+                    "juris-space-locator": true,
+                    "juris-locator": true,
                     "juris-tail": true,
                     "juris-tail-short": true
                 };
@@ -5651,7 +5653,7 @@ CSL.Node.group = {
                 target.push(if_start);
                 target.push(macroGroupToken);
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
-                func = function (state, Item) {
+                func = function (state, Item, item) {
                     var next = 0;
                     if (state.juris[Item.jurisdiction][this.juris]) {
                         while (next < state.juris[Item.jurisdiction][this.juris].length) {
@@ -6381,17 +6383,22 @@ CSL.NameOutput.prototype.outputNames = function () {
         var v = variables[i];
         var institution_sets = [];
         var institutions = false;
-        for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-            institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
-        }
-        if (this.institutions[v].length) {
-            var pos = this.nameset_base + this.variable_offset[v];
-            if (this.freeters[v].length) {
-                pos += 1;
+        var varblob = null;
+        if (!this.state.opt.development_extensions.spoof_institutional_affiliations) {
+            varblob = this._join([this.freeters[v]], "");
+        } else {
+            for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
+                institution_sets.push(this.joinPersonsAndInstitutions([this.persons[v][j], this.institutions[v][j]]));
             }
-            institutions = this.joinInstitutionSets(institution_sets, pos);
+            if (this.institutions[v].length) {
+                var pos = this.nameset_base + this.variable_offset[v];
+                if (this.freeters[v].length) {
+                    pos += 1;
+                }
+                institutions = this.joinInstitutionSets(institution_sets, pos);
+            }
+            var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
         }
-        var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
         if (varblob) {
             if (this.state.tmp.area.slice(-5) !== "_sort") {
                 varblob = this._applyLabels(varblob, v);
@@ -6694,20 +6701,22 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
         }
         this._getFreeters(v, values);
         this._getPersonsAndInstitutions(v, values);
-        if (this.name.strings["suppress-min"] === 0) {
-            this.freeters[v] = [];
-            for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-                this.persons[v][j] = [];
-            }
-        } else if (this.institution.strings["suppress-min"] === 0) {
-            this.institutions[v] = [];
-            this.freeters[v] = this.freeters[v].concat(this.persons[v]);
-            for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
-                for (var k = 0, klen = this.persons[v][j].length; k < klen; k += 1) {
-                    this.freeters[v].push(this.persons[v][j][k]);
+        if (this.state.opt.development_extensions.spoof_institutional_affiliations) {
+            if (this.name.strings["suppress-min"] === 0) {
+                this.freeters[v] = [];
+                for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+                    this.persons[v][j] = [];
                 }
+            } else if (this.institution.strings["suppress-min"] === 0) {
+                this.institutions[v] = [];
+                this.freeters[v] = this.freeters[v].concat(this.persons[v]);
+                for (j = 0, jlen = this.persons[v].length; j < jlen; j += 1) {
+                    for (var k = 0, klen = this.persons[v][j].length; k < klen; k += 1) {
+                        this.freeters[v].push(this.persons[v][j][k]);
+                    }
+                }
+                this.persons[v] = [];
             }
-            this.persons[v] = [];
         }
     }
 };
@@ -6724,14 +6733,24 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 };
 CSL.NameOutput.prototype._getFreeters = function (v, values) {
     this.freeters[v] = [];
-    for (var i = values.length - 1; i > -1; i += -1) {
-        if (this.isPerson(values[i])) {
-            var value = this._checkNickname(values.pop());
-            if (value) {
-                this.freeters[v].push(value);
+    if (this.state.opt.development_extensions.spoof_institutional_affiliations) {
+        for (var i=values.length-1;i>-1;i--) {
+            if (this.isPerson(values[i])) {
+                var value = this._checkNickname(values.pop());
+                if (value) {
+                    this.freeters[v].push(value);
+                }
+            } else {
+                break;
             }
-        } else {
-            break;
+        }
+    } else {
+        for (var i=values.length-1;i>-1;i--) {
+            var value = values.pop();
+            if (this.isPerson(value)) {
+                var value = this._checkNickname(value);
+            }
+            this.freeters[v].push(value);
         }
     }
     this.freeters[v].reverse();
@@ -6742,6 +6761,7 @@ CSL.NameOutput.prototype._getFreeters = function (v, values) {
 CSL.NameOutput.prototype._getPersonsAndInstitutions = function (v, values) {
     this.persons[v] = [];
     this.institutions[v] = [];
+    if (!this.state.opt.development_extensions.spoof_institutional_affiliations) return;
     var persons = [];
     var has_affiliates = false;
     var first = true;
@@ -6792,25 +6812,28 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
     }
     return name;
 };
-CSL.NameOutput.prototype.joinPersons = function (blobs, pos, j) {
+CSL.NameOutput.prototype.joinPersons = function (blobs, pos, j, tokenname) {
     var ret;
+    if (!tokenname) {
+        tokenname = "name";
+    }
     if ("undefined" === typeof j) {
         if (this.etal_spec[pos].freeters === 1) {
-            ret = this._joinEtAl(blobs, "name");
+            ret = this._joinEtAl(blobs, tokenname);
         } else if (this.etal_spec[pos].freeters === 2) {
-            ret = this._joinEllipsis(blobs, "name");
+            ret = this._joinEllipsis(blobs, tokenname);
         } else if (!this.state.tmp.sort_key_flag) {
-            ret = this._joinAnd(blobs, "name");
+            ret = this._joinAnd(blobs, tokenname);
         } else {
             ret = this._join(blobs, " ");
         }
     } else {
         if (this.etal_spec[pos].persons[j] === 1) {
-            ret = this._joinEtAl(blobs, "name");
+            ret = this._joinEtAl(blobs, tokenname);
         } else if (this.etal_spec[pos].persons[j] === 2) {
-            ret = this._joinEllipsis(blobs, "name");
+            ret = this._joinEllipsis(blobs, tokenname);
         } else if (!this.state.tmp.sort_key_flag) {
-            ret = this._joinAnd(blobs, "name");
+            ret = this._joinAnd(blobs, tokenname);
         } else {
             ret = this._join(blobs, " ");
         }
@@ -6895,7 +6918,7 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, t
             blobs.push(blob);
         }
     }
-    this.state.output.openLevel(this._getToken(tokenname));
+    this.state.output.openLevel();
     if (single && multiple) {
         this.state.output.current.value().strings.delimiter = "";
     }
@@ -7224,10 +7247,10 @@ CSL.NameOutput.prototype.renderAllNames = function () {
         var v = this.variables[i];
         pos = this.nameset_base + i;
         if (this.freeters[v].length) {
-            this.freeters[v] = this._renderPersonalNames(this.freeters[v], pos);
+            this.freeters[v] = this._renderNames(v, this.freeters[v], pos);
         }
         for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
-            this.persons[v][j] = this._renderPersonalNames(this.persons[v][j], pos, j);
+            this.persons[v][j] = this._renderNames(v, this.persons[v][j], pos, j);
         }
     }
     this.renderInstitutionNames();
@@ -7269,61 +7292,65 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 	        }
             var res;
             this.setRenderedName(name);
-            res = this.getName(name, slot.primary, true);
-            var primary = res.name;
-            var usedOrig = res.usedOrig;
-            if (primary) {
-                primary = this.fixupInstitution(primary, v, j);
-            }
-			secondary = false;
-			if (slot.secondary) {
-                res = this.getName(name, slot.secondary, false, usedOrig);
-                secondary = res.name;
-                usedOrig = res.usedOrig;
-                if (secondary) {
-				    secondary = this.fixupInstitution(secondary, v, j);
-                }
-			}
-			tertiary = false;
-			if (slot.tertiary) {
-                res = this.getName(name, slot.tertiary, false, usedOrig);
-                tertiary = res.name;
-                if (tertiary) {
-				    tertiary = this.fixupInstitution(tertiary, v, j);
-                }
-			}
-            switch (this.institution.strings["institution-parts"]) {
-            case "short":
-                if (primary["short"].length) {
-                    short_style = this._getShortStyle();
-                    institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
-                } else {
-                    long_style = this._getLongStyle(primary, v, j);
-                    institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
-                }
-                break;
-            case "short-long":
-                long_style = this._getLongStyle(primary, v, j);
-                short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
-                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
-                institution = [institution_short, institution_long];
-                break;
-            case "long-short":
-                long_style = this._getLongStyle(primary, v, j);
-                short_style = this._getShortStyle();
-                institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
-                institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style, true);
-                institution = [institution_long, institution_short];
-                break;
-            default:
-                long_style = this._getLongStyle(primary, v, j);
-                institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style)];
-                break;
-            }
-            this.institutions[v][j] = this._join(institution, "");
+            var institution = this._renderInstitutionName(v, name, slot, j);
+            this.institutions[v][j] = institution;
         }
     }
+}
+CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
+    res = this.getName(name, slot.primary, true);
+    var primary = res.name;
+    var usedOrig = res.usedOrig;
+    if (primary) {
+        primary = this.fixupInstitution(primary, v, j);
+    }
+	secondary = false;
+	if (slot.secondary) {
+        res = this.getName(name, slot.secondary, false, usedOrig);
+        secondary = res.name;
+        usedOrig = res.usedOrig;
+        if (secondary) {
+			secondary = this.fixupInstitution(secondary, v, j);
+        }
+	}
+	tertiary = false;
+	if (slot.tertiary) {
+        res = this.getName(name, slot.tertiary, false, usedOrig);
+        tertiary = res.name;
+        if (tertiary) {
+			tertiary = this.fixupInstitution(tertiary, v, j);
+        }
+	}
+    switch (this.institution.strings["institution-parts"]) {
+    case "short":
+        if (primary["short"].length) {
+            short_style = this._getShortStyle();
+            institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
+        } else {
+            long_style = this._getLongStyle(primary, v, j);
+            institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
+        }
+        break;
+    case "short-long":
+        long_style = this._getLongStyle(primary, v, j);
+        short_style = this._getShortStyle();
+        institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+        institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
+        institution = [institution_short, institution_long];
+        break;
+    case "long-short":
+        long_style = this._getLongStyle(primary, v, j);
+        short_style = this._getShortStyle();
+        institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
+        institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style, true);
+        institution = [institution_long, institution_short];
+        break;
+    default:
+        long_style = this._getLongStyle(primary, v, j);
+        institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style)];
+        break;
+    }
+    return this._join(institution, " ");
 };
 CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, style) {
     var primary = false, secondary = false, tertiary = false;
@@ -7394,7 +7421,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
     }
     return this._join(blobs, this.institution.strings["part-separator"]);
 };
-CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
+CSL.NameOutput.prototype._renderNames = function (v, values, pos, j) {
     var ret = false;
     if (values.length) {
         var names = [];
@@ -7428,54 +7455,63 @@ CSL.NameOutput.prototype._renderPersonalNames = function (values, pos, j) {
 		        slot.tertiary = false;
 	        }
             this.setRenderedName(name);
-            var res = this.getName(name, slot.primary, true);
-            var primary = this._renderOnePersonalName(res.name, pos, i, j);
-			secondary = false;
-			if (slot.secondary) {
-                res = this.getName(name, slot.secondary, false, res.usedOrig);
-                if (res.name) {
-				    secondary = this._renderOnePersonalName(res.name, pos, i, j);
-                }
-			}
-			tertiary = false;
-			if (slot.tertiary) {
-                res = this.getName(name, slot.tertiary, false, res.usedOrig);
-                if (res.name) {
-				    tertiary = this._renderOnePersonalName(res.name, pos, i, j);
-                }
-			}
-            var personblob;
-            if (secondary || tertiary) {
-                this.state.output.openLevel("empty");
-                this.state.output.append(primary);
-                secondary_tok = new CSL.Token();
-                if (slot.secondary) {
-                    secondary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.secondary].prefix;
-                    secondary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.secondary].suffix;
-                    if (!secondary_tok.strings.prefix) {
-                        secondary_tok.strings.prefix = " ";
-                    }
-                }
-                this.state.output.append(secondary, secondary_tok);
-                tertiary_tok = new CSL.Token();
-                if (slot.tertiary) {
-                    tertiary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.tertiary].prefix;
-                    tertiary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.tertiary].suffix;
-                    if (!tertiary_tok.strings.prefix) {
-                        tertiary_tok.strings.prefix = " ";
-                    }
-                }
-                this.state.output.append(tertiary, tertiary_tok);
-                this.state.output.closeLevel();
-                personblob = this.state.output.pop();
+            if (!name.literal && !name.isInstitution) {
+                var nameBlob = this._renderPersonalName(v, name, slot, pos, i, j);
+                this.state.output.append(nameBlob, this.name, true);
+                names.push(this.state.output.pop());
             } else {
-                personblob = primary;
+                names.push(this._renderInstitutionName(v, name, slot, j));
             }
-            names.push(personblob);
         }
         ret = this.joinPersons(names, pos, j);
     }
-    return ret;
+    return ret
+}
+CSL.NameOutput.prototype._renderPersonalName = function (v, name, slot, pos, i, j) {
+    var res = this.getName(name, slot.primary, true);
+    var primary = this._renderOnePersonalName(res.name, pos, i, j);
+	secondary = false;
+	if (slot.secondary) {
+        res = this.getName(name, slot.secondary, false, res.usedOrig);
+        if (res.name) {
+			secondary = this._renderOnePersonalName(res.name, pos, i, j);
+        }
+	}
+	tertiary = false;
+	if (slot.tertiary) {
+        res = this.getName(name, slot.tertiary, false, res.usedOrig);
+        if (res.name) {
+			tertiary = this._renderOnePersonalName(res.name, pos, i, j);
+        }
+	}
+    var personblob;
+    if (secondary || tertiary) {
+        this.state.output.openLevel("empty");
+        this.state.output.append(primary);
+        secondary_tok = new CSL.Token();
+        if (slot.secondary) {
+            secondary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.secondary].prefix;
+            secondary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.secondary].suffix;
+            if (!secondary_tok.strings.prefix) {
+                secondary_tok.strings.prefix = " ";
+            }
+        }
+        this.state.output.append(secondary, secondary_tok);
+        tertiary_tok = new CSL.Token();
+        if (slot.tertiary) {
+            tertiary_tok.strings.prefix = this.state.opt.citeAffixes.persons[slot.tertiary].prefix;
+            tertiary_tok.strings.suffix = this.state.opt.citeAffixes.persons[slot.tertiary].suffix;
+            if (!tertiary_tok.strings.prefix) {
+                tertiary_tok.strings.prefix = " ";
+            }
+        }
+        this.state.output.append(tertiary, tertiary_tok);
+        this.state.output.closeLevel();
+        personblob = this.state.output.pop();
+    } else {
+        personblob = primary;
+    }
+    return personblob;
 };
 CSL.NameOutput.prototype._isRomanesque = function (name) {
     var ret = 2;
@@ -9103,7 +9139,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 CSL.Attributes["@position"] = function (state, arg) {
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
-    state.parallel.use_parallels = true;
+    state.parallel.use_parallels = null;
     var trypositions = arg.split(/\s+/);
     var maketest = function(tryposition) {
         return function (Item, item) {
@@ -9470,7 +9506,8 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
             var institutions = 0;
             var last_is_person = false;
             for (var i = 0, ilen = nameList.length; i < ilen; i += 1) {
-                if (nameList[i].isInstitution && (nameList[i].literal || (nameList[i].family && !nameList[i].given))) {
+                if (state.opt.development_extensions.spoof_institutional_affiliations
+                    && (nameList[i].literal || (nameList[i].isInstitution && nameList[i].family && !nameList[i].given))) {
                     institutions += 1;
                     last_is_person = false;
                 } else {
@@ -13426,12 +13463,11 @@ CSL.getSortKeys = function (Item, key_type) {
     this.tmp.extension = "_sort";
     this.tmp.disambig_override = true;
     this.tmp.disambig_request = false;
-    use_parallels = this.parallel.use_parallels;
-    this.parallel.use_parallels = false;
+    this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
     this.tmp.suppress_decorations = true;
     CSL.getCite.call(this, Item);
     this.tmp.suppress_decorations = false;
-    this.parallel.use_parallels = use_parallels;
+    this.parallel.use_parallels = this.parallel.use_parallels === null ? true : false;
     this.tmp.disambig_override = false;
     len = this[key_type].keys.length;
     for (pos = 0; pos < len; pos += 1) {

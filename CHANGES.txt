@@ -1,5 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+==========================
+Changes in version 1.0.559
+==========================
+
+- Fix bugs in modular jurisdiction support.
+
+- Implement mode without institution name reordering,
+  and make it the default.
+
 
 ==========================
 Changes in version 1.0.558
