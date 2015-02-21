@@ -273,11 +273,14 @@ CSL.NameOutput.prototype._renderNames = function (v, values, pos, j) {
             this.setRenderedName(name);
 
             if (!name.literal && !name.isInstitution) {
-                names.push(this._renderPersonalName(v, name, slot, pos, i, j));
+                var nameBlob = this._renderPersonalName(v, name, slot, pos, i, j);
+                this.state.output.append(nameBlob, this.name, true);
+                names.push(this.state.output.pop());
             } else {
                 names.push(this._renderInstitutionName(v, name, slot, j));
             }
         }
+        //ret = this._join(names, "");
         ret = this.joinPersons(names, pos, j);
     }
     return ret
