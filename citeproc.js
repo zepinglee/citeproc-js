@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.560",
+    PROCESSOR_VERSION: "1.0.561",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -10742,6 +10742,7 @@ CSL.Transform = function (state) {
                     tryList.push(workLst.slice(0,i+1).join(":"));
                 }
             }
+            var found = false;
             for (var i=tryList.length - 1; i > -1; i += -1) {
                 if (!state.transform.abbrevs[tryList[i]]) {
                     state.transform.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
@@ -10749,11 +10750,11 @@ CSL.Transform = function (state) {
                 if (!state.transform.abbrevs[tryList[i]][category][orig]) {
                     state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, noHints);
                 }
-                if (state.transform.abbrevs[tryList[i]][category][orig]) {
+                if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
                     if (i < tryList.length) {
                         state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
                     }
-                    break;
+                    found = true;
                 }
             }
         }

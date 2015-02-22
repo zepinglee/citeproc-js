@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.561
+==========================
+
+- Do not mask lower-tier jurisdictions from memory lists
+  used to generate menus and such when a higher-tier
+  jurisdiction hits for an abbreviation.
+
+==========================
 Changes in version 1.0.560
 ==========================
 
