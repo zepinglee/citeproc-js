@@ -307,7 +307,12 @@ CSL.makeBuilder = function (me, target) {
 CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
     if (!this.sys.xml.getNodeValue(area_nodes)) return;
     var builder = CSL.makeBuilder(this, target);
-    var mynode = area_nodes[0];
+    var mynode;
+    if ("undefined" === typeof area_nodes.length) {
+        mynode = area_nodes;
+    } else {
+        mynode = area_nodes[0];
+    }
     builder(mynode);
 };
 
