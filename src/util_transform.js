@@ -251,6 +251,7 @@ CSL.Transform = function (state) {
                 }
             }
             // Step through them, from most to least specific.
+            var found = false;
             for (var i=tryList.length - 1; i > -1; i += -1) {
                 // Protect against a missing jurisdiction list in memory.
                 if (!state.transform.abbrevs[tryList[i]]) {
@@ -261,13 +262,13 @@ CSL.Transform = function (state) {
                     state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, noHints);
                 }
                 // Did we find something?
-                if (state.transform.abbrevs[tryList[i]][category][orig]) {
+                if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
                     // If we found a match, but in a less-specific list, add the entry to the most
                     // specific list before breaking.
                     if (i < tryList.length) {
                         state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
                     }
-                    break;
+                    found = true;
                 }
             }
         }
