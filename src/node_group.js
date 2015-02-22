@@ -193,12 +193,12 @@ CSL.Node.group = {
                         if (!stdMacros[macroName] || !Item.jurisdiction) return false;
                         var jurisdiction = Item.jurisdiction;
                         if (!state.opt.jurisdictions_seen[jurisdiction]) {
-                            var res = state.sys.retrieveStyleModule(state, jurisdiction);
+                            var res = state.retrieveStyleModule(jurisdiction);
+                            var myCount = 0;
                             if (res) {
                                 state.juris[jurisdiction] = {};
                                 var myXml = state.sys.xml.makeXml(res);
                                 var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
-                                var myCount = 0;
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
                                     if (!stdMacros[myName]) continue;
@@ -256,6 +256,8 @@ CSL.Node.group = {
 
         if (this.tokentype === CSL.END) {
             if (this.juris) {
+                var group_end = new CSL.Token("group", CSL.END);
+                CSL.Node.group.build.call(group_end, state, target);
                 var else_end = new CSL.Token("else", CSL.END);
                 CSL.Node.else.build.call(else_end, state, target);
                 var choose_end = new CSL.Token("choose", CSL.END);

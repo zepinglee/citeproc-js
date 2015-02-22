@@ -710,6 +710,7 @@ if (!CSL.DateParser) {
 if (!CSL.Engine) {
     load("./src/build.js");
     load("./src/util_static_locator.js");
+    load("./src/util_modules.js");
 }
 // jslint OK
 if (!CSL.Mode) {

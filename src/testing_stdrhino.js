@@ -285,27 +285,17 @@ StdRhinoTest.prototype.run = function(){
     return ret;
 };
 
-StdRhinoTest.prototype.retrieveStyleModule = function(state, jurisdiction) {
+StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) {
     var ret = null;
-    var jurisdictions = jurisdiction.split(":");
-    var preferences = state.locale[state.opt.lang].opts["jurisdiction-preference"];
-    preferences = preferences ? preferences : [];
-    for (var i=0,ilen=preferences.length;i<ilen;i++) {
-        var preference = preferences[i];
-        for (var j=jurisdictions.length-1;j>-1;j--) {
-            var jurisdiction = jurisdictions.slice(0,j).join(":");
-            try {
-                ret = readFile("./tests/fixtures/local/styles/juris-" + jurisdiction + "-" + preference + ".csl");
-                break;
-            } catch (e) {}
-        }
-        if (!ret) {
-            try {
-                ret = readFile("./tests/fixtures/local/styles/juris-" + jurisdiction + ".csl");
-            } catch (e) {}
-        }
+    var id = [jurisdiction];
+    if (preference) {
+        id.push(preference);
     }
-    return ret ? ret : false;
+    id = id.join("-");
+    try {
+        ret = readFile("./tests/fixtures/local/styles/juris-" + id + ".csl");
+    } catch (e) {}
+    return ret;
 }
  
 //
