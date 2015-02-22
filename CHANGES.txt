@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.0.560
+==========================
+
+- Fix (the last?) grouping bug in modular jurisdiction code.
+
+- Place the interative retry logic for jurisdiction modules
+  in the processor, and delegate only single try attempts
+  to the external retrieveStyleModule() hook function.
+
+- Fix a bug in XML traverse affecting jurisdiction loading
+  in some environments.
+
+==========================
 Changes in version 1.0.559
 ==========================
 

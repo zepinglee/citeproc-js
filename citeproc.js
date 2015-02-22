@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.0.559",
+    PROCESSOR_VERSION: "1.0.560",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1371,7 +1371,12 @@ CSL.makeBuilder = function (me, target) {
 CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
     if (!this.sys.xml.getNodeValue(area_nodes)) return;
     var builder = CSL.makeBuilder(this, target);
-    var mynode = area_nodes[0];
+    var mynode;
+    if ("undefined" === typeof area_nodes.length) {
+        mynode = area_nodes;
+    } else {
+        mynode = area_nodes[0];
+    }
     builder(mynode);
 };
 CSL.Engine.prototype.setStyleAttributes = function () {
@@ -5622,12 +5627,12 @@ CSL.Node.group = {
                         if (!stdMacros[macroName] || !Item.jurisdiction) return false;
                         var jurisdiction = Item.jurisdiction;
                         if (!state.opt.jurisdictions_seen[jurisdiction]) {
-                            var res = state.sys.retrieveStyleModule(state, jurisdiction);
+                            var res = state.retrieveStyleModule(jurisdiction);
+                            var myCount = 0;
                             if (res) {
                                 state.juris[jurisdiction] = {};
                                 var myXml = state.sys.xml.makeXml(res);
                                 var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
-                                var myCount = 0;
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
                                     if (!stdMacros[myName]) continue;
@@ -5676,6 +5681,8 @@ CSL.Node.group = {
         }
         if (this.tokentype === CSL.END) {
             if (this.juris) {
+                var group_end = new CSL.Token("group", CSL.END);
+                CSL.Node.group.build.call(group_end, state, target);
                 var else_end = new CSL.Token("else", CSL.END);
                 CSL.Node.else.build.call(else_end, state, target);
                 var choose_end = new CSL.Token("choose", CSL.END);
@@ -14072,3 +14079,20 @@ CSL.Disambiguation.prototype.captureStepToBase = function() {
     }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
+CSL.Engine.prototype.retrieveStyleModule = function (jurisdiction) {
+    var ret = null;
+    var jurisdictions = jurisdiction.split(":");
+    var preferences = this.locale[this.opt.lang].opts["jurisdiction-preference"];
+    preferences = preferences ? preferences : [];
+    preferences.push(null);
+    outer:
+    for (var i=0,ilen=preferences.length;i<ilen;i++) {
+        var preference = preferences[i];
+        for (var j=jurisdictions.length;j>0;j--) {
+            var jurisdiction = jurisdictions.slice(0,j).join(":");
+            ret = this.sys.retrieveStyleModule(jurisdiction, preference);
+            if (ret) break outer;
+        }
+    }
+    return ret ? ret : false;
+}
