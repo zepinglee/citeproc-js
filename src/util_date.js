@@ -9,7 +9,7 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
     var dp, elem, value, e, yr, prefix, i, ilen, num;
     var variable = this.variables[0];
     var macroFlag = "empty";
-    if (isMacro) {
+    if (isMacro && state.tmp.extension) {
         macroFlag = "macro-with-date";
     }
     dp = Item[variable];
