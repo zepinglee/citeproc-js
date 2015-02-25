@@ -824,6 +824,9 @@ CSL.Attributes["@name"] = function (state, arg) {
     this.strings.name = arg;
 };
 
+CSL.Attributes["@alt-macro"] = function (state, arg) {
+    this.alt_macro = arg;
+};
 
 /**
  * Store the form attribute (of a term node) on the state object.

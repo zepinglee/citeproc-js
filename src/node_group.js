@@ -9,6 +9,7 @@ CSL.Node.group = {
             if (state.build.substitute_level.value()) {
                 state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
             }
+
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("group", this);
@@ -69,7 +70,122 @@ CSL.Node.group = {
                 this.execs.push(func);
             }
 
-        } else {
+            if (this.juris) {
+                // "Special handling" for jurisdiction macros
+                // We try to instantiate these as standalone token lists.
+                // If available, the token list is executed,
+                // the result is written directly into output,
+                // and control returns here.
+
+                // So we'll have something like this:
+                // * expandMacro() in util_node.js flags juris- macros
+                //   on build. [DONE]
+                // * Those are picked up here, and
+                //   - A runtime function attempts to fetch and instantiate
+                //     the macros in separate token lists under a segment
+                //     opened for the jurisdiction. We assume that the
+                //     jurisdiction has a full set of macros. That will need
+                //     to be enforced by validation. [DONE HERE, function is TODO]
+                //   - Success or failure is marked in a runtime flag object
+                //     (in citeproc.opt). [DONE]
+                //   - After the instantiation function comes a test, for
+                //     juris- macros only, which either runs diverted code,
+                //     or proceeds as per normal through the token list. [TODO]
+                // I think that's all there is to it.
+                
+                // Code for fetching an instantiating?
+
+
+                for (var x=0,xlen=target.length;x<xlen;x++) {
+                    var token = target[x];
+                }
+                //var macroGroupToken = target.pop()
+
+
+                var choose_start = new CSL.Token("choose", CSL.START);
+                CSL.Node.choose.build.call(choose_start, state, target);
+                
+                var if_start = new CSL.Token("if", CSL.START);
+
+                var stdMacros = {
+                    "juris-title": true,
+                    "juris-title-short": true,
+                    "juris-main": true,
+                    "juris-main-short": true,
+                    "juris-comma-locator": true,
+                    "juris-space-locator": true,
+                    "juris-locator": true,
+                    "juris-tail": true,
+                    "juris-tail-short": true
+                };
+
+                func = function (macroName) {
+                    return function (Item) {
+                        if (!stdMacros[macroName] || !Item.jurisdiction) return false;
+                        var jurisdiction = Item.jurisdiction;
+                        if (!state.opt.jurisdictions_seen[jurisdiction]) {
+                            var res = state.retrieveStyleModule(jurisdiction);
+                            var myCount = 0;
+                            if (res) {
+                                state.juris[jurisdiction] = {};
+                                var myXml = state.sys.xml.makeXml(res);
+                                var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
+                                for (var i=0,ilen=myNodes.length;i<ilen;i++) {
+                                    var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
+                                    if (!stdMacros[myName]) continue;
+                                    myCount++;
+                                    state.juris[jurisdiction][myName] = [];
+                                    state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
+                                    state.configureTokenList(state.juris[jurisdiction][myName]);
+                                }
+                            }
+                            state.opt.jurisdictions_seen[jurisdiction] = true;
+                            if (myCount < Object.keys(stdMacros).length) {
+                                throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
+                            }
+                        }
+                        if (state.juris[Item.jurisdiction]) {
+                            return true;
+                        }
+                        return false;
+                    };
+                }(this.juris, stdMacros);
+                
+                if_start.tests.push(func);
+                if_start.test = state.fun.match.any(if_start, state, if_start.tests);
+                target.push(if_start);
+                
+                target.push(this);
+
+                var text_node = new CSL.Token("text", CSL.SINGLETON);
+                func = function (state, Item, item) {
+                    // This will run the juris- token list.
+                    var next = 0;
+                    if (state.juris[Item.jurisdiction][this.juris]) {
+                        while (next < state.juris[Item.jurisdiction][this.juris].length) {
+                            next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
+                        }
+                    }
+                }
+                text_node.juris = this.juris;
+                text_node.execs.push(func);
+                target.push(text_node);
+
+                var group_end = new CSL.Token("group", CSL.END);
+                CSL.Node.group.build.call(group_end, state, target);
+
+                var if_end = new CSL.Token("if", CSL.END);
+                CSL.Node.if.build.call(if_end, state, target);
+                var else_start = new CSL.Token("else", CSL.START);
+                CSL.Node.else.build.call(else_start, state, target);
+
+                var group_start = CSL.Util.cloneToken(this);
+                CSL.Node.group.build.call(group_start, state, target);
+
+            }
+        }
+
+        if (this.tokentype === CSL.END) {
 
             // Unbundle and print publisher lists
             // Same constraints on creating the necessary function here
@@ -134,127 +250,6 @@ CSL.Node.group = {
             };
             this.execs.push(func);
             
-            // mergeoutput
-            //func = function (state, Item) {
-            //    state.output.endTag();
-            //};
-            //this.execs.push(func);
-
-        }
-        target.push(this);
-
-        if (this.tokentype === CSL.START) {
-            if (this.juris) {
-                // "Special handling" for jurisdiction macros
-                // We try to instantiate these as standalone token lists.
-                // If available, the token list is executed,
-                // the result is written directly into output,
-                // and control returns here.
-
-                // So we'll have something like this:
-                // * expandMacro() in util_node.js flags juris- macros
-                //   on build. [DONE]
-                // * Those are picked up here, and
-                //   - A runtime function attempts to fetch and instantiate
-                //     the macros in separate token lists under a segment
-                //     opened for the jurisdiction. We assume that the
-                //     jurisdiction has a full set of macros. That will need
-                //     to be enforced by validation. [DONE HERE, function is TODO]
-                //   - Success or failure is marked in a runtime flag object
-                //     (in citeproc.opt). [DONE]
-                //   - After the instantiation function comes a test, for
-                //     juris- macros only, which either runs diverted code,
-                //     or proceeds as per normal through the token list. [TODO]
-                // I think that's all there is to it.
-                
-                // Code for fetching an instantiating?
-
-                var macroGroupToken = target.pop()
-
-                var choose_start = new CSL.Token("choose", CSL.START);
-                CSL.Node.choose.build.call(choose_start, state, target);
-                
-                var if_start = new CSL.Token("if", CSL.START);
-
-                var stdMacros = {
-                    "juris-title": true,
-                    "juris-title-short": true,
-                    "juris-main": true,
-                    "juris-main-short": true,
-                    "juris-comma-locator": true,
-                    "juris-space-locator": true,
-                    "juris-locator": true,
-                    "juris-tail": true,
-                    "juris-tail-short": true
-                };
-
-                func = function (macroName) {
-                    return function (Item) {
-                        if (!stdMacros[macroName] || !Item.jurisdiction) return false;
-                        var jurisdiction = Item.jurisdiction;
-                        if (!state.opt.jurisdictions_seen[jurisdiction]) {
-                            var res = state.retrieveStyleModule(jurisdiction);
-                            var myCount = 0;
-                            if (res) {
-                                state.juris[jurisdiction] = {};
-                                var myXml = state.sys.xml.makeXml(res);
-                                var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
-                                for (var i=0,ilen=myNodes.length;i<ilen;i++) {
-                                    var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
-                                    if (!stdMacros[myName]) continue;
-                                    myCount++;
-                                    state.juris[jurisdiction][myName] = [];
-                                    state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
-                                    state.configureTokenList(state.juris[jurisdiction][myName]);
-                                }
-                            }
-                            state.opt.jurisdictions_seen[jurisdiction] = true;
-                            if (myCount < Object.keys(stdMacros).length) {
-                                throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
-                            }
-                        }
-                        if (state.juris[Item.jurisdiction]) {
-                            return true;
-                        }
-                        return false;
-                    };
-                }(this.juris, stdMacros);
-                
-                if_start.tests.push(func);
-                if_start.test = state.fun.match.any(if_start, state, if_start.tests);
-                target.push(if_start);
-                
-                target.push(macroGroupToken);
-
-                var text_node = new CSL.Token("text", CSL.SINGLETON);
-                func = function (state, Item, item) {
-                    // This will run the juris- token list.
-                    var next = 0;
-                    if (state.juris[Item.jurisdiction][this.juris]) {
-                        while (next < state.juris[Item.jurisdiction][this.juris].length) {
-                            next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
-                        }
-                    }
-                }
-                text_node.juris = this.juris;
-                text_node.execs.push(func);
-                target.push(text_node);
-
-                var group_end = new CSL.Token("group", CSL.END);
-                CSL.Node.group.build.call(group_end, state, target);
-
-                var if_end = new CSL.Token("if", CSL.END);
-                CSL.Node.if.build.call(if_end, state, target);
-                var else_start = new CSL.Token("else", CSL.START);
-                CSL.Node.else.build.call(else_start, state, target);
-
-                var group_start = CSL.Util.cloneToken(macroGroupToken);
-                CSL.Node.group.build.call(group_start, state, target);
-
-            }
-        }
-
-        if (this.tokentype === CSL.END) {
             if (this.juris) {
                 var group_end = new CSL.Token("group", CSL.END);
                 CSL.Node.group.build.call(group_end, state, target);
@@ -263,6 +258,13 @@ CSL.Node.group = {
                 var choose_end = new CSL.Token("choose", CSL.END);
                 CSL.Node.choose.build.call(choose_end, state, target);
             }
+        }
+
+        if (!this.juris) {
+            target.push(this);
+        }
+
+        if (this.tokentype === CSL.END) {
             if (state.build.substitute_level.value()) {
                 state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
             }

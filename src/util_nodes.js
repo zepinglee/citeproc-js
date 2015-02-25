@@ -92,20 +92,46 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     CSL.Node.group.build.call(macro_key_token, this, target);
 
-    //
-    // Xml: test for node existence
-    //
+    // Node does not exist in the CSL
     if (!this.sys.xml.getNodeValue(macro_nodes)) {
         throw "CSL style error: undefined macro \"" + mkey + "\"";
     }
-    var builder = CSL.makeBuilder(this, target);
-    builder(macro_nodes[0]);
 
-    //
-    // can't use the same token for the end of the group, since
-    // both would then share the same jump-points, causing an
-    // infinite loop.
-    // (true as the last argument suppresses quashing)
+    // Let's macro
+    var mytarget = CSL.getMacroTarget.call(this, mkey);
+    if (mytarget) {
+        CSL.buildMacro.call(this, mytarget, macro_nodes);
+        CSL.configureMacro.call(this, mytarget);
+    }
+    if (!this.build.extension) {
+        var text_node = new CSL.Token("text", CSL.SINGLETON);
+        var func = function(macro_name, alt_macro) {
+            return function (state, Item, item) {
+                var next = 0;
+                while (next < state.macros[macro_name].length) {
+                    next = CSL.tokenExec.call(state, state.macros[macro_name][next], Item, item);
+                }
+                var flag = state.tmp.group_context.value();
+                if (!flag[2] && alt_macro) {
+                    flag[1] = false;
+                    var mytarget = CSL.getMacroTarget.call(state, alt_macro);
+                    if (mytarget) {
+                        var macro_nodes = state.sys.xml.getNodesByName(state.cslXml, 'macro', alt_macro);
+                        CSL.buildMacro.call(state, mytarget, macro_nodes);
+                        CSL.configureMacro.call(state, mytarget);
+                    }
+                    var next = 0;
+                    while (next < state.macros[alt_macro].length) {
+                        next = CSL.tokenExec.call(state, state.macros[alt_macro][next], Item, item);
+                    }
+                }
+            }
+        }(mkey, macro_key_token.alt_macro);
+        text_node.execs.push(func);
+        target.push(text_node);
+    }
+
+    // Could also use cloneToken()
     end_of_macro = new CSL.Token("group", CSL.END);
 	if (macro_key_token.decorations) {
 		end_of_macro.decorations = macro_key_token.decorations.slice();
@@ -118,20 +144,47 @@ CSL.expandMacro = function (macro_key_token, target) {
         };
         end_of_macro.execs.push(func);
     }
-
     if (macro_key_token.juris) {
         end_of_macro.juris = mkey;
     }
-
-    // XXX To parameterize this, it should receive the array to use as target,
-    // XXX rather than relying on this.build.area
-
+    if (macro_key_token.alt_macro) {
+        end_of_macro.alt_macro = macro_key_token.alt_macro;
+    }
     CSL.Node.group.build.call(end_of_macro, this, target);
-
     this.build.macro_stack.pop();
-
 };
 
+CSL.getMacroTarget = function (mkey) {
+    var mytarget;
+    if (this.build.extension) {
+        mytarget = this[this.build.root + this.build.extension].tokens;
+    } else {
+        if (!this.macros[mkey]) {
+            mytarget = [];
+            this.macros[mkey] = mytarget;
+        } else {
+            mytarget = false;
+        }
+    }
+    return mytarget;
+}
+
+CSL.buildMacro = function (mytarget, macro_nodes) {
+    var builder = CSL.makeBuilder(this, mytarget);
+    var mynode;
+    if ("undefined" === typeof macro_nodes.length) {
+        mynode = macro_nodes;
+    } else {
+        mynode = macro_nodes[0];
+    }
+    builder(mynode);
+}
+
+CSL.configureMacro = function (mytarget) {
+    if (!this.build.extension) {
+        this.configureTokenList(mytarget);
+    }
+}
 
 
 /**

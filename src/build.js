@@ -214,6 +214,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     // XXX * actual node to be walked (cslXml)
     // XXX * actual target array
 
+    this.macros = {};
+
     this.build.area = "citation";
     var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
