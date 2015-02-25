@@ -5,6 +5,13 @@ CSL.Node.layout = {
         var func, prefix_token, suffix_token, tok;
 
         if (this.tokentype === CSL.START) {
+
+            if (this.locale_raw) {
+                state.build.current_default_locale = this.locale_raw;
+            } else {
+                state.build.current_default_locale = state.opt["default-locale"];
+            }
+
             func = function (state, Item, item) {
 
                 if (state.opt.development_extensions.apply_citation_wrapper

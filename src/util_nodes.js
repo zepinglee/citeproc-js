@@ -48,12 +48,6 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     mkey = macro_key_token.postponed_macro;
 
-    if (this.build.macro_stack.indexOf(mkey) > -1) {
-        throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
-    } else {
-        this.build.macro_stack.push(mkey);
-    }
-
     //
     // Here's where things change pretty dramatically.  We pull
     // macros out of E4X directly, and process them using the
@@ -70,6 +64,7 @@ CSL.expandMacro = function (macro_key_token, target) {
         hasDate = this.sys.xml.getAttributeValue(macro_nodes[0], "macro-has-date");
     }
     if (hasDate) {
+        mkey = mkey + "@" + this.build.current_default_locale;
         func = function (state, Item) {
             if (state.tmp.extension) {
                 state.tmp["doing-macro-with-date"] = true;
@@ -77,6 +72,13 @@ CSL.expandMacro = function (macro_key_token, target) {
         };
         macro_key_token.execs.push(func);
     }
+
+    if (this.build.macro_stack.indexOf(mkey) > -1) {
+        throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
+    } else {
+        this.build.macro_stack.push(mkey);
+    }
+
     //
     //
     // (true as the last argument suppresses quashing)
