@@ -60,10 +60,8 @@ CSL.NameOutput.prototype.init = function (names) {
 
 
 CSL.NameOutput.prototype.reinit = function (names) {
-    // Wrong control var, surely
-    //if (true) {
+
     if (this.state.tmp.can_substitute.value()) {
-    //if (!this.state.tmp.group_context.value()[2]) {
         this.nameset_offset = 0;
         // What-all should be carried across from the subsidiary
         // names node, and on what conditions? For each attribute,
@@ -96,7 +94,6 @@ CSL.NameOutput.prototype.reinit = function (names) {
 CSL.NameOutput.prototype.outputNames = function () {
     var i, ilen;
     var variables = this.variables;
-
     if (this.institution.and) {
         if (!this.institution.and.single.blobs || !this.institution.and.single.blobs.length) {
             this.institution.and.single.blobs = this.name.and.single.blobs;
@@ -258,7 +255,7 @@ CSL.NameOutput.prototype.outputNames = function () {
         }
         if (varblob) {
             // Apply labels, if any
-            if (this.state.tmp.area.slice(-5) !== "_sort") {
+            if (!this.state.tmp.extension) {
                 varblob = this._applyLabels(varblob, v);
             }
             blob_list.push(varblob);
