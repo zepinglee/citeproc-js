@@ -117,6 +117,14 @@
     </choose>
   </macro>
 
+  <macro name="juris-locator-label">
+    <choose>
+      <if locator="page paragraph" match="none">
+        <label variable="locator" form="symbol"/>
+      </if>
+    </choose>
+  </macro>
+
   <macro name="juris-tail">
     <group delimiter=" " prefix="(" suffix=")">
       <text variable="jurisdiction"/>

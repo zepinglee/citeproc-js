@@ -34,7 +34,10 @@
     <text value="COMMA-PINPOINT!"/>
   </macro>
   <macro name="juris-locator">
-    <text value="COMMA-PINPOINT!"/>
+    <text value="LOCATOR!"/>
+  </macro>
+  <macro name="juris-locator-label">
+    <text value="LABEL!"/>
   </macro>
   <macro name="juris-tail">
     <text value="TAIL!"/>

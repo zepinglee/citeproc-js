@@ -115,6 +115,7 @@ CSL.Node.group = {
                     "juris-comma-locator": true,
                     "juris-space-locator": true,
                     "juris-locator": true,
+                    "juris-locator-label": true,
                     "juris-tail": true,
                     "juris-tail-short": true
                 };
