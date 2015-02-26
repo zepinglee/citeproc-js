@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.0",
+    PROCESSOR_VERSION: "1.1.1",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5639,6 +5639,7 @@ CSL.Node.group = {
                     "juris-comma-locator": true,
                     "juris-space-locator": true,
                     "juris-locator": true,
+                    "juris-locator-label": true,
                     "juris-tail": true,
                     "juris-tail-short": true
                 };
