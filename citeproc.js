@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.1",
+    PROCESSOR_VERSION: "1.1.2",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -100,6 +100,27 @@ var CSL = {
         "tit": "title",
         "vrs": "verse",
         "vol": "volume"
+    },
+    MODULE_MACROS: {
+        "juris-title": true,
+        "juris-title-short": true,
+        "juris-main": true,
+        "juris-main-short": true,
+        "juris-comma-locator": true,
+        "juris-space-locator": true,
+        "juris-locator": true,
+        "juris-locator-label": true,
+        "juris-tail": true,
+        "juris-tail-short": true
+    },
+    MODULE_TYPES: {
+        "legal_case": true,
+        "legislation": true,
+        "bill": true,
+        "hearing": true,
+        "gazette": true,
+        "regulation": true,
+        "treaty": true
     },
     NestedBraces: [
         ["(", "["],
@@ -736,7 +757,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     macro_key_token.name = "group";
     macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
-    if (mkey.slice(0,6) === "juris-") {
+    if (CSL.MODULE_MACROS[mkey]) {
         macro_key_token.juris = mkey;
         this.opt.update_mode = CSL.POSITION;
     }
@@ -5631,21 +5652,9 @@ CSL.Node.group = {
                 var choose_start = new CSL.Token("choose", CSL.START);
                 CSL.Node.choose.build.call(choose_start, state, target);
                 var if_start = new CSL.Token("if", CSL.START);
-                var stdMacros = {
-                    "juris-title": true,
-                    "juris-title-short": true,
-                    "juris-main": true,
-                    "juris-main-short": true,
-                    "juris-comma-locator": true,
-                    "juris-space-locator": true,
-                    "juris-locator": true,
-                    "juris-locator-label": true,
-                    "juris-tail": true,
-                    "juris-tail-short": true
-                };
                 func = function (macroName) {
                     return function (Item) {
-                        if (!stdMacros[macroName] || !Item.jurisdiction) return false;
+                        if (!CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) return false;
                         var jurisdiction = Item.jurisdiction;
                         if (!state.opt.jurisdictions_seen[jurisdiction]) {
                             var res = state.retrieveStyleModule(jurisdiction);
@@ -5653,27 +5662,43 @@ CSL.Node.group = {
                             if (res) {
                                 state.juris[jurisdiction] = {};
                                 var myXml = state.sys.xml.makeXml(res);
+                                var myNodes = state.sys.xml.getNodesByName(myXml, "category");
+                                for (var i=0,ilen=myNodes.length;i<ilen;i++) {
+                                    var myTypes = state.sys.xml.getAttributeValue(myNodes[i],"module-types");
+                                    if (myTypes) {
+                                        state.juris[jurisdiction].types = {};
+                                        myTypes =  myTypes.split(" ");
+                                        for (var j=0,jlen=myTypes.length;j<jlen;j++) {
+                                            state.juris[jurisdiction].types[myTypes[j]] = true;
+                                        }
+                                    }
+                                }
+                                if (!state.juris[jurisdiction].types) {
+                                    state.juris[jurisdiction].types = CSL.MODULE_TYPES;
+                                }
                                 var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
-                                    if (!stdMacros[myName]) continue;
+                                    if (!CSL.MODULE_MACROS[myName]) {
+                                        throw "CSL ERROR: illegal macro name \"" + myName + "\" in module context";
+                                    };
                                     myCount++;
                                     state.juris[jurisdiction][myName] = [];
                                     state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
                                     state.configureTokenList(state.juris[jurisdiction][myName]);
                                 }
+                                if (myCount < Object.keys(CSL.MODULE_MACROS).length) {
+                                    throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
+                                }
                             }
                             state.opt.jurisdictions_seen[jurisdiction] = true;
-                            if (myCount < Object.keys(stdMacros).length) {
-                                throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
-                            }
                         }
-                        if (state.juris[Item.jurisdiction]) {
+                        if (state.juris[Item.jurisdiction] && state.juris[Item.jurisdiction].types[Item.type]) {
                             return true;
                         }
                         return false;
                     };
-                }(this.juris, stdMacros);
+                }(this.juris);
                 if_start.tests.push(func);
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
                 target.push(if_start);
@@ -5696,8 +5721,6 @@ CSL.Node.group = {
                 CSL.Node.if.build.call(if_end, state, target);
                 var else_start = new CSL.Token("else", CSL.START);
                 CSL.Node.else.build.call(else_start, state, target);
-                var group_start = CSL.Util.cloneToken(this);
-                CSL.Node.group.build.call(group_start, state, target);
             }
         }
         if (this.tokentype === CSL.END) {
@@ -5744,8 +5767,6 @@ CSL.Node.group = {
             };
             this.execs.push(func);
             if (this.juris) {
-                var group_end = new CSL.Token("group", CSL.END);
-                CSL.Node.group.build.call(group_end, state, target);
                 var else_end = new CSL.Token("else", CSL.END);
                 CSL.Node.else.build.call(else_end, state, target);
                 var choose_end = new CSL.Token("choose", CSL.END);

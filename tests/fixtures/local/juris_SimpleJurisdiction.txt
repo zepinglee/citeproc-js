@@ -5,7 +5,8 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] From module: MY TITLE
+..[0] From module: MY CASE TITLE
+>>[1] My Statute Title
 <<===== RESULT =====<<
 
 
@@ -24,6 +25,21 @@ citation
             }
         }, 
         [], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2
+            }
+        }, 
+        [["CITATION-1",1]], 
         []
     ]
 ]
@@ -60,8 +76,14 @@ citation
    {
         "id": "ITEM-1", 
         "jurisdiction": "us:ak",
-        "title": "My Title",
+        "title": "My Case Title",
         "type": "legal_case"
+    },
+   {
+        "id": "ITEM-2", 
+        "jurisdiction": "us:ak",
+        "title": "My Statute Title",
+        "type": "legislation"
     }
 ]
 <<===== INPUT =====<<

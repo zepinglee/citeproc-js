@@ -4,6 +4,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.1.1
 ========================
 
+- Fix loss of affixes on failed juris test
+- Implement item-type-specific support in modules
+- Some code cleanup
+
+========================
+Changes in version 1.1.1
+========================
+
 - Require juris-locator-label macro as a late addition.
 
 ========================
