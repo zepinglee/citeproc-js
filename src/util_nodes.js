@@ -87,7 +87,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     macro_key_token.cslid = macroid;
 
     //if (this.sys.xml.getAttributeValue(macro_nodes[0], "prefer-jurisdiction")) {
-    if (mkey.slice(0,6) === "juris-") {
+    if (CSL.MODULE_MACROS[mkey]) {
         macro_key_token.juris = mkey;
         this.opt.update_mode = CSL.POSITION;
     }

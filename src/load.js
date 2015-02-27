@@ -142,7 +142,27 @@ var CSL = {
         "vrs": "verse",
         "vol": "volume"
     },
-
+    MODULE_MACROS: {
+        "juris-title": true,
+        "juris-title-short": true,
+        "juris-main": true,
+        "juris-main-short": true,
+        "juris-comma-locator": true,
+        "juris-space-locator": true,
+        "juris-locator": true,
+        "juris-locator-label": true,
+        "juris-tail": true,
+        "juris-tail-short": true
+    },
+    MODULE_TYPES: {
+        "legal_case": true,
+        "legislation": true,
+        "bill": true,
+        "hearing": true,
+        "gazette": true,
+        "regulation": true,
+        "treaty": true
+    },
     NestedBraces: [
         ["(", "["],
         [")", "]"]
