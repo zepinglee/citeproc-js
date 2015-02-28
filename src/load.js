@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.2",
+    PROCESSOR_VERSION: "1.1.3",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -731,6 +731,7 @@ if (!CSL.Engine) {
     load("./src/build.js");
     load("./src/util_static_locator.js");
     load("./src/util_modules.js");
+    load("./src/util_name_particles.js");
 }
 // jslint OK
 if (!CSL.Mode) {

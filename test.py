@@ -149,7 +149,7 @@ class Bundle:
         f.extend(["obj_blob","obj_number","util_datenode","util_date","util_names","util_dates"]);
         f.extend(["util_sort","util_substitute","util_number","util_page","util_flipflop"]);
         f.extend(["formatters","formats","registry","disambig_names","disambig_citations"]);
-        f.extend(["disambig_cites", "util_modules"]);
+        f.extend(["disambig_cites", "util_modules","util_name_particles"]);
         self.files = f
     
     def deleteOldBundle(self):
