@@ -517,7 +517,7 @@ bibliography
             {
                 "family": "D'Arcus", 
                 "given": "Bruce", 
-                "static-ordering": false
+                "static-particles": true
             }
         ], 
         "id": "ITEM-1", 
