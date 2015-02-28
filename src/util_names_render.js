@@ -393,7 +393,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         suffix_sep = " ";
     }
     var romanesque = this._isRomanesque(name);
-    var has_hyphenated_non_dropping_particle = non_dropping_particle && non_dropping_particle.blobs.slice(-1) === "-";
+    var has_hyphenated_non_dropping_particle = (non_dropping_particle && ["\u2019", "\'", "-"].indexOf(non_dropping_particle.blobs.slice(-1)) > -1);
     var blob, merged, first, second;
     if (romanesque === 0) {
         // XXX handle affixes for given and family
@@ -466,7 +466,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         }
     } else { // plain vanilla
         if (name["dropping-particle"] && name.family && !name["non-dropping-particle"]) {
-            if (["'","\u02bc","\u2019"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
+            if (["'","\u02bc","\u2019","-"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
                 family = this._join([dropping_particle, family], "");
                 dropping_particle = false;
             }
@@ -540,6 +540,7 @@ CSL.NameOutput.prototype._normalizeNameInput = function (value) {
         "non-dropping-particle":value["non-dropping-particle"],
         "dropping-particle":value["dropping-particle"],
         "static-ordering":value["static-ordering"],
+        "static-particles":value["static-particles"],
         "reverse-ordering":value["reverse-ordering"],
         "full-form-always": value["full-form-always"],
         "parse-names":value["parse-names"],
@@ -714,10 +715,8 @@ CSL.NameOutput.prototype._parseName = function (name) {
         noparse = false;
     }
     if (!name["non-dropping-particle"] && name.family && !noparse && name.given) {
-        m = name.family.match(/^((?:[\'\u2019a-z][ \'\u2019a-z]*[-\s\'\u2019]+|[ABDVL][^ ][-\s]+[a-z]*\s*|[ABDVL][^ ][^ ][-\s]+[a-z]*\s*))/);
-        if (m) {
-            name.family = name.family.slice(m[1].length);
-            name["non-dropping-particle"] = m[1].replace(/\s+$/, "").replace("'", "\u2019");
+        if (!name["static-particles"]) {
+            CSL.parseParticles(name, true);
         }
     }
     if (!name.suffix && name.given) {
@@ -833,6 +832,7 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
         "dropping-particle":name["dropping-particle"],
         suffix:name.suffix,
         "static-ordering":name_params["static-ordering"],
+        "static-particles":name["static-particles"],
         "reverse-ordering":name_params["reverse-ordering"],
         "full-form-always": name_params["full-form-always"],
         "parse-names":name["parse-names"],
