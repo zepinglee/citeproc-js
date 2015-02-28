@@ -824,7 +824,7 @@ CSL.Attributes["@name"] = function (state, arg) {
     this.strings.name = arg;
 };
 
-CSL.Attributes["@alt-macro"] = function (state, arg) {
+CSL.Attributes["@alternative-macro"] = function (state, arg) {
     this.alt_macro = arg;
 };
 
