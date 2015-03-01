@@ -37,8 +37,7 @@ Doe, John de
         "author": [
             {
                 "family": "Doe", 
-                "given": "John de", 
-                "parse-names": "true"
+                "given": "John de"
             }
         ], 
         "id": "ITEM-1", 
