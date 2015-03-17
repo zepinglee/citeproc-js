@@ -40,13 +40,13 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     if (!name) {
         return "";
     }
+    if (!terminator) {
+        terminator = "";
+    }
     if (["Lord", "Lady"].indexOf(name) > -1
         || (!name.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)
             && !terminator.match("%s"))) {
         return name;
-    }
-    if (!terminator) {
-        terminator = "";
     }
     var namelist = name;
     if (state.opt["initialize-with-hyphen"] === false) {
