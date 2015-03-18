@@ -28,7 +28,7 @@ ALT
   </macro>
   <citation>
     <layout>
-       <text macro="main" alt-macro="alternative"/>
+       <text macro="main" alternative-macro="alternative"/>
     </layout>
   </citation>
 </style>
