@@ -264,7 +264,11 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.last_char_rendered = str.slice(-1);
         // This, and not the str argument below on flipflop, is the
         // source of the flipflopper string source.
-        str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
+        str = str.replace(/\s+'/g, "  \'");
+        if (!notSerious) {
+            // this condition for sort_LeadingApostropheOnNameParticle
+            str = str.replace(/^'/g, " \'");
+        }
 
         // signal whether we end with terminal punctuation?
         if (!ignorePredecessor) {
