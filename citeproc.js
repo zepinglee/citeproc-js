@@ -1,73 +1,3 @@
-/*
- * Copyright (c) 2009-2014 Frank G. Bennett
- * 
- * Unless otherwise indicated, the files in this repository are subject
- * to the Common Public Attribution License Version 1.0 (the “License”);
- * you may not use this file except in compliance with the License. You
- * may obtain a copy of the License at:
- * 
- * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
- * 
- * (See also the note on attribution information below)
- * 
- * The License is based on the Mozilla Public License Version 1.1 but
- * Sections 1.13, 14 and 15 have been added to cover use of software over a
- * computer network and provide for limited attribution for the
- * Original Developer. In addition, Exhibit A has been modified to be
- * consistent with Exhibit B.
- * 
- * Software distributed under the License is distributed on an “AS IS”
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
- * the License for the specific language governing rights and limitations
- * under the License.
- * 
- * The Original Code is the citation formatting software known as
- * "citeproc-js" (an implementation of the Citation Style Language
- * [CSL]), including the original test fixtures and software located
- * under the ./tests subdirectory of the distribution archive.
- * 
- * The Original Developer is not the Initial Developer and is
- * __________. If left blank, the Original Developer is the Initial
- * Developer.
- * 
- * The Initial Developer of the Original Code is Frank Bennett. All
- * portions of the code written by Frank Bennett are Copyright (c)
- * 2009-2014 Frank Bennett.
- * 
- * ***
- * 
- * Alternatively, the files in this repository may be used under the
- * terms of the GNU Affero General Public License (the [AGPLv3] License),
- * in which case the provisions of [AGPLv3] License are applicable
- * instead of those above. If you wish to allow use of your version of
- * this file only under the terms of the [AGPLv3] License and not to
- * allow others to use your version of this file under the CPAL, indicate
- * your decision by deleting the provisions above and replace them with
- * the notice and other provisions required by the [AGPLv3] License. If
- * you do not delete the provisions above, a recipient may use your
- * version of this file under either the CPAL or the [AGPLv3] License.
- * 
- * ***
- * 
- * Attribution Information (CPAL)
- * 
- * Attribution Copyright Notice: [no separate attribution copyright notice is required]
- * 
- * Attribution Phrase: "Citations by CSL (citeproc-js)"
- * 
- * Attribution URL: http://citationstyles.org/
- * 
- * Graphic Image: [there is no requirement to display a Graphic Image]
- * 
- * Display of Attribution Information is REQUIRED in Larger Works which
- * are defined in the CPAL as a work which combines Covered Code or
- * portions thereof with code not governed by the terms of the CPAL.
- * 
- * Display of Attribution Information is also REQUIRED on Associated
- * Websites.
- * 
- * [ citeproc-js license :: version 1.1 :: 2012.06.30 ]
- */
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -80,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.4",
+    PROCESSOR_VERSION: "1.1.5",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -2505,7 +2435,10 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     if ("string" === typeof str && str.length) {
         str = str.replace(/ ([:;?!\u00bb])/g, "\u202f$1").replace(/\u00ab /g, "\u00ab\u202f");
         this.last_char_rendered = str.slice(-1);
-        str = str.replace(/\s+'/g, "  \'").replace(/^'/g, " \'");
+        str = str.replace(/\s+'/g, "  \'");
+        if (!notSerious) {
+            str = str.replace(/^'/g, " \'");
+        }
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
         } else if (notSerious) {
@@ -7907,7 +7840,8 @@ CSL.NameOutput.prototype._droppingParticle = function (name, pos, j) {
         }
         name["comma-dropping-particle"] = "";
     } else if (this.state.output.append(str, this.given_decor, true)) {
-        return this.state.output.pop();
+        var ret = this.state.output.pop();
+        return ret;
     }
     return false;
 };
@@ -11479,13 +11413,13 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     if (!name) {
         return "";
     }
+    if (!terminator) {
+        terminator = "";
+    }
     if (["Lord", "Lady"].indexOf(name) > -1
         || (!name.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)
             && !terminator.match("%s"))) {
         return name;
-    }
-    if (!terminator) {
-        terminator = "";
     }
     var namelist = name;
     if (state.opt["initialize-with-hyphen"] === false) {
@@ -14266,18 +14200,29 @@ CSL.Engine.prototype.retrieveStyleModule = function (jurisdiction) {
 }
 CSL.parseParticles = function(){
     var PARTICLES = [
+        ["'s-", [[[0,1], null]]],
+        ["'t", [[[0,1], null]]],
         ["abbé d'", [[[0,2], null]]],
+        ["af", [[[0,1], null]]],
         ["al", [[[0,1], null]]],
         ["al-", [[[0,1], null]],[[null,[0,1]]]],
         ["auf den", [[[0,2], null]]],
+        ["auf der", [[[0,1], null]]],
+        ["aus der", [[[0,1], null]]],
+        ["aus'm", [[null, [0,1]]]],
         ["ben", [[null, [0,1]]]],
         ["bin", [[null, [0,1]]]],
         ["d'", [[[0,1], null]],[[null,[0,1]]]],
         ["da", [[null, [0,1]]]],
+        ["dall'", [[null, [0,1]]]],
         ["das", [[[0,1], null]]],
         ["de", [[null, [0,1]],[[0,1],null]]],
         ["de la", [[[0,1], [1,2]]]],
         ["de las", [[[0,1], [1,2]]]],
+        ["de li", [[[0,1], null]]],
+        ["de'", [[[0,1], null]]],
+        ["degli", [[[0,1], null]]],
+        ["dei", [[[0,1], null]]],
         ["del", [[null, [0,1]]]],
         ["dela", [[[0,1], null]]],
         ["della", [[[0,1], null]]],
@@ -14293,6 +14238,7 @@ CSL.parseParticles = function(){
         ["il", [[[0,1], null]]],
         ["in 't", [[[0,2], null]]],
         ["in de", [[[0,2], null]]],
+        ["in der", [[[0,1], null]]],
         ["in het", [[[0,2], null]]],
         ["lo", [[[0,1], null]]],
         ["les", [[[0,1], null]]],
@@ -14325,10 +14271,14 @@ CSL.parseParticles = function(){
         ["von", [[[0,1], null]],[[null,[0,1]]]],
         ["von der", [[[0,2], null]]],
         ["von dem",[[[0,2], null]]],
+        ["von und zu", [[[0,1], null]]],
         ["von zu", [[[0,2], null]]],
         ["v.", [[[0,1], null]]],
         ["v", [[[0,1], null]]],
         ["vom", [[[0,1], null]]],
+        ["vom und zum", [[[0,1], null]]],
+        ["z", [[[0,1], null]]],
+        ["ze", [[[0,1], null]]],
         ["zum", [[[0,1], null]]],
         ["zur", [[[0,1], null]]]
         ]

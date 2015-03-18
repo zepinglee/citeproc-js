@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.1.5
+========================
+
+- More name particles, from Philipp Zumstein:
+
+  https://forums.zotero.org/discussion/47161/names-reform-request-for-comments/#Comment_217706
+
+- Fix bug in terminator testing in util_names.js (Thanks to @fcheslack).
+
+- Fix a small spacing issue affecting name particles with a leading
+  single quote.
+
+========================
 Changes in version 1.1.4
 ========================
 
