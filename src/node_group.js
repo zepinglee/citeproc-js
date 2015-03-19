@@ -135,7 +135,8 @@ CSL.Node.group = {
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
                                     if (!CSL.MODULE_MACROS[myName]) {
-                                        throw "CSL ERROR: illegal macro name \"" + myName + "\" in module context";
+                                        CSL.debug("CSL: skipping non-modular macro name \"" + myName + "\" in module context");
+                                        continue;
                                     };
                                     myCount++;
                                     state.juris[jurisdiction][myName] = [];

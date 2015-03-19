@@ -5683,7 +5683,8 @@ CSL.Node.group = {
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
                                     if (!CSL.MODULE_MACROS[myName]) {
-                                        throw "CSL ERROR: illegal macro name \"" + myName + "\" in module context";
+                                        CSL.debug("CSL: skipping non-modular macro name \"" + myName + "\" in module context");
+                                        continue;
                                     };
                                     myCount++;
                                     state.juris[jurisdiction][myName] = [];
@@ -7840,8 +7841,7 @@ CSL.NameOutput.prototype._droppingParticle = function (name, pos, j) {
         }
         name["comma-dropping-particle"] = "";
     } else if (this.state.output.append(str, this.given_decor, true)) {
-        var ret = this.state.output.pop();
-        return ret;
+        return this.state.output.pop();
     }
     return false;
 };
