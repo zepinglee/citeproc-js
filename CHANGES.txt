@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.1.6
+========================
+
+- Fix group closure bug (loss of decorations when self-testing jurisdiction
+  modules)
+
+- Fix erroneous capitalization of non-English characters.
+      https://forums.zotero.org/discussion/47850/greek-letter-is-shown-as-b-in-bibliography/#Item_18
+
+- Allow non-conforming macro names in jurisdiction modules. Necessary for
+  standalone testing.
+
+
+========================
 Changes in version 1.1.5
 ========================
 
