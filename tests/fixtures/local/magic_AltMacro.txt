@@ -4,7 +4,7 @@ citation
 
 
 >>== RESULT ==>>
-ALT
+Ibid. :: ALT
 <<== RESULT ==<<
 
 >>===== CSL =====>>
@@ -17,18 +17,29 @@ ALT
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <macro name="main">
-    <group delimiter=" ">
-      <text term="ibid"/>
-      <text variable="edition"/>
-    </group>
+  <macro name="main-render">
+    <choose>
+      <if variable="edition" match="none">
+        <text term="ibid"/>
+      </if>
+    </choose>
+  </macro>
+  <macro name="main-not-render">
+    <choose>
+      <if variable="edition" match="any">
+        <text term="ibid"/>
+      </if>
+    </choose>
   </macro>
   <macro name="alternative">
     <text value="ALT"/>
   </macro>
   <citation>
     <layout>
-       <text macro="main" alternative-macro="alternative"/>
+       <group delimiter=" :: ">
+         <text macro="main-render" alternative-macro="alternative"/>
+         <text macro="main-not-render" alternative-macro="alternative"/>
+       </group>
     </layout>
   </citation>
 </style>
