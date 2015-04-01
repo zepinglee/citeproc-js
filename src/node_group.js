@@ -4,10 +4,12 @@ CSL.Node.group = {
     build: function (state, target) {
         var func, execs;
         if (this.tokentype === CSL.START) {
-
             CSL.Util.substituteStart.call(this, state, target);
             if (state.build.substitute_level.value()) {
                 state.build.substitute_level.replace((state.build.substitute_level.value() + 1));
+            }
+            if (!this.juris) {
+                target.push(this);
             }
 
             // newoutput
@@ -24,7 +26,9 @@ CSL.Node.group = {
                     label_form = this.strings.label_form_override;
                 }
                 state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form, this.strings.set_parallel_condition], CSL.LITERAL);
-
+                // XXX
+                // XXX Oops is deprecated.
+                // XXX
                 // Oops is triggered in two situations:
                 //   (1) Where rendering of content fails; and
                 //   (2) Where content is rendered, but the rendered
@@ -99,8 +103,6 @@ CSL.Node.group = {
                 for (var x=0,xlen=target.length;x<xlen;x++) {
                     var token = target[x];
                 }
-                //var macroGroupToken = target.pop()
-
 
                 var choose_start = new CSL.Token("choose", CSL.START);
                 CSL.Node.choose.build.call(choose_start, state, target);
@@ -159,9 +161,6 @@ CSL.Node.group = {
                 if_start.tests.push(func);
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
                 target.push(if_start);
-                
-                target.push(this);
-
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item, item) {
                     // This will run the juris- token list.
@@ -175,9 +174,6 @@ CSL.Node.group = {
                 text_node.juris = this.juris;
                 text_node.execs.push(func);
                 target.push(text_node);
-
-                var group_end = new CSL.Token("group", CSL.END);
-                CSL.Node.group.build.call(group_end, state, target);
 
                 var if_end = new CSL.Token("if", CSL.END);
                 CSL.Node.if.build.call(if_end, state, target);
@@ -259,11 +255,10 @@ CSL.Node.group = {
             }
         }
 
-        if (!this.juris) {
-            target.push(this);
-        }
-
         if (this.tokentype === CSL.END) {
+            if (!this.juris) {
+                target.push(this);
+            }
             if (state.build.substitute_level.value()) {
                 state.build.substitute_level.replace((state.build.substitute_level.value() - 1));
             }

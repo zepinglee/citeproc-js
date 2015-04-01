@@ -4,12 +4,18 @@ CSL.Node.text = {
     build: function (state, target) {
         var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
         if (this.postponed_macro) {
-            //func = function(state, Item) {
-            //    print("XXX macro_name: "+this.postponed_macro);
-            //}
-            //this.execs.push(func);
+            var group_start = CSL.Util.cloneToken(this);
+            group_start.name = "group";
+            group_start.tokentype = CSL.START;
+            CSL.Node.group.build.call(group_start, state, target);
 
-            return CSL.expandMacro.call(state, this, target);
+            CSL.expandMacro.call(state, this, target);
+
+            var group_end = CSL.Util.cloneToken(this);
+            group_end.name = "group";
+            group_end.tokentype = CSL.END;
+            CSL.Node.group.build.call(group_end, state, target);
+
         } else {
             CSL.Util.substituteStart.call(this, state, target);
             // ...

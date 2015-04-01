@@ -47,15 +47,11 @@ CSL.expandMacro = function (macro_key_token, target) {
     var mkey, start_token, key, end_token, navi, macro_nodes, newoutput, mergeoutput, end_of_macro, func;
 
     mkey = macro_key_token.postponed_macro;
+    var alt_macro = macro_key_token.alt_macro;
 
-    //
-    // Here's where things change pretty dramatically.  We pull
-    // macros out of E4X directly, and process them using the
-    // same combination of tree walker and tag processor that
-    // led us here, but with a different queue.
-    //
-    // Xml: get list of nodes by attribute match
-    //
+    // Decorations and affixes are in wrapper applied in cs:text
+    macro_key_token = new CSL.Token("group", CSL.START);
+
     var hasDate = false;
     var macroid = false;
     macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
@@ -79,14 +75,8 @@ CSL.expandMacro = function (macro_key_token, target) {
         this.build.macro_stack.push(mkey);
     }
 
-    //
-    //
-    // (true as the last argument suppresses quashing)
-    macro_key_token.name = "group";
-    macro_key_token.tokentype = CSL.START;
     macro_key_token.cslid = macroid;
 
-    //if (this.sys.xml.getAttributeValue(macro_nodes[0], "prefer-jurisdiction")) {
     if (CSL.MODULE_MACROS[mkey]) {
         macro_key_token.juris = mkey;
         this.opt.update_mode = CSL.POSITION;
@@ -106,7 +96,6 @@ CSL.expandMacro = function (macro_key_token, target) {
         CSL.configureMacro.call(this, mytarget);
     }
     if (!this.build.extension) {
-        var text_node = new CSL.Token("text", CSL.SINGLETON);
         var func = function(macro_name, alt_macro) {
             return function (state, Item, item) {
                 var next = 0;
@@ -128,16 +117,15 @@ CSL.expandMacro = function (macro_key_token, target) {
                     }
                 }
             }
-        }(mkey, macro_key_token.alt_macro);
+        }(mkey, alt_macro);
+        var text_node = new CSL.Token("text", CSL.SINGLETON);
         text_node.execs.push(func);
         target.push(text_node);
     }
 
-    // Could also use cloneToken()
+    // Decorations and affixes are in wrapper applied in cs:text
     end_of_macro = new CSL.Token("group", CSL.END);
-	if (macro_key_token.decorations) {
-		end_of_macro.decorations = macro_key_token.decorations.slice();
-    }
+    
     if (hasDate) {
         func = function (state, Item) {
             if (state.tmp.extension) {
@@ -148,11 +136,13 @@ CSL.expandMacro = function (macro_key_token, target) {
     }
     if (macro_key_token.juris) {
         end_of_macro.juris = mkey;
+        if (alt_macro) {
+            end_of_macro.alt_macro = alt_macro;
+        }
     }
-    if (macro_key_token.alt_macro) {
-        end_of_macro.alt_macro = macro_key_token.alt_macro;
-    }
+
     CSL.Node.group.build.call(end_of_macro, this, target);
+
     this.build.macro_stack.pop();
 };
 
