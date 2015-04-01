@@ -723,9 +723,8 @@ if __name__ == "__main__":
                       help='Create a citeproc_generic.js bundle with embedded dom (not e4x) support suitable for use in most environments, and exit.')
     (opt, args) = parser.parse_args()
 
-
     if len(args) == 1:
-        m = re.match("^(.*)_(.*?)(?:\.txt)*$", args[0])
+        m = re.match("^(?:.*/)*(.*)_(.*?)(?:\.txt)*$", args[0])
         if m:
             args = [m.group(1), m.group(2)]
 
