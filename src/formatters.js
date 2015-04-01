@@ -131,7 +131,7 @@ CSL.Output.Formatters.title = function (state, string) {
     }
     var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
     function capitalise (word) {
-        var m = word.match(/([:?!]+\s+|-|^)(.)(.*)/);
+        var m = word.match(/([:?!]+\s+|-|^)([a-zA-Z])(.*)/);
         if (m) {
             return m[1] + m[2].toUpperCase() + m[3];
         }
