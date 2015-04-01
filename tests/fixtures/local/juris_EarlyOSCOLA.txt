@@ -28,12 +28,12 @@ citation
 >>===== RESULT =====>>
 ..[0] <i>Donoghue v Stevenson</i> [1932] AC 562 (HL), 563
 ..[1] ibid 566
-..[2] DUMMY: <i>Bogus Book</i>
+..[2] <i>DUMMY: <i>Bogus Book</i></i>
 ..[3] <i>Donoghue</i> (n 1) 563
 ..[4] ibid
 ..[5] <i>Callery v Gray</i> [2001] EWCA Civ 1117 [12]
 ..[6] ibid [15]
-..[7] <i>Bogus Book</i> (n 3)
+..[7] <i><i>Bogus Book</i></i> (n 3)
 ..[8] <i>Callery</i> (n 6) [16]
 ..[9] <i>Boulton v Jones</i> (1857) 2 H&#38;N 564
 >>[10] <i>Stubbs v Sayer</i> (CA, 8 November 1990)
@@ -294,13 +294,13 @@ citation
         </if>
         <else-if position="ibid-with-locator">
           <group delimiter=" ">
-            <text term="ibid" text-case="lowercase"/>
+            <text term="ibid" text-case="lowercase" strip-periods="true"/>
             <text macro="juris-locator-label" strip-periods="true"/>
             <text macro="juris-locator"/>
           </group>
         </else-if>
         <else-if position="ibid">
-          <text term="ibid" text-case="lowercase"/>
+          <text term="ibid" text-case="lowercase" strip-periods="true"/>
         </else-if>
         <else-if position="subsequent">
           <group delimiter=" ">
