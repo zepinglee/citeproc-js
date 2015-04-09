@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.6",
+    PROCESSOR_VERSION: "1.1.7",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -778,7 +778,7 @@ CSL.expandMacro = function (macro_key_token, target) {
                     next = CSL.tokenExec.call(state, state.macros[macro_name][next], Item, item);
                 }
                 var flag = state.tmp.group_context.value();
-                if (!flag[2] && alt_macro) {
+                if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1])) && alt_macro) {
                     flag[1] = false;
                     var mytarget = CSL.getMacroTarget.call(state, alt_macro);
                     if (mytarget) {
@@ -6144,6 +6144,11 @@ CSL.Node.label = {
                     state.parallel.StartVariable("label");
                     state.parallel.AppendToVariable(item.label);
                     item.section_form_override = this.strings.form;
+                }
+                if (termtxt) {
+                    flag = state.tmp.group_context.value();
+                    flag[0] = true;
+                    state.tmp.group_context.replace(flag);
                 }
                 state.output.append(termtxt, this);
                 if (item && this.strings.term === "locator") {

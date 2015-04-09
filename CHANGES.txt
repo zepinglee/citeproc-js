@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.1.7
+========================
+
+- Run alternative-macro when a variable render fails, or when no
+  attempt is made to render anything.
+
+- Flag attempt to render a term in cs:label.
+
+- Properly add cs:name nodes in xmljson.xml. Fault reported
+  by Faolan Cheslack-Postava.
+
+========================
 Changes in version 1.1.6
 ========================
 
