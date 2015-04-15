@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.7",
+    PROCESSOR_VERSION: "1.1.8",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5665,9 +5665,9 @@ CSL.Node.group = {
                             if (res) {
                                 state.juris[jurisdiction] = {};
                                 var myXml = state.sys.xml.makeXml(res);
-                                var myNodes = state.sys.xml.getNodesByName(myXml, "category");
+                                var myNodes = state.sys.xml.getNodesByName(myXml, "law-module");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
-                                    var myTypes = state.sys.xml.getAttributeValue(myNodes[i],"module-types");
+                                    var myTypes = state.sys.xml.getAttributeValue(myNodes[i],"types");
                                     if (myTypes) {
                                         state.juris[jurisdiction].types = {};
                                         myTypes =  myTypes.split(" ");
@@ -5691,7 +5691,7 @@ CSL.Node.group = {
                                     state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
                                     state.configureTokenList(state.juris[jurisdiction][myName]);
                                 }
-                                if (myCount < Object.keys(CSL.MODULE_MACROS).length) {
+                                if (myCount < Object.keys(state.juris[jurisdiction].types).length) {
                                     throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
                                 }
                             }

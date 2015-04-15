@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.1.8
+========================
+
+- Add support for cs:law-module types="a b c", following schema revision.
+
+========================
 Changes in version 1.1.7
 ========================
 
