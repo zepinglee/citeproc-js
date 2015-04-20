@@ -160,8 +160,8 @@ var CSL = {
         "bill": true,
         "hearing": true,
         "gazette": true,
-        "regulation": true,
-        "treaty": true
+        "report": true,
+        "regulation": true
     },
     NestedBraces: [
         ["(", "["],
