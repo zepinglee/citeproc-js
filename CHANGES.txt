@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ========================
+Changes in version 1.1.9
+========================
+
+- Fix repeat of "by" term in Chicago Author-Date etc.
+
+- Remove treaty from modular types, add report
+
+========================
 Changes in version 1.1.8
 ========================
 
