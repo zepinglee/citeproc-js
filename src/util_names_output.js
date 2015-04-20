@@ -408,8 +408,7 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
         this.state.output.append(blob, "literal", true);
         this.state.output.closeLevel("empty");
         blob = this.state.output.pop();
-    }
-    if (this.label[v].after) {
+    } else if (this.label[v].after) {
         if ("number" === typeof this.label[v].after.strings.plural) {
             plural = this.label[v].after.strings.plural;
         }
