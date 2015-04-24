@@ -257,8 +257,8 @@ CSL.Node.text = {
                                     value = value.replace(/\\-/g,"-");
                                     // true is for non-suppression of periods
                                     state.output.append(value, this, false, false, true);
-                                    if (this.variables[0] === "locator-revision") { 
-                                        state.tmp.done_vars.push("locator-revision");
+                                    if (this.variables[0] === "locator-extra") { 
+                                        state.tmp.done_vars.push("locator-extra");
                                     }
                                 }
                             };

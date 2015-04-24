@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.10",
+    PROCESSOR_VERSION: "1.1.11",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -248,7 +248,7 @@ var CSL = {
 
     MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction","archive","archive-place"],
 
-    CITE_FIELDS: ["first-reference-note-number", "locator", "locator-revision"],
+    CITE_FIELDS: ["first-reference-note-number", "locator", "locator-extra"],
 
     MINIMAL_NAME_FIELDS: ["literal", "family"],
 

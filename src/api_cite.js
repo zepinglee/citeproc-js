@@ -120,7 +120,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         if (Item.id) {
             this.transform.loadAbbreviation("default", "hereinafter", Item.id);
         }
-        this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_date_and_revision) {
             // Break out locator elements if necessary
             if (item.locator) {
@@ -135,10 +134,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         item["locator-date"] = this.fun.dateparser.parse(m[1]);
                         raw_locator = raw_locator.slice(m[1].length);
                     }
-                    item["locator-revision"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");
+                    item["locator-extra"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");
                 }
             }
         }
+        if (item.locator) {
+            item.locator = ("" + item.locator).replace(/\s+$/, '');
+        }
+        this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_label_parse) {
             if (item.locator && ["bill","gazette","legislation","treaty"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
                 m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
@@ -756,6 +759,9 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
                     item.locator = m[3];
                 }
             }
+        }
+        if (item.locator) {
+            item.locator = ("" + item.locator).replace(/\s+$/, '');
         }
         newitem = [Item, item];
         inputList.push(newitem);

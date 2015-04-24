@@ -33,7 +33,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
                     plural = CSL.evaluateStringPluralism(item.locator);
                 }
             }
-        } else if (["page", "page-first"].indexOf(node.variables[0]) > -1) {
+        } else if (["page", "page-first", "number"].indexOf(node.variables[0]) > -1) {
             state.processNumber(false, Item, myterm, Item.type);
             plural = state.tmp.shadow_numbers[myterm].plural;
             myterm = state.tmp.shadow_numbers[myterm].label;

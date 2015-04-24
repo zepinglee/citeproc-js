@@ -33,7 +33,6 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             }
 
             if (item.locator) {
-                
                 // If locator starts with a term, set that in loc_label, otherwise set item.label
                 // Set remainder of locator value in loc_locator
                 var splt = item.locator.replace(/^\s+/,"").replace(/\s+$/, "").split(/\s+/);
@@ -143,6 +142,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
             } else {
                 value = splt[0];
             }
+            this.tmp.shadow_numbers["number"].label = firstlabel;
             this.tmp.shadow_numbers["number"].values.push(["Blob", value, false]);
             this.tmp.shadow_numbers["number"].numeric = false;
         } else {

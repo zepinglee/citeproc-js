@@ -298,7 +298,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
 
         // Works with code in node_number.js
-        if (["page", "page-first"].indexOf(variable) > -1) {
+        if (["page", "page-first", "number"].indexOf(variable) > -1) {
             var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             if (m){
                 if (this.opt.development_extensions.static_statute_locator) {

@@ -43,7 +43,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg, joiner) {
     var maketest = function(variable) {
         return function (Item, item) {
             var myitem = Item;
-            if (["locator","locator-revision"].indexOf(variable) > -1) {
+            if (["locator","locator-extra"].indexOf(variable) > -1) {
                 myitem = item;
             }
             if ("undefined" === typeof myitem) {
@@ -56,7 +56,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg, joiner) {
                 if (myitem[variable] && state.tmp.shadow_numbers[variable].numeric) {
                     return true;
                 }
-            } else if (["title", "locator-revision","version"].indexOf(variable) > -1) {
+            } else if (["title", "locator-extra","version"].indexOf(variable) > -1) {
                 if (myitem[variable]) {
                     if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
                         return true;
@@ -293,8 +293,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
                         output = true;
                     }
                     break;
-                } else if ("locator-revision" === variable) {
-                    if (item && item["locator-revision"]) {
+                } else if ("locator-extra" === variable) {
+                    if (item && item["locator-extra"]) {
                         output = true;
                     }
                     break;
@@ -362,7 +362,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
         var maketest = function (variable) {
             return function(Item,item){
                 var myitem = Item;
-                if (item && ["locator", "locator-revision", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
+                if (item && ["locator", "locator-extra", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
                 // We don't run loadAbbreviation() here; it is run by the application-supplied
