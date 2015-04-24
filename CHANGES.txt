@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.11
+=========================
+
+- Extract label from number rendered with cs:number, and
+  make available on cs:label with variable="number."
+  Behaviour tracks that of page and page-first variables.
+
+- Fix bug in parsing of pipe-delimited extra data on locator
+
+- Change locator-revision to locator-extra (accompanied by
+  change to CSL-m schema)
+
+=========================
 Changes in version 1.1.10
 =========================
 
