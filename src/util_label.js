@@ -19,7 +19,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     
     // Plurals detection.
     var plural = node.strings.plural;
-    if (item && "number" === typeof item.force_pluralism) {
+    if (item && "locator" === node.strings.term && "number" === typeof item.force_pluralism) {
         plural = item.force_pluralism;
     } else if ("number" !== typeof plural) {
         if ("locator" === node.strings.term) {

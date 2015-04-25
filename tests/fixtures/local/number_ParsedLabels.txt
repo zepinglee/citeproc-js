@@ -21,15 +21,21 @@ chappie 15; ch’ppie 15
   </info>
   <locale>
     <terms>
-      <term name="Chapter">chappie</term>
-      <term form="short" name="Chapter">ch'ppie</term>
+      <term name="chapter">chappie</term>
+      <term form="short" name="chapter">ch'ppie</term>
     </terms>
   </locale>
   <citation>
     <layout>
       <group delimiter="; ">
-        <number variable="number"/>
-        <number label-form="short" variable="number"/>
+        <group delimiter=" ">
+          <label variable="number" form="long"/>
+          <number variable="number"/>
+        </group>
+        <group delimiter=" ">
+          <label variable="number" form="short"/>
+          <number variable="number"/>
+        </group>
       </group>
     </layout>
   </citation>

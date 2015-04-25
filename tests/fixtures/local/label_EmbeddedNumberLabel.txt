@@ -36,7 +36,7 @@ Some Other Statute, Pub. L. No. 999
   </info>
   <locale>
     <terms>
-      <term form="short" name="Chapter">ch.</term>
+      <term form="short" name="chapter">ch.</term>
     </terms>
   </locale>
   <citation>
@@ -45,11 +45,14 @@ Some Other Statute, Pub. L. No. 999
         <text variable="title"/>
         <group delimiter=" ">
           <choose>
-            <if is-numeric="number">
+            <if number="number">
               <text value="Pub. L. No."/>
             </if>
+            <else>
+              <label variable="number" form="symbol"/>
+            </else>
           </choose>
-          <number label-form="symbol" variable="number"/>
+          <number variable="number"/>
         </group>
       </group>
     </layout>

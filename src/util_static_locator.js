@@ -122,7 +122,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
         var value = "" + Item.number;
         value = value.replace("\\", "", "g");
         // Get first word, parse out labels only if it parses
-        var firstword = value.split(/\s/)[0];
+        var firstword = value.split(/\s+/)[0];
         var firstlabel = CSL.STATUTE_SUBDIV_STRINGS[firstword];
         if (firstlabel) {
             // Get list and match
@@ -133,8 +133,6 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
                 var lst = [];
                 for (var j=1, jlen=splt.length; j < jlen; j += 1) {
                     var subdiv = m[j - 1].replace(/^\s*/, "");
-                    //subdiv = this.getTerm(CSL.STATUTE_SUBDIV_STRINGS[subdiv]);
-                    lst.push(subdiv.replace("sec.", "Sec.").replace("ch.", "Ch."));
                     lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
                 }
                 // Preemptively save to shadow_numbers
