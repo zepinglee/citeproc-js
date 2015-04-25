@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.12
+=========================
+
+- Fix bug in parsing of embedded labels on non-locator vars
+  when section var not present in input (legal types only)
+
+- Remove capitalized Chapter and Section terms (legal types only)
+
+- Adjust tests to use explicit labels on number var, rather
+  than label-form attribute (legal types only)
+
+=========================
 Changes in version 1.1.11
 =========================
 

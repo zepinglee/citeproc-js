@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.11",
+    PROCESSOR_VERSION: "1.1.12",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -53,15 +53,14 @@ var CSL = {
 
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
-    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|sec|subsec|sch|tit)\.)/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|sec|subsec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
         "art.": "article",
         "bk.": "book",
         "ch.": "chapter",
-        "Ch.": "Chapter",
         "subch.": "subchapter",
         "p.": "page",
         "pp.": "page",
@@ -71,7 +70,6 @@ var CSL = {
         "r.": "rule",
         "sec.": "section",
         "subsec.": "subsection",
-        "Sec.": "Section",
         "sch.": "schedule",
         "tit.": "title",
         "col.": "column",
@@ -89,7 +87,6 @@ var CSL = {
         "article": "art.",
         "book": "bk.",
         "chapter": "ch.",
-        "Chapter": "Ch.",
         "subchapter": "subch.",
         "page": "p.",
         "paragraph": "para.",
@@ -98,7 +95,6 @@ var CSL = {
         "rule": "r.",
         "section": "sec.",
         "subsection": "subsec.",
-        "Section": "Sec.",
         "schedule": "sch.",
         "title": "tit.",
         "column": "col.",
@@ -118,7 +114,6 @@ var CSL = {
         "art": "article",
         "bk": "book",
         "ch": "chapter",
-        "Ch": "Chapter",
         "subch": "subchapter",
         "col": "column",
         "fig": "figure",
@@ -135,7 +130,6 @@ var CSL = {
         "r": "rule",
 		"sec": "section",
 		"subsec": "subsection",
-        "Sec": "Section",
 		"sv": "sub-verbo",
         "sch": "schedule",
         "tit": "title",

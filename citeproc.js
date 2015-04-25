@@ -10,18 +10,17 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.11",
+    PROCESSOR_VERSION: "1.1.12",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
-    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|Ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|Sec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
-    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/g,
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|Ch|subch|p|pp|para|subpara|pt|r|sec|subsec|Sec|sch|tit)\.)/,
+    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
+    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|sec|subsec|sch|tit)\.)/g,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|ch|subch|p|pp|para|subpara|pt|r|sec|subsec|sch|tit)\.)/,
     STATUTE_SUBDIV_STRINGS: {
         "art.": "article",
         "bk.": "book",
         "ch.": "chapter",
-        "Ch.": "Chapter",
         "subch.": "subchapter",
         "p.": "page",
         "pp.": "page",
@@ -31,7 +30,6 @@ var CSL = {
         "r.": "rule",
         "sec.": "section",
         "subsec.": "subsection",
-        "Sec.": "Section",
         "sch.": "schedule",
         "tit.": "title",
         "col.": "column",
@@ -49,7 +47,6 @@ var CSL = {
         "article": "art.",
         "book": "bk.",
         "chapter": "ch.",
-        "Chapter": "Ch.",
         "subchapter": "subch.",
         "page": "p.",
         "paragraph": "para.",
@@ -58,7 +55,6 @@ var CSL = {
         "rule": "r.",
         "section": "sec.",
         "subsection": "subsec.",
-        "Section": "Sec.",
         "schedule": "sch.",
         "title": "tit.",
         "column": "col.",
@@ -77,7 +73,6 @@ var CSL = {
         "art": "article",
         "bk": "book",
         "ch": "chapter",
-        "Ch": "Chapter",
         "subch": "subchapter",
         "col": "column",
         "fig": "figure",
@@ -94,7 +89,6 @@ var CSL = {
         "r": "rule",
 		"sec": "section",
 		"subsec": "subsection",
-        "Sec": "Section",
 		"sv": "sub-verbo",
         "sch": "schedule",
         "tit": "title",
@@ -1920,7 +1914,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
         this.tmp.shadow_numbers["number"].label = false;
         var value = "" + Item.number;
         value = value.replace("\\", "", "g");
-        var firstword = value.split(/\s/)[0];
+        var firstword = value.split(/\s+/)[0];
         var firstlabel = CSL.STATUTE_SUBDIV_STRINGS[firstword];
         if (firstlabel) {
             var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
@@ -1929,7 +1923,6 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
                 var lst = [];
                 for (var j=1, jlen=splt.length; j < jlen; j += 1) {
                     var subdiv = m[j - 1].replace(/^\s*/, "");
-                    lst.push(subdiv.replace("sec.", "Sec.").replace("ch.", "Ch."));
                     lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
                 }
                 value = lst.join(" ");
@@ -8312,7 +8305,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
         myterm = node.strings.term;
     }
     var plural = node.strings.plural;
-    if (item && "number" === typeof item.force_pluralism) {
+    if (item && "locator" === node.strings.term && "number" === typeof item.force_pluralism) {
         plural = item.force_pluralism;
     } else if ("number" !== typeof plural) {
         if ("locator" === node.strings.term) {
