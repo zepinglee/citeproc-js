@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.12",
+    PROCESSOR_VERSION: "1.1.13",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -100,8 +100,10 @@ var CSL = {
         "juris-title-short": true,
         "juris-main": true,
         "juris-main-short": true,
-        "juris-comma-locator": true,
-        "juris-space-locator": true,
+        "juris-comma-spotter": true,
+        "juris-default-spotter": true,
+        "juris-comma-spotter-short": true,
+        "juris-default-spotter-short": true,
         "juris-locator": true,
         "juris-locator-label": true,
         "juris-tail": true,
