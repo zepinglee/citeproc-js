@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.13",
+    PROCESSOR_VERSION: "1.1.14",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1281,8 +1281,14 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {
         style = "";
     }
+    if (CSL.retrieveStyleModule) {
+        this.sys.retrieveStyleModule = CSL.retrieveStyleModule;
+    }
     if (CSL.getAbbreviation) {
         this.sys.getAbbreviation = CSL.getAbbreviation;
+    }
+    if (CSL.suppressJurisdictions) {
+        this.sys.suppressJurisdictions = CSL.suppressJurisdictions;
     }
     if (this.sys.stringCompare) {
         CSL.stringCompare = this.sys.stringCompare;
@@ -1334,10 +1340,10 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
     this.opt.class = this.opt.xclass;
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
-    this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
-    if (CSL.getSuppressJurisdictions) {
-        this.opt.suppressJurisdictions = CSL.getSuppressJurisdictions(this.opt.styleID);
+    if (CSL.setSuppressJurisdictions) {
+        CSL.setSuppressJurisdictions(this.opt.styleID);
     }
+    this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
     if (this.opt.version.slice(0,4) === "1.1m") {
         this.opt.development_extensions.static_statute_locator = true;
         this.opt.development_extensions.handle_parallel_articles = true;
@@ -5659,20 +5665,20 @@ CSL.Node.group = {
                 var if_start = new CSL.Token("if", CSL.START);
                 func = function (macroName) {
                     return function (Item) {
-                        if (!CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) return false;
-                        var jurisdiction = Item.jurisdiction;
-                        if (!state.opt.jurisdictions_seen[jurisdiction]) {
-                            var res = state.retrieveStyleModule(jurisdiction);
-                            var myCount = 0;
-                            if (res) {
+                        if (!state.sys.retrieveStyleModule || !CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) return false;
+                        var jurisdictionList = state.getJurisdictionList(Item.jurisdiction);
+                        if (!state.opt.jurisdictions_seen[jurisdictionList[0]]) {
+                            var res = state.retrieveAllStyleModules(jurisdictionList);
+                            for (var jurisdiction in res) {
+                                var macroCount = 0;
                                 state.juris[jurisdiction] = {};
-                                var myXml = state.sys.xml.makeXml(res);
+                                var myXml = state.sys.xml.makeXml(res[jurisdiction]);
                                 var myNodes = state.sys.xml.getNodesByName(myXml, "law-module");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myTypes = state.sys.xml.getAttributeValue(myNodes[i],"types");
                                     if (myTypes) {
                                         state.juris[jurisdiction].types = {};
-                                        myTypes =  myTypes.split(" ");
+                                        myTypes =  myTypes.split(/\s+/);
                                         for (var j=0,jlen=myTypes.length;j<jlen;j++) {
                                             state.juris[jurisdiction].types[myTypes[j]] = true;
                                         }
@@ -5688,19 +5694,22 @@ CSL.Node.group = {
                                         CSL.debug("CSL: skipping non-modular macro name \"" + myName + "\" in module context");
                                         continue;
                                     };
-                                    myCount++;
+                                    macroCount++;
                                     state.juris[jurisdiction][myName] = [];
                                     state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
                                     state.configureTokenList(state.juris[jurisdiction][myName]);
                                 }
-                                if (myCount < Object.keys(state.juris[jurisdiction].types).length) {
+                                if (macroCount < Object.keys(state.juris[jurisdiction].types).length) {
                                     throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
                                 }
                             }
-                            state.opt.jurisdictions_seen[jurisdiction] = true;
                         }
-                        if (state.juris[Item.jurisdiction] && state.juris[Item.jurisdiction].types[Item.type]) {
-                            return true;
+                        for (var i=0,ilen=jurisdictionList.length;i<ilen;i++) {
+                            var jurisdiction = jurisdictionList[i];
+                            if(state.juris[jurisdiction] && state.juris[jurisdiction].types[Item.type]) {
+                                Item["best-jurisdiction"] = jurisdiction;
+                                return true;
+                            }
                         }
                         return false;
                     };
@@ -5711,9 +5720,9 @@ CSL.Node.group = {
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item, item) {
                     var next = 0;
-                    if (state.juris[Item.jurisdiction][this.juris]) {
-                        while (next < state.juris[Item.jurisdiction][this.juris].length) {
-                            next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
+                    if (state.juris[Item["best-jurisdiction"]][this.juris]) {
+                        while (next < state.juris[Item["best-jurisdiction"]][this.juris].length) {
+                            next = CSL.tokenExec.call(state, state.juris[Item["best-jurisdiction"]][this.juris][next], Item, item);
                         }
                     }
                 }
@@ -6830,10 +6839,15 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 };
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
     var names, name, i, ilen;
-    if ("string" === typeof Item[variable]) {
-        names = [{literal: Item[variable]}];
+    if ("string" === typeof Item[variable] || "number" === typeof Item[variable]) {
+        CSL.debug("name variable \"" + variable + "\" is string or number, not array. Attempting to fix.");
+        names = [{literal: Item[variable] + ""}];
     } else if (!Item[variable]) {
         names = [];
+    } else if ("number" !== typeof Item[variable].length) {
+        CSL.debug("name variable \"" + variable + "\" is object, not array. Attempting to fix.");
+        Item[variable] = [Item[variable]];
+        names = Item[variable].slice();
     } else {
         names = Item[variable].slice();
     }
@@ -10742,8 +10756,12 @@ CSL.Transform = function (state) {
         if (["archive"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "collection-title";
         }
-        if (variable === "jurisdiction" && state.sys.getHumanForm && basevalue) {
+        if (variable === "jurisdiction" && basevalue && state.sys.getHumanForm) {
+            var jcode = basevalue;
             basevalue = state.sys.getHumanForm(basevalue);
+            if (state.sys.suppressJurisdictions) {
+                basevalue = state.sys.suppressJurisdictions(jcode,basevalue);
+            }
         }
         value = "";
         if (state.sys.getAbbreviation) {
@@ -10902,12 +10920,6 @@ CSL.Transform = function (state) {
         return function (state, Item, item, usedOrig) {
             var primary, primary_locale, secondary, secondary_locale, tertiary, tertiary_locale, primary_tok, group_tok, key;
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
-                return null;
-            }
-            if (state.opt.suppressJurisdictions
-                && variables[0] === "jurisdiction" 
-                && state.opt.suppressJurisdictions[Item.jurisdiction]
-                && ["legal_case","gazette","regulation","legislation","hearing"].indexOf(Item.type) > -1) {
                 return null;
             }
             var slot = {primary:false, secondary:false, tertiary:false};
@@ -14189,22 +14201,31 @@ CSL.Disambiguation.prototype.captureStepToBase = function() {
     }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
-CSL.Engine.prototype.retrieveStyleModule = function (jurisdiction) {
-    var ret = null;
-    var jurisdictions = jurisdiction.split(":");
+CSL.Engine.prototype.getJurisdictionList = function (jurisdiction) {
+    var jurisdictionList = [];
+    var jurisdictionElems = jurisdiction.split(":");
+    for (var j=jurisdictionElems.length;j>0;j--) {
+        jurisdictionList.push(jurisdictionElems.slice(0,j).join(":"));
+    }
+    return jurisdictionList;
+}
+CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
+    var ret = {};
     var preferences = this.locale[this.opt.lang].opts["jurisdiction-preference"];
     preferences = preferences ? preferences : [];
-    preferences.push(null);
-    outer:
-    for (var i=0,ilen=preferences.length;i<ilen;i++) {
+    preferences = [null].concat(preferences);
+    for (var i=preferences.length-1;i>-1;i--) {
         var preference = preferences[i];
-        for (var j=jurisdictions.length;j>0;j--) {
-            var jurisdiction = jurisdictions.slice(0,j).join(":");
-            ret = this.sys.retrieveStyleModule(jurisdiction, preference);
-            if (ret) break outer;
+        for (var j=0,jlen=jurisdictionList.length;j<jlen;j++) {
+            var jurisdiction = jurisdictionList[j];
+            if (this.opt.jurisdictions_seen[jurisdiction]) continue;
+            var res = this.sys.retrieveStyleModule(jurisdiction, preference);
+            this.opt.jurisdictions_seen[jurisdiction] = true;
+            if (!res) continue;
+            ret[jurisdiction] = res;
         }
     }
-    return ret ? ret : false;
+    return ret;
 }
 CSL.parseParticles = function(){
     var PARTICLES = [
