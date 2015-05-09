@@ -16,8 +16,14 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {
         style = "";
     }
+    if (CSL.retrieveStyleModule) {
+        this.sys.retrieveStyleModule = CSL.retrieveStyleModule;
+    }
     if (CSL.getAbbreviation) {
         this.sys.getAbbreviation = CSL.getAbbreviation;
+    }
+    if (CSL.suppressJurisdictions) {
+        this.sys.suppressJurisdictions = CSL.suppressJurisdictions;
     }
     if (this.sys.stringCompare) {
         CSL.stringCompare = this.sys.stringCompare;
@@ -148,11 +154,10 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
     this.opt.class = this.opt.xclass;
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
-    this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
-
-    if (CSL.getSuppressJurisdictions) {
-        this.opt.suppressJurisdictions = CSL.getSuppressJurisdictions(this.opt.styleID);
+    if (CSL.setSuppressJurisdictions) {
+        CSL.setSuppressJurisdictions(this.opt.styleID);
     }
+    this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
 
     if (this.opt.version.slice(0,4) === "1.1m") {
         this.opt.development_extensions.static_statute_locator = true;

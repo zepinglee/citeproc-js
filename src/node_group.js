@@ -111,20 +111,23 @@ CSL.Node.group = {
 
                 func = function (macroName) {
                     return function (Item) {
-                        if (!CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) return false;
-                        var jurisdiction = Item.jurisdiction;
-                        if (!state.opt.jurisdictions_seen[jurisdiction]) {
-                            var res = state.retrieveStyleModule(jurisdiction);
-                            var myCount = 0;
-                            if (res) {
+                        if (!state.sys.retrieveStyleModule || !CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) return false;
+                        var jurisdictionList = state.getJurisdictionList(Item.jurisdiction);
+                        // Set up a list of jurisdictions here, we will reuse it
+                        if (!state.opt.jurisdictions_seen[jurisdictionList[0]]) {
+                            var res = state.retrieveAllStyleModules(jurisdictionList);
+                            // Okay. We have code for each of the novel modules in the
+                            // hierarchy. Load them all into the processor.
+                            for (var jurisdiction in res) {
+                                var macroCount = 0;
                                 state.juris[jurisdiction] = {};
-                                var myXml = state.sys.xml.makeXml(res);
+                                var myXml = state.sys.xml.makeXml(res[jurisdiction]);
                                 var myNodes = state.sys.xml.getNodesByName(myXml, "law-module");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myTypes = state.sys.xml.getAttributeValue(myNodes[i],"types");
                                     if (myTypes) {
                                         state.juris[jurisdiction].types = {};
-                                        myTypes =  myTypes.split(" ");
+                                        myTypes =  myTypes.split(/\s+/);
                                         for (var j=0,jlen=myTypes.length;j<jlen;j++) {
                                             state.juris[jurisdiction].types[myTypes[j]] = true;
                                         }
@@ -140,19 +143,23 @@ CSL.Node.group = {
                                         CSL.debug("CSL: skipping non-modular macro name \"" + myName + "\" in module context");
                                         continue;
                                     };
-                                    myCount++;
+                                    macroCount++;
                                     state.juris[jurisdiction][myName] = [];
                                     state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
                                     state.configureTokenList(state.juris[jurisdiction][myName]);
                                 }
-                                if (myCount < Object.keys(state.juris[jurisdiction].types).length) {
+                                if (macroCount < Object.keys(state.juris[jurisdiction].types).length) {
                                     throw "CSL ERROR: Incomplete jurisdiction style module for: " + jurisdiction;
                                 }
                             }
-                            state.opt.jurisdictions_seen[jurisdiction] = true;
                         }
-                        if (state.juris[Item.jurisdiction] && state.juris[Item.jurisdiction].types[Item.type]) {
-                            return true;
+                        // Identify the best jurisdiction for the item and return true, otherwise return false
+                        for (var i=0,ilen=jurisdictionList.length;i<ilen;i++) {
+                            var jurisdiction = jurisdictionList[i];
+                            if(state.juris[jurisdiction] && state.juris[jurisdiction].types[Item.type]) {
+                                Item["best-jurisdiction"] = jurisdiction;
+                                return true;
+                            }
                         }
                         return false;
                     };
@@ -165,9 +172,9 @@ CSL.Node.group = {
                 func = function (state, Item, item) {
                     // This will run the juris- token list.
                     var next = 0;
-                    if (state.juris[Item.jurisdiction][this.juris]) {
-                        while (next < state.juris[Item.jurisdiction][this.juris].length) {
-                            next = CSL.tokenExec.call(state, state.juris[Item.jurisdiction][this.juris][next], Item, item);
+                    if (state.juris[Item["best-jurisdiction"]][this.juris]) {
+                        while (next < state.juris[Item["best-jurisdiction"]][this.juris].length) {
+                            next = CSL.tokenExec.call(state, state.juris[Item["best-jurisdiction"]][this.juris][next], Item, item);
                         }
                     }
                 }

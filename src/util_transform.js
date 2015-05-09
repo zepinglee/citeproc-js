@@ -96,9 +96,17 @@ CSL.Transform = function (state) {
 
         // Convert identifiers to human-readable form before "abbreviating"
         // In MLZ w/legal support, we won't see "authority" here, only "jurisdiction"
-        if (variable === "jurisdiction" && state.sys.getHumanForm && basevalue) {
+        if (variable === "jurisdiction" && basevalue && state.sys.getHumanForm) {
             // Use external method to look up base value in identifier table
+            var jcode = basevalue;
             basevalue = state.sys.getHumanForm(basevalue);
+            if (state.sys.suppressJurisdictions) {
+                // Optionally suppress jurisdictions in human-readable form delivered
+                // by getHumanForm()
+                // suppressJurisdictions() should carry the jurisdictions
+                // to be supressed as a closure.
+                basevalue = state.sys.suppressJurisdictions(jcode,basevalue);
+            }
         }
 
         // Lazy retrieval of abbreviations.
@@ -323,15 +331,7 @@ CSL.Transform = function (state) {
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
-            // Suppress from jurisdiction list if item is a primary legal source and suppression is requested.
-            if (state.opt.suppressJurisdictions
-                && variables[0] === "jurisdiction" 
-                && state.opt.suppressJurisdictions[Item.jurisdiction]
-                && ["legal_case","gazette","regulation","legislation","hearing"].indexOf(Item.type) > -1) {
-                
-                return null;
-            }
-            
+
             var slot = {primary:false, secondary:false, tertiary:false};
             if (state.tmp.area.slice(-5) === "_sort") {
                 slot.primary = 'locale-sort';

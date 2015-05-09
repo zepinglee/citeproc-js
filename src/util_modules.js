@@ -1,17 +1,28 @@
-CSL.Engine.prototype.retrieveStyleModule = function (jurisdiction) {
-    var ret = null;
-    var jurisdictions = jurisdiction.split(":");
+CSL.Engine.prototype.getJurisdictionList = function (jurisdiction) {
+    var jurisdictionList = [];
+    var jurisdictionElems = jurisdiction.split(":");
+    for (var j=jurisdictionElems.length;j>0;j--) {
+        jurisdictionList.push(jurisdictionElems.slice(0,j).join(":"));
+    }
+    return jurisdictionList;
+}
+
+CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
+    var ret = {};
     var preferences = this.locale[this.opt.lang].opts["jurisdiction-preference"];
     preferences = preferences ? preferences : [];
-    preferences.push(null);
-    outer:
-    for (var i=0,ilen=preferences.length;i<ilen;i++) {
+    preferences = [null].concat(preferences);
+    for (var i=preferences.length-1;i>-1;i--) {
         var preference = preferences[i];
-        for (var j=jurisdictions.length;j>0;j--) {
-            var jurisdiction = jurisdictions.slice(0,j).join(":");
-            ret = this.sys.retrieveStyleModule(jurisdiction, preference);
-            if (ret) break outer;
+        for (var j=0,jlen=jurisdictionList.length;j<jlen;j++) {
+            var jurisdiction = jurisdictionList[j];
+            // Skip jurisdictions we already have on file.
+            if (this.opt.jurisdictions_seen[jurisdiction]) continue;
+            var res = this.sys.retrieveStyleModule(jurisdiction, preference);
+            this.opt.jurisdictions_seen[jurisdiction] = true;
+            if (!res) continue;
+            ret[jurisdiction] = res;
         }
     }
-    return ret ? ret : false;
+    return ret;
 }
