@@ -42,10 +42,15 @@ CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
 
 CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
     var names, name, i, ilen;
-    if ("string" === typeof Item[variable]) {
-        names = [{literal: Item[variable]}];
+    if ("string" === typeof Item[variable] || "number" === typeof Item[variable]) {
+        CSL.debug("name variable \"" + variable + "\" is string or number, not array. Attempting to fix.");
+        names = [{literal: Item[variable] + ""}];
     } else if (!Item[variable]) {
         names = [];
+    } else if ("number" !== typeof Item[variable].length) {
+        CSL.debug("name variable \"" + variable + "\" is object, not array. Attempting to fix.");
+        Item[variable] = [Item[variable]];
+        names = Item[variable].slice();
     } else {
         names = Item[variable].slice();
     }
