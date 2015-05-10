@@ -120,8 +120,8 @@ CSL.expandMacro = function (macro_key_token, target) {
                     // The effect of this is to suppress the label unless it is
                     // grouped with a companion variable that renders something.
                     // See node_group.js for a comment on the meaning of the flags.
-                    if (flag[0]) {
-                        flag[1] = true;
+                    if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1]))) {
+                        flag[1] = false;
                     }
                 }
             }
