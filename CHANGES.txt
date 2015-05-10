@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.16
+=========================
+
+- Align treatment of locators on regulation with legislation et al.
+
+=========================
 Changes in version 1.1.15
 =========================
 
