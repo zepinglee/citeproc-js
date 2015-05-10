@@ -116,6 +116,14 @@ CSL.expandMacro = function (macro_key_token, target) {
                         next = CSL.tokenExec.call(state, state.macros[alt_macro][next], Item, item);
                     }
                 }
+                if (macro_name === 'juris-locator-label') {
+                    // The effect of this is to suppress the label unless it is
+                    // grouped with a companion variable that renders something.
+                    // See node_group.js for a comment on the meaning of the flags.
+                    if (flag[0]) {
+                        flag[1] = true;
+                    }
+                }
             }
         }(mkey, alt_macro);
         var text_node = new CSL.Token("text", CSL.SINGLETON);
