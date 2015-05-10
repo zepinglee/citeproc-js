@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.15
+=========================
+
+- Make the juris-locator-label macro shy like a bare label
+  or term.
+
+=========================
 Changes in version 1.1.14
 =========================
 
