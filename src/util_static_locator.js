@@ -5,7 +5,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         var section_label_count = 0;
         var later_label = false;
         var value = false;
-        if (["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
+        if (["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1) {
             
             // Extract and assemble
             item.force_pluralism = 0;
@@ -108,7 +108,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
 
 CSL.Engine.prototype.setNumberLabels = function (Item) {
     if (Item.number
-        && ["bill", "gazette", "legislation", "treaty"].indexOf(Item.type) > -1
+        && ["bill", "gazette", "legislation","regulation","treaty"].indexOf(Item.type) > -1
         && this.opt.development_extensions.static_statute_locator
         && !this.tmp.shadow_numbers["number"]) {
         

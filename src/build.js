@@ -649,7 +649,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     if (this.opt.development_extensions.static_statute_locator) {
-        if (Item.type && ["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
+        if (Item.type && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1) {
             
             var varname;
             var elements = ["type", "title", "jurisdiction", "genre", "volume", "container-title"];
@@ -700,7 +700,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    var isLegalType = ["legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
+    var isLegalType = ["bill","legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (!isLegalType && Item.title && this.sys.getAbbreviation) {
         var noHints = false;
         if (!Item.jurisdiction) {

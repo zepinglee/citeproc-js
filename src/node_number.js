@@ -163,13 +163,13 @@ CSL.Node.number = {
                 // if any. Otherwise, apply styling.
                 var newstr = "";
                 var rangeType = "page";
-                if (["bill","gazette","legislation","legal_case","treaty"].indexOf(Item.type) > -1
+                if (["bill","gazette","legal_case","legislation","regulation","treaty"].indexOf(Item.type) > -1
                     && varname === "collection-number") {
                     
                     rangeType = "year";
                 }
                 if (((varname === "number" 
-                      && ["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1)
+                      && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1)
                      || state.opt[rangeType + "-range-format"]) 
                     && !this.strings.prefix && !this.strings.suffix
                     && !this.strings.form) {
@@ -179,7 +179,7 @@ CSL.Node.number = {
                 }
                 if (newstr && !newstr.match(/^[\-.\u20130-9]+$/)) {
                     if (varname === "number" 
-                        && ["bill","gazette","legislation","treaty"].indexOf(Item.type) > -1) {
+                        && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1) {
                         
                         var firstword = newstr.split(/\s/)[0];
                         if (firstword) {
