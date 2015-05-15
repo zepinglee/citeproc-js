@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.17
+=========================
+
+- Add locale fallback "hr_HR" for "hr".
+
+=========================
 Changes in version 1.1.16
 =========================
 

@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.16",
+    PROCESSOR_VERSION: "1.1.17",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -425,6 +425,7 @@ var CSL = {
         fi: "fi_FI",
         fr: "fr_FR",
         he: "he_IL",
+        hr: "hr-HR",
         hu: "hu_HU",
         is: "is_IS",
         it: "it_IT",
@@ -788,8 +789,8 @@ CSL.expandMacro = function (macro_key_token, target) {
                     }
                 }
                 if (macro_name === 'juris-locator-label') {
-                    if (flag[0]) {
-                        flag[1] = true;
+                    if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1]))) {
+                        flag[1] = false;
                     }
                 }
             }
