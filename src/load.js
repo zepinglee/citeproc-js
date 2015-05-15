@@ -541,6 +541,7 @@ var CSL = {
         fi: "fi_FI",
         fr: "fr_FR",
         he: "he_IL",
+        hr: "hr-HR",
         hu: "hu_HU",
         is: "is_IS",
         it: "it_IT",
