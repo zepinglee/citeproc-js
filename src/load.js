@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.17",
+    PROCESSOR_VERSION: "1.1.18",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -549,6 +549,7 @@ var CSL = {
         km: "km_KH",
         ko: "ko_KR",
         lt: "lt_LT",
+        lv: "lv-LV",
         mn: "mn_MN",
         nb: "nb_NO",
         nl: "nl_NL",
