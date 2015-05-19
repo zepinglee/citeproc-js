@@ -156,6 +156,16 @@ StdRhinoTest.prototype.run = function(){
     if (this.test.options.variableWrapper) {
         this.variableWrapper = variableWrapper;
     }
+    var lang_bases_needed = {};
+    for (var lang in CSL.LANGS) {
+        var lang_base = lang.split("-")[0];
+        lang_bases_needed[lang_base] = true;
+    } 
+    for (var lang_base in lang_bases_needed) {
+        if (!CSL.LANG_BASES[lang_base]) {
+            throw "ERROR: missing in CSL.LANG_BASES: " + lang_base;
+        }
+    }
     this.style = new CSL.Engine(this,this.test.csl);
     //this.style.setOutputFormat("rtf");
     //this.style.setParseNames(true);
