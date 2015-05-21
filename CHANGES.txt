@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.19
+=========================
+
+- Fix a subtle bug affecting juris-locator-label in
+  modular style code.
+
+- Fix potential bug in detection of output from multiple
+  variables.
+
+=========================
 Changes in version 1.1.18
 =========================
 

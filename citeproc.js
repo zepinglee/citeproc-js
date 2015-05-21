@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.18",
+    PROCESSOR_VERSION: "1.1.19",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -790,8 +790,9 @@ CSL.expandMacro = function (macro_key_token, target) {
                     }
                 }
                 if (macro_name === 'juris-locator-label') {
-                    if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1]))) {
-                        flag[1] = false;
+                    if (!item.locator || state.tmp.done_vars.indexOf("locator") > -1) {
+                        flag[1] = true;
+                        flag[2] = false;
                     }
                 }
             }
@@ -9347,17 +9348,17 @@ CSL.Attributes["@variable"] = function (state, arg) {
         this.strings.term = this.variables[0];
     } else if (["names", "date", "text", "number"].indexOf(this.name) > -1) {
         func = function (state, Item, item) {
-            variables = this.variables_real.slice();
             for (var i = this.variables.length - 1; i > -1; i += -1) {
                 this.variables.pop();
             }
-            len = variables.length;
-            for (pos = 0; pos < len; pos += 1) {
-                if (state.tmp.done_vars.indexOf(variables[pos]) === -1 && !(item && Item.type === "legal_case" && item["suppress-author"] && variables[pos] === "title")) {
-                    this.variables.push(variables[pos]);
+            for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
+                if (state.tmp.done_vars.indexOf(this.variables_real[i]) === -1 
+                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
+                   ) {
+                    this.variables.push(this.variables_real[i]);
                 }
                 if (state.tmp.can_block_substitute) {
-                    state.tmp.done_vars.push(variables[pos]);
+                    state.tmp.done_vars.push(this.variables_real[i]);
                 }
             }
         };
@@ -9365,9 +9366,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
         func = function (state, Item, item) {
             var mydate;
             output = false;
-            len = this.variables.length;
-            for (pos = 0; pos < len; pos += 1) {
-                variable = this.variables[pos];
+            for (var i=0,ilen=this.variables.length;i<ilen;i++) {
+                var variable = this.variables[i];
                 if (variable === "authority"
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
@@ -9460,20 +9460,23 @@ CSL.Attributes["@variable"] = function (state, arg) {
             }
             flag = state.tmp.group_context.value();
             if (output) {
-                if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
-                    state.tmp.cite_renders_content = true;
-                }
-                flag[2] = true;
-                state.tmp.group_context.replace(flag);
-                if (state.tmp.can_substitute.value() 
-                    && state.tmp.area === "bibliography"
-                    && "string" === typeof Item[variable]) {
-                    state.tmp.rendered_name.push(Item[variable]);
+                for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
+                    var variable = this.variables_real[i];
+                    if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
+                        state.tmp.cite_renders_content = true;
+                    }
+                    flag[2] = true;
+                    if (state.tmp.can_substitute.value() 
+                        && state.tmp.area === "bibliography"
+                        && "string" === typeof Item[variable]) {
+                        state.tmp.rendered_name.push(Item[variable]);
+                    }
                 }
                 state.tmp.can_substitute.replace(false,  CSL.LITERAL);
             } else {
                 flag[1] = true;
             }
+            state.tmp.group_context.replace(flag);
         };
         this.execs.push(func);
     } else if (["if",  "else-if", "condition"].indexOf(this.name) > -1) {
