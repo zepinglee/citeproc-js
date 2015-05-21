@@ -206,20 +206,19 @@ CSL.Attributes["@variable"] = function (state, arg) {
         //
         // set variable names
         func = function (state, Item, item) {
-            variables = this.variables_real.slice();
             // Clear this.variables in place
             for (var i = this.variables.length - 1; i > -1; i += -1) {
                 this.variables.pop();
             }
-
-            len = variables.length;
-            for (pos = 0; pos < len; pos += 1) {
+            for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
                 // set variable name if not quashed, and if not the title of a legal case w/suppress-author
-                if (state.tmp.done_vars.indexOf(variables[pos]) === -1 && !(item && Item.type === "legal_case" && item["suppress-author"] && variables[pos] === "title")) {
-                    this.variables.push(variables[pos]);
+                if (state.tmp.done_vars.indexOf(this.variables_real[i]) === -1 
+                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
+                   ) {
+                    this.variables.push(this.variables_real[i]);
                 }
                 if (state.tmp.can_block_substitute) {
-                    state.tmp.done_vars.push(variables[pos]);
+                    state.tmp.done_vars.push(this.variables_real[i]);
                 }
             }
         };
@@ -229,9 +228,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
         func = function (state, Item, item) {
             var mydate;
             output = false;
-            len = this.variables.length;
-            for (pos = 0; pos < len; pos += 1) {
-                variable = this.variables[pos];
+            for (var i=0,ilen=this.variables.length;i<ilen;i++) {
+                var variable = this.variables[i];
                 if (variable === "authority"
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
@@ -333,27 +331,27 @@ CSL.Attributes["@variable"] = function (state, arg) {
             //print("-- VAR: "+variable);
             flag = state.tmp.group_context.value();
             if (output) {
-                if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
-                    state.tmp.cite_renders_content = true;
+                for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
+                    var variable = this.variables_real[i];
+                    if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
+                        state.tmp.cite_renders_content = true;
+                    }
+                    //print("  setting [2] to true based on: " + arg);
+                    flag[2] = true;
+                    // For util_substitute.js, subsequent-author-substitute
+                    if (state.tmp.can_substitute.value() 
+                        && state.tmp.area === "bibliography"
+                        && "string" === typeof Item[variable]) {
+
+                        state.tmp.rendered_name.push(Item[variable]);
+                    }
                 }
-                //print("  setting [2] to true based on: " + arg);
-                flag[2] = true;
-                state.tmp.group_context.replace(flag);
-
-                // For util_substitute.js, subsequent-author-substitute
-                if (state.tmp.can_substitute.value() 
-                    && state.tmp.area === "bibliography"
-                    && "string" === typeof Item[variable]) {
-
-                    state.tmp.rendered_name.push(Item[variable]);
-                }
-
                 state.tmp.can_substitute.replace(false,  CSL.LITERAL);
-
             } else {
                 //print("  setting [1] to true based on: " + arg);
                 flag[1] = true;
             }
+            state.tmp.group_context.replace(flag);
         };
         this.execs.push(func);
     } else if (["if",  "else-if", "condition"].indexOf(this.name) > -1) {
