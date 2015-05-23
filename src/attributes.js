@@ -160,6 +160,14 @@ CSL.Attributes["@position"] = function (state, arg) {
                 }
                 return false;
             });
+        } else if ("far-note" === tryposition) {
+            this.tests.push(function (Item, item) {
+                if (item && item.position == CSL.POSITION_SUBSEQUENT && !item["near-note"]) {
+                    return true;
+                }
+                return false;
+            });
+
         } else {
             this.tests.push(maketest(tryposition));
         }
