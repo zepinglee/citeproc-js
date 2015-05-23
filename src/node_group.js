@@ -226,7 +226,9 @@ CSL.Node.group = {
                     state.tmp.group_context.value()[1] = true;
                 }
                 if (flag[2] || (flag[0] && !flag[1])) {
-                    state.tmp.group_context.value()[2] = true;
+                    if (!this.isJurisLocatorLabel) {
+                        state.tmp.group_context.value()[2] = true;
+                    }
                     var blobs = state.output.current.value().blobs;
                     var pos = state.output.current.value().blobs.length - 1;
                     if (!state.tmp.just_looking && "undefined" !== typeof flag[6]) {

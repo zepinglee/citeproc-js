@@ -14,6 +14,9 @@ CSL.Node.text = {
             var group_end = CSL.Util.cloneToken(this);
             group_end.name = "group";
             group_end.tokentype = CSL.END;
+            if (this.postponed_macro === 'juris-locator-label') {
+                group_end.isJurisLocatorLabel = true;
+            }
             CSL.Node.group.build.call(group_end, state, target);
 
         } else {
