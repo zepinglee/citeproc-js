@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.20
+=========================
+
+- Better handling of implicit conditional rendering with
+  juris-locator-label macro in cs:group.
+
+=========================
 Changes in version 1.1.19
 =========================
 
