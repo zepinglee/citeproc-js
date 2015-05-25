@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.21",
+    PROCESSOR_VERSION: "1.1.22",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5713,6 +5713,10 @@ CSL.Node.group = {
                                 return true;
                             }
                         }
+			if (state.juris["us"]) {
+			    Item["best-jurisdiction"] = "us";
+			    return true;
+			}
                         return false;
                     };
                 }(this.juris);
