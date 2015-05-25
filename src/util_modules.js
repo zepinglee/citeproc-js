@@ -4,6 +4,9 @@ CSL.Engine.prototype.getJurisdictionList = function (jurisdiction) {
     for (var j=jurisdictionElems.length;j>0;j--) {
         jurisdictionList.push(jurisdictionElems.slice(0,j).join(":"));
     }
+    if (jurisdictionList.indexOf("us") === -1) {
+        jurisdictionList.push("us");
+    }
     return jurisdictionList;
 }
 

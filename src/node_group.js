@@ -161,13 +161,6 @@ CSL.Node.group = {
                                 return true;
                             }
                         }
-                        if (!state.opt.jurisdictions_seen["us"]) {
-                            var res = state.retrieveAllStyleModules(["us"]);
-                        }
-			            if (state.juris["us"]) {
-			                Item["best-jurisdiction"] = "us";
-			                return true;
-			            }
                         return false;
                     };
                 }(this.juris);
