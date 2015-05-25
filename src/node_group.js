@@ -161,6 +161,10 @@ CSL.Node.group = {
                                 return true;
                             }
                         }
+			if (state.juris["us"]) {
+			    Item["best-jurisdiction"] = "us";
+			    return true;
+			}
                         return false;
                     };
                 }(this.juris);
