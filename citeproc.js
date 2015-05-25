@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.23",
+    PROCESSOR_VERSION: "1.1.24",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5713,13 +5713,6 @@ CSL.Node.group = {
                                 return true;
                             }
                         }
-                        if (!state.opt.jurisdictions_seen["us"]) {
-                            var res = state.retrieveAllStyleModules(["us"]);
-                        }
-			            if (state.juris["us"]) {
-			                Item["best-jurisdiction"] = "us";
-			                return true;
-			            }
                         return false;
                     };
                 }(this.juris);
@@ -14229,6 +14222,9 @@ CSL.Engine.prototype.getJurisdictionList = function (jurisdiction) {
     var jurisdictionElems = jurisdiction.split(":");
     for (var j=jurisdictionElems.length;j>0;j--) {
         jurisdictionList.push(jurisdictionElems.slice(0,j).join(":"));
+    }
+    if (jurisdictionList.indexOf("us") === -1) {
+        jurisdictionList.push("us");
     }
     return jurisdictionList;
 }
