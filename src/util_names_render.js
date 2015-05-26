@@ -983,6 +983,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
                 }
                 splitLst = splitLst.replace(/\s*\|\s*/g, "|");
                 splitInstitution = [splitLst];
+                break;
             }
         }
     }
