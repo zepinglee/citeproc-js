@@ -1007,9 +1007,15 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
             // stop-last is negative when present
             s = s.slice(0, this.institution.strings["stop-last"]);
             subunits = subunits.slice(0, this.institution.strings["stop-last"]);
+        } else if ("authority" === v && this.state.tmp.authority_stop_last) {
+            s = s.slice(0, this.state.tmp.authority_stop_last);
+            subunits = subunits.slice(0, this.state.tmp.authority_stop_last);
         }
         if ("undefined" !== typeof this.institution.strings["use-last"]) {
             append_last = this.institution.strings["use-last"];
+            if ("authority" === v) {
+                this.state.tmp.authority_stop_last = (this.institution.strings["use-last"] * -1);
+            }
         }
     }
     if (false === use_first) {

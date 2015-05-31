@@ -306,6 +306,7 @@ CSL.Engine.Tmp = function () {
     };
     this.strip_periods = 0;
     this.shadow_numbers = {};
+    this.authority_stop_last = 0;
 };
 
 

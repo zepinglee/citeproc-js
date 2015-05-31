@@ -695,6 +695,22 @@ CSL.Attributes["@locale"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@authority-residue"] = function (state, arg) {
+    var maketest = function () {
+        var succeed = (arg === "true") ? true : false;
+        return function(Item, item) {
+            if (!Item.authority || !Item.authority[0] || !Item.authority[0].family) return !succeed;
+            var varLen = Item.authority[0].family.split("|").length;
+            var stopLast = state.tmp.authority_stop_last;
+            if ((varLen + stopLast) > 0) {
+                return succeed;
+            } else {
+                return !succeed;
+            }
+        }
+    }
+    this.tests.push(maketest());
+}
 
 CSL.Attributes["@locale-internal"] = function (state, arg) {
     var func, ret, len, pos, variable, myitem, langspec, lang, lst, i, ilen, fallback;

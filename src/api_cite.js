@@ -1278,6 +1278,7 @@ CSL.citeStart = function (Item, item) {
     this.tmp.shadow_numbers = {};
     this.setNumberLabels(Item);
     this.tmp.first_name_string = false;
+    this.tmp.authority_stop_last = 0;
 
     // Set up for nested parens conversion if appropriate.
     if (this.opt.development_extensions.flip_parentheses_to_braces && item && item.prefix) {
