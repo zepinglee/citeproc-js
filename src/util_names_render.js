@@ -997,24 +997,31 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
 	// 
     var use_first = false;
     var append_last = false;
-    var stop_last = false;
     var s = subunits.slice();
+    var stop_last = false;
     if (this.institution) {
         if ("undefined" !== typeof this.institution.strings["use-first"]) {
             use_first = this.institution.strings["use-first"];
         }
         if ("undefined" !== typeof this.institution.strings["stop-last"]) {
             // stop-last is negative when present
-            s = s.slice(0, this.institution.strings["stop-last"]);
-            subunits = subunits.slice(0, this.institution.strings["stop-last"]);
+            stop_last = this.institution.strings["stop-last"];
         } else if ("authority" === v && this.state.tmp.authority_stop_last) {
-            s = s.slice(0, this.state.tmp.authority_stop_last);
-            subunits = subunits.slice(0, this.state.tmp.authority_stop_last);
+            stop_last = this.state.tmp.authority_stop_last;
+        }
+        if (stop_last) {
+            s = s.slice(0, stop_last);
+            subunits = subunits.slice(0, stop_last);
         }
         if ("undefined" !== typeof this.institution.strings["use-last"]) {
             append_last = this.institution.strings["use-last"];
-            if ("authority" === v) {
-                this.state.tmp.authority_stop_last = (this.institution.strings["use-last"] * -1);
+        }
+        if ("authority" === v) {
+            if (stop_last) {
+                this.state.tmp.authority_stop_last = stop_last;
+            }
+            if (append_last)  {
+                this.state.tmp.authority_stop_last += (append_last * -1);
             }
         }
     }
@@ -1037,9 +1044,6 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     // (use-last), avoid overlaps.
     if (use_first > subunits.length - append_last) {
         use_first = subunits.length - append_last;
-    }
-    if (stop_last) {
-        append_last = 0;
     }
 
     // This could be more clear. use-last takes priority
