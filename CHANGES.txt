@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.26
+=========================
+
+- Add language-name and language-name-original with
+  short forms in "place" category.
+
+=========================
 Changes in version 1.1.25
 =========================
 
