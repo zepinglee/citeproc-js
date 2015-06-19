@@ -597,6 +597,31 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     //    Item.volume = Item.number;
     //    Item.number = undefined;
     //}
+
+    // Remap language field value
+    if (this.sys.getLanguageName && Item.language) {
+		// Split language field into "language" and "language-original"
+		if (Item.language) {
+            // Force lowercase always
+            Item.language = Item.language.toLowerCase();
+			// Attempt to split field in two
+			var lst = Item.language.split("<");
+            if (lst.length > 0) {
+                var languageName = this.sys.getLanguageName(lst[0]);
+                if (languageName) {
+                    Item["language-name"] = languageName;
+                }
+            }
+			if (lst.length === 2) {
+				var originalLanguage = this.sys.getLanguageName(lst[1]);
+				if (originalLanguage) {
+					Item["language-name-original"] = originalLanguage;
+				}
+			}
+		}
+		
+    }
+
     if (Item.page) {
         Item["page-first"] = Item.page;
         var num = "" + Item.page;

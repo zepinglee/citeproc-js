@@ -220,7 +220,8 @@ CSL.Node.text = {
                     // plain string fields
 
                     // Deal with multi-fields and ordinary fields separately.
-                    if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1) {
+                    if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1
+                        || ["language-name", "language-name-original"].indexOf(this.variables_real[0]) > -1) {
                         // multi-fields
                         // Initialize transform factory according to whether
                         // abbreviation is desired.

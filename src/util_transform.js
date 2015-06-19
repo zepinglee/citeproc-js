@@ -78,7 +78,7 @@ CSL.Transform = function (state) {
             myabbrev_family = "number";
         }
 
-        if (["publisher-place", "event-place", "jurisdiction", "archive-place"].indexOf(myabbrev_family) > -1) {
+        if (["publisher-place", "event-place", "jurisdiction", "archive-place", "language-name", "language-name-original"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
         }
 
