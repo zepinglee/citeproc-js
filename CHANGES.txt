@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.28
+=========================
+
+- Provide mappings for all multilingual fields in LangPrefsMap
+
+=========================
+Changes in version 1.1.27
+=========================
+
+- Make short form of institutional names empty by default.
+
+=========================
 Changes in version 1.1.26
 =========================
 
