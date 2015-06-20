@@ -915,17 +915,23 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
     }
         
     var long_form = name["long"];
-    var short_form = long_form.slice();
+    var short_form = name["long"].slice();
+    var use_short_form = false;
     if (this.state.sys.getAbbreviation) {
         var jurisdiction = this.Item.jurisdiction;
         for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", long_form[j]);
             if (this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]]) {
                 short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][long_form[j]];
+                use_short_form = true;
             }
         }
     }
-    name["short"] = short_form;
+    if (use_short_form) {
+        name["short"] = short_form;
+    } else {
+        name["short"] = [];
+    }
     return name;
 }
 
