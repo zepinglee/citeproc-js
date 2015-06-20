@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.26",
+    PROCESSOR_VERSION: "1.1.28",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -166,22 +166,28 @@ var CSL = {
     checkNestedBraceOpen: new RegExp(".*\\("),
     checkNestedBraceClose: new RegExp(".*\\)"),
 
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction","archive","archive-place"],
+
     LangPrefsMap: {
         "title":"titles",
         "title-short":"titles",
+        "event":"titles",
+        "genre":"titles",
+        "medium":"titles",
         "container-title":"journals",
         "collection-title":"journals",
+        "archive":"journals",
         "publisher":"publishers",
         "authority":"publishers",
         "publisher-place": "places",
         "event-place": "places",
+        "archive-place": "places",
+        "jurisdiction": "places",
         "number": "number",
         "edition":"number",
         "issue":"number",
         "volume":"number"
     },
-
-    
 
     AbbreviationSegments: function () {
         this["container-title"] = {};
@@ -241,8 +247,6 @@ var CSL = {
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
-
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","edition","genre","title-short","medium","jurisdiction","archive","archive-place"],
 
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-extra"],
 
