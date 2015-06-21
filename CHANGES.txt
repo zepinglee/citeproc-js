@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.30
+=========================
+
+- Enable alternative-macro calls from within modular code.
+  The macro called is the macro in the main style; this will
+  require a convention to use a uniform macro name for this
+  purpose (this: "at-locator-label"), and to provide it in
+  all main JM styles.
+
+=========================
 Changes in version 1.1.29
 =========================
 
