@@ -103,7 +103,7 @@ CSL.expandMacro = function (macro_key_token, target) {
                 while (next < state.macros[macro_name].length) {
                     next = CSL.tokenExec.call(state, state.macros[macro_name][next], Item, item);
                 }
-                CSL.runAltMacro(state, alt_macro);
+                CSL.runAltMacro(state, alt_macro, Item, item);
             }
         }(mkey, alt_macro);
         var text_node = new CSL.Token("text", CSL.SINGLETON);
@@ -145,7 +145,7 @@ CSL.getMacroTarget = function (mkey) {
     return mytarget;
 }
 
-CSL.runAltMacro = function (state, alt_macro) {
+CSL.runAltMacro = function (state, alt_macro, Item, item) {
     var flag = state.tmp.group_context.value();
     if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1])) && alt_macro) {
         flag[1] = false;
