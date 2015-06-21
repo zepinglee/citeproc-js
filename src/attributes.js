@@ -238,7 +238,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
             output = false;
             for (var i=0,ilen=this.variables.length;i<ilen;i++) {
                 var variable = this.variables[i];
-                if (variable === "authority"
+                if (["authority", "committee"].indexOf(variable) > -1
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
                     
