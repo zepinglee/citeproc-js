@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.30",
+    PROCESSOR_VERSION: "1.1.31",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -782,7 +782,7 @@ CSL.expandMacro = function (macro_key_token, target) {
                 while (next < state.macros[macro_name].length) {
                     next = CSL.tokenExec.call(state, state.macros[macro_name][next], Item, item);
                 }
-                CSL.runAltMacro(state, alt_macro);
+                CSL.runAltMacro(state, alt_macro, Item, item);
             }
         }(mkey, alt_macro);
         var text_node = new CSL.Token("text", CSL.SINGLETON);
@@ -817,7 +817,7 @@ CSL.getMacroTarget = function (mkey) {
     }
     return mytarget;
 }
-CSL.runAltMacro = function (state, alt_macro) {
+CSL.runAltMacro = function (state, alt_macro, Item, item) {
     var flag = state.tmp.group_context.value();
     if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1])) && alt_macro) {
         flag[1] = false;
@@ -5752,7 +5752,7 @@ CSL.Node.group = {
                         while (next < state.juris[Item["best-jurisdiction"]][this.juris].length) {
                             next = CSL.tokenExec.call(state, state.juris[Item["best-jurisdiction"]][this.juris][next], Item, item);
                         }
-                        CSL.runAltMacro(state, this.alt_macro);
+                        CSL.runAltMacro(state, this.alt_macro, Item, item);
                     }
                 }
                 text_node.juris = this.juris;
