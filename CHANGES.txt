@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.29
+=========================
+
+- Extend discretionary creator handling to committee variable.
+
+=========================
 Changes in version 1.1.28
 =========================
 
