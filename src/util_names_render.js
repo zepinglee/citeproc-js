@@ -113,9 +113,9 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
             institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
         } else {
             // Fail over to long.
-
             long_style = this._getLongStyle(primary, v, j);
-            institution = [this._renderOneInstitutionPart(primary["long"], long_style)];
+            institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
+            institution = [institution_long];
         }
         break;
     case "short-long":
