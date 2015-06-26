@@ -200,7 +200,7 @@ CSL.Util.substituteEnd = function (state, target) {
             // first func end
             func = function (state, Item) {
                 if (!state.tmp.render_seen) {
-                    state.output.endTag(); // closes bib_first
+                    state.output.endTag("bib_first"); // closes bib_first
                 }
             };
             bib_first_end.execs.push(func);

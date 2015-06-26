@@ -135,7 +135,7 @@ CSL.Output.Queue.prototype.startTag = function (name, token) {
 };
 
 CSL.Output.Queue.prototype.endTag = function (name) {
-    this.closeLevel();
+    this.closeLevel(name);
     this.popFormats();
 };
 
