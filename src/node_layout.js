@@ -4,6 +4,34 @@ CSL.Node.layout = {
     build: function (state, target) {
         var func, prefix_token, suffix_token, tok;
 
+        function setSuffix() {
+            if (state.build.area === "bibliography") {
+                suffix_token = new CSL.Token("text", CSL.SINGLETON);
+                func = function(state, Item, item) {
+                    var last_locale = state.tmp.cite_locales[state.tmp.cite_locales.length - 1];
+                    var suffix;
+                    if (state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale]) {
+                        suffix = state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale].suffix;
+                    } else {
+                        suffix = state.bibliography.opt.layout_suffix;
+                    }
+                    // Fix up duplicate terminal punctuation, reported by Carles Pina 2010-07-15
+                    var chr = suffix.slice(0, 1);
+                    var topblobs = state.output.current.value().blobs;
+                    if (chr && topblobs[topblobs.length-1].strings.suffix.slice(-1) === chr) {
+                        topblobs[topblobs.length-1].strings.suffix = topblobs[topblobs.length-1].strings.suffix.slice(0, -1);
+                    }
+                    topblobs[topblobs.length-1].strings.suffix += suffix;
+                    if (state.bibliography.opt["second-field-align"]) {
+                        // closes bib_other
+                        state.output.endTag("bib_other");
+                    }
+                };
+                suffix_token.execs.push(func);
+                target.push(suffix_token);
+            }
+        }
+
         if (this.tokentype === CSL.START) {
 
             if (this.locale_raw) {
@@ -41,6 +69,7 @@ CSL.Node.layout = {
             //
             // initalize done vars
             func = function (state, Item) {
+
                 state.tmp.done_vars = [];
                 if (!state.tmp.just_looking && state.registry.registry[Item.id].parallel) {
                     state.tmp.done_vars.push("first-reference-note-number");
@@ -190,6 +219,7 @@ CSL.Node.layout = {
         }
         if (this.tokentype === CSL.END) {
             if (this.locale_raw) {
+                setSuffix();
                 if (!state.build.layout_locale_flag) {
                     // If layout_locale_flag is untrue, write cs:if END
                     // to the token list.
@@ -208,6 +238,7 @@ CSL.Node.layout = {
                 }
             }
             if (!this.locale_raw) {
+                setSuffix();
                 // Only add this if we're running conditionals
                 if (state.tmp.cite_affixes[state.build.area]) {
                     // If layout_locale_flag is true, write cs:else END
@@ -238,15 +269,8 @@ CSL.Node.layout = {
                     target.push(suffix_token);
                 }
 
-                // mergeoutput
                 func = function (state, Item) {
-                    if (state.tmp.area === "bibliography") {
-                        if (state.bibliography.opt["second-field-align"]) {
-                            // closes bib_other
-                            state.output.endTag();
-                        }
-                    }
-                    state.output.closeLevel();
+                    state.output.closeLevel("empty");
                 };
                 this.execs.push(func);
                 func = function (state, Item) {
