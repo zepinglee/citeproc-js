@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.33
+=========================
+
+- Fix bug in multiple layouts. With the second-field-align option,
+  the layout suffix on non-default alternative layouts was placed
+  outside of the right-inline block, resulting in a stray hard
+  return between the citation and the trailing punctuation in output.
+
+  Many thanks to Vladimir Sobolev for reporting the fault.
+
+=========================
 Changes in version 1.1.32
 =========================
 
