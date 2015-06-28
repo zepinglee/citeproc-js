@@ -243,8 +243,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     && "names" === this.name) {
                     
                     var creatorParent = {
-                        family:Item[variable],
-                        isInstitution:true,
+                        literal:Item[variable],
                         multi:{
                             _key:{}
                         }
@@ -252,8 +251,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     if (Item.multi && Item.multi._keys && Item.multi._keys[variable]) {
                         for (var langTag in Item.multi._keys[variable]) {
                             creatorChild = {
-                                family:Item.multi._keys[variable][langTag],
-                                isInstitution:true
+                                literal:Item.multi._keys[variable][langTag]
                             }
                             creatorParent.multi._key[langTag] = creatorChild;
                         }
