@@ -18,10 +18,12 @@ CSL.Node.layout = {
                     // Fix up duplicate terminal punctuation, reported by Carles Pina 2010-07-15
                     var chr = suffix.slice(0, 1);
                     var topblobs = state.output.current.value().blobs;
-                    if (chr && topblobs[topblobs.length-1].strings.suffix.slice(-1) === chr) {
-                        topblobs[topblobs.length-1].strings.suffix = topblobs[topblobs.length-1].strings.suffix.slice(0, -1);
+                    if (topblobs.length) {
+                        if (chr && topblobs[topblobs.length-1].strings.suffix.slice(-1) === chr) {
+                            topblobs[topblobs.length-1].strings.suffix = topblobs[topblobs.length-1].strings.suffix.slice(0, -1);
+                        }
+                        topblobs[topblobs.length-1].strings.suffix += suffix;
                     }
-                    topblobs[topblobs.length-1].strings.suffix += suffix;
                     if (state.bibliography.opt["second-field-align"]) {
                         // closes bib_other
                         state.output.endTag("bib_other");
