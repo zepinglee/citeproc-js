@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.33",
+    PROCESSOR_VERSION: "1.1.34",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -9430,8 +9430,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
                     var creatorParent = {
-                        family:Item[variable],
-                        isInstitution:true,
+                        literal:Item[variable],
                         multi:{
                             _key:{}
                         }
@@ -9439,8 +9438,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     if (Item.multi && Item.multi._keys && Item.multi._keys[variable]) {
                         for (var langTag in Item.multi._keys[variable]) {
                             creatorChild = {
-                                family:Item.multi._keys[variable][langTag],
-                                isInstitution:true
+                                literal:Item.multi._keys[variable][langTag]
                             }
                             creatorParent.multi._key[langTag] = creatorChild;
                         }
