@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.35
+=========================
+
+- Fix a bug introduced at 1.1.33. New code for juggling
+  suffixes crashed when an empty item was encountered.
+
+=========================
 Changes in version 1.1.34
 =========================
 
