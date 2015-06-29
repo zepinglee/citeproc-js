@@ -790,7 +790,9 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
                 langTag = langTags[i];
                 if (name.multi._key[langTag]) {
                     foundTag = true;
+                    var isInstitution = name.isInstitution;
                     name = name.multi._key[langTag];
+                    name.isInstitution = isInstitution;
                     // Set name formatting params
                     name_params = this.getNameParams(langTag);
                     name_params.transliterated = true;
@@ -823,7 +825,6 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
     if (!name.given) {
         name.given = "";
     }
-    
     // var clone the item before writing into it
     name = {
         family:name.family,
