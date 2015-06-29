@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.36
+=========================
+
+- Fix further root of bug in institutiona names handling,
+  affecting first-class instititional names (not authority 
+  or committee) that have a multilingual variant.
+
+  Thanks to Zotero user bluunksaesn for reporting.
+
+=========================
 Changes in version 1.1.35
 =========================
 

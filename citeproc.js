@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.35",
+    PROCESSOR_VERSION: "1.1.36",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -8047,7 +8047,9 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
                 langTag = langTags[i];
                 if (name.multi._key[langTag]) {
                     foundTag = true;
+                    var isInstitution = name.isInstitution;
                     name = name.multi._key[langTag];
+                    name.isInstitution = isInstitution;
                     name_params = this.getNameParams(langTag);
                     name_params.transliterated = true;
                     break;
@@ -9439,7 +9441,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     };
                     if (Item.multi && Item.multi._keys && Item.multi._keys[variable]) {
                         for (var langTag in Item.multi._keys[variable]) {
-                            creatorChild = {
+                            var creatorChild = {
                                 literal:Item.multi._keys[variable][langTag]
                             }
                             creatorParent.multi._key[langTag] = creatorChild;
