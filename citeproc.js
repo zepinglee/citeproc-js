@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.36",
+    PROCESSOR_VERSION: "1.1.37",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -13250,16 +13250,16 @@ CSL.Output.Formats.prototype.rtf = {
         .replace("\t", "\\tab{}", "g");
     },
     "@passthrough/true": CSL.Output.Formatters.passthrough,
-    "@font-style/italic":"\\i %%STRING%%\\i0{}",
-    "@font-style/normal":"\\i0{}%%STRING%%\\i{}",
-    "@font-style/oblique":"\\i %%STRING%%\\i0{}",
-    "@font-variant/small-caps":"\\scaps %%STRING%%\\scaps0{}",
-    "@font-variant/normal":"\\scaps0{}%%STRING%%\\scaps{}",
-    "@font-weight/bold":"\\b %%STRING%%\\b0{}",
-    "@font-weight/normal":"\\b0{}%%STRING%%\\b{}",
+    "@font-style/italic":"{\\i{}%%STRING%%}",
+    "@font-style/normal":"{\\i0{}%%STRING%%}",
+    "@font-style/oblique":"{\\i{}%%STRING%%}",
+    "@font-variant/small-caps":"{\\scaps %%STRING%%}",
+    "@font-variant/normal":"{\\scaps0{}%%STRING%%}",
+    "@font-weight/bold":"{\\b{}%%STRING%%}",
+    "@font-weight/normal":"{\\b0{}%%STRING%%}",
     "@font-weight/light":false,
     "@text-decoration/none":false,
-    "@text-decoration/underline":"\\ul %%STRING%%\\ul0{}",
+    "@text-decoration/underline":"{\\ul{}%%STRING%%}",
     "@vertical-align/baseline":false,
     "@vertical-align/sup":"\\super %%STRING%%\\nosupersub{}",
     "@vertical-align/sub":"\\sub %%STRING%%\\nosupersub{}",
