@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">De White, E. G. (2008). <i>Patriarcas y profetas</i>. (Staff de la ACES, Trans., A. D. Orrego, Ed.) (Quinta edición.). Buenos Aires: Asociación Casa Editora Sudamericana.</div>
+  <div class="csl-entry">de White, E. G. (2008). <i>Patriarcas y profetas</i>. (Staff de la ACES, Trans., A. D. Orrego, Ed.) (Quinta edición.). Buenos Aires: Asociación Casa Editora Sudamericana.</div>
 </div>
 <<===== RESULT =====<<
 
