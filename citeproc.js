@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.37",
+    PROCESSOR_VERSION: "1.1.38",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -7754,11 +7754,6 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             merged = this._join([family, second], sort_sep);
             blob = this._join([merged, suffix], sort_sep);
         } else {
-            if (this.state.tmp.area === "bibliography" && !this.state.tmp.term_predecessor && non_dropping_particle) {
-                if (!has_hyphenated_non_dropping_particle) {
-                    non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
-                }
-            }
             if (has_hyphenated_non_dropping_particle) {
                 first = this._join([non_dropping_particle, family], "");
             } else {
@@ -7784,15 +7779,6 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             }
         }
         if (!this.state.tmp.term_predecessor) {
-            if (!given && this.state.tmp.area === "bibliography") {
-                if (!dropping_particle && non_dropping_particle) {
-                    if (!has_hyphenated_non_dropping_particle) {
-                        non_dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, non_dropping_particle.blobs)
-                    }
-                } else if (dropping_particle) {
-                    dropping_particle.blobs = CSL.Output.Formatters["capitalize-first"](this.state, dropping_particle.blobs)
-                }
-            }
         }
         if (has_hyphenated_non_dropping_particle) {
             second = this._join([non_dropping_particle, family], "");

@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.38
+=========================
+
+- Do not capitalize leading particles in the bibliography.
+
+  https://forums.zotero.org/discussion/50199/lowercase-first-letter-of-the-surname
+
+=========================
 Changes in version 1.1.37
 =========================
 
