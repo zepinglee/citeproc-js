@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.39
+=========================
+
+- Fix title case to work in Internet Explorer.
+
+  Thanks to David Laurenson for reporting the fault.
+
+=========================
 Changes in version 1.1.38
 =========================
 

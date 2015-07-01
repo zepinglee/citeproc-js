@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.38",
+    PROCESSOR_VERSION: "1.1.39",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1392,7 +1392,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.localeConfigure(langspec);
     function makeRegExp(lst) {
         var lst = lst.slice();
-        var ret = new RegExp( "((?:[?!:]*\\s+|-|^)(?:" + lst.join("|") + ")(?=[!?:]*\\s+|-|$))" );
+        var ret = new RegExp( "(?:(?:[?!:]*\\s+|-|^)(?:" + lst.join("|") + ")(?=[!?:]*\\s+|-|$))", "g");
         return ret;
     }
     this.locale[this.opt.lang].opts["skip-words-regexp"] = makeRegExp(this.locale[this.opt.lang].opts["skip-words"]);
@@ -12960,14 +12960,28 @@ CSL.Output.Formatters.title = function (state, string) {
         }
         return word;
     }
+    function splitme (str, rex) {
+        var res, seps = str.match(rex);
+        if (seps) {
+            var splits = str.split(rex);
+            res = [splits[0]];
+            for (var i=0; i<seps.length; i++) {
+                res.push(seps[i]);
+                res.push(splits[i+1]);
+            }
+        } else {
+            res = [str];
+        }
+        return res;
+    }
     var str = doppel.string;
-    var lst = str.split(state.locale[state.opt.lang].opts["skip-words-regexp"])
+    var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
         if (lst[i].match(/^[:?!]/)) {
             lst[i] = capitalise(lst[i]);
         }
     }
-    if (!lst[0]) {
+    if (!lst[0] && lst[1]) {
         lst[1] = capitalise(lst[1]);
     }
     if (lst.length > 2 && !lst[lst.length-1]) {
