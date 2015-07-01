@@ -137,9 +137,24 @@ CSL.Output.Formatters.title = function (state, string) {
         }
         return word;
     }
+    function splitme (str, rex) {
+        var res, seps = str.match(rex);
+        if (seps) {
+            var splits = str.split(rex);
+            res = [splits[0]];
+            for (var i=0; i<seps.length; i++) {
+                res.push(seps[i]);
+                res.push(splits[i+1]);
+            }
+        } else {
+            res = [str];
+        }
+        return res;
+    }
     // Split on skip words
     var str = doppel.string;
-    var lst = str.split(state.locale[state.opt.lang].opts["skip-words-regexp"])
+    var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
+
     // Capitalise stop-words that occur after a colon
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
         if (lst[i].match(/^[:?!]/)) {
@@ -147,7 +162,7 @@ CSL.Output.Formatters.title = function (state, string) {
         }
     }
     // Capitalise stop-words if they are the first or last words
-    if (!lst[0]) {
+    if (!lst[0] && lst[1]) {
         lst[1] = capitalise(lst[1]);
     }
     if (lst.length > 2 && !lst[lst.length-1]) {
