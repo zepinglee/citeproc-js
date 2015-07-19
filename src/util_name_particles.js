@@ -16,7 +16,6 @@ CSL.parseParticles = function(){
         ["aḍ-", [[[0,1], null],[null,[0,1]]]],
         ["aṭ-", [[[0,1], null],[null,[0,1]]]],
         ["aẓ-", [[[0,1], null],[null,[0,1]]]],
-        ["al-", [[[0,1], null],[null,[0,1]]]],
         ["an-", [[[0,1], null],[null,[0,1]]]],
         ["At-", [[[0,1], null],[null,[0,1]]]],
         ["Ath-", [[[0,1], null],[null,[0,1]]]],
