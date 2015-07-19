@@ -167,6 +167,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         this.opt.development_extensions.rtl_support = true;
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
+        this.opt.development_extensions.force_jurisdiction = true;
     }
     // We seem to have two language specs flying around:
     //   this.opt["default-locale"], and this.opt.lang
@@ -726,6 +727,11 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     var isLegalType = ["bill","legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
+    if (this.opt.development_extensions.force_jurisdiction && isLegalType) {
+        if (!Item.jurisdiction) {
+            Item.jurisdiction = "us";
+        }
+    }
     if (!isLegalType && Item.title && this.sys.getAbbreviation) {
         var noHints = false;
         if (!Item.jurisdiction) {
