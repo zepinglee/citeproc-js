@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.40
+=========================
+
+- Introduce force_jurisdiction option for extended styles.
+
+- Replace String() methods with RegExp() for compatibility
+
+    https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+
+- Fix typo in particle parsing struct (affecting al- and von), and add
+  a list of Arabic particles
+  
+    https://forums.zotero.org/discussion/30974/any-idea-why-an-a-author-comes-last-in-the-bibliography/#Item_30
+
+=========================
 Changes in version 1.1.39
 =========================
 
