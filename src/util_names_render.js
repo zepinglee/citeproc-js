@@ -420,7 +420,12 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         if (["Lord", "Lady"].indexOf(name.given) > -1) {
             sort_sep = ", ";
         }
-        if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1 && !has_hyphenated_non_dropping_particle) {
+
+        // XXX Needs a more robust solution than this
+        // XXX See https://forums.zotero.org/discussion/30974/any-idea-why-an-a-author-comes-last-in-the-bibliography/#Item_30
+
+        //if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1 && !has_hyphenated_non_dropping_particle) {
+        if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
             // Drop non-dropping particle
             //second = this._join([given, dropping_particle, non_dropping_particle], " ");
             second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
