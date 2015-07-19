@@ -42,7 +42,7 @@ CSL.DateParser = function () {
     jmd = /(\u6708|\u5E74)/g;
     // japanese regular expression for year
     //jy = /\u65E5$/;
-    jy = /\u65E5/;
+    jy = /\u65E5/g;
     // japanese regular expression for range
     jr = /\u301c/g;
 
@@ -208,11 +208,11 @@ CSL.DateParser = function () {
         m = txt.match(jmd);
         if (m) {
             txt = txt.replace(/\s+/, "", "g");
-            txt = txt.replace(jy, "", "g");
-            txt = txt.replace(jmd, "-", "g");
-            txt = txt.replace(jr, "/", "g");
-            txt = txt.replace("-/", "/", "g");
-            txt = txt.replace(/-$/,"", "g");
+            txt = txt.replace(jy, "");
+            txt = txt.replace(jmd, "-");
+            txt = txt.replace(jr, "/");
+            txt = txt.replace(/\-\//g, "/");
+            txt = txt.replace(/-$/g,"");
 
             // Not IE6 safe, applying tortuous workaround
             slst = txt.split(jiysplitter);

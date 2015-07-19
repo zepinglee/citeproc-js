@@ -30,7 +30,7 @@ CSL.Output.Formats.prototype.html = {
         return text.replace(/&/g, "&#38;")
             .replace(/</g, "&#60;")
             .replace(/>/g, "&#62;")
-            .replace("  ", "&#160; ", "g")
+            .replace(/\s\s/g, "\u00A0 ")
             .replace(CSL.SUPERSCRIPTS_REGEXP,
                      function(aChar) {
                          // return "&#60;sup&#62;" + CSL.SUPERSCRIPTS[aChar] + "&#60;/sup&#62;";

@@ -350,7 +350,7 @@ CSL.NameOutput.prototype._isRomanesque = function (name) {
     // 1 = mixed content
     // 2 = pure romanesque
     var ret = 2;
-    if (!name.family.replace('"', '', 'g').match(CSL.ROMANESQUE_REGEXP)) {
+    if (!name.family.replace(/\"/g, '').match(CSL.ROMANESQUE_REGEXP)) {
         ret = 0;
     }
     if (!ret && name.given && name.given.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)) {

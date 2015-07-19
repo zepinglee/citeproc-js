@@ -37,7 +37,7 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
                 if (m) {
                     myname = myname.slice(m[1].length);
                 }
-                myname = myname.replace(CSL.ROMANESQUE_NOT_REGEXP, "", "g");
+                myname = myname.replace(CSL.ROMANESQUE_NOT_REGEXP, "");
                 if (!myname) {
                     break;
                 }

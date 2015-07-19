@@ -39,7 +39,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         } else {
             ret = [lst[0]];
             for (pos = 1, len = lst.length; pos < len; pos += 1) {
-                ret.push(m[pos - 1].replace(/\s*\-\s*/, "-", "g"));
+                ret.push(m[pos - 1].replace(/\s*\-\s*/g, "-"));
                 ret.push(lst[pos]);
             }
         }
@@ -64,7 +64,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
                 }
             }
             if ("string" === typeof lst[pos]) {
-                lst[pos] = lst[pos].replace("-", range_delimiter, "g");
+                lst[pos] = lst[pos].replace(/\-/g, range_delimiter);
             }
         }
         return lst;
