@@ -70,7 +70,6 @@ CSL.parseParticles = function(){
         ["En-", [[[0,1], null],[null,[0,1]]]],
         ["'s-", [[[0,1], null]]],
         ["'t", [[[0,1], null]]],
-        ["abbé d'", [[[0,2], null]]],
         ["af", [[[0,1], null]]],
         ["al", [[[0,1], null]]],
         ["auf den", [[[0,2], null]]],
@@ -330,6 +329,26 @@ CSL.parseParticles = function(){
                     // Set element(s) as non-dropping-particle
                     name["non-dropping-particle"] = particles.slice(pSet.positions[1][0], pSet.positions[1][1]).join(" ");
                 }
+            }
+        }
+        if (!name.suffix && name.given) {
+            m = name.given.match(/(\s*,!*\s*)/);
+            if (m) {
+                idx = name.given.indexOf(m[1]);
+                var possible_suffix = name.given.slice(idx + m[1].length);
+                var possible_comma = name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "");
+                if (possible_suffix.length <= 3) {
+                    if (possible_comma.length === 2) {
+                        name["comma-suffix"] = true;
+                    }
+                    name.suffix = possible_suffix;
+                } else if (!name["dropping-particle"] && name.given) {
+                    // Covers the case where "et al." is explicitly used in the
+                    // authorship information of the work.
+                    name["dropping-particle"] = possible_suffix;
+                    name["comma-dropping-particle"] = ",";
+                }
+                name.given = name.given.slice(0, idx);
             }
         }
         if (normalizeApostrophe) {

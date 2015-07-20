@@ -163,6 +163,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.require_explicit_legal_case_title_short = false;
     this.development_extensions.spoof_institutional_affiliations = false;
     this.development_extensions.force_jurisdiction = false;
+    this.development_extensions.parse_names = true;
 };
 
 CSL.Engine.Tmp = function () {
