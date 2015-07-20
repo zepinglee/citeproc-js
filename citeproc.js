@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.40",
+    PROCESSOR_VERSION: "1.1.41",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3380,6 +3380,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.require_explicit_legal_case_title_short = false;
     this.development_extensions.spoof_institutional_affiliations = false;
     this.development_extensions.force_jurisdiction = false;
+    this.development_extensions.parse_names = true;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -7747,7 +7748,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         if (["Lord", "Lady"].indexOf(name.given) > -1) {
             sort_sep = ", ";
         }
-        if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1 && !has_hyphenated_non_dropping_particle) {
+        if (["always", "display-and-sort"].indexOf(this.state.opt["demote-non-dropping-particle"]) > -1) {
             second = this._join([given, dropping_particle], (name["comma-dropping-particle"] + " "));
             second = this._join([second, non_dropping_particle], " ");
             if (second && this.given) {
@@ -7988,34 +7989,11 @@ CSL.NameOutput.prototype._parseName = function (name) {
     } else {
         noparse = false;
     }
-    if (!name["non-dropping-particle"] && name.family && !noparse && name.given) {
-        if (!name["static-particles"]) {
-            CSL.parseParticles(name, true);
-        }
-    }
-    if (!name.suffix && name.given) {
-        m = name.given.match(/(\s*,!*\s*)/);
-        if (m) {
-            idx = name.given.indexOf(m[1]);
-            var possible_suffix = name.given.slice(idx + m[1].length);
-            var possible_comma = name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "");
-            if (possible_suffix.length <= 3) {
-                if (possible_comma.length === 2) {
-                    name["comma-suffix"] = true;
-                }
-                name.suffix = possible_suffix;
-            } else if (!name["dropping-particle"] && name.given) {
-                name["dropping-particle"] = possible_suffix;
-                name["comma-dropping-particle"] = ",";
+    if (this.state.opt.development_extensions.parse_names) {
+        if (!name["non-dropping-particle"] && name.family && !noparse && name.given) {
+            if (!name["static-particles"]) {
+                CSL.parseParticles(name, true);
             }
-            name.given = name.given.slice(0, idx);
-        }
-    }
-    if (!name["dropping-particle"] && name.given) {
-        m = name.given.match(/(\s+)([a-z][ \'\u2019a-z]*)$/);
-        if (m) {
-            name.given = name.given.slice(0, (m[1].length + m[2].length) * -1);
-            name["dropping-particle"] = m[2];
         }
     }
 };
@@ -14341,7 +14319,6 @@ CSL.parseParticles = function(){
         ["aḍ-", [[[0,1], null],[null,[0,1]]]],
         ["aṭ-", [[[0,1], null],[null,[0,1]]]],
         ["aẓ-", [[[0,1], null],[null,[0,1]]]],
-        ["al-", [[[0,1], null],[null,[0,1]]]],
         ["an-", [[[0,1], null],[null,[0,1]]]],
         ["At-", [[[0,1], null],[null,[0,1]]]],
         ["Ath-", [[[0,1], null],[null,[0,1]]]],
@@ -14396,7 +14373,6 @@ CSL.parseParticles = function(){
         ["En-", [[[0,1], null],[null,[0,1]]]],
         ["'s-", [[[0,1], null]]],
         ["'t", [[[0,1], null]]],
-        ["abbé d'", [[[0,2], null]]],
         ["af", [[[0,1], null]]],
         ["al", [[[0,1], null]]],
         ["auf den", [[[0,2], null]]],
@@ -14644,6 +14620,24 @@ CSL.parseParticles = function(){
                 if (pSet.positions[1] !== null) {
                     name["non-dropping-particle"] = particles.slice(pSet.positions[1][0], pSet.positions[1][1]).join(" ");
                 }
+            }
+        }
+        if (!name.suffix && name.given) {
+            m = name.given.match(/(\s*,!*\s*)/);
+            if (m) {
+                idx = name.given.indexOf(m[1]);
+                var possible_suffix = name.given.slice(idx + m[1].length);
+                var possible_comma = name.given.slice(idx, idx + m[1].length).replace(/\s*/g, "");
+                if (possible_suffix.length <= 3) {
+                    if (possible_comma.length === 2) {
+                        name["comma-suffix"] = true;
+                    }
+                    name.suffix = possible_suffix;
+                } else if (!name["dropping-particle"] && name.given) {
+                    name["dropping-particle"] = possible_suffix;
+                    name["comma-dropping-particle"] = ",";
+                }
+                name.given = name.given.slice(0, idx);
             }
         }
         if (normalizeApostrophe) {

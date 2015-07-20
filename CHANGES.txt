@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.41
+=========================
+
+- Introduce option to disable the parsing of names in the
+  processor (delegating to the calling application)
+
+    https://forums.zotero.org/discussion/30974?page=1#Item_46
+
+=========================
 Changes in version 1.1.40
 =========================
 
