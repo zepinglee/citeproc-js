@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.41",
+    PROCESSOR_VERSION: "1.1.42",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -13279,7 +13279,7 @@ CSL.Output.Formats.prototype.rtf = {
         return str+"\\tab ";
     },
     "@display/right-inline": function (state, str) {
-        return str+"\\line\r\n";
+        return str+"\r\n";
     },
     "@display/indent": function (state, str) {
         return "\n\\tab "+str+"\\line\r\n";
