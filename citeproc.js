@@ -14381,7 +14381,7 @@ CSL.parseParticles = function(){
         ["aus'm", [[null, [0,1]]]],
         ["ben", [[null, [0,1]]]],
         ["bin", [[null, [0,1]]]],
-        ["d'", [[[0,1], null]],[[null,[0,1]]]],
+        ["d'", [[[0,1], null],[null,[0,1]]]],
         ["da", [[null, [0,1]]]],
         ["dall'", [[null, [0,1]]]],
         ["das", [[[0,1], null]]],
