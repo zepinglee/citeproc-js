@@ -96,17 +96,9 @@ CSL.Transform = function (state) {
 
         // Convert identifiers to human-readable form before "abbreviating"
         // In MLZ w/legal support, we won't see "authority" here, only "jurisdiction"
-        if (variable === "jurisdiction" && basevalue && state.sys.getHumanForm) {
+        if (variable === "jurisdiction" && basevalue && state.sys.suppressJurisdictions) {
             // Use external method to look up base value in identifier table
-            var jcode = basevalue;
             basevalue = state.sys.getHumanForm(basevalue);
-            if (state.sys.suppressJurisdictions) {
-                // Optionally suppress jurisdictions in human-readable form delivered
-                // by getHumanForm()
-                // suppressJurisdictions() should carry the jurisdictions
-                // to be supressed as a closure.
-                basevalue = state.sys.suppressJurisdictions(jcode,basevalue);
-            }
         }
 
         // Lazy retrieval of abbreviations.
@@ -222,6 +214,9 @@ CSL.Transform = function (state) {
             ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             // RefMe bug report: print("x (8)");
         }
+        if (field === 'jurisdiction') {
+            ret.name = state.sys.suppressJurisdictions(Item[field], ret.name);
+        }
         return ret;
     }
 
@@ -308,6 +303,15 @@ CSL.Transform = function (state) {
             }
         }
         return false;
+    }
+
+    var suppressJurisdictions;
+    if (state.sys.suppressJurisdictions) {
+        suppressJurisdictions = state.sys.suppressJurisdictions;
+    } else {
+        suppressJurisdictions = function(codeStr, humanStr) {
+            return humanStr;
+        }
     }
 
     // Return function appropriate to selected options
