@@ -1,6 +1,32 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.45
+=========================
+
+- Make name parsing completely case-insensitive. This change
+  aims only to put a consistent behaviour in place, as a basis
+  for further discussion as we make our way through the name-particle
+  morass.
+
+    https://forums.zotero.org/discussion/42687/found-a-bug-with-name-starting-with-de/#Item_6
+
+- Provide for discretionary classification of "de las" and "de la" as all-non-dropping
+  or dropping/non-dropping, depending on user entry.
+
+    https://forums.zotero.org/discussion/30974/2/any-idea-why-an-a-author-comes-last-in-the-bibliography/#Item_12
+
+- Remove uppercase versions of Arabic name particles. Maybe be restored if case
+  sensitivity is introduced.
+
+=========================
+Changes in version 1.1.44
+=========================
+
+- Suppress jurisdictions based on machine-readable code,
+  regardless of multilingual variant.
+
+=========================
 Changes in version 1.1.43
 =========================
 
