@@ -128,22 +128,33 @@ CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
 CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
     var i, ilen;
     str = str.replace(/\s+'\s+/g," ’ ");
-    str = str.replace(/([^\s])\u2018/g,"$1’");
+    // The of these replacements is not needed.
+    //str = str.replace(/([^\s])\u2018/g,"$1’");
+    // The second is inappropriate - the user needing backtick transliteration hints
+    // must write them as such in the data.
     //str = str.replace(/([^\s])\u2018/g,"$1\u02bb");
     if (str.indexOf(this.quotechars[0]) > -1) {
-        for (i = 0, ilen = 2; i < ilen; i += 1) {
-            if (this.quotechars[i + 2]) {
-                str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
+        var oldStr = null;
+        while (str !== oldStr) {
+            oldStr = str;
+            for (i = 0, ilen = 2; i < ilen; i += 1) {
+                if (this.quotechars[i + 2]) {
+                    str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
+                }
             }
         }
     }
     if (str.indexOf(this.quotechars[1]) > -1) {
-        for (i = 0, ilen = 2; i < ilen; i += 1) {
-            if (this.quotechars[i + 4]) {
-                if (i === 0) {
-                    str = str.replace(this.quotechars[i + 4], " " + this.quotechars[1]);
-                } else {
-                    str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+        var oldStr = null;
+        while (str !== oldStr) {
+            oldStr = str;
+            for (i = 0, ilen = 2; i < ilen; i += 1) {
+                if (this.quotechars[i + 4]) {
+                    if (i === 0) {
+                        str = str.replace(this.quotechars[i + 4], " " + this.quotechars[1]);
+                    } else {
+                        str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+                    }
                 }
             }
         }
@@ -264,6 +275,10 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
         head = strs.slice(0, (badTagPos - 1));
         tail = strs.slice((badTagPos + 2));
         sep = strs[badTagPos];
+        // print("XX OH: "+badTagPos+" "+strs);
+        //if ("undefined" === typeof sep) {
+        //    print("XXX CiteProc error while parsing string: [" + origStr + "]");
+        //}
         //CSL.debug("sep [1] is: ("+sep+") for badTagPos: ("+badTagPos+") in strs ("+strs+")");
         if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
             params = this.openToDecorations[sep];
