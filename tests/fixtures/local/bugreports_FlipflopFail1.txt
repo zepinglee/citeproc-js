@@ -4,8 +4,13 @@ bibliography
 
 
 
+It's wrong, but this is what you get with parsing U+2018 backticks
+as nested quotes. Glottal stop hints should be entered as U+02BB.
+
 >>===== RESULT =====>>
->>[0] John Smith [Stephen AuthorA]기타, <i>Title One</i>,
+<div class="csl-bib-body">
+  <div class="csl-entry">Hay Dprots“e Ev Ts‘arizmi K“aghak‘akanut“yune (1890-Akan T”t’, Pastat”ght’eri Hraparakum) (Armenian School and the Policy of Tsarism, 1980”s, Publication of Documents)</div>
+</div>
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
