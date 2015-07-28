@@ -94,13 +94,6 @@ CSL.Transform = function (state) {
             myabbrev_family = "collection-title";
         }
 
-        // Convert identifiers to human-readable form before "abbreviating"
-        // In MLZ w/legal support, we won't see "authority" here, only "jurisdiction"
-        if (variable === "jurisdiction" && basevalue && state.sys.suppressJurisdictions) {
-            // Use external method to look up base value in identifier table
-            basevalue = state.sys.getHumanForm(basevalue);
-        }
-
         // Lazy retrieval of abbreviations.
         value = "";
         if (state.sys.getAbbreviation) {
