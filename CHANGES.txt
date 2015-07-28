@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.46
+=========================
+
+- Fix parsing crash.
+
+    https://forums.zotero.org/discussion/17317/2/sep-is-undefined/#Item_18
+
+
+=========================
 Changes in version 1.1.45
 =========================
 
