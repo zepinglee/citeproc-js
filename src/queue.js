@@ -323,7 +323,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
             blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
         for (var i = blob.decorations.length - 1; i > -1; i += -1) {
-            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
+            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] !== "false") {
                 blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote");
             }
             if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
@@ -797,7 +797,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
     function blobHasDescendantQuotes(blob) {
         if (blob.decorations) {
             for (var i=0,ilen=blob.decorations.length;i<ilen;i++) {
-                if (blob.decorations[i][0] === '@quotes') {
+                if (blob.decorations[i][0] === '@quotes' && blob.decorations[i][1] !== "false") {
                     return true;
                 }
             }
@@ -1063,9 +1063,12 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                     // Consider writing out the matching child from blobHasDescendant functions.
                     // It should save some cycles, and produce the same result.
 
-                    var allowMigration = blobHasDescendantQuotes(child);
-                    if (!allowMigration && PUNCT[parentChar]) {
+                    var allowMigration = false;
+                    if (PUNCT[parentChar]) {
                         allowMigration = blobHasDescendantMergingPunctuation(parentChar,child);
+                        if (!allowMigration && punctInQuote) {
+                            allowMigration = blobHasDescendantQuotes(child);
+                        }
                     }
                     if (allowMigration) {
                         if (PUNCT[parentChar]) {
@@ -1196,7 +1199,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             var quoteSwap = false;
             for (var j=0,jlen=child.decorations.length;j<jlen;j++) {
                 var decoration = child.decorations[j];
-                if (decoration[0] === "@quotes") {
+                if (decoration[0] === "@quotes" && decoration[1] !== "false") {
                     quoteSwap = true;
                 }
             }
