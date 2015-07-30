@@ -572,13 +572,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         for (n = 0, nlen = CSL.POSITION_TEST_VARS.length; n < nlen; n += 1) {
                             var param = CSL.POSITION_TEST_VARS[n];
                             if (item[1][param] !== oldvalue[param]) {
-                                if (param === 'first-reference-note-number') {
-                                    rerunAkeys[this.registry.registry[myid].ambig] = true;
+                                if (this.registry.registry[myid]) {
+                                    if (param === 'first-reference-note-number') {
+                                        rerunAkeys[this.registry.registry[myid].ambig] = true;
+                                        this.tmp.taintedItemIDs[myid] = true;
+                                    }
                                 }
                                 this.tmp.taintedCitationIDs[onecitation.citationID] = true;
-                                if (param === 'first-reference-note-number') {
-                                    this.tmp.taintedItemIDs[myid] = true;
-                                }
                             }
                         }
                     }
