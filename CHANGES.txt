@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.48
+=========================
+
+- Do not swap punctuation across quotes="false" boundary.
+
+- Do not migrate terminal punctuation across quotes boundary.
+
+=========================
+Changes in version 1.1.47
+=========================
+
+- Avoid first-entry exception with styles that use first-reference-note-number.
+
+    https://forums.zotero.org/discussion/39244/error-mlz-citation-processor-only-works-second-time/#Item_27
+
+=========================
 Changes in version 1.1.46
 =========================
 

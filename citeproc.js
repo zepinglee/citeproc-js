@@ -1,3 +1,73 @@
+/*
+ * Copyright (c) 2009-2014 Frank G. Bennett
+ * 
+ * Unless otherwise indicated, the files in this repository are subject
+ * to the Common Public Attribution License Version 1.0 (the “License”);
+ * you may not use this file except in compliance with the License. You
+ * may obtain a copy of the License at:
+ * 
+ * http://bitbucket.org/fbennett/citeproc-js/src/tip/LICENSE.
+ * 
+ * (See also the note on attribution information below)
+ * 
+ * The License is based on the Mozilla Public License Version 1.1 but
+ * Sections 1.13, 14 and 15 have been added to cover use of software over a
+ * computer network and provide for limited attribution for the
+ * Original Developer. In addition, Exhibit A has been modified to be
+ * consistent with Exhibit B.
+ * 
+ * Software distributed under the License is distributed on an “AS IS”
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See
+ * the License for the specific language governing rights and limitations
+ * under the License.
+ * 
+ * The Original Code is the citation formatting software known as
+ * "citeproc-js" (an implementation of the Citation Style Language
+ * [CSL]), including the original test fixtures and software located
+ * under the ./tests subdirectory of the distribution archive.
+ * 
+ * The Original Developer is not the Initial Developer and is
+ * __________. If left blank, the Original Developer is the Initial
+ * Developer.
+ * 
+ * The Initial Developer of the Original Code is Frank Bennett. All
+ * portions of the code written by Frank Bennett are Copyright (c)
+ * 2009-2014 Frank Bennett.
+ * 
+ * ***
+ * 
+ * Alternatively, the files in this repository may be used under the
+ * terms of the GNU Affero General Public License (the [AGPLv3] License),
+ * in which case the provisions of [AGPLv3] License are applicable
+ * instead of those above. If you wish to allow use of your version of
+ * this file only under the terms of the [AGPLv3] License and not to
+ * allow others to use your version of this file under the CPAL, indicate
+ * your decision by deleting the provisions above and replace them with
+ * the notice and other provisions required by the [AGPLv3] License. If
+ * you do not delete the provisions above, a recipient may use your
+ * version of this file under either the CPAL or the [AGPLv3] License.
+ * 
+ * ***
+ * 
+ * Attribution Information (CPAL)
+ * 
+ * Attribution Copyright Notice: [no separate attribution copyright notice is required]
+ * 
+ * Attribution Phrase: "Citations by CSL (citeproc-js)"
+ * 
+ * Attribution URL: http://citationstyles.org/
+ * 
+ * Graphic Image: [there is no requirement to display a Graphic Image]
+ * 
+ * Display of Attribution Information is REQUIRED in Larger Works which
+ * are defined in the CPAL as a work which combines Covered Code or
+ * portions thereof with code not governed by the terms of the CPAL.
+ * 
+ * Display of Attribution Information is also REQUIRED on Associated
+ * Websites.
+ * 
+ * [ citeproc-js license :: version 1.1 :: 2012.06.30 ]
+ */
 if (!Array.indexOf) {
     Array.prototype.indexOf = function (obj) {
         var i, len;
@@ -10,7 +80,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.46",
+    PROCESSOR_VERSION: "1.1.48",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -2507,7 +2577,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
             blob.blobs = blob.blobs.replace(/\.([^a-z]|$)/g, "$1");
         }
         for (var i = blob.decorations.length - 1; i > -1; i += -1) {
-            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] === "true") {
+            if (blob.decorations[i][0] === "@quotes" && blob.decorations[i][1] !== "false") {
                 blob.punctuation_in_quote = this.state.getOpt("punctuation-in-quote");
             }
             if (!blob.blobs.match(CSL.ROMANESQUE_REGEXP)) {
@@ -2908,7 +2978,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
     function blobHasDescendantQuotes(blob) {
         if (blob.decorations) {
             for (var i=0,ilen=blob.decorations.length;i<ilen;i++) {
-                if (blob.decorations[i][0] === '@quotes') {
+                if (blob.decorations[i][0] === '@quotes' && blob.decorations[i][1] !== "false") {
                     return true;
                 }
             }
@@ -3121,9 +3191,12 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             if (i === (parent.blobs.length - 1)) {
                 if (true || !someChildrenAreNumbers) {
                     var parentChar = parentStrings.suffix.slice(0, 1);
-                    var allowMigration = blobHasDescendantQuotes(child);
-                    if (!allowMigration && PUNCT[parentChar]) {
+                    var allowMigration = false;
+                    if (PUNCT[parentChar]) {
                         allowMigration = blobHasDescendantMergingPunctuation(parentChar,child);
+                        if (!allowMigration && punctInQuote) {
+                            allowMigration = blobHasDescendantQuotes(child);
+                        }
                     }
                     if (allowMigration) {
                         if (PUNCT[parentChar]) {
@@ -3215,7 +3288,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             var quoteSwap = false;
             for (var j=0,jlen=child.decorations.length;j<jlen;j++) {
                 var decoration = child.decorations[j];
-                if (decoration[0] === "@quotes") {
+                if (decoration[0] === "@quotes" && decoration[1] !== "false") {
                     quoteSwap = true;
                 }
             }
@@ -3887,13 +3960,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         for (n = 0, nlen = CSL.POSITION_TEST_VARS.length; n < nlen; n += 1) {
                             var param = CSL.POSITION_TEST_VARS[n];
                             if (item[1][param] !== oldvalue[param]) {
-                                if (param === 'first-reference-note-number') {
-                                    rerunAkeys[this.registry.registry[myid].ambig] = true;
+                                if (this.registry.registry[myid]) {
+                                    if (param === 'first-reference-note-number') {
+                                        rerunAkeys[this.registry.registry[myid].ambig] = true;
+                                        this.tmp.taintedItemIDs[myid] = true;
+                                    }
                                 }
                                 this.tmp.taintedCitationIDs[onecitation.citationID] = true;
-                                if (param === 'first-reference-note-number') {
-                                    this.tmp.taintedItemIDs[myid] = true;
-                                }
                             }
                         }
                     }
