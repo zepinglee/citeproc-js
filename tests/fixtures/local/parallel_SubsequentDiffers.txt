@@ -6,7 +6,7 @@ citation
 
 >>===== RESULT =====>>
 ..[0] <i>Australian Competition and Consumer Commission v Metcash Trading Ltd</i> (2011) 282 ALR 464, 198 FCR 297.
-..[1] ‘My Other Book.’
+..[1] ‘My Other Book’.
 >>[2] Metcash I (2011) 282 ALR 464.
 <<===== RESULT =====<<
 
