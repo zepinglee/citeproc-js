@@ -207,8 +207,11 @@ CSL.Transform = function (state) {
             ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             // RefMe bug report: print("x (8)");
         }
-        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
-            ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
+        if (field === 'jurisdiction') {
+            ret.name = state.sys.getHumanForm(Item[field]);
+            if (CSL.getSuppressedJurisdictionName) {
+                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
+            }
         }
         return ret;
     }
