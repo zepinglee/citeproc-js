@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.48",
+    PROCESSOR_VERSION: "1.1.49",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -10899,8 +10899,11 @@ CSL.Transform = function (state) {
         if (!ret.name && use_default) {
             ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
         }
-        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
-            ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
+        if (field === 'jurisdiction') {
+            ret.name = state.sys.getHumanForm(Item[field]);
+            if (CSL.getSuppressedJurisdictionName) {
+                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
+            }
         }
         return ret;
     }
