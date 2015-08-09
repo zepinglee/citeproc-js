@@ -5,6 +5,7 @@ CSL.Engine.Opt = function () {
     this.mode = "html";
     this.dates = {};
     this.jurisdictions_seen = {};
+    this.suppressedJurisdictions = {};
     this["locale-sort"] = [];
     this["locale-translit"] = [];
     this["locale-translat"] = [];

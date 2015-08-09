@@ -22,9 +22,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if (CSL.getAbbreviation) {
         this.sys.getAbbreviation = CSL.getAbbreviation;
     }
-    if (CSL.suppressJurisdictions) {
-        this.sys.suppressJurisdictions = CSL.suppressJurisdictions;
-    }
     if (this.sys.stringCompare) {
         CSL.stringCompare = this.sys.stringCompare;
     }
@@ -154,8 +151,8 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
     this.opt.class = this.opt.xclass;
     this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
-    if (CSL.setSuppressJurisdictions) {
-        CSL.setSuppressJurisdictions(this.opt.styleID);
+    if (CSL.setSuppressedJurisdictions) {
+        CSL.setSuppressedJurisdictions(this.opt.styleID, this.opt.suppressedJurisdictions);
     }
     this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
 

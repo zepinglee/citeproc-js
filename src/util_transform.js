@@ -207,8 +207,8 @@ CSL.Transform = function (state) {
             ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             // RefMe bug report: print("x (8)");
         }
-        if (field === 'jurisdiction') {
-            ret.name = state.sys.suppressJurisdictions(Item[field], ret.name);
+        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
+            ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
         }
         return ret;
     }
@@ -296,15 +296,6 @@ CSL.Transform = function (state) {
             }
         }
         return false;
-    }
-
-    var suppressJurisdictions;
-    if (state.sys.suppressJurisdictions) {
-        suppressJurisdictions = state.sys.suppressJurisdictions;
-    } else {
-        suppressJurisdictions = function(codeStr, humanStr) {
-            return humanStr;
-        }
     }
 
     // Return function appropriate to selected options
