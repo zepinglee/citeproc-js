@@ -158,60 +158,61 @@ CSL.Transform = function (state) {
         return ret;
     };
 
-    // Internal function
+    // Internal functions
+    function resetJurisdictionName() {
+    }
+
     function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
         var usedOrig = stopOrig;
 
         if (!Item[field]) {
-            // RefMe bug report: print("x (1)");
             return {name:"", usedOrig:stopOrig};
         }
         ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
-        // RefMe bug report: print("x (2)");
 
         opts = state.opt[locale_type];
+        var hasVal = false;
+        var jurisdictionName = false;
         if (locale_type === 'locale-orig') {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
-                // RefMe bug report: print("x (3)");
             } else {
                 ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
-                // RefMe bug report: print("x (4)");
             }
-            return ret;
+            hasVal = true;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
             // If we want the original, or if we don't have any specific guidance and we 
             // definitely want output, just return the original value.
-            // RefMe bug report: print("x (5): "+field);
-            return {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+            var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+            hasVal = true;
         }
 
-        for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
-            // Fallback from more to less specific language tag
-            opt = opts[i];
-            o = opt.split(/[\-_]/)[0];
-            if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
-                ret.name = Item.multi._keys[field][opt];
-                ret.locale = o;
-                // RefMe bug report: print("x (6)");
-                break;
-            } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
-                ret.name = Item.multi._keys[field][o];
-                ret.locale = o;
-                // RefMe bug report: print("x (7)");
-                break;
+        if (!hasVal) {
+            for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
+                opt = opts[i];
+                o = opt.split(/[\-_]/)[0];
+                if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
+                    ret.name = Item.multi._keys[field][opt];
+                    ret.locale = o;
+                    if (field === 'jurisdiction') jurisdictionName = ret.name;
+                    break;
+                } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
+                    ret.name = Item.multi._keys[field][o];
+                    ret.locale = o;
+                    if (field === 'jurisdiction') jurisdictionName = ret.name;
+                    break;
+                }
+            }
+            if (!ret.name && use_default) {
+                ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             }
         }
-        if (!ret.name && use_default) {
-            ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
-            // RefMe bug report: print("x (8)");
-        }
-        if (field === 'jurisdiction') {
-            ret.name = state.sys.getHumanForm(Item[field]);
-            if (CSL.getSuppressedJurisdictionName) {
-                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
+        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
+            if (ret.name && !jurisdictionName) {
+                jurisdictionName = this.sys.getHumanForm(Item[field]);
             }
+            ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
         }
         return ret;
     }
