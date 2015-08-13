@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.49",
+    PROCESSOR_VERSION: "1.1.50",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -10873,37 +10873,44 @@ CSL.Transform = function (state) {
         }
         ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
         opts = state.opt[locale_type];
+        var hasVal = false;
+        var jurisdictionName = false;
         if (locale_type === 'locale-orig') {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
             } else {
                 ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
             }
-            return ret;
+            hasVal = true;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
-            return {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+            var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+            hasVal = true;
         }
-        for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
-            opt = opts[i];
-            o = opt.split(/[\-_]/)[0];
-            if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
-                ret.name = Item.multi._keys[field][opt];
-                ret.locale = o;
-                break;
-            } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
-                ret.name = Item.multi._keys[field][o];
-                ret.locale = o;
-                break;
+        if (!hasVal) {
+            for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
+                opt = opts[i];
+                o = opt.split(/[\-_]/)[0];
+                if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
+                    ret.name = Item.multi._keys[field][opt];
+                    ret.locale = o;
+                    if (field === 'jurisdiction') jurisdictionName = ret.name;
+                    break;
+                } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
+                    ret.name = Item.multi._keys[field][o];
+                    ret.locale = o;
+                    if (field === 'jurisdiction') jurisdictionName = ret.name;
+                    break;
+                }
+            }
+            if (!ret.name && use_default) {
+                ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             }
         }
-        if (!ret.name && use_default) {
-            ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
-        }
-        if (field === 'jurisdiction') {
-            ret.name = state.sys.getHumanForm(Item[field]);
-            if (CSL.getSuppressedJurisdictionName) {
-                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], ret.name);
+        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
+            if (ret.name && !jurisdictionName) {
+                jurisdictionName = state.sys.getHumanForm(Item[field]);
             }
+            ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
         }
         return ret;
     }
