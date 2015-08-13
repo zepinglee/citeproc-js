@@ -159,9 +159,6 @@ CSL.Transform = function (state) {
     };
 
     // Internal functions
-    function resetJurisdictionName() {
-    }
-
     function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
         var usedOrig = stopOrig;
@@ -210,7 +207,7 @@ CSL.Transform = function (state) {
         }
         if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
             if (ret.name && !jurisdictionName) {
-                jurisdictionName = this.sys.getHumanForm(Item[field]);
+                jurisdictionName = state.sys.getHumanForm(Item[field]);
             }
             ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
         }
