@@ -72,6 +72,7 @@ CSL.parseParticles = function(){
         ["En-", [[[0,1], null],[null,[0,1]]]],
         ["'s-", always_non_dropping_1],
         ["'t", always_non_dropping_1],
+        ["aan de", always_non_dropping_1],
         ["af", [[[0,1], null]]],
         ["al", [[[0,1], null]]],
         ["auf den", [[[0,2], null]]],
@@ -247,13 +248,16 @@ CSL.parseParticles = function(){
 
     function composeRegularExpressions () {
         composeParticleLists();
-        REX.family = new RegExp("^((?:" + LIST.family.space.join("|") + ")(\\s+)|(?:" + LIST.family.nospace.join("|") + "([^\\s]))).*", "i");
+        // Case insensitivity vs case sensitivity
+        //REX.family = new RegExp("^((?:" + LIST.family.space.join("|") + ")(\\s+)|(?:" + LIST.family.nospace.join("|") + "([^\\s]))).*", "i");
+        REX.family = new RegExp("^((?:" + LIST.family.space.join("|") + ")(\\s+)|(?:" + LIST.family.nospace.join("|") + "([^\\s]))).*");
         REX.given.full_comma = new RegExp(".*?(,[\\s]*)(" + LIST.given.full.join("|") + ")$", "i");
         REX.given.full_lower = new RegExp(".*?([ ]+)(" + LIST.given.full.join("|") + ")$");
-        X = "Tom du".match(REX.given.full_lower)
         var allInTheFamily = LIST.family.space
         for (var key in LIST.given.partial) {
-            REX.given.partial[key] = new RegExp(".*?(\\s+)(" + LIST.given.partial[key].join("|") + ")$", "i");
+            // Case insensitivity vs case sensitivity
+            //REX.given.partial[key] = new RegExp(".*?(\\s+)(" + LIST.given.partial[key].join("|") + ")$", "i");
+            REX.given.partial[key] = new RegExp(".*?(\\s+)(" + LIST.given.partial[key].join("|") + ")$");
         }
     }
     composeRegularExpressions();
@@ -267,8 +271,11 @@ CSL.parseParticles = function(){
         if (m) {
             result.family.match = m[2] ? m[1] : m[3] ? m[1].slice(0,-m[3].length) : m[1];
             result.family.str = (m[2] ? m[1].slice(0,-m[2].length) : m[3] ? m[1].slice(0,-m[3].length) : m[1]);
-            if (REX.given.partial[result.family.str.toLowerCase()]) {
-                var m = REX.given.partial[result.family.str.toLowerCase()].exec(name.given);
+            // Case insensitivity vs case sensitivity
+            //if (REX.given.partial[result.family.str.toLowerCase()]) {
+            if (REX.given.partial[result.family.str]) {
+                //var m = REX.given.partial[result.family.str.toLowerCase()].exec(name.given);
+                var m = REX.given.partial[result.family.str].exec(name.given);
                 if (m) {
                     result.given.match = m[2] ? m[1] + m[2] : m[2];
                     result.given.str = m[2];
@@ -313,7 +320,9 @@ CSL.parseParticles = function(){
         particles = particles.join(" ").split(" ");
         if (particles.length) {
             var key = particles.join(" ");
-            var pInfo = CATEGORIZER[key.toLowerCase()];
+            // Case insensitivity vs case sensitivity
+            //var pInfo = CATEGORIZER[key.toLowerCase()];
+            var pInfo = CATEGORIZER[key];
             if (pInfo) {
                 for (var i=pInfo.length-1;i>-1;i--) {
                     var pSet = pInfo[i];
