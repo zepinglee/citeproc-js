@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.50",
+    PROCESSOR_VERSION: "1.1.53",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -266,7 +266,7 @@ var CSL = {
     DATE_PARTS_ALL: ["year", "month", "day", "season"],
     DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
 
-    NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix", "literal"],
+    NAME_PARTS: ["non-dropping-particle", "family", "given", "dropping-particle", "suffix", "literal"],
     DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
 
     DISAMBIGUATE_OPTIONS: [

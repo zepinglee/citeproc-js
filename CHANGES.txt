@@ -1,6 +1,35 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.53
+=========================
+
+- Fix some Italian particle classifications
+
+    https://forums.zotero.org/discussion/51783/parsing-problem-on-italian-names/
+
+=========================
+Changes in version 1.1.52
+=========================
+
+- Fix Dutch particle classifications, per:
+
+    https://forums.zotero.org/discussion/51491/double-surnames-starting-with-te-end-up-quoted-incorrect/#Comment_232339
+
+- Restore case sensitivity in names parsing.
+
+- Restore uppercase Arabic particles, pending further feedback from Arabists.
+
+=========================
+Changes in version 1.1.51
+=========================
+
+- Discriminate between dropping and non-dropping particles in
+  subsequent-author-substitute. Reported by gracile:
+
+    https://forums.zotero.org/discussion/51260/citeproc-same-author-different-particles-parsing-subsequentauthorsubstitute/
+
+=========================
 Changes in version 1.1.50
 =========================
 

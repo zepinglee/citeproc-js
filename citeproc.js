@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.50",
+    PROCESSOR_VERSION: "1.1.53",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -199,7 +199,7 @@ var CSL = {
     DATE_PARTS: ["year", "month", "day"],
     DATE_PARTS_ALL: ["year", "month", "day", "season"],
     DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
-    NAME_PARTS: ["family", "given", "dropping-particle", "non-dropping-particle", "suffix", "literal"],
+    NAME_PARTS: ["non-dropping-particle", "family", "given", "dropping-particle", "suffix", "literal"],
     DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
     DISAMBIGUATE_OPTIONS: [
         "disambiguate-add-names",
@@ -14317,6 +14317,8 @@ CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
     return ret;
 }
 CSL.parseParticles = function(){
+    var always_non_dropping_1 = [[null, [0,1]]];
+    var always_non_dropping_2 = [[null, [0,2]]];
     var PARTICLES = [
         ["al-", [[[0,1], null],[null,[0,1]]]],
         ["at-", [[[0,1], null],[null,[0,1]]]],
@@ -14352,8 +14354,43 @@ CSL.parseParticles = function(){
         ["eẓ-", [[[0,1], null],[null,[0,1]]]],
         ["el-", [[[0,1], null],[null,[0,1]]]],
         ["en-", [[[0,1], null],[null,[0,1]]]],
-        ["'s-", [[[0,1], null]]],
-        ["'t", [[[0,1], null]]],
+        ["At-", [[[0,1], null],[null,[0,1]]]],
+        ["Ath-", [[[0,1], null],[null,[0,1]]]],
+        ["Aṯ-", [[[0,1], null],[null,[0,1]]]],
+        ["Ad-", [[[0,1], null],[null,[0,1]]]],
+        ["Adh-", [[[0,1], null],[null,[0,1]]]],
+        ["Aḏ-", [[[0,1], null],[null,[0,1]]]],
+        ["Ar-", [[[0,1], null],[null,[0,1]]]],
+        ["Az-", [[[0,1], null],[null,[0,1]]]],
+        ["As-", [[[0,1], null],[null,[0,1]]]],
+        ["Ash-", [[[0,1], null],[null,[0,1]]]],
+        ["Aš-", [[[0,1], null],[null,[0,1]]]],
+        ["Aṣ-", [[[0,1], null],[null,[0,1]]]],
+        ["Aḍ-", [[[0,1], null],[null,[0,1]]]],
+        ["Aṭ-", [[[0,1], null],[null,[0,1]]]],
+        ["Aẓ-", [[[0,1], null],[null,[0,1]]]],
+        ["Al-", [[[0,1], null],[null,[0,1]]]],
+        ["An-", [[[0,1], null],[null,[0,1]]]],
+        ["Et-", [[[0,1], null],[null,[0,1]]]],
+        ["Eth-", [[[0,1], null],[null,[0,1]]]],
+        ["Eṯ-", [[[0,1], null],[null,[0,1]]]],
+        ["Ed-", [[[0,1], null],[null,[0,1]]]],
+        ["Edh-", [[[0,1], null],[null,[0,1]]]],
+        ["Eḏ-", [[[0,1], null],[null,[0,1]]]],
+        ["Er-", [[[0,1], null],[null,[0,1]]]],
+        ["Ez-", [[[0,1], null],[null,[0,1]]]],
+        ["Es-", [[[0,1], null],[null,[0,1]]]],
+        ["Esh-", [[[0,1], null],[null,[0,1]]]],
+        ["Eš-", [[[0,1], null],[null,[0,1]]]],
+        ["Eṣ-", [[[0,1], null],[null,[0,1]]]],
+        ["Eḍ-", [[[0,1], null],[null,[0,1]]]],
+        ["Eṭ-", [[[0,1], null],[null,[0,1]]]],
+        ["Eẓ-", [[[0,1], null],[null,[0,1]]]],
+        ["El-", [[[0,1], null],[null,[0,1]]]],
+        ["En-", [[[0,1], null],[null,[0,1]]]],
+        ["'s-", always_non_dropping_1],
+        ["'t", always_non_dropping_1],
+        ["aan de", always_non_dropping_1],
         ["af", [[[0,1], null]]],
         ["al", [[[0,1], null]]],
         ["auf den", [[[0,2], null]]],
@@ -14364,19 +14401,20 @@ CSL.parseParticles = function(){
         ["bin", [[null, [0,1]]]],
         ["d'", [[[0,1], null],[null,[0,1]]]],
         ["da", [[null, [0,1]]]],
-        ["dall'", [[null, [0,1]]]],
+        ["dell'", always_non_dropping_1],
+        ["dall'", always_non_dropping_1],
         ["das", [[[0,1], null]]],
         ["de", [[null, [0,1]],[[0,1],null]]],
         ["de la", [[null, [0,2]], [[0,1], [1,2]]]],
         ["de las", [[null, [0,2]], [[0,1], [1,2]]]],
         ["de li", [[[0,2], null]]],
-        ["de'", [[[0,1], null]]],
-        ["degli", [[[0,1], null]]],
-        ["dei", [[[0,1], null]]],
+        ["de'", always_non_dropping_1],
+        ["degli", always_non_dropping_1],
+        ["dei", always_non_dropping_1],
         ["del", [[null, [0,1]]]],
         ["dela", [[[0,1], null]]],
-        ["della", [[[0,1], null]]],
-        ["dello", [[[0,1], null]]],
+        ["della", always_non_dropping_1],
+        ["dello", always_non_dropping_1],
         ["den", [[[0,1], null]]],
         ["der", [[[0,1], null]]],
         ["des", [[null, [0,1]],[[0,1], null]]],
@@ -14386,10 +14424,10 @@ CSL.parseParticles = function(){
         ["du", [[[0,1], null]]],
         ["el", [[[0,1], null]]],
         ["il", [[[0,1], null]]],
-        ["in 't", [[[0,2], null]]],
-        ["in de", [[[0,2], null]]],
-        ["in der", [[[0,2], null]]],
-        ["in het", [[[0,2], null]]],
+        ["in 't", always_non_dropping_2],
+        ["in de", always_non_dropping_2],
+        ["in der", always_non_dropping_2],
+        ["in het", always_non_dropping_2],
         ["lo", [[[0,1], null]]],
         ["les", [[[0,1], null]]],
         ["l'", [[null, [0,1]]]],
@@ -14404,27 +14442,27 @@ CSL.parseParticles = function(){
         ["sen", [[[0,1], null]]],
         ["st.", [[null, [0,1]]]],
         ["ste.", [[null, [0,1]]]],
-        ["te", [[[0,1], null]]],
-        ["ten", [[[0,1], null]]],
-        ["ter", [[[0,1], null]]],
-        ["uit de", [[[0,2], null]]],
-        ["uit den", [[[0,2], null]]],
-        ["v.d.", [[null, [0,1]]]],
-        ["van", [[null, [0,1]]]],
-        ["van de", [[null, [0,2]]]],
-        ["van den", [[null, [0,2]]]],
-        ["van der", [[null, [0,2]]]],
-        ["van het", [[null, [0,2]]]],
-        ["vander", [[null, [0,1]]]],
-        ["vd", [[null, [0,1]]]],
+        ["te", always_non_dropping_1],
+        ["ten", always_non_dropping_1],
+        ["ter", always_non_dropping_1],
+        ["uit de", always_non_dropping_2],
+        ["uit den", always_non_dropping_2],
+        ["v.d.", always_non_dropping_1],
+        ["van", always_non_dropping_1],
+        ["van de", always_non_dropping_2],
+        ["van den", always_non_dropping_2],
+        ["van der", always_non_dropping_2],
+        ["van het", always_non_dropping_2],
+        ["vander", always_non_dropping_1],
+        ["vd", always_non_dropping_1],
         ["ver", [[null, [0,1]]]],
         ["von", [[[0,1], null],[null,[0,1]]]],
         ["von der", [[[0,2], null]]],
         ["von dem",[[[0,2], null]]],
         ["von und zu", [[[0,3], null]]],
         ["von zu", [[[0,2], null]]],
-        ["v.", [[[0,1], null]]],
-        ["v", [[[0,1], null]]],
+        ["v.", always_non_dropping_1],
+        ["v", always_non_dropping_1],
         ["vom", [[[0,1], null]]],
         ["vom und zum", [[[0,3], null]]],
         ["z", [[[0,1], null]]],
@@ -14522,13 +14560,12 @@ CSL.parseParticles = function(){
     }
     function composeRegularExpressions () {
         composeParticleLists();
-        REX.family = new RegExp("^((?:" + LIST.family.space.join("|") + ")(\\s+)|(?:" + LIST.family.nospace.join("|") + "([^\\s]))).*", "i");
+        REX.family = new RegExp("^((?:" + LIST.family.space.join("|") + ")(\\s+)|(?:" + LIST.family.nospace.join("|") + "([^\\s]))).*");
         REX.given.full_comma = new RegExp(".*?(,[\\s]*)(" + LIST.given.full.join("|") + ")$", "i");
         REX.given.full_lower = new RegExp(".*?([ ]+)(" + LIST.given.full.join("|") + ")$");
-        X = "Tom du".match(REX.given.full_lower)
         var allInTheFamily = LIST.family.space
         for (var key in LIST.given.partial) {
-            REX.given.partial[key] = new RegExp(".*?(\\s+)(" + LIST.given.partial[key].join("|") + ")$", "i");
+            REX.given.partial[key] = new RegExp(".*?(\\s+)(" + LIST.given.partial[key].join("|") + ")$");
         }
     }
     composeRegularExpressions();
@@ -14541,8 +14578,8 @@ CSL.parseParticles = function(){
         if (m) {
             result.family.match = m[2] ? m[1] : m[3] ? m[1].slice(0,-m[3].length) : m[1];
             result.family.str = (m[2] ? m[1].slice(0,-m[2].length) : m[3] ? m[1].slice(0,-m[3].length) : m[1]);
-            if (REX.given.partial[result.family.str.toLowerCase()]) {
-                var m = REX.given.partial[result.family.str.toLowerCase()].exec(name.given);
+            if (REX.given.partial[result.family.str]) {
+                var m = REX.given.partial[result.family.str].exec(name.given);
                 if (m) {
                     result.given.match = m[2] ? m[1] + m[2] : m[2];
                     result.given.str = m[2];
@@ -14585,13 +14622,13 @@ CSL.parseParticles = function(){
         particles = particles.join(" ").split(" ");
         if (particles.length) {
             var key = particles.join(" ");
-            var pInfo = CATEGORIZER[key.toLowerCase()];
+            var pInfo = CATEGORIZER[key];
             if (pInfo) {
                 for (var i=pInfo.length-1;i>-1;i--) {
                     var pSet = pInfo[i];
                     if (!result.family.str) result.family.str = "";
                     if (!result.given.str) result.given.str = "";
-                    if (result.given.str.toLowerCase() === pSet.strings[0] && result.family.str.toLowerCase() === pSet.strings[1]) {
+                    if (result.given.str === pSet.strings[0] && result.family.str === pSet.strings[1]) {
                         break;
                     }
                 }
