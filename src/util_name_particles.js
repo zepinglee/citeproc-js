@@ -6,7 +6,7 @@ CSL.parseParticles = function(){
     var always_non_dropping_2 = [[null, [0,2]]];
     var dropping_alt_non_dropping_1 = [[[0,1], null],[null,[0,1]]];
     var non_dropping_alt_dropping_1 = [[null, [0,1]],[[0,1],null]];
-    var dropping_2_alt_dropping_1_non_dropping_1 = [[null, [0,2]], [[0,1], [1,2]]];
+    var non_dropping_2_alt_dropping_1_non_dropping_1 = [[null, [0,2]], [[0,1], [1,2]]];
     var PARTICLES = [
         ["af", always_dropping_1],
         ["al", always_dropping_1],
@@ -83,8 +83,8 @@ CSL.parseParticles = function(){
         ["van den", always_non_dropping_2],
         ["van der", always_non_dropping_2],
         ["van het", always_non_dropping_2],
-        ["de la", dropping_2_alt_dropping_1_non_dropping_1],
-        ["de las", dropping_2_alt_dropping_1_non_dropping_1],
+        ["de la", non_dropping_2_alt_dropping_1_non_dropping_1],
+        ["de las", non_dropping_2_alt_dropping_1_non_dropping_1],
         ["Ad-", dropping_alt_non_dropping_1],
         ["Adh-", dropping_alt_non_dropping_1],
         ["Al-", dropping_alt_non_dropping_1],
