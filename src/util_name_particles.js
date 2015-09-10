@@ -9,6 +9,7 @@ CSL.parseParticles = function(){
     var either_2 = [[null, [0,2]],[[0,2],null]];
     var either_1_dropping_best = [[[0,1],null],[null, [0,1]]];
     var either_2_dropping_best = [[[0,2],null],[null, [0,2]]];
+    var either_3_dropping_best = [[[0,3],null],[null, [0,3]]];
     var non_dropping_2_alt_dropping_1_non_dropping_1 = [[null, [0,2]], [[0,1], [1,2]]];
     var PARTICLES = [
         ["'s", always_non_dropping_1],
