@@ -254,7 +254,9 @@ CSL.Node["date-part"] = {
                     if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
                         number.range_prefix = state.getTerm("citation-range-delimiter");
                     }
-                    if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
+                    if (state[state.tmp.area].opt.cite_group_delimiter) {
+                        number.successor_prefix = state[state.tmp.area].opt.cite_group_delimiter;
+                    } else if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
                         number.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
                     } else {
                         number.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
