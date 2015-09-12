@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.56
+=========================
+
+- Fix bug in cite-group-delimiter:
+
+    https://forums.zotero.org/discussion/51942/citeprog-bug-citegroupdelimiter-and-yearsuffix/#Item_1
+
+=========================
 Changes in version 1.1.55
 =========================
 
