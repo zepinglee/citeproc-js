@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.57
+=========================
+
+- Simplify particle parsing mechanism, following discussion in these threads:
+
+    https://forums.zotero.org/discussion/51491/double-surnames-starting-with-te-end-up-quoted-incorrect/
+    https://forums.zotero.org/discussion/51783/1/parsing-problem-on-italian-names/
+
+- Move list of particles to a separate processor segment, for access by
+  calling applications that implement their own parsing methods.
+
+=========================
 Changes in version 1.1.56
 =========================
 
