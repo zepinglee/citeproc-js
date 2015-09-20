@@ -393,7 +393,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         suffix_sep = " ";
     }
     var romanesque = this._isRomanesque(name);
-    var has_hyphenated_non_dropping_particle = (non_dropping_particle && ["\u2019", "\'", "-"].indexOf(non_dropping_particle.blobs.slice(-1)) > -1);
+    var has_hyphenated_non_dropping_particle = (non_dropping_particle && ["\u2019", "\'", "-", " "].indexOf(non_dropping_particle.blobs.slice(-1)) > -1);
     var blob, merged, first, second;
     if (romanesque === 0) {
         // XXX handle affixes for given and family
