@@ -318,7 +318,7 @@ CSL.parseParticles = function(){
                         nameObj["comma-suffix"] = true;
                     }
                     nameObj.suffix = possible_suffix;
-                } else if (!name["dropping-particle"] && nameObj.given) {
+                } else if (!nameObj["dropping-particle"] && nameObj.given) {
                     // Covers the case where "et al." is explicitly used in the
                     // authorship information of the work.
                     nameObj["dropping-particle"] = possible_suffix;
