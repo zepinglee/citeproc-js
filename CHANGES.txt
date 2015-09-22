@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.58
+=========================
+
+- Fix a bug in the particle parser, ouch. Thanks to Emiliano Heyns
+  for reporting it:
+
+    https://bitbucket.org/fbennett/citeproc-js/issues/183/particle-parser-returning-non-dropping
+
+=========================
 Changes in version 1.1.57
 =========================
 

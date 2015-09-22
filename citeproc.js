@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.57",
+    PROCESSOR_VERSION: "1.1.58",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -14625,7 +14625,7 @@ CSL.parseParticles = function(){
                         nameObj["comma-suffix"] = true;
                     }
                     nameObj.suffix = possible_suffix;
-                } else if (!name["dropping-particle"] && nameObj.given) {
+                } else if (!nameObj["dropping-particle"] && nameObj.given) {
                     nameObj["dropping-particle"] = possible_suffix;
                     nameObj["comma-dropping-particle"] = ",";
                 }
