@@ -330,14 +330,20 @@ CSL.parseParticles = function(){
     }
     return function(nameObj) {
         // Extract and set non-dropping particle(s) from family name field
-        [hasLastParticle, lastNameValue, lastParticleList] = splitParticles(nameObj.family);
+        var res = splitParticles(nameObj.family);
+        var hasLastParticle = res[0];
+        var lastNameValue = res[1];
+        var lastParticleList = res[2];
         nameObj.family = lastNameValue;
         var nonDroppingParticle = trimLast(lastParticleList.join(""));
         if (nonDroppingParticle) {
             nameObj['non-dropping-particle'] = nonDroppingParticle;
         }
         // Extract and set dropping particle(s) from given name field
-        [hasFirstParticle, firstNameValue, firstParticleList] = splitParticles(nameObj.given, true);
+        var res = splitParticles(nameObj.given, true);
+        var hasFirstParticle = res[0];
+        var firstNameValue = res[1];
+        var firstParticleList = res[2];
         nameObj.given = firstNameValue;
         var droppingParticle = firstParticleList.join("").trim();
         if (droppingParticle) {
