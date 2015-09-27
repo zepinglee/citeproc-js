@@ -313,16 +313,16 @@ CSL.parseParticles = function(){
                 idx = nameObj.given.indexOf(m[1]);
                 var possible_suffix = nameObj.given.slice(idx + m[1].length);
                 var possible_comma = nameObj.given.slice(idx, idx + m[1].length).replace(/\s*/g, "");
-                if (possible_suffix.length <= 3) {
+                if (possible_suffix.replace(/\./g, "") === 'et al' && !nameObj["dropping-particle"]) {
+                    // This hack covers the case where "et al." is explicitly used in the
+                    // authorship information of the work.
+                    nameObj["dropping-particle"] = possible_suffix;
+                    nameObj["comma-dropping-particle"] = ",";
+                } else {
                     if (possible_comma.length === 2) {
                         nameObj["comma-suffix"] = true;
                     }
                     nameObj.suffix = possible_suffix;
-                } else if (!nameObj["dropping-particle"] && nameObj.given) {
-                    // Covers the case where "et al." is explicitly used in the
-                    // authorship information of the work.
-                    nameObj["dropping-particle"] = possible_suffix;
-                    nameObj["comma-dropping-particle"] = ",";
                 }
                 nameObj.given = nameObj.given.slice(0, idx);
             }
@@ -339,6 +339,8 @@ CSL.parseParticles = function(){
         if (nonDroppingParticle) {
             nameObj['non-dropping-particle'] = nonDroppingParticle;
         }
+        // Split off suffix first of all
+        parseSuffix(nameObj);
         // Extract and set dropping particle(s) from given name field
         var res = splitParticles(nameObj.given, true);
         var hasFirstParticle = res[0];
@@ -349,6 +351,5 @@ CSL.parseParticles = function(){
         if (droppingParticle) {
             nameObj['dropping-particle'] = droppingParticle;
         }
-        parseSuffix(nameObj);
     }
 }();
