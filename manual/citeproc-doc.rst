@@ -15,21 +15,23 @@ __ http://citationstylist.org/documentation/
 
 .. class:: info-version
 
-   version 1.00##a113##
+   version 1.00##a114##
 
 .. class:: info-date
 
-   =D=25 August 2011=D=
+   =D=26 September 2015=D=
 
 .. class:: contributors
 
    Author of this manual
-       * Frank G. Bennett, Jr.
+       * Frank Bennett
 
    With important feedback from
        * Bruce D'Arcus
+       * Nick Bart
        * Lennard Fuller
        * Fergus Gallagher
+       * Emiliano Heyns
        * Simon Kornblith
        * Carles Pina
        * Dan Stillman
@@ -50,27 +52,23 @@ Introduction
 
 This is the site administrator's manual for ``citeproc-js``, a
 JavaScript implementation of the |link| `Citation Style Language
-(CSL)`__ used by Zotero, Mendeley and other popular reference
-tools to format citations in any of the hundreds of styles
-supplied by the CSL style repository. [#]_  The processor complies with version 1.0 of the CSL
+(CSL)`__ [#]_ The processor complies with version 1.0.1 of the CSL
 specification, has been written and tested as an independent module,
-and can be run by any ECMAscript-compliant interpreter.  With an
-appropriate supporting environment, [#]_ it can be deployed in a
-browser plugin, as part of a desktop application, or as a formatting
-backend for a website or web service.
+and can be run by any ECMAscript-compliant interpreter. It has
+deployed in browser plugins, desktop applications, and in server-side
+configurations.
 
 __ http://citationstyles.org/
 
-This manual covers the basic operation of the processor, including the
-command set, the local system code that must be supplied by the integrator, and the
-expected format of input data.  In addition, notes are provided on the test suite,
-on the infrastructure requirements for running the processor in particular
-environments, and on extended functionality that is available to address certain 
-special requirements.
+This manual covers the processor command set, the expected format of
+input data, and placeholder functions to be supplied by the calling
+application. [#]_ In addition, notes are provided on the test suite, on
+the infrastructure requirements for running the processor in
+particular environments, and on extended functionality that is
+available to address certain special requirements.
 
-Comments and complaints relating to this document and to the processor itself
-will be gladly received and eventually despatched with.  The best channel
-for providing feedback and getting help is the |link| `project mailing list`_.
+Comments regarding the processor and this document should be filed on
+the |link| `project issue tracker`__.
 
 .. class:: first
 
@@ -83,28 +81,23 @@ for providing feedback and getting help is the |link| `project mailing list`_.
        `Locally defined system functions`_ 
        and `Data Input`_ below.
 
-.. _`project mailing list`: http://groups.google.com/group/citeproc-js
+__ https://bitbucket.org/fbennett/citeproc-js/issues?status=new&status=open
 
-__ http://zotero.org/styles
+__ https://zotero.org/styles
 
-__ http://bitbucket.org/bdarcus/csl-utils/
+__ https://bitbucket.org/bdarcus/csl-utils/
 
 -----------------------------
 Setup and System Requirements
 -----------------------------
 
-The processor is written in JavaScript, one of the interesting
-features of which is the lack of a standard method of I/O.  As a
-result, the processor must be wrapped in other code to get data in and
-out of it, and every installation is going to be a little different.
-This manual does not cover the nitty-gritty of setting up the
-environment for running the processor in a particular environment, but
-the basic system requirements are described below.  If you get stuck
-and want advice, or if you find something in this manual that is out
-of date or just wrong, please feel free to drop a line to the |link|
-`project list`_.
+The processor is written in JavaScript, which lacks a standard I/O
+method, and so must be wrapped in code for that purpose. If you get
+stuck and want advice, or if you find something in this manual that is
+out of date or just wrong, please feel free to post to the 
+|link| `tracker`_.
 
-.. _`project list`: http://groups.google.com/group/citeproc-js
+.. _`tracker`: https://bitbucket.org/fbennett/citeproc-js/issues?status=new&status=open
 
 ###################################
 Getting the ``citeproc-js`` sources
@@ -160,21 +153,24 @@ to run.  These may be installed using the following command
 JavaScript interpreters
 #######################
 
-An ECMAscript (JavaScript) interpreter is required to run the
-processor.  The processor code itself is written in such a way
-that it should run on a wide variety of platforms, including
-Rhino, Spidermonkey and Tracemonkey on the server side, and
-browsers such as Internet Explorer (version 6 and higher), Firefox,
-Mozilla, Safari, Google Chrome, and Opera.
+The processor will run in any modern ECMAscript (JavaScript)
+interpreter.
 
 To parse the XML files used to define locales and styles, the
-processor relies on a supplementary module, which must be loaded into
-the same JavaScript context as the processor itself.  The
-``xmle4x.js`` and ``xmldom.js`` files shipped with the processor
-source should serve this purpose.  The ``xmle4x.js`` module supports
-Gecko-based browsers, and other platforms that embed the Rhino,
-Spidermonkey or Tracemonkey JavaScript interpreters.  The ``xmldom.js``
-module supports all other browsers as well.
+processor relies on supplementary code, which must be loaded into the
+same JavaScript context as the processor itself.  The ``xmldom.js``
+and ``xmljson.js`` files shipped with the processor source serve that
+purpose. The ``xmldom.js`` file is suitable for browser environments
+or system that provide DOM support.  Use the ``xmljson.js`` code in
+environments (such as ``node.js`` or a Firefox worker thread) where
+native DOM is not available. The XML code of CSL locales and styles
+can be converted to JSON on the fly using `csl-json-walker`_
+(JavaScript code that relies on DOM access) or by using `makejson.py`_
+(a Python script) for external pre-processing.
+
+.. _csl-json-walker: https://github.com/fbennett/csl-json-walker/blob/master/walker.js
+
+.. _makejson.py: https://bitbucket.org/fbennett/citeproc-js/src/tip/tools/makejson.py?at=default&fileviewer=file-view-default
 
 For an example of working code, the source behind the 
 |link| `processor demo page`__ may be useful as a reference.
@@ -190,17 +186,62 @@ in the section `Running the test suite`_ at the end of this manual.
 Loading runtime code
 ####################
 
-The primary source code of the processor is located under ``./src``,
-for ease of maintenance.  The files necessary for use in a runtime
-environment are catenated, in the appropriate sequence, in the
-``citeproc.js`` file, located in the root of the source archive.  This
-file and the test fixtures can be refreshed using the 
-``./test.py -r`` command.
+The primary source code of the processor is in the ``./src``
+subdirectory.  Files for use in a runtime environment are catenated,
+in the appropriate sequence, in the ``citeproc.js`` file, located in
+the root of the source archive.  This file and the test fixtures can
+be refreshed using the ``./test.py -r`` command.
 
 To build the processor, the ``citeproc.js`` source code should be
 loaded into the JavaScript interpreter context, together with a
 ``sys`` object provided by the integrator (see below), and the desired
 CSL style (as a string).
+
+---------------
+Processor modes
+---------------
+
+The processor recognizes styles that validate under two separate
+schemata, distinguished by the ``version`` attribute on the ``cs:style``
+node. Styles with ``version="1.0"`` (or ``version="1.0.1"``) are assumed
+to be valid under the `CSL Specification`_, and by default the processor will
+adopt internal settings that produce compliant output.
+
+.. _CSL Specification: http://docs.citationstyles.org/en/stable/specification.html
+
+Styles with ``version="1.1mlz1"`` are assumed to be valid under the
+Juris-M Schema described in the `Juris-M (CSL-m) Specification
+Supplement`_. With this version setting, internal settings of the
+processor will be adapted automatically to comply with the
+expectations of Juris-M.
+
+.. _Juris-M (CSL-m) Specification Supplement: http://citationstylist.org/docs/citeproc-js-csl.html
+
+
+--------------
+Readable Flags
+--------------
+
+The instantiated processor has several readable flags that can be used
+by the calling application to shape the user interface to the
+processor.  These include the following: [#]_
+
+######################
+``opt.sort_citations``
+######################
+
+True if the style is one that sorts citations in any way.
+
+############################
+``opt.citation_number_sort``
+############################
+
+True if citations are sorted by citation
+   
+.. [#] Note that these are information variables intended for reading
+       only; changing their value directly will have no effect on the
+       actual behavior of the processor.
+
 
 ---------------------
 Running the processor
@@ -211,10 +252,10 @@ Note that, as detailed below under `Locally defined system functions`_,
 certain local data access functions must be defined separately on an
 object supplied to the processor as its first argument.
 
-Once instantiated, a processor instance can be configured via a small
-set of runtime setter methods.  Instance methods are also used to load
-item data into the processor, and to produce output objects suitable
-for consumption by a word processor plugin, or for use in constructing
+The instantiated processor provides a small set of runtime
+configuration methods.  Instance methods are also used to load item
+data into the processor, and to produce output objects suitable for
+consumption by a word processor plugin, or for constructing
 bibliographies.  Details of these and other methods available on
 processor instances are given below.
 
@@ -222,9 +263,8 @@ processor instances are given below.
 Instantiation: ``CSL.Engine()``
 ###############################
 
-The ``CSL.Engine()`` command is invoked as shown in the code
-illustration below.  This command takes up to four arguments, two of
-them required, and two of them optional:
+The ``CSL.Engine()`` command is invoked as shown below.  The command
+takes up to four arguments (two are required, two optional):
 
 .. admonition:: Important
 
@@ -236,23 +276,24 @@ them required, and two of them optional:
 
    var citeproc = new CSL.Engine(sys, 
                                  style, 
-                                 lang)
+                                 lang,
+                                 forceLang)
 
-*sys*
-    A JavaScript object containing the functions
+*sys* (object)
+    A JavaScript object providing (at least) the functions
     ``retrieveLocale()`` and ``retrieveItem()``.
 
-*style*
-    The CSL code for a style, as XML in serialized (string) form
-    (not a filename or style name, but the code itself).
+*style* (xml string or object)
+    CSL style as serialized XML (if ``xmldom.js`` is used)
+    or as JavaScript object (if ``xmljson.js`` is used).
 
-*lang* (optional)
+*lang* (string, optional)
     A language tag compliant with RFC 4646.  Defaults to ``en``.
     Styles that contain a ``default-locale`` attribute value
     on the ``style`` node will ignore this option unless
     the ``forceLang`` argument is set to a non-nil value.
 
-*forceLang* (optional)
+*forceLang* (boolean, optional)
     When set to a non-nil value, force the use of the
     locale set in the ``lang`` argument, overriding
     any language set in the ``default-locale`` attribute
@@ -262,52 +303,42 @@ The version of the processor itself can be obtained
 from the attribute ``processor_version``.  The supported
 CSL version can be obtained from ``csl_version``.
 
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+################################
 Locally defined system functions
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+################################
 
-While ``citeproc-js`` does a great deal of the heavy lifting needed
-for correct formatting of citations and bibliographies, a certain
-amount of programming is required to prepare the environment for its
-correct operation.
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Required ``sys`` functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Two functions must be defined separately and supplied to the processor
-upon instantiation.  These functions are used by the processor to
-obtain locale and item data from the surrounding environment.  The
-exact definition of each may vary from one system to another; those
-given below assume the existence of a global ``DATA`` object in the
-context of the processor instance, and are provided only for the
-purpose of illustration.
+Two functions must be supplied to the processor upon instantiation on
+the ``sys`` object.  These functions are used by the processor to
+obtain locale and item data from the environment.  Their exact
+definition may vary.
 
 !!!!!!!!!!!!!!!!!!!!
 ``retrieveLocale()``
 !!!!!!!!!!!!!!!!!!!!
 
-The ``retrieveLocale()`` function is used internally by the processor to
-retrieve the serialized XML of a given locale.  It takes a single RFC
-4646 compliant language tag as argument, composed of a single language
-tag (``en``) or of a language tag and region subtag (``en-US``).  The
-name of the XML document in the CSL distribution that contains the
-relevant locale data may be obtained from the ``CSL.localeRegistry``
-array.  The sample function below is provided for reference
-only.
-
+The ``retrieveLocale()`` function is used internally to retrieve the
+serialized XML (or JavaScript object, if ``xmljson.js`` is used) of a
+given locale.  It takes a single RFC 4646 compliant language tag as
+argument, composed of a single language tag (``en``) or of a language
+tag and region subtag (``en-US``).
 
 .. sourcecode:: js
 
    sys.retrieveLocale = function(lang){
-	   var ret = DATA._locales[ CSL.localeRegistry[lang] ];
-	   return ret;
+	   return DATA._locales[lang];
    };
-
-
 
 !!!!!!!!!!!!!!!!!!
 ``retrieveItem()``
 !!!!!!!!!!!!!!!!!!
 
-The ``retrieveItem()`` function is used by the processor to
-fetch individual items from storage.
+The ``retrieveItem()`` function is used by the processor to fetch
+individual items from storage. The function must be synchronous with
+the processor.
 
 .. sourcecode:: js
 
@@ -315,51 +346,13 @@ fetch individual items from storage.
 	   return DATA._items[id];
    };
 
-!!!!!!!!!!!!!!!!!!!!!!
-``getAbbreviations()``
-!!!!!!!!!!!!!!!!!!!!!!
+#####################
+Configuration methods
+#####################
 
-The ``getAbbreviations()`` command is invoked by the processor
-at startup, and when the ``setAbbreviations()`` command is
-invoked on the instantiated processor.  The abbreviation list
-retrieved by the processor should have the following structure:
-
-.. sourcecode:: js
-
-   var ABBREVS = { 
-      "default": {
-         "container-title":{
-            "Journal of Irreproducible Results":"J. Irrep. Res."
-         },
-         "collection-title":{
-            "International Rescue Wildlife Series":"I.R. Wildlife Series"
-         },
-         "authority":{
-            "United States Patent and Trademark Office": "USPTO"
-		 },
-         "institution":{
-            "Bureau of Gaseous Unformed Stuff":"BoGUS"
-         },
-         "title": {},
-         "publisher": {},
-         "publisher-place": {},
-         "hereinafter": {}
-      };
-   };
-
-If the object above provides the abbreviation store for the system,
-an appropriate ``sys.getAbbreviations()`` function might look
-like this:
-
-.. sourcecode:: js
-
-   sys.getAbbreviations = function(name){
-      return ABBREVS[name];
-   };
-
-^^^^^^^^^^^^^^^^^^^^^^
-Configuration commands
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+General configuration methods
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 !!!!!!!!!!!!!!!!!!!!!
 ``setOutputFormat()``
@@ -381,95 +374,241 @@ command:
 
    citeproc.setOutputFormat("rtf");
 
-This command is specific to the ``citeproc-js`` processor
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``rebuildProcessorState()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-!!!!!!!!!!!!!!!!!!!!!!
-``setAbbreviations()``
-!!!!!!!!!!!!!!!!!!!!!!
+Rebuilds the processor from scratch, based on a cached list of
+citation objects. In a dynamic application, once the internal state of
+processor is established, citations should edited with individual
+invocations of ``processCitationCluster()``.
 
-The processor recognizes abbreviation lists for journal titles, series
-titles, authorities (such as the Supreme Court of New York), and
-institution names (such as International Business Machines).  A list
-can be set in the processor using the ``setAbbreviations()`` command,
-with the name of the list as sole argument.  The named list is fetched
-and installed by the ``sys.getAbbreviations()`` command, documented
-below under `Locally defined system functions`_.
-
-.. sourcecode:: js
-
-   citeproc.setAbbreviations("default");
-
-At runtime, whenever an abbreviation is requested but unavailable,
-an empty abbreviation entry is opened in the processor ``.transform``
-object.  Entries are keyed on the abbreviation category and the long form of
-the field value.  Abbreviation catetories are as follows: ``container-title``,
-``collection-title``, ``authority``, ``institution``, ``title``, 
-``publisher``, ``publisher-place``, ``hereinafter``.
-
-After any run of the ``makeBibliography()`` or citation rendering commands,
-the full set of registered abbreviations (including the empty entries identified at
-runtime) can be read from the processor.  For example, if the processor
-instance is named ``citeproc``, a structure as shown in `Locally defined system functions`_ 
-→ `getAbbreviations()`_ can be obtained as follows:
+Returns an array of ``[citationID,noteIndex,string]`` triples in
+document order, where ``string`` is the fully disambiguated citation
+cluster for the given document position.
 
 .. sourcecode:: js
 
-   var ABBREVS = citeproc.transform;
+   citeproc.rebuildProcessorState(citations, mode, uncitedItemIDs);
 
-The structure thus obtained can then be edited, via the user interface
-of the calling application, to alter the abbreviations applied at the
-next run of the processor.
+**citations** (object, optional)
+    An array of citation input objects in document order. Each 
+    citation object must be in the following form, with correct
+    values for ``citationID``, for each ``id``, and for ``noteIndex``.
+    Set ``noteIndex`` to ``0`` for in-text citations.
+    Default is to return an empty document update array.
 
-.. [#] For illustrations of the input syntax for the ``makeBibliography()``
-       command, see any test in the |link| `test suite`_ that uses the
-       CITATION-ITEMS environment described in the `CSL Test Suite manual`__.
+    .. sourcecode:: js
 
-__ http://gsl-nagoya-u.net/http/pub/citeproc-test.html
+       {
+          "citationID": "CITATION-1",
+          "citationItems": [
+             {
+                "id": "ITEM-1"
+             }
+          ],
+          "properties": {
+             "noteIndex": 1
+          }
+       }
+
+
+
+**mode** (string, optional)
+    One of ``text``, ``html`` or ``rtf``. The default is ``html``.
+    After invocation, the processor is returned to its previous
+    output mode setting.
+
+**uncitedItemIDs** (array, optional)
+    An array of item IDs for uncited items to be included in
+    the document bibliography, if any.
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 ``restoreProcessorState()``
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-The ``restoreProcessorState()`` command can be used to restore the
-processor state in a single operation, where citation objects,
-complete with position variables and ``sortkeys``, are available.
-The command takes a single argument, which is an array of such
-citation objects:
+This function is deprecated. Use ``rebuildProcessorState()`` instead.
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Multilingual configuration methods
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.setLangPrefsForCites()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.setLangPrefsForCiteAffixes()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.setLangTagsForCslTransliteration()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.setLangTagsForCslTranslation()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.setLangTagsForCslSort()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+######################
+Runtime function hooks
+######################
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+Optional ``sys`` functions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+!!!!!!!!!!!!!!!!!!!!!
+``getAbbreviation()``
+!!!!!!!!!!!!!!!!!!!!!
+
+The optional ``getAbbreviation()`` function returns short-forms
+and other transforms of field content. Its signature is as follows:
 
 .. sourcecode:: js
 
-   citeproc.restoreProcessorState(citations);
+   citeproc.sys.getAbbreviation(
+       styleID,
+       cacheObject,
+       jurisdiction,
+       category,
+       key,
+       noHints
+   );
 
+*styleID* (required)
+    A machine-readable identifier for the current style. This
+    allows the function to associate abbreviation sets with
+    particular styles.
 
-Uncited items must be restored separately using the ``updateUncitedItems()``
-command.
+*cacheObject* (object, required)
+    A JavaScript object from which cached values can be obtained.
+    Caching may be desired when very large abbreviation lists are
+    used.
 
-^^^^^^^^^^^^^^
-Readable Flags
-^^^^^^^^^^^^^^
+*jurisdiction* (string, required)
+    Either ``default`` or, for legal resources only, a jurisdiction
+    code drawn from the `LegalResourceRegistry`_.
 
-The instantiated processor has several readable flags that can be used
-by the calling application to shape the user interface to the
-processor.  These include the following: [#]_
+*category* (string, required)
+    The abbreviation category of the field to be matched. Categories
+    and their associated variables are as follows:
+
+    **title**
+        The title category includes ``genre``, ``event``, ``medium``
+        and ``title-short``, as well as ``title`` itself.
+
+    **collection-title**
+        This category includes ``archive`` in addition to
+        ``collection-title``.
+
+    **container-title**
+        Only the ``container-title`` variable itself is in this category.
+
+    **place**
+        Place variables are: ``publisher-place``, ``event-place``,
+        ``jurisdiction``, ``archive-place``, ``language-name``,
+        ``language-name-original``.
+
+    **institution-part**
+        Institution names in Juris-M may contain multiple elements,
+        separated by a pipe (aka field separator) ``|``. Individual
+        elements of any institution name are in this category, which
+        in Juris-M includes the ``publisher`` and ``authority`` variables.
+
+    **institution-entire**
+        The full form of Juris-M institution names is in this category.
+
+    **number**
+        All number variables. In standard CSL these are
+        ``chapter-number``, ``collection-number``, ``edition``,
+        ``issue``, ``number``, ``number-of-pages``,
+        ``number-of-volumes``, ``volume`` and ``number``. In Juris-M,
+        the following are also numbers: ``call-number``, ``page``,
+        ``page-first``, ``supplement``,
+        ``publication-number``. Abbreviation is attempted only when
+        the variable content tests ``false`` for CSL ``is-numeric``.
+
+*key* (string, required)
+    The field content to be abbreviated.
+
+*noHints* (boolean, required)
+    The function may propose abbreviated forms for newly-encountered
+    keys, using a list of words and phrases. When this toggle is set
+    to ``true``, this "hinted" abbreviation is suppressed. The processor
+    sets this toggle on titles and short titles of non-legal items.
+
+.. _LegalResourceRegistry: http://fbennett.github.io/legal-resource-registry/
 
 !!!!!!!!!!!!!!!!!!!!!!
-``opt.sort_citations``
+``sys.getHumanForm()``
 !!!!!!!!!!!!!!!!!!!!!!
 
-True if the style is one that sorts citations in any way.
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-``opt.citation_number_sort``
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+.. _Juris-M source code: https://github.com/juris-m/zotero
 
-True if citations are sorted by citation
-   
-.. [#] Note that these are information variables intended for reading
-       only; changing their value directly will have no effect on the
-       actual behavior of the processor.
+!!!!!!!!!!!!!!!!!!!!!!!!!
+``sys.getLanguageName()``
+!!!!!!!!!!!!!!!!!!!!!!!!!
 
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Legal configuration methods
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.setSuppressedJurisdictions()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``citeproc.retrieveStyleModule()``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+This function is used in Juris-M. Pending documentation here, please
+refer to the `Juris-M source code`_ for examples of its use.
+
+.. _Juris-M source code: https://github.com/juris-m/zotero
 
 
 
@@ -761,16 +900,17 @@ interactively (Endnote, Mendeley and Zotero work in this way, through
 a connection to the user's word processing software).  These two modes
 of operation are supported in ``citeproc-js`` by two separate
 commands, respectively ``appendCitationCluster()``, and
-``processCitationCluster()``.  A third, simpler command
-(``makeCitationCluster()``), is not covered by this manual.
-It is primarily useful as a tool for testing the processor, as it
-lacks any facility for position evaluation, which is needed in
-production environments. [#]_
+``processCitationCluster()``.  [#]_
 
 The ``appendCitationCluster()`` and
 ``processCitationCluster()`` commands use a similar input format
 for citation data, which is described below in the `Data Input`_
 → `Citation data object`_ section below.
+
+.. [#] A third, simpler command (``makeCitationCluster()``), is not
+       covered by this manual.  It is primarily useful as a tool for
+       testing the processor, as it lacks any facility for position
+       evaluation, which is needed in production environments.
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 ``processCitationCluster()``
@@ -1142,9 +1282,9 @@ appropriately.
 
 .. admonition:: Hint
 
-   When the romanized transliteration is selected from a multi-lingual
+   When the romanized transliteration is selected from a multilingual
    name field, the ``static-ordering`` flag is not required.  See the section
-   `Dirty Tricks`_ → `Multi-lingual content`_ below for further details.
+   `Dirty Tricks`_ → `Multilingual content`_ below for further details.
 
 Sometimes it might be desired to handle a Latin or Cyrillic
 transliteration as if it were a fixed (non-Byzantine) name.  This
@@ -1458,14 +1598,16 @@ Names
 
 Systems that use a simple two-field entry format can encode
 ``non-dropping-particle``, ``dropping-particle`` and ``suffix`` name
-sub-elements by writing them appropriately in the ``family`` or
-``given`` name fields and setting a ``parse-names`` flag on the name
-object.  The processor will then attempt to parse out the elements
-and convert them to the explicit form (as documented under `Data input`_
-→ `Names`__ above) before rendering.  With the ``parse-names`` flag,
-sub-elements are recognized as follows.
+sub-elements by including them in the ``family`` or
+``given`` name fields as illustrated below.
 
-__ `clean-names`_
+By default, the processor will attempt to parse such names into
+their component parts. Parsing can be disabled by setting the
+``parse_names`` processor configuration flag to ``false``:
+
+.. sourcecode:: js
+
+   citeproc.opt.development_extensions.parse_names = false;
 
 !!!!!!!!!!!!!!!!!!!!!!!!!
 ``non-dropping-particle``
@@ -1473,17 +1615,17 @@ __ `clean-names`_
 
 A string at the beginning of the ``family`` field consisting
 of spaces and lowercase roman or Cyrillic characters will
-be treated as a ``non-dropping-particle``.
+be treated as a ``non-dropping-particle`` (but see `Particles as part of the last name`_ below.
 
 .. sourcecode:: js
 
    { "author" : [ 
        { "family" : "van Gogh",
-         "given" : "Vincent",
-         "parse-names" : "true"
+         "given" : "Vincent"
        }
      ]
    }
+
 
 
 !!!!!!!!!!!!!!!!!!!!!
@@ -1498,8 +1640,7 @@ be treated as a ``dropping-particle``.
 
    { "author" : [ 
        { "family" : "Humboldt",
-         "given" : "Alexander von",
-         "parse-names" : "true"
+         "given" : "Alexander von"
        }
      ]
    }
@@ -1508,8 +1649,8 @@ be treated as a ``dropping-particle``.
 ``suffix`` (ordinary)
 !!!!!!!!!!!!!!!!!!!!!
 
-Content following a comma in the ``given`` name field
-will be parse out as a name ``suffix``.
+Content following the first comma in the ``given`` name field
+will be parsed out as a name ``suffix``.
 
 .. sourcecode:: js
 
@@ -1529,13 +1670,12 @@ will be parse out as a name ``suffix``.
 ``suffix`` (forced comma)
 !!!!!!!!!!!!!!!!!!!!!!!!!
 
-Modern typographical convention does not place a
-comma between suffixes such as "Jr." and the last
-name, when rendering the name in normal order:
-"John Doe Jr."  If an individual prefers that the
-traditional comma be used in rendering their name, the
-comma can be force by placing a exclamation mark
-after the comma:
+Modern typographical convention does not place a comma between
+suffixes such as "Jr." and the last name, when rendering the name in
+normal order: "John Doe Jr."  If an individual prefers that the
+traditional comma be used in rendering their name, the comma can be
+forced by placing a exclamation mark after the initial comma that
+marks the beginning of the suffix:
 
 .. sourcecode:: js
 
@@ -1547,6 +1687,23 @@ after the comma:
      ]
    }
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+``dropping-particle`` and ``suffix``
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+As noted above, a comma in the ``given`` field marks the beginning of a suffix.
+Parsing of dropping particles is limited to the portion of the ``given``
+field that precedes any comma:
+
+.. sourcecode:: js
+
+   { "author" : [ 
+       { "family" : "Moltke",
+         "given" : "Helmuth von, Sr.",
+         "parse-names" : "true"
+       }
+     ]
+   }
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Particles as part of the last name
@@ -1733,10 +1890,10 @@ __ http://bitbucket.org/bdarcus/citeproc-test/src/tip/processor-tests/humans/dis
 
 
 
-.. _`Multi-lingual content`:
+.. _`Multilingual content`:
 
 #####################
-Multi-lingual content
+Multilingual content
 #####################
 
 .. role:: sc
@@ -1753,10 +1910,10 @@ stable.
 
 
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Selecting multi-lingual variants
+Selecting multilingual variants
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For multi-lingual operation, a style may be set to request alternative
+For multilingual operation, a style may be set to request alternative
 versions and translations of the ``title`` field, and of the author
 and other name fields.  There are two methods of setting multilingual
 parameters: via ``default-locale`` (intended primarily for testing) and
@@ -1852,7 +2009,7 @@ via ``default-locale``:
 Data format
 ^^^^^^^^^^^
 
-Multi-lingual operation depends upon the presence of alternative
+Multilingual operation depends upon the presence of alternative
 representations of field content embedded in the item data.  When
 alternative field content is not availaable, the "real" field content
 is used as a fallback.  As a result, configuration of language and
@@ -2053,38 +2210,32 @@ run.  The script options are as follows:
 ``--help``: 
      List the script options with a brief description
      of each and exit
-``--tracemonkey``
-     Use the tracemonkey JS engine, rather than the Rhino
-     default.
+``--standard``
+     Run standard tests.
+``--release``
+     Bundle processor, apply license to files, and test with
+     bundled code.
 ``--cranky``
      validate style code for testing against the
      CSL schema using the ``jing`` XML tool.
 ``--grind``
      Force grinding of human-readable test code into machine-
      readable form.
-``--standard``
-     Run standard tests.
-``--release``
-     Bundle processor, apply license to files, and test with
-     bundled code.
+``--styles``
+     Run style tests only (style tests are not currently available)
 ``--processor``
      Run processor tests (cannot be used with the ``-c``, ``-g`` or ``-s``
      opts, takes only test name as single argument).
 ``--verbose``      
      Display test names during processing.
-
-The ``--tracemonkey`` option requires the ``jslibs`` JavaScript
-development environment.  The sources for ``jslibs`` can be obtained from |link| `Google Code`_.
-After installation, adjust the path to the ``jshost`` utility in ``./tests/config/test.cnf``.
-
-
-.. _`Google Code`: http://code.google.com/p/jslibs/
+``--bundle-only``      
+     Build the ``citeproc.js`` bundle and exit.
 
 ##############
 Fixture layout
 ##############
 
-For infomation on the layout of the test fixtures, see
+For information on the layout of the test fixtures, see
 the `CSL Test Suite`__ manual.
 
 __ http://gsl-nagoya-u.net/http/pub/citeproc-test.html

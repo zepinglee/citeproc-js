@@ -65,11 +65,19 @@ span.sc {
   color: black;
 }
 
-tt.literal .pre {
+tt.literal, tt.literal .pre {
   font-family: monospace;
   color: #232323;
   background: #d9d9d9;
   padding: 0px 2px 0px 2px;
+}
+
+div#table-of-contents tt.literal,
+h1 tt.literal,
+h2 tt.literal,
+h3 tt.literal,
+h4 tt.literal {
+  background: white;
 }
 
 a { 
