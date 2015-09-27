@@ -366,14 +366,7 @@ doh.register("%s.%s", [
     def runTests(self,bundle=False):
         cp = ConfigParser()
         cp.read(os.path.join(path("config"), "test.cnf"))
-        if self.opt.tracemonkey:
-            
-            engine = cp.get("tracemonkey","command")
-            nick = "tracemonkey"
-        elif self.opt.rhino_json:
-            engine = cp.get("rhino","command")
-            nick = "rhino-json"
-        else:
+        if True:
             engine = cp.get("rhino","command")
             nick = "rhino"
         bundleext = ""
@@ -434,10 +427,7 @@ doh.register("%s.%s", [
             os.makedirs(path("config"))
 
         if not os.path.exists(os.path.join(path("config"), "test.cnf")):
-            test_template = '''[tracemonkey]
-command: /home/bennett/src/jslibs/Linux_32_opt/jshost -u
-
-[rhino]
+            test_template = '''[rhino]
 command: java -client -jar ./rhino/js-1.7R3.jar -opt 8
 '''
             ofh = open(os.path.join(path("config"), "test.cnf"), "w+b" )
@@ -502,7 +492,7 @@ class CslTest:
                 else:
                     stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
                 self.data['csl'] = fixEndings(open(stylepath, "rb").read())
-            if element == "CSL" and self.opt.rhino_json:
+            if False and element == "CSL" and self.opt.rhino_json:
                 w = jsonwalker()
                 doc = w.makedoc(self.data['csl'])
                 self.data['csl'] = w.walktojson(doc)
@@ -673,14 +663,14 @@ if __name__ == "__main__":
     description="This script."
 
     parser = OptionParser(usage=usage,description=description,epilog="Happy testing!")
-    parser.add_option("-T", "--tracemonkey", dest="tracemonkey",
+    parser.add_option("-s", "--standard", dest="testrun",
                       default=False,
                       action="store_true", 
-                      help='Use the tracemonkey JS engine, rather than the Rhino default.')
-    parser.add_option("-J", "--rhino-json", dest="rhino_json",
+                      help='Run tests.')
+    parser.add_option("-r", "--release", dest="bundle",
                       default=False,
                       action="store_true", 
-                      help='Use the rhino JS engine with JSON input.')
+                      help='Bundle processor, apply license to files, and test with bundled code.')
     parser.add_option("-c", "--cranky", dest="cranky",
                       default=False,
                       action="store_true", 
@@ -689,18 +679,10 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Force grinding of human-readable test code into machine-readable form.')
-    parser.add_option("-s", "--standard", dest="testrun",
-                      default=False,
-                      action="store_true", 
-                      help='Run tests.')
     parser.add_option("-S", "--styles", dest="teststyles",
                       default=False,
                       action="store_true", 
                       help='Run style tests only.')
-    parser.add_option("-r", "--release", dest="bundle",
-                      default=False,
-                      action="store_true", 
-                      help='Bundle processor, apply license to files, and test with bundled code.')
     parser.add_option("-p", "--processor", dest="processor",
                       default=False,
                       action="store_true", 
@@ -713,14 +695,7 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Create the citeproc.js bundle and exit.')
-    parser.add_option("-Z", "--zotero-bundle-only", dest="makezoterobundle",
-                      default=False,
-                      action="store_true", 
-                      help='Create a citeproc_zotero.js bundle with embedded dom (not e4x) support suitable for use in Zotero, and exit.')
-    parser.add_option("-G", "--generic-bundle-only", dest="makegenericbundle",
-                      default=False,
-                      action="store_true", 
-                      help='Create a citeproc_generic.js bundle with embedded dom (not e4x) support suitable for use in most environments, and exit.')
+
     (opt, args) = parser.parse_args()
 
     if len(args) == 1:
@@ -728,17 +703,8 @@ if __name__ == "__main__":
         if m:
             args = [m.group(1), m.group(2)]
 
-    if opt.tracemonkey and opt.rhino_json:
-        print parser.print_help()
-        print "\nError: The -T and -J options cannot be used together."
-        sys.exit()
-
     bundlecount = 0
     if opt.makebundle:
-        bundlecount += 1
-    if opt.makezoterobundle:
-        bundlecount += 1
-    if opt.makegenericbundle:
         bundlecount += 1
 
     if bundlecount > 1:
@@ -752,22 +718,6 @@ if __name__ == "__main__":
         bundler.createNewBundle()
         license = ApplyLicense()
         license.apply()
-        sys.exit()
-
-    if opt.makezoterobundle:
-        bundler = Bundle(mode="zotero")
-        bundler.deleteOldBundle()
-        bundler.createNewBundle()
-        license = ApplyLicense()
-        license.apply(True)
-        sys.exit()
-
-    if opt.makegenericbundle:
-        bundler = Bundle(mode="generic")
-        bundler.deleteOldBundle()
-        bundler.createNewBundle()
-        license = ApplyLicense()
-        license.apply(True)
         sys.exit()
 
     if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
