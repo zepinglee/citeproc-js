@@ -1656,12 +1656,10 @@ will be parsed out as a name ``suffix``.
 
    { "author" : [ 
        { "family" : "King",
-         "given" : "Martin Luther, Jr.",
-         "parse-names" : "true"
+         "given" : "Martin Luther, Jr."
        }, 
        { "family" : "Gates",
-         "given" : "William Henry, III",
-         "parse-names" : "true"
+         "given" : "William Henry, III"
        }
      ]
    }
@@ -1681,8 +1679,7 @@ marks the beginning of the suffix:
 
    { "author" : [ 
        { "family" : "Bennett",
-         "given" : "Frank G.,! Jr.",
-         "parse-names" : "true"
+         "given" : "Frank G.,! Jr."
        }
      ]
    }
@@ -1699,8 +1696,7 @@ field that precedes any comma:
 
    { "author" : [ 
        { "family" : "Moltke",
-         "given" : "Helmuth von, Sr.",
-         "parse-names" : "true"
+         "given" : "Helmuth von, Sr."
        }
      ]
    }
@@ -1720,8 +1716,7 @@ name field content in double-quotes:
 
    { "author" : [ 
        { "family" : "\"van der Vlist\"",
-         "given" : "Eric",
-         "parse-names" : "true"
+         "given" : "Eric"
        }
      ]
    }
