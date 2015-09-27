@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.58",
+    PROCESSOR_VERSION: "1.1.59",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -14620,32 +14620,38 @@ CSL.parseParticles = function(){
                 idx = nameObj.given.indexOf(m[1]);
                 var possible_suffix = nameObj.given.slice(idx + m[1].length);
                 var possible_comma = nameObj.given.slice(idx, idx + m[1].length).replace(/\s*/g, "");
-                if (possible_suffix.length <= 3) {
+                if (possible_suffix.replace(/\./g, "") === 'et al' && !nameObj["dropping-particle"]) {
+                    nameObj["dropping-particle"] = possible_suffix;
+                    nameObj["comma-dropping-particle"] = ",";
+                } else {
                     if (possible_comma.length === 2) {
                         nameObj["comma-suffix"] = true;
                     }
                     nameObj.suffix = possible_suffix;
-                } else if (!nameObj["dropping-particle"] && nameObj.given) {
-                    nameObj["dropping-particle"] = possible_suffix;
-                    nameObj["comma-dropping-particle"] = ",";
                 }
                 nameObj.given = nameObj.given.slice(0, idx);
             }
         }
     }
     return function(nameObj) {
-        [hasLastParticle, lastNameValue, lastParticleList] = splitParticles(nameObj.family);
+        var res = splitParticles(nameObj.family);
+        var hasLastParticle = res[0];
+        var lastNameValue = res[1];
+        var lastParticleList = res[2];
         nameObj.family = lastNameValue;
         var nonDroppingParticle = trimLast(lastParticleList.join(""));
         if (nonDroppingParticle) {
             nameObj['non-dropping-particle'] = nonDroppingParticle;
         }
-        [hasFirstParticle, firstNameValue, firstParticleList] = splitParticles(nameObj.given, true);
+        parseSuffix(nameObj);
+        var res = splitParticles(nameObj.given, true);
+        var hasFirstParticle = res[0];
+        var firstNameValue = res[1];
+        var firstParticleList = res[2];
         nameObj.given = firstNameValue;
         var droppingParticle = firstParticleList.join("").trim();
         if (droppingParticle) {
             nameObj['dropping-particle'] = droppingParticle;
         }
-        parseSuffix(nameObj);
     }
 }();
