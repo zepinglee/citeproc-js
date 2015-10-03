@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.60
+=========================
+
+- Avoid erroneous disambiguation when non-"issued" date variables
+  are the only difference between citations (but continue to ignore
+  "accessed").
+
+  https://forums.zotero.org/discussion/52758/disambiguation-enabled-when-not-needed-with-date--original-date/
+
+=========================
 Changes in version 1.1.59
 =========================
 

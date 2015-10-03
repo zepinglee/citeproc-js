@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.59",
+    PROCESSOR_VERSION: "1.1.60",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5297,7 +5297,7 @@ CSL.Node.date = {
                     dp = [];
                     if (this.variables.length
                         && !(state.tmp.just_looking
-                             && this.variables[0] !== "issued")) {
+                             && this.variables[0] === "accessed")) {
                         state.parallel.StartVariable(this.variables[0]);
                         date_obj = Item[this.variables[0]];
                         if ("undefined" === typeof date_obj) {
