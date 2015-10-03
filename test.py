@@ -695,6 +695,10 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Create the citeproc.js bundle and exit.')
+    parser.add_option("-Z", "--zotero-bundle-only", dest="makezoterobundle",
+                      default=False,
+                      action="store_true", 
+                      help='Create a citeproc_zotero.js bundle with embedded dom (not e4x) support suitable for use in most environments, and exit.')
 
     (opt, args) = parser.parse_args()
 
@@ -705,6 +709,8 @@ if __name__ == "__main__":
 
     bundlecount = 0
     if opt.makebundle:
+        bundlecount += 1
+    if opt.makezoterobundle:
         bundlecount += 1
 
     if bundlecount > 1:
@@ -720,7 +726,16 @@ if __name__ == "__main__":
         license.apply()
         sys.exit()
 
+    if opt.makezoterobundle:
+        bundler = Bundle(mode="zotero")
+        bundler.deleteOldBundle()
+        bundler.createNewBundle()
+        license = ApplyLicense()
+        license.apply(True)
+        sys.exit()
+
     if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
+
         parser.print_help()
         sys.exit()
     
