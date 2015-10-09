@@ -641,20 +641,28 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 if (!Item[mm[1]] && CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
                     Item[mm[1]] = {raw:mm[2]};
                 } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
-                    if (!Item[mm[1]]) {
-                        Item[mm[1]] = [];
+                    // Add creator(s) only if original data object had none
+                    // Unpack particles and articular from parsed-out fields
+                    // Bugfix applied to address this: https://github.com/zotero/zotero/issues/846#issuecomment-146794378
+                    if (!names[mm[1]]) {
+                        names[mm[1]] = [];
                     }
                     var lst = mm[2].split(/\s*\|\|\s*/);
                     if (lst.length === 1) {
-                        Item[mm[1]].push({family:lst[0],isInstitution:true});
+                        names[mm[1]].push({family:lst[0],isInstitution:true});
                     } else if (lst.length === 2) {
-                        Item[mm[1]].push({family:lst[0],given:lst[1]});
+                        var name = {family:lst[0],given:lst[1]};
+                        CSL.parseParticles(name);
+                        names[mm[1]].push(name);
                     }
                 } else if (!Item[mm[1]] || mm[1] === "type") {
                     //Zotero.debug("XXX   (4)");
                     Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
                 }
                 Item.note.replace(CSL.NOTE_FIELD_REGEXP, "");
+            }
+            for (var key in names) {
+                Item[key] = names[key];
             }
         }
     }
