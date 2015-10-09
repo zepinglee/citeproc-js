@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.61
+=========================
+
+- Fix Extra-field hack parse of creators. Add (possibly multiple)
+  names if original input had not name of same category. Addresses
+  bug report:
+
+    https://github.com/zotero/zotero/issues/846#issuecomment-146794378
+
+=========================
 Changes in version 1.1.60
 =========================
 
