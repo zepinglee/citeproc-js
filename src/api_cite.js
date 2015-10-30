@@ -853,10 +853,10 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
 CSL.getSpliceDelimiter = function (last_collapsed, pos) {
     if (last_collapsed && ! this.tmp.have_collapsed && "string" === typeof this.citation.opt["after-collapse-delimiter"]) {
         this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
-    } else if (this.tmp.have_collapsed && this.opt.xclass === "in-text" && this.opt.update_mode !== CSL.NUMERIC) {
-        this.tmp.splice_delimiter = ", ";
     } else if (this.tmp.use_cite_group_delimiter) {
         this.tmp.splice_delimiter = this.citation.opt.cite_group_delimiter;
+    } else if (this.tmp.have_collapsed && this.opt.xclass === "in-text" && this.opt.update_mode !== CSL.NUMERIC) {
+        this.tmp.splice_delimiter = ", ";
     } else if (this.tmp.cite_locales[pos - 1]) {
         //
         // Must have a value to take effect.  Use zero width space to force empty delimiter.
