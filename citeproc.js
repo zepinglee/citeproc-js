@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.62",
+    PROCESSOR_VERSION: "1.1.63",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1787,25 +1787,29 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         Item["title-short"] = Item.shortTitle;
     }
     if (this.opt.development_extensions.main_title_from_short_title) {
-        Item["title-main"] = Item.title;
-        Item["title-sub"] = false;
-        if (Item.title && Item['title-short']) {
-            var shortTitle = Item['title-short'];
-            offset = shortTitle.length;
-            if (Item.title.slice(0,offset) === shortTitle && Item.title.slice(offset).match(/^\s*:/)) {
-                Item["title-main"] = Item.title.slice(0,offset).replace(/\s+$/,"");
-                Item["title-sub"] = Item.title.slice(offset).replace(/^\s*:\s*/,"");
-                if (this.opt.development_extensions.uppercase_subtitles && Item["title-sub"]) {
-                    var subtitle = Item["title-sub"]
-                    for (var i=0,ilen=subtitle.length;i<ilen;i++) {
-                        if (subtitle.charAt(i).toLowerCase() !== subtitle.charAt(i).toUpperCase()) {
-                            Item["title-sub"] = subtitle.slice(0,i) + subtitle.charAt(i).toUpperCase() + subtitle.slice(i+1);
-                            break
+        var segments = ["", "container-"];
+        for (var i=0,ilen=segments.length;i<ilen;i++) {
+            var seg = segments[i];
+            Item[seg + "title-main"] = Item[seg + "title"];
+            Item[seg + "title-sub"] = false;
+            if (Item[seg + "title"] && Item[seg + "title-short"]) {
+                var shortTitle = Item[seg + "title-short"];
+                offset = shortTitle.length;
+                if (Item[seg + "title"].slice(0,offset) === shortTitle && Item[seg + "title"].slice(offset).match(/^\s*:/)) {
+                    Item[seg + "title-main"] = Item[seg + "title"].slice(0,offset).replace(/\s+$/,"");
+                    Item[seg + "title-sub"] = Item[seg + "title"].slice(offset).replace(/^\s*:\s*/,"");
+                    if (this.opt.development_extensions.uppercase_subtitles && Item[seg + "title-sub"]) {
+                        var subtitle = Item[seg + "title-sub"]
+                        for (var j=0,jlen=subtitle.length;j<jlen;j++) {
+                            if (subtitle.charAt(j).toLowerCase() !== subtitle.charAt(j).toUpperCase()) {
+                                Item[seg + "title-sub"] = subtitle.slice(0,j) + subtitle.charAt(j).toUpperCase() + subtitle.slice(j+1);
+                                break
+                            }
                         }
                     }
+                    var mainPlusJoinOffset = offset + Item[seg + "title"].length - Item[seg + "title-main"].length - Item[seg + "title-sub"].length;
+                    Item[seg + "title"] = Item[seg + "title"].slice(0,mainPlusJoinOffset) + Item[seg + "title-sub"];
                 }
-                var mainPlusJoinOffset = offset + Item.title.length - Item["title-main"].length - Item["title-sub"].length;
-                Item.title = Item.title.slice(0,mainPlusJoinOffset) + Item["title-sub"];
             }
         }
     }

@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.63
+=========================
+
+- Extend uppercase-subtitles option to cover container-title
+  as well. New code is extensible to series titles as well, if
+  that is desired.
+
+    https://github.com/Juris-M/propachi-upper/issues/2
+
+=========================
 Changes in version 1.1.62
 =========================
 
