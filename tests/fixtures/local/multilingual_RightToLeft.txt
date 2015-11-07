@@ -12,7 +12,7 @@ citation
 
 
 >>===== RESULT =====>>
-(‪הוצאה לאור של מכללת אוהלו‬)
+(‎הוצאה לאור של מכללת אוהלו)‎
 <<===== RESULT =====<<
 
 
@@ -28,7 +28,8 @@ citation
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout prefix="(&#x200e;" suffix=")&#x200e;">
+    <!-- layout prefix="(&#x200e;" suffix=")&#x200e;" -->
+    <layout prefix="(" suffix=")">
       <text variable="title"/>
     </layout>
   </citation>
