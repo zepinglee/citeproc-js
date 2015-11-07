@@ -395,11 +395,9 @@ var CSL = {
         // Workaround for Internet Exporer
 
         // For squiggly-brace nocase markup ...
-        //mx = str.match(/((?:\\[{}]+|\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">|[\{]+).*?(?:[\}]+|<\/span>|<\/?(?:i|sc|b)>)))/g);
-        //lst = str.split(/(?:(?:\\[{}]+|\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">|[\{]+).*?(?:[\}]+|<\/span>|<\/?(?:i|sc|b)>)))/g);
+        mx = str.match(/((?:\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">).*?(?:<\/span>))|<\/?(?:i|sc|b)>)/g);
+        lst = str.split(/(?:(?:\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">).*?(?:<\/span>))|<\/?(?:i|sc|b)>)/g);
 
-        mx = str.match(/((?:\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">).*?(?:<\/span>|<\/?(?:i|sc|b)>)))/g);
-        lst = str.split(/(?:(?:\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">).*?(?:<\/span>|<\/?(?:i|sc|b)>)))/g);
         myret = [lst[0]];
         for (pos = 1, len = lst.length; pos < len; pos += 1) {
             myret.push(mx[pos - 1]);
