@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.64
+=========================
+
+- Fix bug in xmljson.js that caused incorrect formatting of
+  names in some styles when rendered with xmljson.js parser:
+
+    https://github.com/zotero/citeproc-node/issues/26
+
+- Fix bug in text-case="title" that prevented tag-enclosed
+  text from uppercasing properly.
+
+    https://bitbucket.org/fbennett/citeproc-js/issues/187/title-case-formatter-does-not-title-case
+
+- Fix sort bug affecting some JavaScript engines.
+
+    https://twitter.com/fgbjr/status/662844111834079232
+
+=========================
 Changes in version 1.1.63
 =========================
 
