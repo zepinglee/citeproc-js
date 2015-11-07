@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.64",
+    PROCESSOR_VERSION: "1.1.65",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -928,7 +928,7 @@ CSL.DateParser = new function () {
     var numberVal = "[?0-9]{1,3}";
     var rangeSeparator = "[%%DATED%%]";
     var fuzzyChar = "[?~]";
-	var chars = "[^\-\/\~\?0-9]+";
+    var chars = "[^\-\/\~\?0-9]+";
     var rexString = "(" + yearFirst + "|" + yearLast + "|" + numberVal + "|" + rangeSeparator + "|" + fuzzyChar + "|" + chars + ")";
     var rexDash = new RegExp(rexString.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-"));
     var rexDashSlash = new RegExp(rexString.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "\/"));
@@ -943,7 +943,7 @@ CSL.DateParser = new function () {
         this.monthGuess = 0;
         this.dayGuess = 1;
     };
-    this.resetMonths = function() {
+    this.resetDateParserMonths = function() {
         this.monthSets = [];
         for (var i=0,ilen=this.monthStrings.length; i<ilen; i++) {
             this.monthSets.push([this.monthStrings[i]]);
@@ -960,7 +960,7 @@ CSL.DateParser = new function () {
             this.monthRexes.push(new RegExp("(?:" + this.monthAbbrevs[i].join("|") + ")"));
         }
     };
-    this.addMonths = function(lst) {
+    this.addDateParserMonths = function(lst) {
         if ("string" === typeof lst) {
             lst = lst.split(/\s+/);
         }
@@ -1020,7 +1020,7 @@ CSL.DateParser = new function () {
             this.monthRexes.push(new RegExp("(?:" + this.monthAbbrevs[i].join("|") + ")"));
         }
     };
-    this._toArray = function (thedate) {
+    this.convertDateObjectToArray = function (thedate) {
         thedate["date-parts"] = [];
         thedate["date-parts"].push([]);
         var slicelen = 0;
@@ -1047,6 +1047,17 @@ CSL.DateParser = new function () {
         }
         return thedate;
     };
+    this.convertDateObjectToString = function(thedate) {
+        var ret = [];
+        for (var i = 0, ilen = 3; i < ilen; i += 1) {
+            if (thedate[DATE_PARTS_ALL[i]]) {
+                ret.push(thedate[DATE_PARTS_ALL[i]]);
+            } else {
+                break;
+            }
+        }
+        return ret.join("-");
+    }
     this._parseNumericDate = function (ret, delim, suff, txt) {
         if (!suff) suff = "";
         var lst = txt.split(delim);
@@ -1080,7 +1091,7 @@ CSL.DateParser = new function () {
         var slashPos = -1;
         var dashPos = -1;
         var lst;
-	    if (txt) {
+        if (txt) {
             txt = "" + txt;
             txt = txt.replace(/\s*[0-9]{2}:[0-9]{2}(?::[0-9]+)/,"");
             var m = txt.match(kanjiMonthDay);
@@ -1121,7 +1132,7 @@ CSL.DateParser = new function () {
                 slashPos = txt.indexOf("/");
                 dashPos = txt.indexOf("-");
             }
-	    }
+        }
         txt = txt.replace(/([A-Za-z])\./g, "$1");
         var number = "";
         var note = "";
@@ -1151,7 +1162,7 @@ CSL.DateParser = new function () {
         }
         var ret = [];
         for (var i=0,ilen=lst.length; i<ilen; i++) {
-            m = lst[i].match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
+            var m = lst[i].match(/^\s*([\-\/]|[^\-\/\~\?0-9]+|[\-~?0-9]+)\s*$/);
             if (m) {
                 ret.push(m[1]);
             }
@@ -1235,10 +1246,16 @@ CSL.DateParser = new function () {
         return thedate;
     };
     this.parseDateToArray = function(txt) {
-        this._toArray(this.parseDateToObject(txt));            
+        return this.convertDateObjectToArray(this.parseDateToObject(txt));            
+    }
+    this.parseDateToString = function(txt) {
+        return this.convertDateObjectToString(this.parseDateToObject(txt));
+    }
+    this.parse = function(txt) {
+        return this.parseDateToObject(txt);
     }
     this.setOrderMonthDay();
-    this.resetMonths();
+    this.resetDateParserMonths();
 };
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;

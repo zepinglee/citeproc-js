@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.65
+=========================
+
+- Amend date parser module to accomodate usage in Juris-M, and
+  provide parse() method for backward compatibility.
+
+=========================
 Changes in version 1.1.64
 =========================
 
