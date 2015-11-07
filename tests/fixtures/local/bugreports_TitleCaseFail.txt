@@ -1,0 +1,63 @@
+>>===== MODE =====>>
+citation
+<<===== MODE===== <<
+
+>>===== RESULT =====>>
+>>[0] On <i>Ceteris Paribus</i> Laws
+<<===== RESULT===== <<
+
+>>===== CITATIONS =====>>
+[
+  [
+    {
+      "citationID": "10gk1bpdes",
+      "properties": {
+        "noteIndex": 0,
+        "index": 0
+      },
+      "citationItems": [
+        {
+          "id": "ITEM-1"
+        }
+      ]
+    },
+    [],
+    []
+  ]
+]
+<<===== CITATIONS===== <<
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" page-range-format="chicago" version="1.1mlz1" year-range-format="expanded" default-locale="en-US">
+<!-- This style is made from JLME -->
+<info>
+	<title>MLZ Bluebook (WBL)</title>
+	<id>http://citationstyles.org/styles/mlz-bluebook-WBL</id>
+	<link href="http://citationstyles.org/styles/mlz-cms-full" rel="self"/>
+	<author>
+		<name>WBL</name>
+		<email></email>
+	</author>
+	<summary>Bluebook (MLZ version)</summary>
+	<category field="generic-base"/>
+	<category citation-format="note"/>
+	<updated>2014-02-09T08:35:07.635673</updated>
+	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+  </info>
+  <citation>
+    <layout delimiter="; ">
+     <text variable="title" text-case="title"/>
+    </layout>
+  </citation>  
+</style>
+<<===== CSL===== <<
+
+>>===== INPUT =====>>
+[
+  {
+    "id": "ITEM-1",
+    "type": "article-journal",
+    "title": "On <i>ceteris paribus</i> laws"
+  }
+]
+<<===== INPUT===== <<
