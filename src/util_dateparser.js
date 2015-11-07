@@ -348,7 +348,7 @@ CSL.DateParser = new function () {
                 lst = txt.split(rexDashSlash);
             }
         } else {
-            txt = txt.replace("/", "-");
+            txt = txt.replace(/\//g, "-");
             rangeDelim = "-";
             dateDelim = "-";
             lst = txt.split(rexDash);
@@ -470,7 +470,6 @@ CSL.DateParser = new function () {
         // from the other
         //
         if (isRange) {
-            
             for (var j=0,jlen=CSL.DATE_PARTS_ALL.length; j<jlen; j++) {
                 var item = CSL.DATE_PARTS_ALL[j];
                 if (thedate[item] && !thedate[(item + "_end")]) {
