@@ -131,7 +131,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     raw_locator = raw_locator.slice(idx + 1);
                     m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
                     if (m) {
-                        item["locator-date"] = this.fun.dateparser.parse(m[1]);
+                        item["locator-date"] = this.fun.dateparser.parseDateToObject(m[1]);
                         raw_locator = raw_locator.slice(m[1].length);
                     }
                     item["locator-extra"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");

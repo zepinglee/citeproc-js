@@ -238,7 +238,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     //
     // date parser
     //
-    this.fun.dateparser = new CSL.DateParser();
+    this.fun.dateparser = CSL.DateParser;
     //
     // flip-flopper for inline markup
     //
@@ -673,7 +673,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             // raw date parsing is harmless, but can be disabled if desired
             if (this.opt.development_extensions.raw_date_parsing) {
                 if (dateobj.raw) {
-                    dateobj = this.fun.dateparser.parse(dateobj.raw);
+                    dateobj = this.fun.dateparser.parseDateToObject(dateobj.raw);
                 }
             }
             Item[CSL.DATE_VARIABLES[i]] = this.dateParseArray(dateobj);
