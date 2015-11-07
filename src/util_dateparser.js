@@ -497,6 +497,10 @@ CSL.DateParser = new function () {
         return this.convertDateObjectToString(this.parseDateToObject(txt));
     }
     
+    this.parse = function(txt) {
+        return this.parseDateToObject(txt);
+    }
+    
     /*
      * Setup
      */
