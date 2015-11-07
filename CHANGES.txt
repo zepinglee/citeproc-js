@@ -7,6 +7,15 @@ Changes in version 1.1.65
 - Amend date parser module to accomodate usage in Juris-M, and
   provide parse() method for backward compatibility.
 
+- Make parsed date values numeric
+
+    https://github.com/Juris-M/zotero/issues/2
+
+- Fix date parsing bug exposed when multiple date locales are
+  loaded
+  
+    https://github.com/Juris-M/zotero/issues/9
+
 =========================
 Changes in version 1.1.64
 =========================

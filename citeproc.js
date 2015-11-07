@@ -974,9 +974,9 @@ CSL.DateParser = new function () {
             var abbrevLength = null;
             var skip = false;
             var insert = 3;
-            var extendedSet = {};
+            var extendedSets = {};
             for (var j=0,jlen=this.monthAbbrevs.length; j<jlen; j++) {
-                extendedSet[j] = {};
+                extendedSets[j] = {};
                 if (j === i) {
                     for (var k=0,klen=this.monthAbbrevs[i].length; k<klen; k++) {
                         if (this.monthAbbrevs[i][k] === lst[i].slice(0, this.monthAbbrevs[i][k].length)) {
@@ -1016,8 +1016,16 @@ CSL.DateParser = new function () {
             }
         }
         this.monthRexes = [];
+        this.monthRexStrs = [];
         for (var i=0,ilen=this.monthAbbrevs.length; i<ilen; i++) {
-            this.monthRexes.push(new RegExp("(?:" + this.monthAbbrevs[i].join("|") + ")"));
+            this.monthRexes.push(new RegExp("^(?:" + this.monthAbbrevs[i].join("|") + ")"));
+            this.monthRexStrs.push("^(?:" + this.monthAbbrevs[i].join("|") + ")");
+        }
+        if (this.monthAbbrevs.length === 18) {
+            for (var i=12,ilen=14; i<ilen; i++) {
+                this.monthRexes[i+4] = new RegExp("^(?:" + this.monthAbbrevs[i].join("|") + ")");
+                this.monthRexStrs[i+4] = "^(?:" + this.monthAbbrevs[i].join("|") + ")";
+            }
         }
     };
     this.convertDateObjectToArray = function (thedate) {
@@ -1155,7 +1163,7 @@ CSL.DateParser = new function () {
                 lst = txt.split(rexDashSlash);
             }
         } else {
-            txt = txt.replace("/", "-");
+            txt = txt.replace(/\//g, "-");
             rangeDelim = "-";
             dateDelim = "-";
             lst = txt.split(rexDash);
@@ -1199,7 +1207,7 @@ CSL.DateParser = new function () {
                     }
                 }
                 if (element.match(/^[0-9]+$/)) {
-                    number = parseInt(element, 10);
+                    number = element;
                 }
                 if (element.toLocaleLowerCase().match(/^bc/) && number) {
                     thedate[("year" + suff)] = "" + (number * -1);
@@ -1242,6 +1250,13 @@ CSL.DateParser = new function () {
         }
         if (!thedate.year) {
             thedate = { "literal": txt };
+        }
+        var parts = ["year", "month", "day", "year_end", "month_end", "day_end"];
+        for (var i=0,ilen=parts.length; i<ilen; i++) {
+            var part = parts[i];
+            if ("string" === typeof thedate[part] && thedate[part].match(/^[0-9]+$/)) {
+                thedate[part] = parseInt(thedate[part], 10);
+            }
         }
         return thedate;
     };
