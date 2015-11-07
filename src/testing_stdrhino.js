@@ -167,6 +167,8 @@ StdRhinoTest.prototype.run = function(){
         }
     }
     this.style = new CSL.Engine(this,this.test.csl);
+    this.style.fun.dateparser.addDateParserMonths(["ocak", "Şubat", "mart", "nisan", "mayıs", "haziran", "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık", "bahar", "yaz", "sonbahar", "kış"]);
+
     //this.style.setOutputFormat("rtf");
     //this.style.setParseNames(true);
     this.style.opt.development_extensions.static_statute_locator = true;
