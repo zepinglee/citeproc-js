@@ -1,121 +1,109 @@
 /*global CSL: true */
 
 
-CSL.DateParser = function () {
-    var jiy_list, jiy, jiysplitter, jy, jmd, jr, pos, key, val, yearlast, yearfirst, number, rangesep, fuzzychar, chars, rex, rexdash, rexdashslash, rexslashdash, seasonstrs, seasonrexes, seasonstr, monthstrs, monthstr, mrexes, seasonrex, len, jiymatchstring, jiymatcher;
+CSL.DateParser = new function () {
 
-    // instance object with private constants and a public function.
+    /*
+     * Fixed values
+     */
 
-    // japanese imperial years
-    jiy_list = [
+    // jse imperial years
+    var epochPairs = [
         ["\u660E\u6CBB", 1867],
         ["\u5927\u6B63", 1911],
         ["\u662D\u548C", 1925],
         ["\u5E73\u6210", 1988]
     ];
-    // years by names (jiy)
-    // ... and ...
-    // regular expression to trap year name and year (jiysplitter)
-    jiy = {};
-    len = jiy_list.length;
-    for (pos = 0; pos < len; pos += 1) {
-        key = jiy_list[pos][0];
-        val = jiy_list[pos][1];
-        jiy[key] = val;
-    }
-    jiymatchstring = [];
-    for (pos = 0; pos < len; pos += 1) {
-        val = jiy_list[pos][0];
-        jiymatchstring.push(val);
-    }
-    jiymatchstring = jiymatchstring.join("|");
-    //
-    // Oh, dear.  Getting this to work in IE6 is going to
-    // be a pain.
-    //
-    jiysplitter = "(?:" + jiymatchstring + ")(?:[0-9]+)";
-    jiysplitter = new RegExp(jiysplitter);
-    // for IE6 workaround
-    jiymatcher = "(?:" + jiymatchstring + ")(?:[0-9]+)";
-    jiymatcher = new RegExp(jiymatcher, "g");
-    // japanese regular expression for month or day
-    jmd = /(\u6708|\u5E74)/g;
-    // japanese regular expression for year
-    //jy = /\u65E5$/;
-    jy = /\u65E5/g;
-    // japanese regular expression for range
-    jr = /\u301c/g;
 
-    // main parsing regexps
-    yearlast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
-    yearfirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";
-    number = "[?0-9]{1,3}";
-    rangesep = "[%%DATED%%]";
-    fuzzychar = "[?~]";
-    chars = "[a-zA-Z]+";
-    rex = "(" + yearfirst + "|" + yearlast + "|" + number + "|" + rangesep + "|" + fuzzychar + "|" + chars + ")";
-    rexdash = new RegExp(rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-"));
-    rexdashslash = new RegExp(rex.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "\/"));
-    rexslashdash = new RegExp(rex.replace(/%%NUMD%%/g, "\/").replace(/%%DATED%%/g, "-"));
-
-    // seasons
-    //seasonstrs = ["spr", "sum", "fal", "win"];
-    // Disabling separate seasons match, moving to
-    // month.
-    seasonstrs = [];
-    seasonrexes = [];
-    len = seasonstrs.length;
-    for (pos = 0; pos < len; pos += 1) {
-        seasonrex = new RegExp(seasonstrs[pos] + ".*");
-        seasonrexes.push(seasonrex);
+    // years by jse imperial epoch
+    var epochYearByName = {};
+    for (var i=0,ilen=epochPairs.length; i<ilen; i++) {
+        var key = epochPairs[i][0];
+        var val = epochPairs[i][1];
+        epochYearByName[key] = val;
     }
+    
+    var epochMatchStrings = [];
+    for (var i=0,ilen=epochPairs.length; i<ilen; i++) {
+        var val = epochPairs[i][0];
+        epochMatchStrings.push(val);
+    }
+    var epochMatchString = epochMatchStrings.join("|");
+
+    // regular expression to trap year name and year
+    // (splitter and matcher, to cope with ancient JS implementations)
+    var epochSplitter = new RegExp("(?:" + epochMatchString + ")(?:[0-9]+)");
+    var epochMatcher = new RegExp("(?:" + epochMatchString + ")(?:[0-9]+)", "g");
+
+    // regular expression for month or day kanji label
+    var kanjiMonthDay = /(\u6708|\u5E74)/g;
+
+    // regular expression for year kanji label
+    var kanjiYear = /\u65E5/g;
+
+    // regular expression for double-width Japanese range marker
+    var kanjiRange = /\u301c/g;
+
+    // parsing regexps for normalized strings
+    //   raw materials
+    var yearLast = "(?:[?0-9]{1,2}%%NUMD%%){0,2}[?0-9]{4}(?![0-9])";
+    var yearFirst = "[?0-9]{4}(?:%%NUMD%%[?0-9]{1,2}){0,2}(?![0-9])";
+    var numberVal = "[?0-9]{1,3}";
+    var rangeSeparator = "[%%DATED%%]";
+    var fuzzyChar = "[?~]";
+	var chars = "[^\-\/\~\?0-9]+";
+    var rexString = "(" + yearFirst + "|" + yearLast + "|" + numberVal + "|" + rangeSeparator + "|" + fuzzyChar + "|" + chars + ")";
+    //   composed regexps
+    var rexDash = new RegExp(rexString.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-"));
+    var rexDashSlash = new RegExp(rexString.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "\/"));
+    var rexSlashDash = new RegExp(rexString.replace(/%%NUMD%%/g, "\/").replace(/%%DATED%%/g, "-"));
+
+    /*
+     * Mutable values
+     */
 
     // months
-    this.mstrings = "january february march april may june july august september october november december spring summer fall winter spring summer";
-    this.mstrings = this.mstrings.split(" ");
+    var monthString = "january february march april may june july august september october november december spring summer fall winter spring summer";
+    this.monthStrings = monthString.split(" ");
+
+    /*
+     * Configuration functions
+     */
 
     this.setOrderDayMonth = function() {
         // preferred ordering for numeric dates
-        this.monthguess = 1;
-        this.dayguess = 0;
+        this.monthGuess = 1;
+        this.dayGuess = 0;
     };
 
     this.setOrderMonthDay = function() {
         // preferred ordering for numeric dates
-        this.monthguess = 0;
-        this.dayguess = 1;
+        this.monthGuess = 0;
+        this.dayGuess = 1;
     };
-
-    this.setOrderMonthDay();
 
     this.resetMonths = function() {
-        var i, ilen, j, jlen;
         // Function to reset months to default.
-        this.msets = [];
-        for (i = 0, ilen = this.mstrings.length; i < ilen; i += 1) {
-            this.msets.push([this.mstrings[i]]);
+        this.monthSets = [];
+        for (var i=0,ilen=this.monthStrings.length; i<ilen; i++) {
+            this.monthSets.push([this.monthStrings[i]]);
         }
-        this.mabbrevs = [];
-        for (i = 0, ilen = this.msets.length; i < ilen; i += 1) {
-            // XXX Aha.  Needs to nest here.
-            this.mabbrevs.push([]);
-            for (j = 0, jlen = this.msets[i].length; j < jlen; j += 1) {
-                this.mabbrevs[i].push(this.msets[i][0].slice(0, 3));
+        this.monthAbbrevs = [];
+        for (var i=0,ilen=this.monthSets.length; i<ilen; i++) {
+            this.monthAbbrevs.push([]);
+            for (var j=0,jlen=this.monthSets[i].length; j<jlen; j++) {
+                this.monthAbbrevs[i].push(this.monthSets[i][0].slice(0, 3));
             }
         }
-        this.mrexes = [];
-        for (i = 0, ilen = this.mabbrevs.length; i < ilen; i += 1) {
-            this.mrexes.push(new RegExp("(?:" + this.mabbrevs[i].join("|") + ")"));
+        this.monthRexes = [];
+        for (var i=0,ilen=this.monthAbbrevs.length; i<ilen; i++) {
+            this.monthRexes.push(new RegExp("(?:" + this.monthAbbrevs[i].join("|") + ")"));
         }
     };
 
-    this.resetMonths();
-
     this.addMonths = function(lst) {
-        var i, ilen, j, jlen, k, klen, jkey, kkey;
-        // Function to extend the month regexes with an additional
-        // set of month strings, extending strings as required to
-        // resolve ambiguities.
+        // Extend list of months with an additional set of month abbreviations,
+        // extending strings as required to resolve ambiguities.
 
         // Normalize string to list
         if ("string" === typeof lst) {
@@ -129,162 +117,226 @@ CSL.DateParser = function () {
         }
 
         // Extend as necessary to resolve ambiguities
-        var othermatch = [];
-        var thismatch = [];
+        var otherMatch = [];
+        var thisMatch = [];
         // For each new month string ...
-        for (i = 0, ilen = lst.length; i < ilen; i += 1) {
-            // Compare with each existing abbreviation and ...
-            var abbrevlen = false;
+        for (var i=0,ilen=lst.length; i<ilen; i++) {
+            var abbrevLength = null;
             var skip = false;
             var insert = 3;
-            var extend = {};
-            for (j = 0, jlen = this.mabbrevs.length; j < jlen; j += 1) {
-                // Set default abbrevlen
-                extend[j] = {};
+            var extendedSet = {};
+            for (var j=0,jlen=this.monthAbbrevs.length; j<jlen; j++) {
+                extendedSet[j] = {};
                 if (j === i) {
                     // Mark for skipping if same as an existing abbreviation of same month
-                    for (k = 0, klen = this.mabbrevs[i].length; k < klen; k += 1) {
-                        if (this.mabbrevs[i][k] === lst[i].slice(0, this.mabbrevs[i][k].length)) {
+                    for (var k=0,klen=this.monthAbbrevs[i].length; k<klen; k++) {
+                        if (this.monthAbbrevs[i][k] === lst[i].slice(0, this.monthAbbrevs[i][k].length)) {
                             skip = true;
                             break;
                         }
                     }
                 } else {
-                    // Mark for extending if same as existing abbreviation of any other month
-                    for (k = 0, klen = this.mabbrevs[j].length; k < klen; k += 1) {
-                        abbrevlen = this.mabbrevs[j][k].length;
-                        if (this.mabbrevs[j][k] === lst[i].slice(0, abbrevlen)) {
-                            while (this.msets[j][k].slice(0, abbrevlen) === lst[i].slice(0, abbrevlen)) {
+                    // Mark for extending if same as existing abbreviation of any expression of another month
+                    for (var k=0,klen=this.monthAbbrevs[j].length; k<klen; k++) {
+                        abbrevLength = this.monthAbbrevs[j][k].length;
+                        if (this.monthAbbrevs[j][k] === lst[i].slice(0, abbrevLength)) {
+                            while (this.monthSets[j][k].slice(0, abbrevLength) === lst[i].slice(0, abbrevLength)) {
                                 // Abort when full length is hit, otherwise extend
-                                if (abbrevlen > lst[i].length || abbrevlen > this.msets[j][k].length) {
+                                if (abbrevLength > lst[i].length || abbrevLength > this.monthSets[j][k].length) {
                                     CSL.debug("unable to disambiguate month string in date parser: "+lst[i]);
                                     break;
                                 } else {
                                     // Mark both new entry and existing abbrev for extension
-                                    abbrevlen += 1;
+                                    abbrevLength += 1;
                                 }
                             }
-                            insert = abbrevlen;
-                            extend[j][k] = abbrevlen;
+                            insert = abbrevLength;
+                            extendedSets[j][k] = abbrevLength;
                         }
                     }
                 }
-                for (jkey in extend) {
-                    if (extend.hasOwnProperty(jkey)) {
-                        for (kkey in extend[jkey]) {
-                            if (extend[jkey].hasOwnProperty(kkey)) {
-                                abbrevlen = extend[jkey][kkey];
-                                jkey = parseInt(jkey, 10);
-                                kkey = parseInt(kkey, 10);
-                                this.mabbrevs[jkey][kkey] = this.msets[jkey][kkey].slice(0, abbrevlen);
-                            }
-                        }
+                for (var jKey in extendedSets) {
+                    for (kKey in extendedSets[jKey]) {
+                        abbrevLength = extendedSets[jKey][kKey];
+                        jKey = parseInt(jKey, 10);
+                        kKey = parseInt(kKey, 10);
+                        this.monthAbbrevs[jKey][kKey] = this.monthSets[jKey][kKey].slice(0, abbrevLength);
                     }
                 }
             }
             // Insert here
             if (!skip) {
-                this.msets[i].push(lst[i]);
-                this.mabbrevs[i].push(lst[i].slice(0, insert));
+                this.monthSets[i].push(lst[i]);
+                this.monthAbbrevs[i].push(lst[i].slice(0, insert));
             }
         }
 
         // Compose
-        this.mrexes = [];
-        for (i = 0, ilen = this.mabbrevs.length; i < ilen; i += 1) {
-            this.mrexes.push(new RegExp("(?:" + this.mabbrevs[i].join("|") + ")"));
+        this.monthRexes = [];
+        for (var i=0,ilen=this.monthAbbrevs.length; i<ilen; i++) {
+            this.monthRexes.push(new RegExp("(?:" + this.monthAbbrevs[i].join("|") + ")"));
         }
     };
 
-    this.parse = function (txt) {
-        var slash, dash, lst, l, m, number, note, thedate, slashcount, range_delim, date_delim, ret, delim_pos, delims, isrange, suff, date, breakme, item, delim, element, mm, slst, mmpos, i, ilen, j, jlen, k, klen;
+    /*
+     * Utility functions
+     */
+
+    this._toArray = function (thedate) {
+        thedate["date-parts"] = [];
+        thedate["date-parts"].push([]);
+        var slicelen = 0;
+        for (var i=0,ilen=3; i<ilen; i++) {
+            var part = ["year", "month", "day"][i];
+            if (!thedate[part]) {
+                break;
+            }
+            slicelen += 1;
+            thedate["date-parts"][0].push(thedate[part]);
+            delete thedate[part];
+        }
+        thedate["date-parts"].push([]);
+        for (var i=0, ilen=slicelen; i<ilen; i++) {
+            part = ["year_end", "month_end", "day_end"][i];
+            if (!thedate[part]) {
+                break;
+            }
+            thedate["date-parts"][1].push(thedate[part]);
+            delete thedate[part];
+        }
+        if (thedate["date-parts"][0].length !== thedate["date-parts"][1].length) {
+            thedate["date-parts"].pop();
+        }
+        return thedate;
+    };
+
+    this._parseNumericDate = function (ret, delim, suff, txt) {
+        if (!suff) suff = "";
+        var lst = txt.split(delim);
+        
+        for (var i=0, ilen=lst.length; i<ilen; i++) {
+            if (lst[i].length === 4) {
+                ret[("year" + suff)] = lst[i].replace(/^0*/, "");
+                if (!i) {
+                    lst = lst.slice(1);
+                } else {
+                    lst = lst.slice(0, i);
+                }
+                break;
+            }
+        }
+        for (var i=0,ilen=lst.length; i<ilen; i++) {
+            lst[i] = parseInt(lst[i], 10);
+        }
+        if (lst.length === 1 || (lst.length === 2 && !lst[1])) {
+            ret[("month" + suff)] = "" + lst[0];
+        } else if (lst.length === 2) {
+            if (lst[this.monthGuess] > 12) {
+                ret[("month" + suff)] = "" + lst[this.dayGuess];
+                ret[("day" + suff)] = "" + lst[this.monthGuess];
+            } else {
+                ret[("month" + suff)] = "" + lst[this.monthGuess];
+                ret[("day" + suff)] = "" + lst[this.dayGuess];
+            }
+        }
+    };
+
+    /*
+     * Parsing functions
+     */
+
+    this.parseDateToObject = function (txt) {
         //
         // Normalize the format and the year if it's a Japanese date
         //
-	if (txt) {
-        txt = "" + txt;
-        // Remove things that look like times
-        txt = txt.replace(/\s*[0-9]{2}:[0-9]{2}(?::[0-9]+)/,"");
-        m = txt.match(jmd);
-        if (m) {
-            txt = txt.replace(/\s+/, "", "g");
-            txt = txt.replace(jy, "");
-            txt = txt.replace(jmd, "-");
-            txt = txt.replace(jr, "/");
-            txt = txt.replace(/\-\//g, "/");
-            txt = txt.replace(/-$/g,"");
+        var slashPos = -1;
+        var dashPos = -1;
+        var lst;
+	    if (txt) {
+            // Normalize to string
+            txt = "" + txt;
+            // Remove things that look like times
+            txt = txt.replace(/\s*[0-9]{2}:[0-9]{2}(?::[0-9]+)/,"");
+            var m = txt.match(kanjiMonthDay);
+            if (m) {
+                txt = txt.replace(/\s+/, "", "g");
+                txt = txt.replace(kanjiYear, "");
+                txt = txt.replace(kanjiMonthDay, "-");
+                txt = txt.replace(kanjiRange, "/");
+                txt = txt.replace(/\-\//g, "/");
+                txt = txt.replace(/-$/g,"");
 
-            // Not IE6 safe, applying tortuous workaround
-            slst = txt.split(jiysplitter);
-            lst = [];
-            mm = txt.match(jiymatcher);
-            if (mm) {
-                var mmx = [];
-                for (pos = 0, len = mm.length; pos < len; pos += 1) {
-                    mmx = mmx.concat(mm[pos].match(/([^0-9]+)([0-9]+)/).slice(1));
-                }
-                for (pos = 0, len = slst.length; pos < len; pos += 1) {
-                    lst.push(slst[pos]);
-                    if (pos !== (len - 1)) {
-                        mmpos = (pos * 2);
-                        lst.push(mmx[mmpos]);
-                        lst.push(mmx[mmpos + 1]);
+                // Tortuous workaround for IE6
+                var slst = txt.split(epochSplitter);
+                lst = [];
+                var mm = txt.match(epochMatcher);
+                if (mm) {
+                    var mmx = [];
+                    for (var i=0,ilen=mm.length; i<ilen; i++) {
+                        mmx = mmx.concat(mm[i].match(/([^0-9]+)([0-9]+)/).slice(1));
                     }
+                    for (var i=0,ilen=slst.length; i<ilen; i++) {
+                        lst.push(slst[i]);
+                        if (i !== (len - 1)) {
+                            var mmpos = (pos * 2);
+                            lst.push(mmx[mmpos]);
+                            lst.push(mmx[mmpos + 1]);
+                        }
+                    }
+                } else {
+                    lst = slst;
                 }
-            } else {
-                lst = slst;
-            }
-            // workaround duly applied, this now works
-            l = lst.length;
-            for    (pos = 1; pos < l; pos += 3) {
-                lst[pos + 1] = jiy[lst[pos]] + parseInt(lst[pos + 1], 10);
-                lst[pos] = "";
-            }
-            txt = lst.join("");
-            txt = txt.replace(/\s*-\s*$/, "").replace(/\s*-\s*\//, "/");
-            //
-            // normalize date and identify delimiters
-            //
-            txt = txt.replace(/\.\s*$/, "");
+                // workaround duly applied, this now works
+                for (var i=1,ilen=lst.length; i<ilen; i+=3) {
+                    lst[i + 1] = jiy[lst[i]] + parseInt(lst[i + 1], 10);
+                    lst[i] = "";
+                }
+                txt = lst.join("");
+                txt = txt.replace(/\s*-\s*$/, "").replace(/\s*-\s*\//, "/");
+                //
+                // normalize date and identify delimiters
+                //
+                txt = txt.replace(/\.\s*$/, "");
 
-            // not sure what this is meant to do
-            txt = txt.replace(/\.(?! )/, "");
-            slash = txt.indexOf("/");
-            dash = txt.indexOf("-");
-        }
-	}
+                // not sure what this is meant to do
+                txt = txt.replace(/\.(?! )/, "");
+
+                slashPos = txt.indexOf("/");
+                dashPos = txt.indexOf("-");
+            }
+	    }
         // drop punctuation from a.d., b.c.
         txt = txt.replace(/([A-Za-z])\./g, "$1");
 
-        number = "";
-        note = "";
-        thedate = {};
+        var number = "";
+        var note = "";
+        var thedate = {};
+        var rangeDelim;
+        var dateDelim;
         if (txt.slice(0, 1) === "\"" && txt.slice(-1) === "\"") {
             thedate.literal = txt.slice(1, -1);
             return thedate;
         }
-        if (slash > -1 && dash > -1) {
-            slashcount = txt.split("/");
-            if (slashcount.length > 3) {
-                range_delim = "-";
-                date_delim = "/";
-                lst = txt.split(rexslashdash);
+        if (slashPos > -1 && dashPos > -1) {
+            var slashCount = txt.split("/");
+            if (slashCount.length > 3) {
+                rangeDelim = "-";
+                dateDelim = "/";
+                lst = txt.split(rexSlashDash);
             } else {
-                range_delim = "/";
-                date_delim = "-";
-                lst = txt.split(rexdashslash);
+                rangeDelim = "/";
+                dateDelim = "-";
+                lst = txt.split(rexDashSlash);
             }
         } else {
             txt = txt.replace("/", "-");
-            range_delim = "-";
-            date_delim = "-";
-            lst = txt.split(rexdash);
+            rangeDelim = "-";
+            dateDelim = "-";
+            lst = txt.split(rexDash);
         }
-        ret = [];
-        len = lst.length;
-        for (pos = 0; pos < len; pos += 1) {
-            item = lst[pos];
-            m = item.match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
+        var ret = [];
+        for (var i=0,ilen=lst.length; i<ilen; i++) {
+            m = lst[i].match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
             if (m) {
                 ret.push(m[1]);
             }
@@ -292,33 +344,35 @@ CSL.DateParser = function () {
         //
         // Phase 2
         //
-        delim_pos = ret.indexOf(range_delim);
-        delims = [];
-        isrange = false;
-        if (delim_pos > -1) {
-            delims.push([0, delim_pos]);
-            delims.push([(delim_pos + 1), ret.length]);
-            isrange = true;
+        var delimPos = ret.indexOf(rangeDelim);
+        var delims = [];
+        var isRange = false;
+        if (delimPos > -1) {
+            delims.push([0, delimPos]);
+            delims.push([(delimPos + 1), ret.length]);
+            isRange = true;
         } else {
             delims.push([0, ret.length]);
         }
         //
         // For each side of a range divide ...
         //
-        suff = "";
-        for (i = 0, ilen = delims.length; i < ilen; i += 1) {
+        var suff = "";
+        
+        for (var i=0,ilen=delims.length; i<ilen; i++) {
             delim = delims[i];
             //
             // Process each element ...
             //
             date = ret.slice(delim[0], delim[1]);
-            for (j = 0, jlen = date.length; j < jlen; j += 1) {
-                element = date[j];
+            outer: 
+            for (var j=0,jlen=date.length; j<jlen; j++) {
+                var element = date[j];
                 //
                 // If it's a numeric date, process it.
                 //
-                if (element.indexOf(date_delim) > -1) {
-                    this.parseNumericDate(thedate, date_delim, suff, element);
+                if (element.indexOf(dateDelim) > -1) {
+                    this._parseNumericDate(thedate, dateDelim, suff, element);
                     continue;
                 }
                 //
@@ -331,50 +385,31 @@ CSL.DateParser = function () {
                 //
                 // If it's a month, record it.
                 //
-                breakme = false;
-                for (k = 0, klen = this.mrexes.length; k < klen; k += 1) {
-                    if (element.toLocaleLowerCase().match(this.mrexes[k])) {
+                for (var k=0,klen=this.monthRexes.length; k<klen; k++) {
+                    if (element.toLocaleLowerCase().match(this.monthRexes[k])) {
                         thedate[("month" + suff)] = "" + (parseInt(k, 10) + 1);
-                        breakme = true;
-                        break;
-                    }
-                    if (breakme) {
-                        continue;
-                    }
-                    //
-                    // If it's a number, make a note of it
-                    //
-                    if (element.match(/^[0-9]+$/)) {
-                        number = parseInt(element, 10);
-                    }
-                    //
-                    // If it's a BC or AD marker, make a year of
-                    // any note.  Separate, reverse the sign of the year
-                    // if it's BC.
-                    //
-                    if (element.toLocaleLowerCase().match(/^bc/) && number) {
-                        thedate[("year" + suff)] = "" + (number * -1);
-                        number = "";
-                        continue;
-                    }
-                    if (element.toLocaleLowerCase().match(/^ad/) && number) {
-                        thedate[("year" + suff)] = "" + number;
-                        number = "";
-                        continue;
+                        continue outer;
                     }
                 }
                 //
-                // If it's a season, record it.
+                // If it's a number, make a note of it
                 //
-                breakme = false;
-                for (k = 0, klen = seasonrexes.length; k < klen; k += 1) {
-                    if (element.toLocaleLowerCase().match(seasonrexes[k])) {
-                        thedate[("season" + suff)] = "" + (parseInt(k, 10) + 1);
-                        breakme = true;
-                        break;
-                    }
+                if (element.match(/^[0-9]+$/)) {
+                    number = parseInt(element, 10);
                 }
-                if (breakme) {
+                //
+                // If it's a BC or AD marker, make a year of
+                // any note.  Separate, reverse the sign of the year
+                // if it's BC.
+                //
+                if (element.toLocaleLowerCase().match(/^bc/) && number) {
+                    thedate[("year" + suff)] = "" + (number * -1);
+                    number = "";
+                    continue;
+                }
+                if (element.toLocaleLowerCase().match(/^ad/) && number) {
+                    thedate[("year" + suff)] = "" + number;
+                    number = "";
                     continue;
                 }
                 //
@@ -415,10 +450,10 @@ CSL.DateParser = function () {
         // update any missing elements on each side of the divide
         // from the other
         //
-        if (isrange) {
+        if (isRange) {
             
-            for (j = 0, jlen = CSL.DATE_PARTS_ALL.length; j < jlen; j += 1) {
-                item = CSL.DATE_PARTS_ALL[j];
+            for (var j=0,jlen=CSL.DATE_PARTS_ALL.length; j<jlen; j++) {
+                var item = CSL.DATE_PARTS_ALL[j];
                 if (thedate[item] && !thedate[(item + "_end")]) {
                     thedate[(item + "_end")] = thedate[item];
                 } else if (!thedate[item] && thedate[(item + "_end")]) {
@@ -427,89 +462,22 @@ CSL.DateParser = function () {
             }
         }
         //
-        // Replace months with season if appropriate.  
-        // 
-        //
         // If there's no year, it's a failure; pass through the literal
         //
         if (!thedate.year) {
             thedate = { "literal": txt };
         }
-        if (this.use_array) {
-            this.toArray(thedate);            
-        }
         return thedate;
     };
 
-    this.returnAsArray = function () {
-        this.use_array = true;
-    };
+    this.parseDateToArray = function(txt) {
+        this._toArray(this.parseDateToObject(txt));            
+    }
+    
+    /*
+     * Setup
+     */
 
-    this.returnAsKeys = function () {
-        this.use_array = false;
-    };
-
-    this.toArray = function (thedate) {
-        var i, ilen, part;
-        thedate["date-parts"] = [];
-        thedate["date-parts"].push([]);
-        var slicelen = 0;
-        for (i = 0, ilen = 3; i < ilen; i += 1) {
-            part = ["year", "month", "day"][i];
-            if (!thedate[part]) {
-                break;
-            }
-            slicelen += 1;
-            thedate["date-parts"][0].push(thedate[part]);
-            delete thedate[part];
-        }
-        thedate["date-parts"].push([]);
-        for (i = 0, ilen = slicelen; i < ilen; i += 1) {
-            part = ["year_end", "month_end", "day_end"][i];
-            if (!thedate[part]) {
-                break;
-            }
-            thedate["date-parts"][1].push(thedate[part]);
-            delete thedate[part];
-        }
-        if (thedate["date-parts"][0].length !== thedate["date-parts"][1].length) {
-            thedate["date-parts"].pop();
-        }
-    };
-
-    this.parseNumericDate = function (ret, delim, suff, txt) {
-        var lst, i, ilen;
-        lst = txt.split(delim);
-        
-        for (i = 0, ilen = lst.length; i < ilen; i += 1) {
-            if (lst[i].length === 4) {
-                ret[("year" + suff)] = lst[i].replace(/^0*/, "");
-                if (!i) {
-                    lst = lst.slice(1);
-                } else {
-                    lst = lst.slice(0, i);
-                }
-                break;
-            }
-        }
-        // comment
-        
-        for (i = 0, ilen = lst.length; i < ilen; i += 1) {
-            lst[i] = parseInt(lst[i], 10);
-        }
-        //
-        // month and day parse
-        //
-        if (lst.length === 1 || (lst.length === 2 && !lst[1])) {
-            ret[("month" + suff)] = "" + lst[0];
-        } else if (lst.length === 2) {
-            if (lst[this.monthguess] > 12) {
-                ret[("month" + suff)] = "" + lst[this.dayguess];
-                ret[("day" + suff)] = "" + lst[this.monthguess];
-            } else {
-                ret[("month" + suff)] = "" + lst[this.monthguess];
-                ret[("day" + suff)] = "" + lst[this.dayguess];
-            }
-        }
-    };
+    this.setOrderMonthDay();
+    this.resetMonths();
 };
