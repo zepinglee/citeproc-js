@@ -124,9 +124,9 @@ CSL.DateParser = new function () {
             var abbrevLength = null;
             var skip = false;
             var insert = 3;
-            var extendedSet = {};
+            var extendedSets = {};
             for (var j=0,jlen=this.monthAbbrevs.length; j<jlen; j++) {
-                extendedSet[j] = {};
+                extendedSets[j] = {};
                 if (j === i) {
                     // Mark for skipping if same as an existing abbreviation of same month
                     for (var k=0,klen=this.monthAbbrevs[i].length; k<klen; k++) {
@@ -173,8 +173,16 @@ CSL.DateParser = new function () {
 
         // Compose
         this.monthRexes = [];
+        this.monthRexStrs = [];
         for (var i=0,ilen=this.monthAbbrevs.length; i<ilen; i++) {
-            this.monthRexes.push(new RegExp("(?:" + this.monthAbbrevs[i].join("|") + ")"));
+            this.monthRexes.push(new RegExp("^(?:" + this.monthAbbrevs[i].join("|") + ")"));
+            this.monthRexStrs.push("^(?:" + this.monthAbbrevs[i].join("|") + ")");
+        }
+        if (this.monthAbbrevs.length === 18) {
+            for (var i=12,ilen=14; i<ilen; i++) {
+                this.monthRexes[i+4] = new RegExp("^(?:" + this.monthAbbrevs[i].join("|") + ")");
+                this.monthRexStrs[i+4] = "^(?:" + this.monthAbbrevs[i].join("|") + ")";
+            }
         }
     };
 
@@ -414,7 +422,7 @@ CSL.DateParser = new function () {
                 // If it's a number, make a note of it
                 //
                 if (element.match(/^[0-9]+$/)) {
-                    number = parseInt(element, 10);
+                    number = element;
                 }
                 //
                 // If it's a BC or AD marker, make a year of
@@ -485,6 +493,14 @@ CSL.DateParser = new function () {
         if (!thedate.year) {
             thedate = { "literal": txt };
         }
+        var parts = ["year", "month", "day", "year_end", "month_end", "day_end"];
+        for (var i=0,ilen=parts.length; i<ilen; i++) {
+            var part = parts[i];
+            if ("string" === typeof thedate[part] && thedate[part].match(/^[0-9]+$/)) {
+                thedate[part] = parseInt(thedate[part], 10);
+            }
+            
+        }
         return thedate;
     };
 
@@ -501,6 +517,7 @@ CSL.DateParser = new function () {
     }
     
     /*
+
      * Setup
      */
 
