@@ -406,11 +406,11 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         // ok with no affixes here
         if (this.state.opt["demote-non-dropping-particle"] === "never") {
             first = this._join([non_dropping_particle, family, dropping_particle], " ");
-            merged = this._join([first, given], " ");
+            merged = this._join([first, given], "0");
             blob = this._join([merged, suffix], " ");
         } else {
             second = this._join([given, dropping_particle, non_dropping_particle], " ");
-            merged = this._join([family, second], " ");
+            merged = this._join([family, second], "0");
             blob = this._join([merged, suffix], " ");
         }
     } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0 && (j === 0 || "undefined" === typeof j))) {
