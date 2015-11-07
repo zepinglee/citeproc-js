@@ -51,7 +51,7 @@ CSL.DateParser = new function () {
     var numberVal = "[?0-9]{1,3}";
     var rangeSeparator = "[%%DATED%%]";
     var fuzzyChar = "[?~]";
-	var chars = "[^\-\/\~\?0-9]+";
+    var chars = "[^\-\/\~\?0-9]+";
     var rexString = "(" + yearFirst + "|" + yearLast + "|" + numberVal + "|" + rangeSeparator + "|" + fuzzyChar + "|" + chars + ")";
     //   composed regexps
     var rexDash = new RegExp(rexString.replace(/%%NUMD%%/g, "-").replace(/%%DATED%%/g, "-"));
@@ -82,7 +82,7 @@ CSL.DateParser = new function () {
         this.dayGuess = 1;
     };
 
-    this.resetMonths = function() {
+    this.resetDateParserMonths = function() {
         // Function to reset months to default.
         this.monthSets = [];
         for (var i=0,ilen=this.monthStrings.length; i<ilen; i++) {
@@ -101,7 +101,7 @@ CSL.DateParser = new function () {
         }
     };
 
-    this.addMonths = function(lst) {
+    this.addDateParserMonths = function(lst) {
         // Extend list of months with an additional set of month abbreviations,
         // extending strings as required to resolve ambiguities.
 
@@ -179,10 +179,11 @@ CSL.DateParser = new function () {
     };
 
     /*
-     * Utility functions
+     * Conversion functions
      */
 
-    this._toArray = function (thedate) {
+    this.convertDateObjectToArray = function (thedate) {
+        // Converts object in place and returns object
         thedate["date-parts"] = [];
         thedate["date-parts"].push([]);
         var slicelen = 0;
@@ -209,6 +210,24 @@ CSL.DateParser = new function () {
         }
         return thedate;
     };
+
+    // XXXX String output is currently unable to represent ranges
+    this.convertDateObjectToString = function(thedate) {
+        // Returns string
+        var ret = [];
+        for (var i = 0, ilen = 3; i < ilen; i += 1) {
+            if (thedate[DATE_PARTS_ALL[i]]) {
+                ret.push(thedate[DATE_PARTS_ALL[i]]);
+            } else {
+                break;
+            }
+        }
+        return ret.join("-");
+    }
+
+    /*
+     * Utility function
+     */
 
     this._parseNumericDate = function (ret, delim, suff, txt) {
         if (!suff) suff = "";
@@ -252,7 +271,7 @@ CSL.DateParser = new function () {
         var slashPos = -1;
         var dashPos = -1;
         var lst;
-	    if (txt) {
+        if (txt) {
             // Normalize to string
             txt = "" + txt;
             // Remove things that look like times
@@ -304,7 +323,7 @@ CSL.DateParser = new function () {
                 slashPos = txt.indexOf("/");
                 dashPos = txt.indexOf("-");
             }
-	    }
+        }
         // drop punctuation from a.d., b.c.
         txt = txt.replace(/([A-Za-z])\./g, "$1");
 
@@ -336,7 +355,7 @@ CSL.DateParser = new function () {
         }
         var ret = [];
         for (var i=0,ilen=lst.length; i<ilen; i++) {
-            m = lst[i].match(/^\s*([\-\/]|[a-zA-Z]+|[\-~?0-9]+)\s*$/);
+            var m = lst[i].match(/^\s*([\-\/]|[^\-\/\~\?0-9]+|[\-~?0-9]+)\s*$/);
             if (m) {
                 ret.push(m[1]);
             }
@@ -471,7 +490,11 @@ CSL.DateParser = new function () {
     };
 
     this.parseDateToArray = function(txt) {
-        this._toArray(this.parseDateToObject(txt));            
+        return this.convertDateObjectToArray(this.parseDateToObject(txt));            
+    }
+
+    this.parseDateToString = function(txt) {
+        return this.convertDateObjectToString(this.parseDateToObject(txt));
     }
     
     /*
@@ -479,5 +502,5 @@ CSL.DateParser = new function () {
      */
 
     this.setOrderMonthDay();
-    this.resetMonths();
+    this.resetDateParserMonths();
 };
