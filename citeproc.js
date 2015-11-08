@@ -1096,6 +1096,7 @@ CSL.DateParser = new function () {
         }
     };
     this.parseDateToObject = function (txt) {
+        var orig = txt;
         var slashPos = -1;
         var dashPos = -1;
         var lst;
@@ -1155,15 +1156,18 @@ CSL.DateParser = new function () {
             var slashCount = txt.split("/");
             if (slashCount.length > 3) {
                 rangeDelim = "-";
+                txt = txt.replace(/\_/g, "-");
                 dateDelim = "/";
                 lst = txt.split(rexSlashDash);
             } else {
                 rangeDelim = "/";
+                txt = txt.replace(/\_/g, "/");
                 dateDelim = "-";
                 lst = txt.split(rexDashSlash);
             }
         } else {
             txt = txt.replace(/\//g, "-");
+            txt = txt.replace(/\_/g, "-");
             rangeDelim = "-";
             dateDelim = "-";
             lst = txt.split(rexDash);
@@ -1248,8 +1252,8 @@ CSL.DateParser = new function () {
                 }
             }
         }
-        if (!thedate.year) {
-            thedate = { "literal": txt };
+        if (!thedate.year || (thedate.year && thedate.day && !thedate.month)) {
+            thedate = { "literal": orig };
         }
         var parts = ["year", "month", "day", "year_end", "month_end", "day_end"];
         for (var i=0,ilen=parts.length; i<ilen; i++) {
