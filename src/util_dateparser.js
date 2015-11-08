@@ -276,6 +276,7 @@ CSL.DateParser = new function () {
         //
         // Normalize the format and the year if it's a Japanese date
         //
+        var orig = txt;
         var slashPos = -1;
         var dashPos = -1;
         var lst;
@@ -491,10 +492,10 @@ CSL.DateParser = new function () {
             }
         }
         //
-        // If there's no year, it's a failure; pass through the literal
+        // If there's no year, or if there only a year and a day, it's a failure; pass through the literal
         //
-        if (!thedate.year) {
-            thedate = { "literal": txt };
+        if (!thedate.year || (thedate.year && thedate.day && !thedate.month)) {
+            thedate = { "literal": orig };
         }
         var parts = ["year", "month", "day", "year_end", "month_end", "day_end"];
         for (var i=0,ilen=parts.length; i<ilen; i++) {
