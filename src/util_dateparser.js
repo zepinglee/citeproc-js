@@ -348,15 +348,18 @@ CSL.DateParser = new function () {
             var slashCount = txt.split("/");
             if (slashCount.length > 3) {
                 rangeDelim = "-";
+                txt = txt.replace(/\_/g, "-");
                 dateDelim = "/";
                 lst = txt.split(rexSlashDash);
             } else {
                 rangeDelim = "/";
+                txt = txt.replace(/\_/g, "/");
                 dateDelim = "-";
                 lst = txt.split(rexDashSlash);
             }
         } else {
             txt = txt.replace(/\//g, "-");
+            txt = txt.replace(/\_/g, "-");
             rangeDelim = "-";
             dateDelim = "-";
             lst = txt.split(rexDash);
