@@ -401,13 +401,14 @@ var CSL = {
         };
         var stack = [];
         // Normalize markup
-        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
+        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3").replace(/\s+/g, " ");
         // Split and match
         var m1match = str.match(/((?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
         if (!m1match) {
             return [str];
         }
         var m1split = str.split(/(?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
+
         // Adjust
         outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
             if (pairs[m1match[i]]) {
