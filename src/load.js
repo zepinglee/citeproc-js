@@ -399,9 +399,6 @@ var CSL = {
             ' "': '" ',
             " '": "' "
         };
-        var skips = {
-            
-        }
         var stack = [];
         // Normalize markup
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
@@ -412,36 +409,34 @@ var CSL = {
         }
         var m1split = str.split(/(?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
         // Adjust
-        //print("m1match="+m1match);
-        //print("m1split="+m1split);
         outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
-            var m = m1match[i];
+            if (pairs[m1match[i]]) {
+                stack.push({
+                    tag: m1match[i],
+                    pos: i
+                });
+                continue;
+            }
             if (stack.length) {
-                var tryme = stack.slice(-1)[0];
-                if (tryme === m1match[i]) {
-                    // Move nested strings to markup list (closing match)
-                    m1match[i] = m1split[i] + m1match[i];
-                    m1split[i] = "";
-                    stack.pop();
-                    continue;
-                }
-                for (var j=stack.length-2; j>-1; j--) {
-                    if (stack[j] === tryme) {
-                        var offset = (stack.length-j);
-                        for (var k=offset-1; k>-1; k--) {
-                            // Move nested strings to markup list (closing match fail)
-                            //print("Also popping markup of: "+m1split[i-k]);
-                            m1match[i-k] = m1match[i-k] + m1split[i-k];
-                            m1split[i-k] = "";
-                            offset++;
-                            stack.pop();
+                // If current tag matches any tag on the stack,
+                // drop mismatched tags and move strings for
+                // the remainder, and pop the current tag.
+                for (var j=stack.length-1; j>-1; j--) {
+                    var stackObj = stack.slice(j)[0];
+                    if (m1match[i] === pairs[stackObj.tag]) {
+                        // Prune. We might be behind an apostrophe or something.
+                        stack = stack.slice(0, j+1);
+                        // Get the list position of the tag, and move strings to tags list between there and here.
+                        var startPos = stack[j].pos;
+                        for (var k=stack[j].pos+1; k<i+1; k++) {
+                            m1match[k] = m1split[k] + m1match[k];
+                            m1split[k] = "";
                         }
-                        continue outer;
+                        // Done with that one.
+                        stack.pop();
+                        break;
                     }
                 }
-            }
-            if (pairs[m]) {
-                stack.push(pairs[m]);
             }
         }
         myret = [m1split[0]];
@@ -450,7 +445,6 @@ var CSL = {
             myret.push(m1split[pos]);
         }
         var lst = myret.slice();
-        //print(lst);
         return lst;
     },
 
