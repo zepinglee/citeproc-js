@@ -298,8 +298,6 @@ var CSL = {
             ' "': '" ',
             " '": "' "
         };
-        var skips = {
-        }
         var stack = [];
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
         var m1match = str.match(/((?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
@@ -308,30 +306,27 @@ var CSL = {
         }
         var m1split = str.split(/(?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
         outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
-            var m = m1match[i];
-            if (stack.length && stack.slice(-1)[0] === m1match[i]) {
-                m1match[i] = m1split[i] + m1match[i];
-                m1split[i] = "";
-                stack.pop();
+            if (pairs[m1match[i]]) {
+                stack.push({
+                    tag: m1match[i],
+                    pos: i
+                });
                 continue;
             }
             if (stack.length) {
-                var tryme = stack.slice(-1)[0];
-                for (var j=stack.length-2; j>-1; j--) {
-                    if (stack[j] === tryme) {
-                        var offset = (stack.length-j);
-                        for (var k=offset-1; k>-1; k--) {
-                            m1match[i-k] = m1match[i-k] + m1split[i-k];
-                            m1split[i-k] = "";
-                            offset++;
-                            stack.pop();
+                for (var j=stack.length-1; j>-1; j--) {
+                    var stackObj = stack.slice(j)[0];
+                    if (m1match[i] === pairs[stackObj.tag]) {
+                        stack = stack.slice(0, j+1);
+                        var startPos = stack[j].pos;
+                        for (var k=stack[j].pos+1; k<i+1; k++) {
+                            m1match[k] = m1split[k] + m1match[k];
+                            m1split[k] = "";
                         }
-                        continue outer;
+                        stack.pop();
+                        break;
                     }
                 }
-            }
-            if (pairs[m]) {
-                stack.push(pairs[m]);
             }
         }
         myret = [m1split[0]];
@@ -1870,7 +1865,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    Item["container-title-short"] = Item.journalAbbreviation;
+    if (!Item["container-title-short"]) {
+        Item["container-title-short"] = Item.journalAbbreviation;
+    }
     if (Item["container-title"] && this.sys.getAbbreviation) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", Item["container-title"]);
         if (this.transform.abbrevs[jurisdiction]["container-title"]) {
