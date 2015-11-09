@@ -390,8 +390,12 @@ var CSL = {
     ],
 
     // TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
-    TAG_ESCAPE: function (str) {
+    TAG_ESCAPE: function (str, stopWords) {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+        // A stopWords list is used when title-casing. See formatters.js
+        if (!stopWords) {
+            stopWords = [];
+        }
         // Pairs
         var pairs = {
             "<span class=\"nocase\">": "</span>",
@@ -401,14 +405,14 @@ var CSL = {
         };
         var stack = [];
         // Normalize markup
-        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3").replace(/\s+/g, " ");
+        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
         // Split and match
         var m1match = str.match(/((?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
         if (!m1match) {
             return [str];
         }
         var m1split = str.split(/(?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
-
+        
         // Adjust
         outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
             if (pairs[m1match[i]]) {
@@ -416,6 +420,18 @@ var CSL = {
                     tag: m1match[i],
                     pos: i
                 });
+                // If current string begins with a stop word,
+                // and the previous string does not end with
+                // punctuation, move the string to the tag split.
+                var mFirstWord = m1split[i].match(/^(\s*([^' ]+[']?))(.*)/);
+                if (mFirstWord) {
+                    if (stopWords.indexOf(mFirstWord[2]) > -1) {
+                        if (!m1split[i-1].match(/[:\?\!]\s*$/)) {
+                            m1match[i-1] = m1match[i-1] + mFirstWord[1];
+                            m1split[i] = mFirstWord[3];
+                        }
+                    }
+                }
                 continue;
             }
             if (stack.length) {

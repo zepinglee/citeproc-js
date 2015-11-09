@@ -129,7 +129,7 @@ CSL.Output.Formatters.title = function (state, string) {
     if (!string) {
         return "";
     }
-    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE, SKIP_WORDS);
     function capitalise (word) {
         var m = word.match(/([:?!]+\s+|-|^)([a-zA-Z])(.*)/);
         if (m) {
@@ -154,10 +154,10 @@ CSL.Output.Formatters.title = function (state, string) {
     // Split on skip words
     var str = doppel.string;
     var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
-
+    
     // Capitalise stop-words that occur after a colon
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
-        if (lst[i].match(/^[:?!] [^ ]/)) {
+        if (lst[i].match(/^[:?!]/)) {
             lst[i] = capitalise(lst[i]);
         }
     }
@@ -198,14 +198,14 @@ CSL.Output.Formatters.title = function (state, string) {
 /*
 * Based on a suggestion by Shoji Kajita.
 */
-CSL.Output.Formatters.doppelString = function (string, rex) {
+CSL.Output.Formatters.doppelString = function (string, rex, stopWords) {
     var ret, pos, len;
     ret = {};
     // rex is a function that returns an appropriate array.
     //
     // XXXXX: Does this work in Internet Explorer?
     //
-    ret.array = rex(string);
+    ret.array = rex(string, stopWords);
     //print("ret.array: "+ret.array);
     // ret.array = string.split(rex);
     ret.string = "";
