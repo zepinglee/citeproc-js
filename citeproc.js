@@ -290,8 +290,11 @@ var CSL = {
         "available-date",
         "submitted"
     ],
-    TAG_ESCAPE: function (str) {
+    TAG_ESCAPE: function (str, stopWords) {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+        if (!stopWords) {
+            stopWords = [];
+        }
         var pairs = {
             "<span class=\"nocase\">": "</span>",
             "<span class=\"nodecor\">": "</span>",
@@ -311,6 +314,15 @@ var CSL = {
                     tag: m1match[i],
                     pos: i
                 });
+                var mFirstWord = m1split[i].match(/^(\s*([^' ]+[']?))(.*)/);
+                if (mFirstWord) {
+                    if (stopWords.indexOf(mFirstWord[2]) > -1) {
+                        if (!m1split[i-1].match(/[:\?\!]\s*$/)) {
+                            m1match[i-1] = m1match[i-1] + mFirstWord[1];
+                            m1split[i] = mFirstWord[3];
+                        }
+                    }
+                }
                 continue;
             }
             if (stack.length) {
@@ -12999,7 +13011,7 @@ CSL.Output.Formatters.title = function (state, string) {
     if (!string) {
         return "";
     }
-    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE, SKIP_WORDS);
     function capitalise (word) {
         var m = word.match(/([:?!]+\s+|-|^)([a-zA-Z])(.*)/);
         if (m) {
@@ -13054,10 +13066,10 @@ CSL.Output.Formatters.title = function (state, string) {
     var ret = CSL.Output.Formatters.undoppelString(doppel);
     return ret;
 };
-CSL.Output.Formatters.doppelString = function (string, rex) {
+CSL.Output.Formatters.doppelString = function (string, rex, stopWords) {
     var ret, pos, len;
     ret = {};
-    ret.array = rex(string);
+    ret.array = rex(string, stopWords);
     ret.string = "";
     for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
         if (ret.array[i-1] === "-" && false) {
