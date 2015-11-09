@@ -753,7 +753,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    Item["container-title-short"] = Item.journalAbbreviation;
+    if (!Item["container-title-short"]) {
+        Item["container-title-short"] = Item.journalAbbreviation;
+    }
     if (Item["container-title"] && this.sys.getAbbreviation) {
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", Item["container-title"]);
         if (this.transform.abbrevs[jurisdiction]["container-title"]) {
