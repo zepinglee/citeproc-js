@@ -392,18 +392,65 @@ var CSL = {
     // TAG_ESCAPE: /(<span class=\"no(?:case|decor)\">.*?<\/span>)/,
     TAG_ESCAPE: function (str) {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
-        // Workaround for Internet Exporer
-
-        // For squiggly-brace nocase markup ...
-        mx = str.match(/((?:\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">).*?(?:<\/span>))|<\/?(?:i|sc|b)>)/g);
-        lst = str.split(/(?:(?:\"|\')|(?:(?:<span\s+class=\"no(?:case|decor)\">).*?(?:<\/span>))|<\/?(?:i|sc|b)>)/g);
-
-        myret = [lst[0]];
-        for (pos = 1, len = lst.length; pos < len; pos += 1) {
-            myret.push(mx[pos - 1]);
-            myret.push(lst[pos]);
+        // Pairs
+        var pairs = {
+            "<span class=\"nocase\">": "</span>",
+            "<span class=\"nodecor\">": "</span>",
+            ' "': '" ',
+            " '": "' "
+        };
+        var skips = {
+            
         }
-        lst = myret.slice();
+        var stack = [];
+        // Normalize markup
+        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
+        // Split and match
+        var m1match = str.match(/((?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
+        if (!m1match) {
+            return [str];
+        }
+        var m1split = str.split(/(?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
+        // Adjust
+        //print("m1match="+m1match);
+        //print("m1split="+m1split);
+        outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
+            var m = m1match[i];
+            if (stack.length) {
+                var tryme = stack.slice(-1)[0];
+                if (tryme === m1match[i]) {
+                    // Move nested strings to markup list (closing match)
+                    m1match[i] = m1split[i] + m1match[i];
+                    m1split[i] = "";
+                    stack.pop();
+                    continue;
+                }
+                for (var j=stack.length-2; j>-1; j--) {
+                    if (stack[j] === tryme) {
+                        var offset = (stack.length-j);
+                        for (var k=offset-1; k>-1; k--) {
+                            // Move nested strings to markup list (closing match fail)
+                            //print("Also popping markup of: "+m1split[i-k]);
+                            m1match[i-k] = m1match[i-k] + m1split[i-k];
+                            m1split[i-k] = "";
+                            offset++;
+                            stack.pop();
+                        }
+                        continue outer;
+                    }
+                }
+            }
+            if (pairs[m]) {
+                stack.push(pairs[m]);
+            }
+        }
+        myret = [m1split[0]];
+        for (pos = 1, len = m1split.length; pos < len; pos += 1) {
+            myret.push(m1match[pos - 1]);
+            myret.push(m1split[pos]);
+        }
+        var lst = myret.slice();
+        //print(lst);
         return lst;
     },
 
