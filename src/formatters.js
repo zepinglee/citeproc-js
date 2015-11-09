@@ -130,9 +130,13 @@ CSL.Output.Formatters.title = function (state, string) {
         return "";
     }
     var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE, SKIP_WORDS);
-    function capitalise (word) {
-        var m = word.match(/([:?!]+\s+|-|^)([a-zA-Z])(.*)/);
-        if (m) {
+    function capitalise (word, force) {
+        // Weird stuff is (.) transpiled with regexpu
+        //   https://github.com/mathiasbynens/regexpu
+        var m = word.match(/([:?!]+\s+|-|^)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
+        // Do not uppercase lone Greek letters
+        // (This may not be a good thing when setting Greek-language citations)
+        if (m && !(m[2].match(/^[\u0370-\u03FF]$/) && !m[3])) {
             return m[1] + m[2].toUpperCase() + m[3];
         }
         return word;
