@@ -157,7 +157,7 @@ CSL.Output.Formatters.title = function (state, string) {
 
     // Capitalise stop-words that occur after a colon
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
-        if (lst[i].match(/^[:?!]/)) {
+        if (lst[i].match(/^[:?!] [^ ]/)) {
             lst[i] = capitalise(lst[i]);
         }
     }
