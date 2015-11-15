@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.65",
+    PROCESSOR_VERSION: "1.1.66",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -297,17 +297,15 @@ var CSL = {
         }
         var pairs = {
             "<span class=\"nocase\">": "</span>",
-            "<span class=\"nodecor\">": "</span>",
-            ' "': '" ',
-            " '": "' "
+            "<span class=\"nodecor\">": "</span>"
         };
         var stack = [];
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
-        var m1match = str.match(/((?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
+        var m1match = str.match(/((?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
         if (!m1match) {
             return [str];
         }
-        var m1split = str.split(/(?: \"| \'|\" |\' |<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
+        var m1split = str.split(/(?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
         outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
             if (pairs[m1match[i]]) {
                 stack.push({

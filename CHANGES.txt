@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.66
+=========================
+
+- Remove title-casing suppression from quotes, and smarten up
+  quote parsing.
+
+    http://xbiblio-devel.2463403.n2.nabble.com/Title-case-questions-tt7579427.html
+
+=========================
 Changes in version 1.1.65
 =========================
 
