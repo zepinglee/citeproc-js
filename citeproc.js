@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.66",
+    PROCESSOR_VERSION: "1.1.67",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -13198,7 +13198,7 @@ CSL.Output.Formats.prototype.html = {
         if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
             if (cslid) {
                 return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
-            } else if ("string" === typeof str) {
+            } else if (this.params && "string" === typeof str) {
                 var prePunct = "";
                 if (str) {
                     var m = str.match(CSL.VARIABLE_WRAPPER_PREPUNCT_REX);
