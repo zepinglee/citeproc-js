@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
-???
+>>[0] Book Title, arts. 105–110
 <<===== RESULT =====<<
 
 
@@ -17,7 +17,8 @@ citation
       "citationItems": [
         {
           "id": "ITEM-1",
-          "locator": "para. 201, 203"
+          "locator": "art. 105-110",
+          "label": "page"
         }
       ],
       "properties": {
@@ -35,17 +36,41 @@ citation
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
+      page-range-format="chicago"
       version="1.0">
   <info>
     <id />
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <terms>
+      <term name="article">
+        <single>article</single>
+        <multiple>articles</multiple>
+      </term>
+      <term name="article" form="short">
+        <single>art.</single>
+        <multiple>arts.</multiple>
+      </term>
+      <term name="note">
+        <single>note</single>
+        <multiple>notes</multiple>
+      </term>
+      <term name="note" form="short">
+        <single>n.</single>
+        <multiple>nn.</multiple>
+      </term>
+    </terms>
+  </locale>
   <citation>
     <layout>
       <group delimiter=", ">
         <text variable="title"/>
-        <number variable="locator" prefix="[" suffix="]"/>
+        <group delimiter=" ">
+          <label variable="locator" form="short"/>
+          <number variable="locator"/>
+        </group>
       </group>
     </layout>
   </citation>
@@ -58,7 +83,8 @@ citation
     {
         "id": "ITEM-1", 
         "title": "Book Title",
-        "type": "book"
+        "type": "book",
+        "page": "201 n. 7"
     }
 ]
 <<===== INPUT =====<<

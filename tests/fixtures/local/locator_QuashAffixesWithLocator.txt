@@ -14,7 +14,7 @@ One
     [
         {
             "id": "ITEM-5", 
-            "locator": "locator string should be ignored too"
+            "label": "locator label should be ignored too"
         }
     ]
 ]
@@ -35,7 +35,7 @@ One
     <layout delimiter="&#x0A;">
       <text variable="title"/>
       <group delimiter=", " prefix="{" suffix="}">
-        <text value="label should be ignored"/>
+        <text value="siblings should be ignored"/>
         <text variable="locator" prefix="[" suffix="]"/>
       </group>
     </layout>

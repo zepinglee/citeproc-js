@@ -5,18 +5,18 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [sibling suffix–prefix]
-One. Two. [sibling suffix–delimiter]
-One. Two. [sibling delimiter–prefix]
-One. Two. [parental suffix–prefix–downhill]
-One. Two. [parental suffix–prefix–uphill]
-One. Two. [parental prefix–prefix]
-One. Two. [parental suffix–delimiter]
-One. Two. [parental delimiter–prefix]
-One. Two. [parental suffix–suffix]
-One. Two. [parental delimiter–prefix–prefix]
-One. Two. [parental suffix–suffix–delimiter]
-One. Two. [parental suffix–prefix–over–the–hill]
+One. Two. [sibling suffix-prefix]
+One. Two. [sibling suffix-delimiter]
+One. Two. [sibling delimiter-prefix]
+One. Two. [parental suffix-prefix-downhill]
+One. Two. [parental suffix-prefix-uphill]
+One. Two. [parental prefix-prefix]
+One. Two. [parental suffix-delimiter]
+One. Two. [parental delimiter-prefix]
+One. Two. [parental suffix-suffix]
+One. Two. [parental delimiter-prefix-prefix]
+One. Two. [parental suffix-suffix-delimiter]
+One. Two. [parental suffix-prefix-over-the-hill]
 <<===== RESULT =====<<
 
 

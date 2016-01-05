@@ -27,7 +27,7 @@ citation
             <label form="symbol" variable="page"/>
           </if>
         </choose>
-        <number label-form="symbol" variable="page"/>
+        <text variable="page"/>
       </group>
     </layout>
   </citation>

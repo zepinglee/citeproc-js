@@ -46,7 +46,7 @@ Reference [1]
   </info>
   <citation>
     <layout font-style="italic">
-      <text prefix="[" suffix="]" variable="citation-number" />
+      <text prefix="[" suffix="]" variable="citation-number"/>
     </layout>
   </citation>
   <bibliography>

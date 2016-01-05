@@ -4,7 +4,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry"><span style="font-variant:small-caps;">Ashford</span>, <span style="font-variant:small-caps;">J.R.</span> 2002. First report of the CCAMLR Otolith Network. <i>SC-CCAMLR-WG-FSA02.51</i>.</div>
+  <div class="csl-entry"><span style="font-variant:small-caps;">Ashford</span>, <span style="font-variant:small-caps;">J.R.</span> 2002. First report of the CCAMLR Otolith Network (SC-CCAMLR-WG-FSA02.51).</div>
 </div>
 <<===== RESULT===== <<
 

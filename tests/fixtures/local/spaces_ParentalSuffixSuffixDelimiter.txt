@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [parental suffix–suffix–delimiter]
+One. Two. [parental suffix-suffix-delimiter]
 <<===== RESULT =====<<
 
 

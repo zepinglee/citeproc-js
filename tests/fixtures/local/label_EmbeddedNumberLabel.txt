@@ -36,6 +36,7 @@ Some Other Statute, Pub. L. No. 999
   </info>
   <locale>
     <terms>
+      <term name="chapter">chapter</term>
       <term form="short" name="chapter">ch.</term>
     </terms>
   </locale>

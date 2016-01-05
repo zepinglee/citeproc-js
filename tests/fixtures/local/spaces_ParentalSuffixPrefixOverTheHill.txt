@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [parental suffix–prefix–over–the–hill]
+One. Two. [parental suffix-prefix-over-the-hill]
 <<===== RESULT =====<<
 
 

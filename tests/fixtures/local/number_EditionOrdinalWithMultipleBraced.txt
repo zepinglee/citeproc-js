@@ -7,31 +7,31 @@ citation
 Normalizes punctuation and grouping when multiple numbers are provided in input.
 
 >>===== RESULT =====>>
-1st edition --- ‘1’ --- ordinalized, numeric, singular
-2nd–3rd editions --- ‘2–3’ --- ordinalized, numeric, plural
-4th &#38; 6th editions --- ‘4 &#38; 6’ --- ordinalized, numeric, plural
-7th, 8th &#38; 9th editions --- ‘7, 8 &#38; 9’ --- ordinalized, numeric, plural
-10th, 12th &#38; 14th editions --- ‘10, 12 &#38; 14’ --- ordinalized, numeric, plural
-15th, 17th, 19th, 20th, 21st editions --- ‘15, 17, 19, 20, 21’ --- ordinalized, numeric, plural
-16th, 28th, 30th, 31st, 32nd, 34th, 36th editions --- ‘16, 28, 30, 31, 32, 34, 36’ --- ordinalized, numeric, plural
-25th, 15th, 17th, 19th, 20th, 21st, 23rd, 24th editions --- ‘25, 15, 17, 19, 20, 21, 23, 24’ --- ordinalized, numeric, plural
-38th, 37th–40th editions --- ‘38, 37–40’ --- ordinalized, numeric, plural
-41st–43rd editions --- ‘41–43’ --- ordinalized, numeric, plural
-205th–2000th editions --- ‘205–2000’ --- ordinalized, numeric, plural
-1 vol + 1 CD --- ‘1 vol + 1 CD’ --- not ordinalized, non-numeric
-12nd edition --- ‘12nd’ --- Suffix left untouched, not ordinalized, numeric, singular
-12a-c edition --- ‘12a-c’ --- Suffix left untouched, not ordinalized, numeric, singular
-12th Yellow-tailed Wooly Monkey --- ‘12th Yellow-tailed Wooly Monkey’ --- not ordinalized, non-numeric
-T51 edition --- ‘T51’ --- not ordinalized, numeric, singular
-Edition 1 --- ‘Edition 1’ --- not ordinalized, non-numeric
-Editions 1-6 --- ‘Editions 1-6’ --- Normalized, non-numeric
-‘42 editionX’ --- ‘42 editionX’ --- Normalized, quotes preserved, non-numeric
-‘42-47 editionz’ --- ‘42-47 editionz’ --- Normalized, quotes preserved, non-numeric
-edn. T51 --- ‘edn. T51’ --- Non-numeric (unrecognized label)
-T51 &#38; T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plural
-12:xx edition --- ‘12:xx’ --- not ordinalized, numeric, singular
-12 13 --- ‘12 13’ --- not ordinalized, non-numeric
-12th folio --- ‘12th folio’ --- Suffix left untouched, not ordinalized, non-numeric
+[1st] edition --- ‘1’ --- ordinalized, numeric, singular
+[2nd]–[3rd] editions --- ‘2–3’ --- ordinalized, numeric, plural
+[4th] &#38; [6th] editions --- ‘4 &#38; 6’ --- ordinalized, numeric, plural
+[7th], [8th] &#38; [9th] editions --- ‘7, 8 &#38; 9’ --- ordinalized, numeric, plural
+[10th], [12th] &#38; [14th] editions --- ‘10, 12 &#38; 14’ --- ordinalized, numeric, plural
+[15th], [17th], [19th], [20th], [21st] editions --- ‘15, 17, 19, 20, 21’ --- ordinalized, numeric, plural
+[16th], [28th], [30th], [31st], [32nd], [34th], [36th] editions --- ‘16, 28, 30, 31, 32, 34, 36’ --- ordinalized, numeric, plural
+[25th], [15th], [17th], [19th], [20th], [21st], [23rd], [24th] editions --- ‘25, 15, 17, 19, 20, 21, 23, 24’ --- ordinalized, numeric, plural
+[38th], [37th]–[40th] editions --- ‘38, 37–40’ --- ordinalized, numeric, plural
+[41st]–[43rd] editions --- ‘41–43’ --- ordinalized, numeric, plural
+[205th]–[2000th] editions --- ‘205–2000’ --- ordinalized, numeric, plural
+[1 vol + 1 CD] --- ‘1 vol + 1 CD’ --- not ordinalized, non-numeric
+[12nd] edition --- ‘12nd’ --- Suffix left untouched, not ordinalized, numeric, singular
+[12a-c] edition --- ‘12a-c’ --- Suffix left untouched, not ordinalized, numeric, singular
+[12th Yellow-tailed Wooly Monkey] --- ‘12th Yellow-tailed Wooly Monkey’ --- not ordinalized, non-numeric
+[T51] edition --- ‘T51’ --- not ordinalized, numeric, singular
+[Edition 1] --- ‘Edition 1’ --- not ordinalized, non-numeric
+[Editions 1-6] --- ‘Editions 1-6’ --- Normalized, non-numeric
+‘[42 editionX]’ --- ‘42 editionX’ --- Normalized, quotes preserved, non-numeric
+‘[42-47 editionz]’ --- ‘42-47 editionz’ --- Normalized, quotes preserved, non-numeric
+[edn. T51] --- ‘edn. T51’ --- Non-numeric (unrecognized label)
+[T51] &#38; [T53] editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plural
+[12:xx] edition --- ‘12:xx’ --- not ordinalized, numeric, singular
+[12 13] --- ‘12 13’ --- not ordinalized, non-numeric
+[12th folio] --- ‘12th folio’ --- Suffix left untouched, not ordinalized, non-numeric
 <<===== RESULT =====<<
 
 >>===== CSL =====>>
@@ -55,7 +55,7 @@ T51 &#38; T53 editions --- ‘T51 &#38; T53’ --- not ordinalized, numeric, plu
   <citation>
     <layout delimiter="&#x0A;">
       <group delimiter=" ">
-        <number variable="edition" form="ordinal"/>
+        <number variable="edition" form="ordinal" prefix="[" suffix="]"/>
         <choose>
           <if is-numeric="edition">
             <label variable="edition"/>

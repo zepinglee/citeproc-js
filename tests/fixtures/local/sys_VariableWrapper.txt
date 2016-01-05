@@ -11,9 +11,12 @@ citation
 <<===== OPTIONS =====<<
 
 
+The boldface on the note number is added by the custom
+wrapping function supplied by the test framework.
+
 >>===== RESULT =====>>
 ..[0] Silicott Smith, <a href="http://bimplekrup.com/">Book Title</a>, 2009
->>[1] Book Title, <b>note 1</b>
+>>[1] Book Title, note <b>1</b>
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>

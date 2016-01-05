@@ -5,16 +5,16 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] Title One, verse 99
+>>[0] Title One, (number), section 12 verse 99
 <<===== RESULT =====<<
 
->>===== OPTIONS =====>>
+>>===== OPTIONZ =====>>
 {
    "static_statute_locator":false,
    "clobber_locator_if_no_statute_section":false,
    "handle_parallel_articles": false
 }
-<<===== OPTIONS =====<<
+<<===== OPTIONZ =====<<
 
 
 >>===== CITATIONS =====>>
@@ -43,7 +43,7 @@ citation
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0"
+      version="1.1mlz1"
       demote-non-dropping-particle="display-and-sort">
   <info>
     <id />
@@ -54,9 +54,14 @@ citation
     <layout>
       <group delimiter=", ">
         <text variable="title"/>
+        <choose>
+          <if is-number="locator">
+            <text value="(number)"/>
+          </if>
+        </choose>
         <group delimiter=" ">
           <label variable="locator"/>
-          <text variable="locator"/>
+          <number variable="locator"/>
         </group>
       </group>
     </layout>

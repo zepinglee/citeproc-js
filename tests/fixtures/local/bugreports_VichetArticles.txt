@@ -63,6 +63,7 @@ citation
   </info>
   <locale>
     <terms>
+      <term name="article">article</term>
       <term form="short" name="article">
         <single>art.</single>
         <multiple>arts.</multiple>

@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
-One. Two. [sibling suffix–prefix]
+One. Two. [sibling suffix-prefix]
 <<===== RESULT =====<<
 
 

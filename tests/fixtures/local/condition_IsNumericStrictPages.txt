@@ -2,18 +2,15 @@
 citation
 <<===== MODE =====<<
 
->>===== OPTIONS =====>>
-{
-   "strict_page_numbers": true
-}
-<<===== OPTIONS =====<<
-
-
 >>===== RESULT =====>>
 Volume is numeric: 4 / Page is numeric: 123
 Volume is non-numeric: Volume 10 / Page is non-numeric: ix
 Volume is numeric: L100 / Page is numeric: 123
-Volume is non-numeric: cm / Page is non-numeric: e678
+Volume is non-numeric: cm / Page is numeric: e678
+Volume is numeric: 2b / Page is numeric: 2b
+Volume is numeric: L2d / Page is numeric: L2d
+Volume is numeric: 2nd / Page is numeric: 2nd
+Volume is non-numeric: 2nd volume / Page is non-numeric: 2nd page
 <<===== RESULT =====<<
 
 >>===== CITATION-ITEMS =====>>
@@ -36,6 +33,26 @@ Volume is non-numeric: cm / Page is non-numeric: e678
     [
         {
             "id": "ITEM-4"
+        }
+    ],
+    [
+        {
+            "id": "ITEM-5"
+        }
+    ],
+    [
+        {
+            "id": "ITEM-6"
+        }
+    ],
+    [
+        {
+            "id": "ITEM-7"
+        }
+    ],
+    [
+        {
+            "id": "ITEM-8"
         }
     ]
 ]
@@ -108,6 +125,30 @@ Volume is non-numeric: cm / Page is non-numeric: e678
         "id": "ITEM-4", 
         "page": "e678",
         "volume": "cm",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-5", 
+        "page": "2b",
+        "volume": "2b",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-6", 
+        "page": "L2d",
+        "volume": "L2d",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-7", 
+        "page": "2nd",
+        "volume": "2nd",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-8", 
+        "page": "2nd page",
+        "volume": "2nd volume",
         "type": "book"
     }
 ]
