@@ -19,29 +19,14 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     
     // Plurals detection.
     var plural = node.strings.plural;
-    if (item && "locator" === node.strings.term && "number" === typeof item.force_pluralism) {
-        plural = item.force_pluralism;
-    } else if ("number" !== typeof plural) {
-        if ("locator" === node.strings.term) {
-            if (item && item.locator) {
-                if (state.opt.development_extensions.locator_parsing_for_plurals) {
-                    if (!state.tmp.shadow_numbers.locator) {
-                        state.processNumber(false, item, "locator", Item.type);
-                    }
-                    plural = state.tmp.shadow_numbers.locator.plural;
-                } else {
-                    plural = CSL.evaluateStringPluralism(item.locator);
-                }
-            }
-        } else if (["page", "page-first", "number"].indexOf(node.variables[0]) > -1) {
-            state.processNumber(false, Item, myterm, Item.type);
-            plural = state.tmp.shadow_numbers[myterm].plural;
-            myterm = state.tmp.shadow_numbers[myterm].label;
-        } else {
-            if (!state.tmp.shadow_numbers[myterm]) {
-                state.processNumber(false, Item, myterm, Item.type);
-            }
-            plural = state.tmp.shadow_numbers[myterm].plural;
+    if ("number" !== typeof plural) {
+        // (node, ItemObject, variable, type)
+        var theItem = node.strings.term === "locator" ? item : Item;
+        state.processNumber(false, theItem, node.strings.term, Item.type);
+        plural = state.tmp.shadow_numbers[node.strings.term].plural;
+        state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+        if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
+            myterm = state.tmp.shadow_numbers[node.strings.term].label;
         }
         if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
             node.decorations.reverse();
@@ -50,16 +35,6 @@ CSL.evaluateLabel = function (node, state, Item, item) {
         }
     }
     return CSL.castLabel(state, node, myterm, plural, CSL.TOLERANT);
-};
-
-CSL.evaluateStringPluralism = function (str) {
-    if (str) {
-        var m = str.match(/(?:[0-9],\s*[0-9]|\s+and\s+|&|([0-9]+)\s*[\-\u2013]\s*([0-9]+))/);
-        if (m && (!m[1] || parseInt(m[1], 10) < parseInt(m[2], 10))) {
-            return 1;
-        }
-    }
-    return 0;
 };
 
 CSL.castLabel = function (state, node, term, plural, mode) {

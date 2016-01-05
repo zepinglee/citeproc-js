@@ -89,7 +89,7 @@ CSL.Node.text = {
                             if (state.opt.citation_number_slug) {
                                 state.output.append(state.opt.citation_number_slug, this);
                             } else {
-                                number = new CSL.NumericBlob(num, this, Item.id);
+                                number = new CSL.NumericBlob(false, num, this, Item.id);
                                 state.output.append(number, "literal");
                             }
                         }
@@ -111,7 +111,7 @@ CSL.Node.text = {
                         if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.just_looking) {
                             //state.output.append(state.registry.registry[Item.id].disambig[2],this);
                             num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
-                            number = new CSL.NumericBlob(num, this, Item.id);
+                            number = new CSL.NumericBlob(false, num, this, Item.id);
                             formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
                             number.setFormatter(formatter);
                             state.output.append(number, "literal");
@@ -222,6 +222,7 @@ CSL.Node.text = {
                     // Deal with multi-fields and ordinary fields separately.
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1
                         || ["language-name", "language-name-original"].indexOf(this.variables_real[0]) > -1) {
+
                         // multi-fields
                         // Initialize transform factory according to whether
                         // abbreviation is desired.
@@ -256,50 +257,86 @@ CSL.Node.text = {
                                 if (item && item[this.variables[0]]) {
                                     // Code copied to page variable as well; both
                                     // become cs:number in MLZ extended schema
-                                    var value = "" + item[this.variables[0]];
-                                    value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
-                                    value = value.replace(/\\-/g,"-");
+                                    
+                                    // If locator, use cs:number. Otherwise, render
+                                    // normally.
+
+                                    // XXX The code below is pretty-much copied from
+                                    // XXX node_number.js. Should be a common function.
+                                    // XXX BEGIN
+                                    state.processNumber(this, item, this.variables[0], Item.type);
+                                    state.output.openLevel(state.tmp.shadow_numbers[this.variables[0]].masterStyling);
+                                    var nums = state.tmp.shadow_numbers[this.variables[0]].values;
+                                    var labelForm = state.tmp.shadow_numbers[this.variables[0]].labelForm;
+                                    for (var i=0,ilen=nums.length;i<ilen;i++) {
+                                        var num = nums[i];
+                                        if (num.labelVisibility) {
+                                            var label = CSL.STATUTE_SUBDIV_STRINGS[num.label];
+                                            // And add a trailing delimiter.
+                                            label = state.getTerm(label, labelForm, num.plural);
+                                            if (!label) {
+                                                label = num.label;
+                                            }
+                                            state.output.append(label+num.labelSuffix, "empty");
+                                        }
+                                        if (num.collapsible) {
+                                            var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), num.styling, Item.id);
+                                            if ("undefined" === typeof blob.gender) {
+                                                blob.gender = state.locale[state.opt.lang]["noun-genders"][this.variables[0]];
+                                            }
+                                            state.output.append(blob, "literal");
+                                        } else {
+                                            state.output.append(num.particle + num.value, num.styling)
+                                        }
+                                    }
+                                    state.output.closeLevel("empty");
+                                    // XXX END
+
+                                    
+                                    //var value = "" + item[this.variables[0]];
+                                    //value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
+                                    //value = value.replace(/\\-/g,"-");
+                                    //print("??FIXIT?? "+value);
                                     // true is for non-suppression of periods
                                     state.output.append(value, this, false, false, true);
-                                    if (this.variables[0] === "locator-extra") { 
-                                        state.tmp.done_vars.push("locator-extra");
+                                    if (["locator", "locator-extra"].indexOf(this.variables[0]) > -1) { 
+                                        state.tmp.done_vars.push(this.variables[0]);
                                     }
                                 }
                             };
-                        } else if (this.variables_real[0] === "page-first") {
-                            // page-first is a virtual field, consisting
-                            // of the front slice of page.
-                            func = function (state, Item) {
-                                var idx, value;
-                                value = state.getVariable(Item, "page-first", form);
-                                if (value) {
-                                    value = value.replace("\\", "");
-                                    state.output.append(value, this, false, false, true);
-                                }
-                            };
-                        } else  if (this.variables_real[0] === "page") {
+                        } else  if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume"].indexOf(this.variables_real[0]) > -1) {
                             // page gets mangled with the correct collapsing
                             // algorithm
-                            func = function (state, Item) {
-                                var value = state.getVariable(Item, "page", form);
-                                if (value) {
-                                    value = ""+value;
-                                    value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
-                                    value = value.replace(/\\-/g,"-");
-                                    value = state.fun.page_mangler(value);
-                                    // true is for non-suppression of periods
-                                    state.output.append(value, this, false, false, true);
-                                }
-                            };
-                        } else if (this.variables_real[0] === "volume") {
-                            func = function (state, Item) {
-                                if (this.variables[0]) {
-                                    var value = state.getVariable(Item, this.variables[0], form);
-                                    if (value) {
-                                        state.output.append(value, this);
+                            func = function(state, Item) {
+                                state.processNumber(this, Item, this.variables[0], Item.type);
+                                state.output.openLevel(state.tmp.shadow_numbers[this.variables[0]].masterStyling);
+                                var nums = state.tmp.shadow_numbers[this.variables[0]].values;
+                                var labelForm = state.tmp.shadow_numbers[this.variables[0]].labelForm;
+                                for (var i=0,ilen=nums.length;i<ilen;i++) {
+                                    var num = nums[i];
+                                    if (num.labelVisibility) {
+                                        var label = CSL.STATUTE_SUBDIV_STRINGS[num.label];
+                                        // And add a trailing delimiter.
+                                        label = state.getTerm(label, labelForm, num.plural);
+                                        if (!label) {
+                                            label = num.label;
+                                        }
+                                        state.output.append(label+num.labelSuffix, "empty");
+                                    }
+                                    if (num.collapsible) {
+                                        var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), num.styling, Item.id);
+                                        if ("undefined" === typeof blob.gender) {
+                                            blob.gender = state.locale[state.opt.lang]["noun-genders"][this.variables[0]];
+                                        }
+                                        state.output.append(blob, "literal");
+
+                                    } else {
+                                        state.output.append(num.particle + num.value, num.styling)
                                     }
                                 }
-                            };
+
+                                state.output.closeLevel("empty");
+                            }
                         } else if (["URL", "DOI"].indexOf(this.variables_real[0]) > -1) {
                             func = function (state, Item) {
                                 var value;

@@ -12,12 +12,13 @@
  * @namespace Range object and friends.
  */
 
-CSL.NumericBlob = function (num, mother_token, id) {
+CSL.NumericBlob = function (particle, num, mother_token, id) {
     // item id is used to assure that prefix delimiter is invoked only
     // when joining blobs across items
     this.id = id;
     this.alldecor = [];
     this.num = num;
+    this.particle = particle;
     this.blobs = num.toString();
     this.status = CSL.START;
     this.strings = {};
@@ -75,8 +76,8 @@ CSL.NumericBlob.prototype.checkNext = function (next,start) {
         if (this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
             this.status = CSL.END;
         }
-        if ("object" === typeof next) {
-            next.status = CSL.SEEN;
+        if ("object" === typeof next) { 
+           next.status = CSL.SEEN;
         }
     } else { // next number is in the sequence
         if (this.status === CSL.START || this.status === CSL.SEEN) {

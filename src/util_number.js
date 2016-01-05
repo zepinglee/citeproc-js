@@ -170,25 +170,486 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 
 
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type) {
-    var num, m, i, ilen, j, jlen;
+    var val, m, i, ilen, j, jlen;
     var debug = false;
 
-    // XXX short-circuit if object exists: if numeric, set styling, no other action
-    if (this.tmp.shadow_numbers[variable]) {
-        if (this.tmp.shadow_numbers[variable].numeric) {
-            for (var i = 0, ilen = this.tmp.shadow_numbers[variable].values.length; i < ilen; i += 2) {
-                this.tmp.shadow_numbers[variable].values[i][2] = node;
+    var me = this;
+
+    // XXXX shadow_numbers should carry an array of objects with
+    // XXXX full data for each. The test of a number should be
+    // XXXX a separate function, possibly supported by a splitter
+    // XXXX method also used here. Keep code for each action in one place,
+    // XXXX to prevent debugging from becoming a nightmare.
+
+    // The capture pattern below would apply affixes to all sub-elements,
+    // which is not what we want. Sub-elements should nest within, or
+    // affixes should be edited. The latter is probably easier to handle.
+    
+    // values = [
+    //   {
+    //     label: "sec.",
+    //     label-form: "plural",
+    //     value: 100,
+    //     styling: [object],
+    //     numeric: true
+    //     joiningSuffix: " & ",
+    //   },
+    //   {
+    //     label: "sec.",
+    //     label-form: "none",
+    //     value: 103,
+    //     styling: [object],
+    //     numeric: true,
+    //     joiningSuffix: ""
+    //   }
+    // ]
+    
+    // FUNCTIONS
+
+        // XXX Add label marker to field if necessary for normalization
+
+    var bareBraces = false;
+    if (node) {
+        bareBraces = this.opt.development_extensions.static_statute_locator
+            && ["(", "["].indexOf(node.strings.prefix) !== -1 
+            && ["]", ")"].indexOf(node.strings.suffix) !== -1;
+    }
+
+    function normalizeFieldValue(str, defaultLabel) {
+        var m = str.match(/^([^ ]+)/);
+        if (m && !CSL.STATUTE_SUBDIV_STRINGS[m[1]]) {
+            var embeddedLabel = null;
+            if (variable === "locator" ) {
+                if (ItemObject.label) {
+                    embeddedLabel = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[ItemObject.label];
+                } else {
+                    embeddedLabel = "p.";
+                }
+            } else {
+                embeddedLabel = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[variable];
+            }
+            if (embeddedLabel) {
+                str = embeddedLabel + " " + str;
             }
         }
+        return str;
+    }
+    
+
+    function composeNumberInfo(origLabel, label, val, joiningSuffix) {
+        joiningSuffix = joiningSuffix ? joiningSuffix : "";
+        var info = {};
+
+        if (!label && !CSL.STATUTE_SUBDIV_STRINGS_REVERSE[variable]) {
+                label = "var:"+variable;
+        }
+        
+        if (label) {
+            var m = label.match(/(\s*)([^\s]*)(\s*)/);
+            info.label = m[2];
+            info.origLabel = origLabel;
+            info.labelSuffix = m[3] ? m[3] : "";
+            info.plural = 0;
+            info.labelVisibility = false;
+        }
+        
+        var m = val.match(/^([a-zA-Z]0*)([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
+        if (m) {
+            info.particle = m[1];
+            info.value = m[2];
+        } else {
+            info.particle = "";
+            info.value = val;
+        }
+        info.joiningSuffix = joiningSuffix.replace(/\s*-\s*/, "-");
+        return info;
+    };
+
+    function fixupSubsections(elems) {
+        for (var i=elems.length-2;i>-1;i-=2) {
+            if (elems[i] === "-"
+               && elems[i-1].match(/^[0-9]+[,a-zA-Z]+$/)
+               && elems[i+1].match(/^[,a-zA-Z]+$/)) {
+                elems[i-1] = elems.slice(i-1,i+2).join("");
+                elems = elems.slice(0,i).concat(elems.slice(i+2));
+            }
+        }
+        return elems;
+    }
+
+    function parseString(str, defaultLabel) {
+        defaultLabel = defaultLabel ? defaultLabel : "";
+        
+        str = normalizeFieldValue(str, defaultLabel);
+
+        // Split chunks and collate delimiters.
+        var elems = [];
+        var m = str.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
+        if (m) {
+            var lst = str.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
+            for (var i=0,ilen=lst.length-1; i<ilen; i++) {
+                elems.push(lst[i]);
+                elems.push(m[i]);
+            }
+            elems.push(lst[lst.length-1]);
+            //print("ELEMS: "+elems);
+            elems = fixupSubsections(elems);
+            //print("  fixup: "+elems);
+        } else {
+            var elems = [str];
+        }
+        // Split elements within each chunk build list of value objects.
+        var values = [];
+        var label = defaultLabel;
+        var origLabel = "";
+        for (var i=0,ilen=elems.length;i<ilen;i += 2) {
+            var m = elems[i].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            if (m) {
+                var lst = elems[i].split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                for (var j=0,jlen=lst.length; j<jlen; j++) {
+                    if (lst[j] || j === (lst.length-1)) {
+                        label = m[j-1] ? m[j-1] : label;
+                        var origLabel = j > 1 ? m[j-1] : "";
+                        var str = lst[j] ? lst[j].trim() : "";
+                        if (j === (lst.length-1)) {
+                            values.push(composeNumberInfo(origLabel, label, str, elems[i+1]));
+                        } else {
+                            values.push(composeNumberInfo(origLabel, label, str));
+                        }
+                    }
+                }
+            } else {
+                values.push(composeNumberInfo(origLabel, label, elems[i], elems[i+1]));
+            }
+        }
+        return values;
+    }
+
+    function setSpaces(values) {
+        // Add space joins (is this really right?)
+        for (var i=0,ilen=values.length-1;i<ilen;i++) {
+            if (!values[i].joiningSuffix && values[i+1].label) {
+                values[i].joiningSuffix = " ";
+            }
+        }
+    }
+
+    function fixNumericAndCount(values, i, currentLabelInfo) {
+        var master = values[currentLabelInfo.pos];
+        var val = values[i].value;
+        var isEscapedHyphen = master.joiningSuffix === "\\-";
+        if (val.particle && val.particle !== master.particle) {
+            currentLabelInfo.collapsible = false;
+        }
+        var mVal = val.match(/^[0-9]+([-,:a-zA-Z]*)$/);
+        var mCurrentLabel = master.value.match(/^[0-9]+([-,:a-zA-Z]*)$/);
+        if (!mVal || !mCurrentLabel || isEscapedHyphen) {
+            currentLabelInfo.collapsible = false;
+            if (!mCurrentLabel || val.length > 1) {
+                currentLabelInfo.numeric = false;
+            }
+            if (isEscapedHyphen) {
+                currentLabelInfo.count--;
+            }
+        }
+        if ((mVal && mVal[1]) || (mCurrentLabel && mCurrentLabel[1])) {
+            currentLabelInfo.collapsible = false;
+        }
+        var isCollapsible = currentLabelInfo.collapsible;
+        if (!isCollapsible && i>0 && val.match(/^[ivxlcmIVXLCM]+$/) && values[i-1].value.match(/^[ivxlcmIVXLCM]+$/)) {
+            // spoof collapsible for roman numerals
+            isCollapsible = true;
+        }
+        for (var j=currentLabelInfo.pos,jlen=values.length; j<jlen; j++) {
+            if (currentLabelInfo.count > 1 && isCollapsible) {
+                values[j].plural = 1;
+            }
+            values[j].numeric = currentLabelInfo.numeric;
+            values[j].collapsible = currentLabelInfo.collapsible;
+        }
+        currentLabelInfo.label = values[i].label;
+        currentLabelInfo.count = 1;
+        currentLabelInfo.pos = i;
+        currentLabelInfo.numeric = true;
+        currentLabelInfo.collapsible = true;
+    }
+
+    function setPluralsAndNumerics(values) {
+
+        // XXX This is broken.
+        // XXX Some numerics in complex strings are being skipped.
+
+        var currentLabelInfo = {
+            label: null,
+            count: 1,
+            numeric: true,
+            collapsible: true,
+            pos: 0
+        }
+        var masterLabel = values.length ? values[0].label : null;
+        for (var i=0,ilen=values.length;i<ilen;i++) {
+            if (values[i].label) {
+                if (values[i].label === currentLabelInfo.label) {
+                    currentLabelInfo.count++;
+                } else {
+                    fixNumericAndCount(values, i, currentLabelInfo);
+                    // Special problem.
+                    // If there are braces, we mostly want to suppress
+                    // the master label. Always? Or only on locator?
+
+                    if (currentLabelInfo.pos === 0) {
+                        if (variable === "locator" || variable === "number") {
+                            // Actually, shouldn't we do this always?
+                            if (!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label]) && currentLabelInfo.label.slice(0, 4) !== "var:") {
+                                values[currentLabelInfo.pos].labelVisibility = true;
+                            }
+                        }
+                        // If there is an explicit
+                        // label embedded at the start of a field that
+                        // does not match the context, it should be
+                        // marked for rendering.
+                        if (["locator", "number", "page"].indexOf(variable) === -1) {
+                            // XXXX Needs one more thing here.
+                            // If there is no term, force visibility.
+                            //if (!bareBraces && CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && !me.getTerm(variable)) {
+                            if (!bareBraces && CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && currentLabelInfo.label.slice(0, 4) !== "var:") {
+                                // ?? EH? ?? This will never be true, will it?
+                                values[0].labelVisibility = true;
+                            }
+                        }
+                    } else {
+                        // Also, mark initial mid-field labels for
+                        // rendering.
+                        if (values[i-1].label !== values[i].label && currentLabelInfo.label.slice(0, 4) !== "var:") {
+                            values[currentLabelInfo.pos].labelVisibility = true;
+                        }
+                    }
+                    
+                }
+            }
+        }
+        fixNumericAndCount(values, values.length-1, currentLabelInfo);
+        if (values.length && values[0].numeric && variable.slice(0, 10) === "number-of-") {
+            if (parseInt(ItemObject[variable], 10) > 1) {
+                values[0].plural = 1;
+            }
+        }
+        for (var i=0,ilen=values.length;i<ilen;i++) {
+            if (!values[i].numeric) {
+                var origLabel = values[i].origLabel ? values[i].origLabel : "";
+                values[i].value = (origLabel + values[i].value).trim();
+            }
+        }
+    }        
+
+    function setStyling(values) {
+        var masterStyling = new CSL.Token();
+        var masterNode = CSL.Util.cloneToken(node);
+        for (var j=masterNode.decorations.length-1;j>-1;j--) {
+            if (masterNode.decorations[j][0] === "@quotes") {
+                // Add to styling
+                masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
+                // Remove from node
+                masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1))
+            }
+        }
+        if (!bareBraces) {
+            masterStyling.strings.prefix = masterNode.strings.prefix;
+            masterNode.strings.prefix = "";
+            masterStyling.strings.suffix = masterNode.strings.suffix;
+            masterNode.strings.suffix = "";
+        }
+        var masterLabel = values.length ? values[0].label : null;
+        if (values.length) {
+            for (var i=0,ilen=values.length; i<ilen; i++) {
+                var val = values[i];
+                // Clone node, make styling parameters on each instance sane.
+                var newnode = CSL.Util.cloneToken(masterNode);
+                newnode.gender = node.gender;
+                if (masterLabel === val.label) {
+                    newnode.formatter = node.formatter;
+                }
+                if (val.numeric) {
+                    newnode.successor_prefix = val.successor_prefix;
+                }
+                if (bareBraces) {
+                    // In this case, remove braces ONLY, as appropriate.
+                    // (1) Remove trailing brace where next item is not master label
+                    // (2) Remove leading brace where current item is not master label
+
+                    if (values[i].label !== masterLabel ||
+                        (i>0 && values[i-1].joiningSuffix === "-")) {
+                        newnode.strings.prefix = newnode.strings.prefix.replace(/[\[\(]$/, "");
+                    }
+                    if ((i < values.length-1 && values[i+1].label !== masterLabel)
+                        || val.joiningSuffix === "-") {
+                        newnode.strings.suffix = newnode.strings.suffix.replace(/^[\)\]]/, "");
+                    }
+                }
+                newnode.strings.suffix = newnode.strings.suffix + stripHyphenBackslash(val.joiningSuffix);
+                val.styling = newnode;
+            }
+            if (values[0].value.slice(0,1) === "\"" && values[values.length-1].value.slice(-1) === "\"") {
+                values[0].value = values[0].value.slice(1);
+                values[values.length-1].value = values[values.length-1].value.slice(0,-1);
+                masterStyling.decorations.push(["@quotes", true]);
+            }
+        }
+        return masterStyling;
+    }
+
+    function stripHyphenBackslash(joiningSuffix) {
+        return joiningSuffix.replace("\\-", "-");
+    }
+
+    function fixupRangeDelimiter(variable, val, rangeDelimiter, isNumeric) {
+        var isPage = checkPage(variable, val.value);
+        if (rangeDelimiter === "-") {
+            if (isNumeric) {
+                if (isPage || (variable === "locator" && val.label === "art.") || ["issue", "volume", "edition", "number"].indexOf(variable) > -1) {
+                    rangeDelimiter = me.getTerm("page-range-delimiter")
+                    if (!rangeDelimiter) {
+                        rangeDelimiter = "\u2013";
+                    }
+                }
+                if (variable === "collection-number") {
+                    rangeDelimiter = me.getTerm("year-range-delimiter");
+                    if (!rangeDelimiter) {
+                        rangeDelimiter = "\u2013";
+                    }
+                }
+            }
+        }
+        //if (rangeDelimiter === "\\-") {
+        //    rangeDelimiter = "-";
+        //}
+        return rangeDelimiter;
+    }
+
+    function checkPage(variable, val) {
+        return variable === "page" 
+            || (variable === "locator" && (["p.", "para.", "ch."].indexOf(val.label) > -1));
+    }
+
+    function manglePageNumbers(values, i, currentInfo) {
+        if (i<1) return;
+        if (currentInfo.count !== 2) {
+            return;
+        }
+        if (values[i-1].particle !== values[i].particle) {
+            return;
+        }
+        if (values[i-1].joiningSuffix !== "-") {
+            currentInfo.count = 1;
+            return;
+        }
+        if (!me.opt["page-range-format"] && parseInt(values[i-1].value, 10) > parseInt(values[i].value, 10)) {
+            values[i-1].joiningSuffix = fixupRangeDelimiter(variable, values[i], values[i-1].joiningSuffix, true);
+            return;
+        }
+        var val = values[i];
+
+        var isPage = checkPage(variable, val);
+
+        if (isPage && !bareBraces) {
+            var str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
+            str = me.fun.page_mangler(str);
+        } else {
+            str = values[i-1].value + stripHyphenBackslash(values[i-1].joiningSuffix) + values[i].value;
+        }
+        var m = str.match(/^([a-zA-Z]?0*)([0-9]+)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+)$/);
+        if (m) {
+            var rangeDelimiter = m[3];
+            rangeDelimiter = fixupRangeDelimiter(variable, val, rangeDelimiter, values[i].numeric);
+            values[i-1].particle = m[1];
+            values[i-1].value = m[2];
+            values[i-1].joiningSuffix = rangeDelimiter;
+            values[i].particle = m[4];
+            values[i].value = m[5];
+        }
+        currentInfo.count = 0;
+    }
+    
+    function fixRanges(values) {
+        if (!node) return;
+        if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume", "locator"].indexOf(variable) === -1) return;
+
+        var currentInfo = {
+            count: 0,
+            label: null,
+            lastHadRangeDelimiter: false
+        }
+
+        for (var i=0,ilen=values.length; i<ilen; i++) {
+            var val = values[i];
+            if (!val.collapsible) {
+                currentInfo.count = 0;
+                currentInfo.label = null;
+                var isNumeric = val.numeric;
+                if (i<(values.length-1) && !isNumeric && val.value.match(/^[ivxlcmIVXLCM]+$/) && values[i+1].value.match(/^[ivxlcmIVXLCM]+$/)) {
+                    // spoof numeric for roman numerals
+                    isNumeric = true;
+                }
+                val.joiningSuffix = fixupRangeDelimiter(variable, val, val.joiningSuffix, isNumeric);
+            } else if (currentInfo.label === val.label && val.joiningSuffix === "-") {
+                // So if there is a hyphen here, and none previous, reset to 1
+                currentInfo.count = 1;
+            } else if (currentInfo.label === val.label && val.joiningSuffix !== "-") {
+                // If there is NO hyphen here, count up
+                currentInfo.count++;
+                if (currentInfo.count === 2) {
+                    manglePageNumbers(values, i, currentInfo);
+                }
+            } else if (currentInfo.label !== val.label) {
+                // If the label doesn't match and count is 2, process
+                currentInfo.label = val.label;
+                currentInfo.count = 1;
+            } else {
+                // Otherwise label doesn't match and count is some other value, so reset to 1
+                currentInfo.count = 1;
+                currentInfo.label = val.label;
+            }
+        }
+        // Finally clear, if needed
+        if (currentInfo.count === 2) {
+            manglePageNumbers(values, values.length-1, currentInfo);
+        }
+    }
+
+    function setVariableParams(obj, values) {
+        if (values.length) {
+            obj.numeric = values[0].numeric;
+            obj.collapsible = values[0].collapsible;
+            obj.plural = values[0].plural;
+            obj.label = CSL.STATUTE_SUBDIV_STRINGS[values[0].label];
+        }
+    }
+
+    // Split out the labels and values.
+
+    // short-circuit if object exists: if numeric, set styling, no other action
+    if (node && this.tmp.shadow_numbers[variable] && this.tmp.shadow_numbers[variable].values.length) {
+        var values = this.tmp.shadow_numbers[variable].values;
+        fixRanges(values);
+        this.tmp.shadow_numbers[variable].masterStyling = setStyling(values);
         return;
     }
+
+    // info.styling = node;
+
     // This carries value, pluralization and numeric info for use in other contexts.
-    // This function does not render.
-    this.tmp.shadow_numbers[variable] = {};
-    this.tmp.shadow_numbers[variable].values = [];
-    this.tmp.shadow_numbers[variable].plural = 0;
-    this.tmp.shadow_numbers[variable].numeric = false;
-    this.tmp.shadow_numbers[variable].label = false;
+    // XXX We used to use one set of params for the entire variable value.
+    // XXX Now params are set on individual objects, of which there may be several after parsing.
+    if (!this.tmp.shadow_numbers[variable]) {
+        this.tmp.shadow_numbers[variable] = {
+            values:[]
+        };
+    }
+    //this.tmp.shadow_numbers[variable].values = [];
+    //this.tmp.shadow_numbers[variable].plural = 0;
+    //this.tmp.shadow_numbers[variable].numeric = false;
+    //this.tmp.shadow_numbers[variable].label = false;
+
     if (!ItemObject) {
         return;
     }
@@ -197,232 +658,68 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     var languageRole = CSL.LangPrefsMap[variable];
     if (languageRole) {
         var localeType = this.opt["cite-lang-prefs"][languageRole][0];
-        num = this.transform.getTextSubField(ItemObject, variable, "locale-"+localeType, true);
-        num = num.name;
-        // RefMe bug report: print("XX D'oh! (1): "+num);
+        val = this.transform.getTextSubField(ItemObject, variable, "locale-"+localeType, true);
+        val = val.name;
     } else {
-        num = ItemObject[variable];
-        // RefMe bug report: print("XX D'oh! (2): "+num);
+        val = ItemObject[variable];
     }
 
-    // Possibly apply short form.
-    // This is done for all number values (it is not controlled by
-    // a CSL option).
-    // The abbreviation attempt is split into two halves. The first,
-    // here, attempts to load an abbreviation, but does not add an
-    // abbreviation entry to the UI if none is found. The entry is
-    // added only if the is-numeric test later turns up false.
-    if (num && this.sys.getAbbreviation) {
+    // XXX HOLDING THIS
+    // Apply short form ONLY if first element tests is-numeric=false
+    if (val && this.sys.getAbbreviation) {
         // RefMe bug report: print("XX D'oh! (3): "+num);
         // true as the fourth argument suppresses update of the UI
-        num = ("" + num).replace(/^\"/, "").replace(/\"$/, "");
-        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", num);
-        if (this.transform.abbrevs[jurisdiction].number[num]) {
-            num = this.transform.abbrevs[jurisdiction].number[num];
+
+        // No need for this.
+        //val = ("" + val).replace(/^\"/, "").replace(/\"$/, "");
+
+        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", val);
+        if (this.transform.abbrevs[jurisdiction].number[val]) {
+            val = this.transform.abbrevs[jurisdiction].number[val];
         } else {
             // Strings rendered via cs:number should not be added to the abbreviations
             // UI unless they test non-numeric. The test happens below.
-            if ("undefined" !== typeof this.transform.abbrevs[jurisdiction].number[num]) {
-                delete this.transform.abbrevs[jurisdiction].number[num];
+            if ("undefined" !== typeof this.transform.abbrevs[jurisdiction].number[val]) {
+                delete this.transform.abbrevs[jurisdiction].number[val];
             }
         }
     }
 
-    //SNIP-START
-    if (debug) {
-        print("=== "+variable+": "+num+" ===");
-    }
-    //SNIP-END
+    //   {
+    //     label: "sec.",
+    //     labelForm: "plural",
+    //     labelVisibility: true,
+    //     value: 100,
+    //     styling: [object],
+    //     numeric: true
+    //     joiningSuffix: " & ",
+    //   },
 
-    if ("undefined" !== typeof num) {
-        if ("number" === typeof num) {
-            num = "" + num;
+    // Process only if there is a value.
+    if ("undefined" !== typeof val && ("string" === typeof val || "number" === typeof val)) {
+
+        if ("number" === typeof val) {
+            val = "" + val;
         }
-        this.tmp.shadow_numbers[variable].label = variable;
-        // Strip off enclosing quotes, if any. Parsing logic
-        // does not depend on them, but we'll strip them if found.
+        var defaultLabel = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[variable];
+        var values = parseString(val, defaultLabel);
+        //print("parseString(): "+JSON.stringify(values, null, 2));
 
-        // RefMe bug report: print("XX D'oh! (4): "+num);
+        setSpaces(values);
+        //print("setSpaces(): "+JSON.stringify(values, null, 2));
 
-        if (num.slice(0, 1) === '"' && num.slice(-1) === '"') {
-            num = num.slice(1, -1);
-        }
+        setPluralsAndNumerics(values);
+        //print("setPluralsAndNumerics(): "+JSON.stringify(values, null, 2));
 
-        if (num && ["number-of-volumes","number-of-pages"].indexOf(variable) > -1) {
-            var m = num.match(/[^0-9]*([0-9]+).*/);
-            if (m) {
-                this.tmp.shadow_numbers[variable].numeric = true;
-                if (m[1] !== "1") {
-                    this.tmp.shadow_numbers[variable].plural = 1;
-                }
-            }
-        }
-
-        // Any & character in the string should force plural.
-        // This covers cases like "23 & seq". Cases like "23 et seq"
-        // will be caught out; that's for later, if need arises.
-
-        // SUSPEND
-        //if (num.indexOf("&") > -1) {
-        //    this.tmp.shadow_numbers[variable].plural = 1;
-        //}
-
-        // XXX: The attempt at syntactic parsing was crazy.
-
-        // Sequential number blobs should be reserved for year-suffix
-        // and year, which may need to collapse during cite
-        // composition. For explicit cs:number, we should
-        // use simple heuristics to flag multiple
-        // values, but respect the user's input format.
-        // Ordinals can be applied to pure numeric elements,
-        // but that's as far as our fancy processing
-        // should go.
-
-        // So.
-        
-        // ... for locator on bill and legislation, we evaluate only
-        // the first element of a split. The lone element will not be
-        // used for rendering, (that is handled inside node_number
-        // directly), but only for is-numeric evaluation.
-
-        if ("locator" === variable
-            && ["bill","gazette","legislation","regulation","treaty"].indexOf(type) > -1) {
-            num = num.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX)[0];
+        if (node) {
+            fixRanges(values);
+            this.tmp.shadow_numbers[variable].masterStyling = setStyling(values);
+            //print("setStyling(): "+JSON.stringify(values, null, 2));
         }
 
-        var rangeType = "page";
-        if (["bill","gazette","legislation","legal_case","regulation","treaty"].indexOf(type) > -1
-            && variable === "collection-number") {
+        setVariableParams(this.tmp.shadow_numbers[variable], values);
+        this.tmp.shadow_numbers[variable].values = values;
 
-            rangeType = "year";
-        }
-
-        // Works with code in node_number.js
-        if (["page", "page-first", "number"].indexOf(variable) > -1) {
-            var m = num.split(" ")[0].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
-            if (m){
-                if (this.opt.development_extensions.static_statute_locator) {
-                    this.tmp.shadow_numbers[variable].label = CSL.STATUTE_SUBDIV_STRINGS[m[0]];
-                }
-                var mm = num.match(/[^ ]+\s+(.*)/);
-                if (mm) {
-                    num = mm[1];
-                }
-            }
-        }
-
-        // (1) Split the string on ", ", "\s*[\-\u2013]\s*" and "&".
-        // (2) Set the elements one by one, setting pure numbers
-        //     as numeric blobs, and everything else as text,
-        //     applying "this" for styling to both, with "empty"
-        //     styling on the punctuation elements.
-        
-        var lst = num.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
-        var m = num.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
-        var elements = [];
-        for (var i = 0, ilen = lst.length - 1; i < ilen; i += 1) {
-            elements.push(lst[i]);
-            elements.push(m[i]);
-        }
-        elements.push(lst[lst.length - 1]);
-        var count = 0;
-        var numeric = true;
-        for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
-            var odd = ((i%2) === 0);
-            if (odd) {
-                // Rack up as numeric output if pure numeric, otherwise as text.
-                if (elements[i]) {
-                    if (elements[i].match(/(?:[0-9]|[xivcmlXIVCML])/)) {
-                        if (elements[i - 1] && elements[i - 1].match(/^\s*\\*[\-\u2013]+\s*$/)) {
-                            var middle = this.tmp.shadow_numbers[variable].values.slice(-1);
-                            if (middle[0][1].indexOf("\\") == -1) {
-                                if (elements[i - 2] && ("" + elements[i - 2]).match(/(:?[a-zA-Z]*[0-9]+$|^[ivxlcmIVXLCM]+$)/)
-                                    && elements[i].match(/(?:^[a-zA-Z]*[0-9]+|^[ivxlcmIVXLCM]+$)/)) {
-
-                                    // Removed from condition to allow manually collapsed
-                                    // number ranges to be recognized as plural. Leaf number
-                                    // delimiter of hyphen (-) can be specified with \\-
-                                    // in the input.
-                                    // && parseInt(elements[i - 2]) < parseInt(elements[i].replace(/[^0-9].*/,""))
-
-                                    
-                                    var start = this.tmp.shadow_numbers[variable].values.slice(-2);
-                                    middle[0][1] = this.getTerm(rangeType + "-range-delimiter");
-                                    if (this.opt[rangeType + "-range-format"] ) {
-                                        // This is a hack. The page mangler strings were originally
-                                        // used directly.
-                                        var newstr = this.fun[rangeType + "_mangler"](start[0][1] +"-"+elements[i]);
-                                        newstr = newstr.split(this.getTerm(rangeType + "-range-delimiter"));
-                                        elements[i] = newstr[1];
-                                    }
-                                    
-                                    count = count + 1;
-                                }
-                                if (middle[0][1].indexOf("--") > -1) {
-                                    middle[0][1] = middle[0][1].replace(/--*/, "\u2013");
-                                }
-                            } else {
-                                middle[0][1] = middle[0][1].replace(/\\/, "", "g");
-                            }
-                        } else if (elements[i].indexOf(" ") === -1) {
-                            count = count + 1;
-                        }
-                    }
-                    var subelements = elements[i].split(/\s+/);
-                    for (var j = 0, jlen = subelements.length; j < jlen; j += 1) {
-                        if (this.opt.development_extensions.strict_page_numbers
-                            && variable === "page"
-                            && !subelements[j].match(/^-*[0-9]/)) {
-                            numeric = false;
-                        } else if (!subelements[j].match(/[-0-9]/)) {
-                            numeric = false;
-                        }
-                    }
-                    if (elements[i].match(/^[1-9][0-9]*$/)) {
-                        elements[i] = parseInt(elements[i], 10);
-                        if (node && "undefined" === typeof node.gender) {
-                            node.gender = this.locale[this.opt.lang]["noun-genders"][variable];
-                            if (!node.gender) {
-                                node.gender = "";
-                            }
-                        }
-                        this.tmp.shadow_numbers[variable].values.push(["NumericBlob", elements[i], node]);
-                    } else {
-                        var str = elements[i];
-                        this.tmp.shadow_numbers[variable].values.push(["Blob", str, node]);
-                    }
-                }
-            } else {
-                // Normalize and output as text with "empty" style.
-                if (elements[i]) {
-                    this.tmp.shadow_numbers[variable].values.push(["Blob", elements[i], undefined]);
-                }
-            }
-        };
-        if (this.opt.development_extensions.strict_page_numbers && variable === "page") {
-            if (num.indexOf(" ") === -1 && num.match(/^-*[0-9]/)) {
-                this.tmp.shadow_numbers[variable].numeric = true;
-            } else {
-                this.tmp.shadow_numbers[variable].numeric = numeric;
-            }
-        } else {
-            if (num.indexOf(" ") === -1 && num.match(/[0-9]/)) {
-                this.tmp.shadow_numbers[variable].numeric = true;
-            } else {
-                this.tmp.shadow_numbers[variable].numeric = numeric;
-            }
-        }
-        if (!this.tmp.shadow_numbers[variable].numeric) {
-            this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", num);
-        }
-        if (count > 1) {
-            this.tmp.shadow_numbers[variable].plural = 1;
-        }
-        // Force plural/singular if requested (see util_static_locator.js)
-        if (ItemObject.force_pluralism === 1) {
-            this.tmp.shadow_numbers[variable].plural = 1;
-        } else if (ItemObject.force_pluralism === 0) {
-            this.tmp.shadow_numbers[variable].plural = 0;
-        }
+        //print("OK "+JSON.stringify(values, ["label", "value", "numeric", "joiningSuffix", "labelVisibility", "plural"], 2));
     }
 };

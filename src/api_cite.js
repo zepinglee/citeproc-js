@@ -146,8 +146,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             if (item.locator && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
                 m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
                 if (m) {
-                    item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
-                    item.locator = m[3];
+                    var tryLabel = CSL.LOCATOR_LABELS_MAP[m[2]];
+                    if (this.getTerm(tryLabel)) {
+                        item.label = tryLabel;
+                        item.locator = m[3];
+                    }
                 }
             }
         }
@@ -755,8 +758,11 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
             if (item.locator && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
                 var m = CSL.LOCATOR_LABELS_REGEXP.exec(item.locator);
                 if (m) {
-                    item.label = CSL.LOCATOR_LABELS_MAP[m[2]];
-                    item.locator = m[3];
+                    var tryLabel = CSL.LOCATOR_LABELS_MAP[m[2]];
+                    if (this.getTerm(tryLabel)) {
+                        item.label = tryLabel;
+                        item.locator = m[3];
+                    }
                 }
             }
         }
@@ -982,6 +988,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             this.parallel.ComposeSet();
         }
         params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed, pos);
+        // XXX This appears to be superfluous.
         if (item && item["author-only"]) {
             this.tmp.suppress_decorations = true;
         }
@@ -991,11 +998,11 @@ CSL.getCitationCluster = function (inputList, citationID) {
 
             // XXX OR if preceding suffix is empty, and the current prefix begins with a full stop.
 
-            var precedingEndsInPeriod = preceding_item.suffix && preceding_item.suffix.slice(-1) === ".";
-            var currentStartsWithPeriod = !preceding_item.suffix && item.prefix && item.prefix.slice(0, 1) === ".";
-            if (precedingEndsInPeriod || currentStartsWithPeriod) {
+            var precedingEndsInPeriodOrComma = preceding_item.suffix && [".", ","].indexOf(preceding_item.suffix.slice(-1)) > -1;
+            var currentStartsWithPeriodOrComma = !preceding_item.suffix && item.prefix && [".", ","].indexOf(item.prefix.slice(0, 1)) > -1;
+            if (precedingEndsInPeriodOrComma || currentStartsWithPeriodOrComma) {
                 var spaceidx = params.splice_delimiter.indexOf(" ");
-                if (spaceidx > -1 && !currentStartsWithPeriod) {
+                if (spaceidx > -1 && !currentStartsWithPeriodOrComma) {
                     params.splice_delimiter = params.splice_delimiter.slice(spaceidx);
                 } else {
                     params.splice_delimiter = "";
@@ -1078,6 +1085,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     }
     //print("this.tmp.last_chr="+this.tmp.last_chr);
     for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
+        var buffer = [];
         this.output.queue = [myblobs[pos]];
 
         this.tmp.suppress_decorations = myparams[pos].suppress_decorations;
@@ -1086,12 +1094,15 @@ CSL.getCitationCluster = function (inputList, citationID) {
         //
         // oh, one last second thought on delimiters ...
         //
+
         if (myblobs[pos].parallel_delimiter) {
             this.tmp.splice_delimiter = myblobs[pos].parallel_delimiter;
         }
         this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
         composite = this.output.string(this, this.output.queue);
+        // ZZ print("composite="+composite);
+       
         this.tmp.suppress_decorations = false;
         // meaningless assignment
         // this.tmp.handle_ranges = false;
@@ -1109,24 +1120,24 @@ CSL.getCitationCluster = function (inputList, citationID) {
                 composite.push(preStr + errStr + sufStr);
             }
         }
-        if (objects.length && "string" === typeof composite[0]) {
+        if (buffer.length && "string" === typeof composite[0]) {
             composite.reverse();
             var tmpstr = composite.pop();
             if (tmpstr && tmpstr.slice(0, 1) === ",") {
-                objects.push(tmpstr);
-            } else if ("string" == typeof objects.slice(-1)[0] && objects.slice(-1)[0].slice(-1) === ",") {
-                objects.push(" " + tmpstr);
+                buffer.push(tmpstr);
+            } else if ("string" == typeof buffer.slice(-1)[0] && buffer.slice(-1)[0].slice(-1) === ",") {
+                buffer.push(" " + tmpstr);
             } else if (tmpstr) {
-                objects.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
+                buffer.push(txt_esc(this.tmp.splice_delimiter) + tmpstr);
             }
         } else {
             composite.reverse();
             compie = composite.pop();
             if ("undefined" !== typeof compie) {
-                if (objects.length && "string" === typeof objects[objects.length - 1]) {
-                    objects[objects.length - 1] += compie.successor_prefix;
+                if (buffer.length && "string" === typeof buffer[buffer.length - 1]) {
+                    buffer[buffer.length - 1] += compie.successor_prefix;
                 }
-                objects.push(compie);
+                buffer.push(compie);
             }
         }
         // Seems odd, but this was unnecessary and broken.
@@ -1135,19 +1146,38 @@ CSL.getCitationCluster = function (inputList, citationID) {
         for (ppos = 0; ppos < llen; ppos += 1) {
             obj = composite[ppos];
             if ("string" === typeof obj) {
-                objects.push(txt_esc(this.tmp.splice_delimiter) + obj);
+                buffer.push(txt_esc(this.tmp.splice_delimiter) + obj);
                 continue;
             }
             compie = composite.pop();
             if ("undefined" !== typeof compie) {
-                objects.push(compie);
+                buffer.push(compie);
             }
         }
-        if (objects.length === 0 && !inputList[pos][1]["suppress-author"]) {
+        if (buffer.length === 0 && !inputList[pos][1]["suppress-author"]) {
             empties += 1;
         }
+        if (buffer.length > 1 && typeof buffer[0] !== "string") {
+            buffer = [this.output.renderBlobs(buffer)];
+        }
+        if (buffer.length) {
+            if ("string" === typeof buffer[0]) {
+                if (pos > 0) {
+                    buffer[0] = this.tmp.splice_delimiter + buffer[0];
+                }
+            } else {
+                if (pos > 0) {
+                    buffer[0].splice_prefix = this.tmp.splice_delimiter;
+                } else {
+                    buffer[0].splice_prefix = "";
+                }
+            }
+        }
+        objects = objects.concat(buffer);
     }
+    // print("OBJECTS="+objects);
     result += this.output.renderBlobs(objects);
+
     if (result) {
         //if (CSL.TERMINAL_PUNCTUATION.indexOf(this.tmp.last_chr) > -1 
         //    && this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
@@ -1164,7 +1194,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
                 if (params[1] === "normal") {
                     continue;
                 }
-                result = this.fun.decorate[params[0]][params[1]](this, result);
+                if (!item || !item["author-only"]) {
+                    result = this.fun.decorate[params[0]][params[1]](this, result);
+                }
             }
         }
         //result = "\u202b" + result + "\u202c";
@@ -1276,7 +1308,8 @@ CSL.citeStart = function (Item, item) {
         this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
     }
     this.tmp.shadow_numbers = {};
-    this.setNumberLabels(Item);
+    // XXX This only applied to the "number" variable itself? Huh?
+    //this.setNumberLabels(Item);
     this.tmp.first_name_string = false;
     this.tmp.authority_stop_last = 0;
 

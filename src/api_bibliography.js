@@ -307,7 +307,18 @@ CSL.getBibliographyEntries = function (bibsection) {
             this.output.adjust.fix(this.output.queue[j]);
             //print("OUTPUT: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
         }
-        res = this.output.string(this, this.output.queue)[0];
+
+        //print("DUMP "+JSON.stringify(this.output.queue, ["strings", "decorations", "prefix", "suffix", "delimiter", "blobs"], 2));
+
+        // XXX Need to account for numeric blobs in input.
+        // XXX No idea how this could have worked previously.
+
+        //print("BLOBS "+this.output.queue[0].blobs[0].blobs);
+
+        //print("JSON "+JSON.stringify(this.output.queue[0].blobs, null, 2));
+
+        res = this.output.string(this, this.output.queue);
+        
         if (!res) {
             res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
         }

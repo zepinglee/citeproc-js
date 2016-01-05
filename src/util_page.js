@@ -140,7 +140,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     if (!state.opt[rangeType + "-range-format"]) {
         ret_func = function (str) {
             //return str.replace("-", "\u2013", "g");
-            return str;
+            return sniff(str, stringify);
         };
     } else if (state.opt[rangeType + "-range-format"] === "expanded") {
         ret_func = function (str) {

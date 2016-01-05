@@ -97,13 +97,8 @@ CSL.Attributes["@locator"] = function (state, arg) {
     var maketest = function (trylabel) {
         return function(Item, item) {
             var label;
-            if ("undefined" === typeof item || !item.label) {
-                label = "page";
-            } else if (item.label === "sub verbo") {
-                label = "sub-verbo";
-            } else {
-                label = item.label;
-            }
+            state.processNumber(node, item, "locator");
+            label = state.tmp.shadow_numbers.locator.label;
             if (trylabel === label) {
                 return true;
             } else {

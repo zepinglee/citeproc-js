@@ -431,6 +431,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             }
         } else if (blobjr.blobs.length) {
             var addtoret = state.output.string(state, blobjr.blobs, blobjr);
+            //ret.push(addtoret);
             ret = ret.concat(addtoret);
         }
         if (blobjr.strings.first_blob) {
@@ -439,6 +440,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             state.tmp.count_offset_characters = false;
         }
     }
+
     // Provide delimiters on adjacent numeric blobs
     for (i=0,ilen=ret.length - 1;i<ilen;i+=1) {
         if ("number" === typeof ret[i].num && "number" === typeof ret[i+1].num && !ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK) {
@@ -448,6 +450,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             ret[i+1].UGLY_DELIMITER_SUPPRESS_HACK = true;
         }
     }
+
     var span_split = 0;
     for (i = 0, ilen = ret.length; i < ilen; i += 1) {
         if ("string" === typeof ret[i]) {
@@ -463,10 +466,26 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             //print("XXX ret: "+ret+" -- "+blob_delimiter);
         }
     }
+/*
     if (blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         span_split = ret.length;
     }
-    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, true, blob);
+*/
+    if (blob && (blob.decorations.length || blob.strings.suffix)) {
+        span_split = ret.length;
+    } else if (blob && blob.strings.prefix) {
+        for (var i=0,ilen=ret.length;i<ilen;i++) {
+            if ("undefined" !== typeof ret[i].num) {
+                span_split = i;
+                if (i === 0) {
+                    ret[i].strings.prefix = blob.strings.prefix + ret[i].strings.prefix;
+                }
+                break;
+            }
+        }
+    }
+
+    var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, false, blob);
     if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         if (!state.tmp.suppress_decorations) {
             for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
@@ -507,6 +526,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             }
         }
     }
+
     var blobs_end = ret.slice(span_split, ret.length);
     if (!blobs_end.length && blobs_start) {
         ret = [blobs_start];
@@ -523,7 +543,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         this.current.mystack = [];
         this.current.mystack.push(this.queue);
         if (state.tmp.suppress_decorations) {
-            ret = state.output.renderBlobs(ret, undefined, true);
+            ret = state.output.renderBlobs(ret, undefined, false);
         }
     } else if ("boolean" === typeof blob) {
         ret = state.output.renderBlobs(ret, undefined, true);
@@ -565,21 +585,26 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
     var start = true;
     for (pos = 0; pos < len; pos += 1) {
         if (blobs[pos].checkNext) {
-            blobs[pos].checkNext(blobs[(pos + 1)],start);
+            blobs[pos].checkNext(blobs[pos + 1],start);
             start = false;
+        } else if (blobs[pos+1] && blobs[pos+1].splice_prefix) {
+            start = false;
+            //blobs[pos+1].checkNext(blobs[pos + 1],start);
         } else {
             start = true;
         }
     }
+    
+    // print("LEN="+len+" "+JSON.stringify(blobs, null, 2));
     // Fix last non-range join
     var doit = true;
     for (pos = blobs.length - 1; pos > 0; pos += -1) {
         if (blobs[pos].checkLast) {
-        if (doit && blobs[pos].checkLast(blobs[pos - 1])) {
-            doit = false;
-        }
+            if (doit && blobs[pos].checkLast(blobs[pos - 1])) {
+                doit = false;
+            }
         } else {
-        doit = true;
+            doit = true;
         }
     }
     len = blobs.length;
@@ -598,8 +623,20 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
                 //state.tmp.offset_characters += (use_delim.length + blob.length);
                 state.tmp.offset_characters += (use_delim.length);
             }
+        } else if (in_cite) {
+            // pass
+            // Okay, so this does it -- but we're now not able to return a string!
+            if (ret) {
+                ret = [ret, blob];
+            } else {
+                ret = [blob];
+            }
         } else if (blob.status !== CSL.SUPPRESS) {
-            str = blob.formatter.format(blob.num, blob.gender);
+            if (blob.particle) {
+                str = blob.particle + blob.num;
+            } else {
+                str = blob.formatter.format(blob.num, blob.gender);
+            }
             // Workaround to get a more or less accurate value.
             var strlen = str.replace(/<[^>]*>/g, "").length;
             // notSerious
@@ -629,12 +666,23 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
             str = txt_esc(blob.strings.prefix) + str + txt_esc(blob.strings.suffix);
             var addme = "";
             if (blob.status === CSL.END) {
+                //print("  CSL.END");
                 addme = txt_esc(blob.range_prefix);
             } else if (blob.status === CSL.SUCCESSOR) {
+                //print("  CSL.SUCCESSOR");
                 addme = txt_esc(blob.successor_prefix);
             } else if (blob.status === CSL.START) {
-                addme = "";
+                //print("  CSL.START");
+                if (pos > 0) {
+                    addme = txt_esc(blob.splice_prefix);
+                } else {
+                    addme = "";
+                }
             } else if (blob.status === CSL.SEEN) {
+                //print("  CSL.SEEN");
+
+                // THIS IS NOT THE PROPER FUNCTION OF CSL.SEEN, IS IT?
+
                 addme = txt_esc(blob.splice_prefix);
             }
             ret += addme;
@@ -802,9 +850,14 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 }
             }
         }
-        if ("object" !== typeof blob.blobs) return false;
-        if (blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1])) return true;
-        return false;
+        if ("object" !== typeof blob.blobs) {
+            return false
+        };
+        return blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1]);
+        //if (blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1])) {
+        //    return true
+        //};
+        //return false;
     }
     
     function blobHasDescendantMergingPunctuation(parentChar,blob) {
@@ -1021,6 +1074,10 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         } else if ("object" !== typeof parent || "object" !== typeof parent.blobs || !parent.blobs.length) {
             return;
         }
+        //if (top) {
+        //    print("JSON "+JSON.stringify(parent, ["strings", "decorations", "blobs", "prefix", "suffix", "delimiter"], 2));
+        //}
+
         var parentStrings = parent.strings;
         // Check for numeric child
         var someChildrenAreNumbers = false;
@@ -1030,7 +1087,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 break;
             }
         }
-        if (!someChildrenAreNumbers) {
+        if (true || !someChildrenAreNumbers) {
             // If there is a leading swappable character on delimiter, copy it to suffixes IFF none of the targets are numbers
             if (parentStrings.delimiter && PUNCT[parentStrings.delimiter.slice(0, 1)]) {
                 var delimChar = parentStrings.delimiter.slice(0, 1);
@@ -1051,7 +1108,13 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             var childStrings = parent.blobs[i].strings;
             var childDecorations = blobHasDecorations(child, true);
             var childIsNumber = blobIsNumber(child);
+
             if (i === (parent.blobs.length - 1)) {
+
+                //if (blobHasDescendantQuotes(child)) {
+                //    print("JSON "+JSON.stringify(parent, ["strings", "decorations", "blobs", "prefix", "suffix", "delimiter"]));
+                //}
+
                 if (true || !someChildrenAreNumbers) {
                     // If we have decorations, drill down to see if there are quotes below.
                     // If so, we allow migration anyway.
