@@ -6,7 +6,7 @@ citation
 
 >>===== RESULT =====>>
 ..[0] From module: MY CASE TITLE
->>[1] My Statute Title
+>>[1] From module: MY STATUTE TITLE
 <<===== RESULT =====<<
 
 
@@ -50,7 +50,7 @@ citation
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
     <id />
     <title />
@@ -59,9 +59,47 @@ citation
   <locale>
     <style-options jurisdiction-preference="simple"/>
   </locale>
-  <macro name="juris-title">
-    <text variable="title"/>
+  <macro name="at-locator-label">
+    <text value="at"/>
   </macro>
+
+  <macro name="juris-title">
+    <text value="[HINT: Install the Myles plugin, available at https://juris-m.github.io/downloads]"/>
+  </macro>
+  <macro name="juris-main">
+    <text value=""/>
+  </macro>
+  <macro name="juris-default-spotter">
+    <text value=""/>
+  </macro>
+  <macro name="juris-comma-spotter">
+    <text value=""/>
+  </macro>
+  <macro name="juris-tail">
+    <text value=""/>
+  </macro>
+  <macro name="juris-title-short">
+    <text value=""/>
+  </macro>
+  <macro name="juris-main-short">
+    <text value=""/>
+  </macro>
+  <macro name="juris-default-spotter-short">
+    <text value=""/>
+  </macro>
+  <macro name="juris-comma-spotter-short">
+    <text value=""/>
+  </macro>
+  <macro name="juris-tail-short">
+    <text value=""/>
+  </macro>
+  <macro name="juris-locator-label">
+    <text value=""/>
+  </macro>
+  <macro name="juris-locator">
+    <text value=""/>
+  </macro>
+
   <citation>
     <layout delimiter="; ">
       <text macro="juris-title"/>

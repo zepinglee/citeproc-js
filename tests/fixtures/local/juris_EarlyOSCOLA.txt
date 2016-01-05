@@ -26,17 +26,17 @@ citation
 <<===== ABBREVIATIONS =====<<
 
 >>===== RESULT =====>>
-..[0] <i>Donoghue v Stevenson</i> [1932] AC 562 (HL)
+..[0] <i>Donoghue v Stevenson</i> [1932] AC 562 (HL) 563
 ..[1] ibid 566
-..[2] <i>DUMMY: <i>Bogus Book</i></i>
+..[2] DUMMY: <i>Bogus Book</i>
 ..[3] <i>Donoghue</i> (n 1) 563
 ..[4] ibid
-..[5] <i>Callery v Gray</i> [2001] EWCA Civ 1117
+..[5] <i>Callery v Gray</i> [2001] EWCA Civ 1117 [12]
 ..[6] ibid [15]
-..[7] <i><i>Bogus Book</i></i> (n 3)
+..[7] DUMMY: <i>Bogus Book</i> (n 3)
 ..[8] <i>Callery</i> (n 6) [16]
-..[9] <i>Boulton v Jones</i> 2 H&#38;N 564 (1857)
->>[10] <i>Stubbs v Sayer</i> slip op (uk CA 1990)
+..[9] <i>Boulton v Jones</i> (1857) 2 H&#38;N 564
+>>[10] <i>Stubbs v Sayer</i> (CA, 8 November 1990)
 <<===== RESULT =====<<
 
 
@@ -238,19 +238,19 @@ citation
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <locale>
+  <!-- locale>
     <style-options jurisdiction-preference="babyblue"/>
-  </locale>
+  </locale -->
   <macro name="juris-title">
     <text variable="title" font-style="italic" prefix="DUMMY: "/>
   </macro>
   <macro name="juris-title-short">
     <choose>
       <if variable="title-short">
-        <text variable="title-short" font-style="italic"/>
+        <text variable="title-short" font-style="italic" prefix="DUMMY: "/>
       </if>
       <else>
-        <text variable="title" font-style="italic"/>
+        <text variable="title" font-style="italic" prefix="DUMMY: "/>
       </else>
     </choose>
   </macro>
@@ -260,16 +260,16 @@ citation
   <macro name="juris-main-short">
     <text value=""/>
   </macro>
-  <macro name="juris-comma-locator">
+  <macro name="juris-default-spotter">
     <text value=""/>
   </macro>
-    <macro name="juris-space-locator">
+  <macro name="juris-default-spotter-short">
     <text value=""/>
   </macro>
-  <macro name="juris-locator">
+  <macro name="juris-comma-spotter">
     <text value=""/>
   </macro>
-  <macro name="juris-locator-label">
+  <macro name="juris-comma-spotter-short">
     <text value=""/>
   </macro>
   <macro name="juris-tail">
@@ -278,17 +278,30 @@ citation
   <macro name="juris-tail-short">
     <text value=""/>
   </macro>
+  <macro name="juris-locator-label">
+    <text value=""/>
+  </macro>
+  <macro name="juris-locator">
+    <text value=""/>
+  </macro>
   <citation>
     <layout>
       <choose>
         <if position="first">
           <group delimiter=" ">
-            <text macro="juris-title" strip-periods="true" font-style="italic"/>
+            <choose>
+              <if type="book">
+                <text macro="juris-title" strip-periods="true"/>
+              </if>
+              <else>
+                <text macro="juris-title" strip-periods="true" font-style="italic"/>
+              </else>
+            </choose>
             <group delimiter=", ">
               <text macro="juris-main" strip-periods="true"/>
-              <text macro="juris-comma-locator" strip-periods="true"/>
+              <text macro="juris-comma-spotter" strip-periods="true"/>
             </group>
-            <text macro="juris-space-locator" strip-periods="true"/>
+            <text macro="juris-default-spotter" strip-periods="true"/>
             <text macro="juris-tail" strip-periods="true"/>
           </group>
         </if>
@@ -296,7 +309,7 @@ citation
           <group delimiter=" ">
             <text term="ibid" text-case="lowercase" strip-periods="true"/>
             <text macro="juris-locator-label" strip-periods="true"/>
-            <text macro="juris-locator"/>
+            <text macro="juris-default-spotter"/>
           </group>
         </else-if>
         <else-if position="ibid">
@@ -304,10 +317,17 @@ citation
         </else-if>
         <else-if position="subsequent">
           <group delimiter=" ">
-            <text macro="juris-title-short" strip-periods="true" font-style="italic"/>
+            <choose>
+              <if type="book">
+                <text macro="juris-title-short" strip-periods="true"/>
+              </if>
+              <else>
+                <text macro="juris-title-short" strip-periods="true" font-style="italic"/>
+              </else>
+            </choose>
             <text variable="first-reference-note-number" prefix="(n " suffix=")"/>
             <text macro="juris-locator-label"/>
-            <text macro="juris-locator"/>
+            <text macro="juris-default-spotter"/>
           </group>
         </else-if>
       </choose>
@@ -328,7 +348,7 @@ citation
         "collection-number": "1932",
         "container-title": "A.C.",
         "page": "562",
-        "jurisdiction": "uk",
+        "jurisdiction": "gb",
         "issued": {
           "date-parts": [
             [1932]
@@ -348,7 +368,7 @@ citation
         "collection-number": "2001",
         "container-title": "E.W.C.A. Civ.",
         "page": "1117",
-        "jurisdiction": "uk",
+        "jurisdiction": "gb",
         "issued": {
           "date-parts": [
             [2001]
@@ -363,7 +383,7 @@ citation
         "container-title": "H&N",
         "volume": "2",
         "page": "564",
-        "jurisdiction": "uk",
+        "jurisdiction": "gb",
         "issued": {
           "date-parts": [
             [1857]
@@ -375,7 +395,7 @@ citation
         "type": "legal_case",
         "title": "Stubbs v. Sayer",
         "title-short": "Stubbs",
-        "jurisdiction": "uk",
+        "jurisdiction": "gb",
         "authority": "Court of Appeal",
         "issued": {
           "date-parts": [
