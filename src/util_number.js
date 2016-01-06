@@ -303,9 +303,21 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var label = defaultLabel;
         var origLabel = "";
         for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            var m = elems[i].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            //var m = elems[i].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
+            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/g);
             if (m) {
-                var lst = elems[i].split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                //var lst = elems[i].split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/);
+                // merge bad labels into content
+                for (var j=m.length-1;j>-1;j--) {
+                    var slug = m[j].trim();
+                    if (!CSL.STATUTE_SUBDIV_STRINGS[slug] || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])) {
+                        m = m.slice(0,j).concat(m.slice(j+1))
+                        lst[j] = lst[j] + " " + slug + " " + lst[j+1];
+                        lst = lst.slice(0,j+1).concat(lst.slice(j+2))
+                    }
+                }
+
                 for (var j=0,jlen=lst.length; j<jlen; j++) {
                     if (lst[j] || j === (lst.length-1)) {
                         label = m[j-1] ? m[j-1] : label;
@@ -414,6 +426,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                             //if (!bareBraces && CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && !me.getTerm(variable)) {
                             if (!bareBraces && CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && currentLabelInfo.label.slice(0, 4) !== "var:") {
                                 // ?? EH? ?? This will never be true, will it?
+
                                 values[0].labelVisibility = true;
                             }
                         }
@@ -719,7 +732,6 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
 
         setVariableParams(this.tmp.shadow_numbers[variable], values);
         this.tmp.shadow_numbers[variable].values = values;
-
-        //print("OK "+JSON.stringify(values, ["label", "value", "numeric", "joiningSuffix", "labelVisibility", "plural"], 2));
+        //print("OK "+JSON.stringify(values, ["label", "origLabel", "labelSuffix", "particle", "collapsible", "value", "numeric", "joiningSuffix", "labelVisibility", "plural"], 2));
     }
 };
