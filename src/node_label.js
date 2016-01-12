@@ -8,7 +8,7 @@ CSL.Node.label = {
             // Non-names labels
             var plural = false;
             if (!this.strings.form) {
-                this.strings.form = "long";
+                //this.strings.form = "long";
             }
             var func = function (state, Item, item) {
                 // Must accomplish this without touching strings
@@ -34,7 +34,10 @@ CSL.Node.label = {
                     flag[0] = true;
                     state.tmp.group_context.replace(flag);
                 }
-                state.output.append(termtxt, this);
+                if (termtxt.indexOf("%s") === -1) {
+                    // Suppress output here if we have an embedded term
+                    state.output.append(termtxt, this);
+                }
                 if (item && this.strings.term === "locator") {
                     state.parallel.CloseVariable();
                 }

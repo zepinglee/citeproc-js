@@ -170,6 +170,7 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 
 
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type) {
+    //print("** processNumber() ItemObject[variable]="+ItemObject[variable]);
     var val, m, i, ilen, j, jlen;
     var debug = false;
 
@@ -204,17 +205,6 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     //   }
     // ]
     
-    // FUNCTIONS
-
-        // XXX Add label marker to field if necessary for normalization
-
-    var bareBraces = false;
-    if (node) {
-        bareBraces = this.opt.development_extensions.static_statute_locator
-            && ["(", "["].indexOf(node.strings.prefix) !== -1 
-            && ["]", ")"].indexOf(node.strings.suffix) !== -1;
-    }
-
     function normalizeFieldValue(str, defaultLabel) {
         var m = str.match(/^([^ ]+)/);
         if (m && !CSL.STATUTE_SUBDIV_STRINGS[m[1]]) {
@@ -266,9 +256,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     };
 
     function fixupSubsections(elems) {
+        // This catches things like p. 12a-c, recombining content to yield
+        // numeric true despite the hyphen.
         for (var i=elems.length-2;i>-1;i-=2) {
             if (elems[i] === "-"
-               && elems[i-1].match(/^[0-9]+[,a-zA-Z]+$/)
+               && elems[i-1].match(/^(?:(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\.  *)*[0-9]+[,a-zA-Z]+$/)
                && elems[i+1].match(/^[,a-zA-Z]+$/)) {
                 elems[i-1] = elems.slice(i-1,i+2).join("");
                 elems = elems.slice(0,i).concat(elems.slice(i+2));
@@ -303,18 +295,18 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var label = defaultLabel;
         var origLabel = "";
         for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            //var m = elems[i].match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/g);
             if (m) {
-                //var lst = elems[i].split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
                 var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/);
-                // merge bad labels into content
-                for (var j=m.length-1;j>-1;j--) {
-                    var slug = m[j].trim();
-                    if (!CSL.STATUTE_SUBDIV_STRINGS[slug] || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])) {
-                        m = m.slice(0,j).concat(m.slice(j+1))
-                        lst[j] = lst[j] + " " + slug + " " + lst[j+1];
-                        lst = lst.slice(0,j+1).concat(lst.slice(j+2))
+                // merge bad leading label into content
+                if (i === 0) {
+                    var slug = m[0].trim();
+                    if (!CSL.STATUTE_SUBDIV_STRINGS[slug]
+                        || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
+                        || (["locator", "number"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable)) {
+                        m = m.slice(1);
+                        lst[0] = lst[0] + " " + slug + " " + lst[1];
+                        lst = lst.slice(0,1).concat(lst.slice(2))
                     }
                 }
 
@@ -355,9 +347,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
         var mVal = val.match(/^[0-9]+([-,:a-zA-Z]*)$/);
         var mCurrentLabel = master.value.match(/^[0-9]+([-,:a-zA-Z]*)$/);
-        if (!mVal || !mCurrentLabel || isEscapedHyphen) {
+        if (!val || !mVal || !mCurrentLabel || isEscapedHyphen) {
             currentLabelInfo.collapsible = false;
-            if (!mCurrentLabel || val.length > 1) {
+            if (!val || !mCurrentLabel) {
                 currentLabelInfo.numeric = false;
             }
             if (isEscapedHyphen) {
@@ -420,13 +412,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                         // label embedded at the start of a field that
                         // does not match the context, it should be
                         // marked for rendering.
-                        if (["locator", "number", "page"].indexOf(variable) === -1) {
+                        if (["locator", "number"].indexOf(variable) === -1) {
                             // XXXX Needs one more thing here.
                             // If there is no term, force visibility.
-                            //if (!bareBraces && CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && !me.getTerm(variable)) {
-                            if (!bareBraces && CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                                // ?? EH? ?? This will never be true, will it?
-
+                            if (CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && currentLabelInfo.label.slice(0, 4) !== "var:") {
                                 values[0].labelVisibility = true;
                             }
                         }
@@ -451,22 +440,25 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             if (!values[i].numeric) {
                 var origLabel = values[i].origLabel ? values[i].origLabel : "";
                 values[i].value = (origLabel + values[i].value).trim();
+                if (values[i].label !== values[0].label) {
+                    values[i].label = "";
+                }
             }
         }
     }        
 
     function setStyling(values) {
-        var masterStyling = new CSL.Token();
         var masterNode = CSL.Util.cloneToken(node);
-        for (var j=masterNode.decorations.length-1;j>-1;j--) {
-            if (masterNode.decorations[j][0] === "@quotes") {
-                // Add to styling
-                masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
-                // Remove from node
-                masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1))
+        var masterStyling = new CSL.Token();
+        if (!me.tmp.just_looking) {
+            for (var j=masterNode.decorations.length-1;j>-1;j--) {
+                if (masterNode.decorations[j][0] === "@quotes") {
+                    // Add to styling
+                    masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
+                    // Remove from node
+                    masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1))
+                }
             }
-        }
-        if (!bareBraces) {
             masterStyling.strings.prefix = masterNode.strings.prefix;
             masterNode.strings.prefix = "";
             masterStyling.strings.suffix = masterNode.strings.suffix;
@@ -485,27 +477,15 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 if (val.numeric) {
                     newnode.successor_prefix = val.successor_prefix;
                 }
-                if (bareBraces) {
-                    // In this case, remove braces ONLY, as appropriate.
-                    // (1) Remove trailing brace where next item is not master label
-                    // (2) Remove leading brace where current item is not master label
-
-                    if (values[i].label !== masterLabel ||
-                        (i>0 && values[i-1].joiningSuffix === "-")) {
-                        newnode.strings.prefix = newnode.strings.prefix.replace(/[\[\(]$/, "");
-                    }
-                    if ((i < values.length-1 && values[i+1].label !== masterLabel)
-                        || val.joiningSuffix === "-") {
-                        newnode.strings.suffix = newnode.strings.suffix.replace(/^[\)\]]/, "");
-                    }
-                }
                 newnode.strings.suffix = newnode.strings.suffix + stripHyphenBackslash(val.joiningSuffix);
                 val.styling = newnode;
             }
-            if (values[0].value.slice(0,1) === "\"" && values[values.length-1].value.slice(-1) === "\"") {
-                values[0].value = values[0].value.slice(1);
-                values[values.length-1].value = values[values.length-1].value.slice(0,-1);
-                masterStyling.decorations.push(["@quotes", true]);
+            if (!me.tmp.just_looking) {
+                if (values[0].value.slice(0,1) === "\"" && values[values.length-1].value.slice(-1) === "\"") {
+                    values[0].value = values[0].value.slice(1);
+                    values[values.length-1].value = values[values.length-1].value.slice(0,-1);
+                    masterStyling.decorations.push(["@quotes", true]);
+                }
             }
         }
         return masterStyling;
@@ -516,7 +496,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     }
 
     function fixupRangeDelimiter(variable, val, rangeDelimiter, isNumeric) {
-        var isPage = checkPage(variable, val.value);
+        var isPage = checkPage(variable, val);
         if (rangeDelimiter === "-") {
             if (isNumeric) {
                 if (isPage || (variable === "locator" && val.label === "art.") || ["issue", "volume", "edition", "number"].indexOf(variable) > -1) {
@@ -564,7 +544,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
 
         var isPage = checkPage(variable, val);
 
-        if (isPage && !bareBraces) {
+        if (isPage) {
             var str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
             str = me.fun.page_mangler(str);
         } else {
@@ -644,7 +624,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     if (node && this.tmp.shadow_numbers[variable] && this.tmp.shadow_numbers[variable].values.length) {
         var values = this.tmp.shadow_numbers[variable].values;
         fixRanges(values);
-        this.tmp.shadow_numbers[variable].masterStyling = setStyling(values);
+        //if (!this.tmp.shadow_numbers[variable].masterStyling && !this.tmp.just_looking) {
+            this.tmp.shadow_numbers[variable].masterStyling = setStyling(values);
+        //}
         return;
     }
 
@@ -715,23 +697,101 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             val = "" + val;
         }
         var defaultLabel = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[variable];
-        var values = parseString(val, defaultLabel);
-        //print("parseString(): "+JSON.stringify(values, null, 2));
 
-        setSpaces(values);
-        //print("setSpaces(): "+JSON.stringify(values, null, 2));
+        if (!this.tmp.shadow_numbers.values) {
+            var values = parseString(val, defaultLabel);
+            //print("parseString(): "+JSON.stringify(values, null, 2));
+            
+            setSpaces(values);
+            //print("setSpaces(): "+JSON.stringify(values, null, 2));
 
-        setPluralsAndNumerics(values);
-        //print("setPluralsAndNumerics(): "+JSON.stringify(values, null, 2));
+            setPluralsAndNumerics(values);
+            //print("setPluralsAndNumerics(): "+JSON.stringify(values, null, 2));
+
+            this.tmp.shadow_numbers[variable].values = values;
+
+        }
 
         if (node) {
             fixRanges(values);
-            this.tmp.shadow_numbers[variable].masterStyling = setStyling(values);
+            this.tmp.shadow_numbers[variable].masterStyling = setStyling(values)
             //print("setStyling(): "+JSON.stringify(values, null, 2));
         }
 
         setVariableParams(this.tmp.shadow_numbers[variable], values);
-        this.tmp.shadow_numbers[variable].values = values;
         //print("OK "+JSON.stringify(values, ["label", "origLabel", "labelSuffix", "particle", "collapsible", "value", "numeric", "joiningSuffix", "labelVisibility", "plural"], 2));
     }
 };
+
+CSL.Util.outputNumericField = function(state, varname, itemID) {
+
+    state.output.openLevel(state.tmp.shadow_numbers[varname].masterStyling);
+    var nums = state.tmp.shadow_numbers[varname].values;
+    var masterLabel = nums.length ? nums[0].label : null;
+    var labelForm = state.tmp.shadow_numbers[varname].labelForm;
+    var embeddedLabelForm;
+    if (labelForm) {
+        embeddedLabelForm = labelForm
+    } else {
+        embeddedLabelForm = "short";
+    }
+    var labelDecorations = state.tmp.shadow_numbers[varname].labelDecorations;
+    var lastLabelName = null;
+    for (var i=0,ilen=nums.length;i<ilen;i++) {
+        var num = nums[i];
+        var labelName = CSL.STATUTE_SUBDIV_STRINGS[num.label];
+        if (num.label === masterLabel) {
+            label = state.getTerm(labelName, labelForm, num.plural);
+        } else {
+            label = state.getTerm(labelName, embeddedLabelForm, num.plural);
+        }
+        var labelPlaceholderPos = -1;
+        if (label) {
+            labelPlaceholderPos = label.indexOf("%s");
+        }
+        var numStyling = CSL.Util.cloneToken(num.styling);
+        numStyling.formatter = num.styling.formatter;
+        numStyling.type = num.styling.type;
+        numStyling.num = num.styling.num;
+        numStyling.gender = num.styling.gender;
+        if (labelPlaceholderPos > 0 && labelPlaceholderPos < (label.length-2)) {
+            numStyling.strings.prefix += label.slice(0,labelPlaceholderPos);
+            numStyling.strings.suffix = label.slice(labelPlaceholderPos+2) + numStyling.strings.suffix;
+        } else if (num.labelVisibility) {
+            if (!label) {
+                label = num.label;
+                labelName = num.label;
+            }
+            if (labelPlaceholderPos > 0) {
+                var prefixLabelStyling = new CSL.Token();
+                prefixLabelStyling.decorations = labelDecorations;
+                state.output.append(label.slice(0,labelPlaceholderPos), prefixLabelStyling);
+            } else if (labelPlaceholderPos === (label.length-2) || labelPlaceholderPos === -1) {
+                // And add a trailing delimiter.
+                state.output.append(label+num.labelSuffix, "empty");
+            }
+        }
+        if (num.collapsible) {
+            var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
+            if ("undefined" === typeof blob.gender) {
+                blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
+            }
+            state.output.append(blob, "literal");
+        } else {
+            state.output.append(num.particle + num.value, numStyling)
+        }
+        if (labelPlaceholderPos === 0 && labelPlaceholderPos < (label.length-2)) {
+            // Only and always if this is the last entry of this label
+            if (lastLabelName === null) {
+                lastLabelName = labelName;
+            }
+            if (labelName !== lastLabelName || i === (nums.length-1)) {
+                var suffixLabelStyling = new CSL.Token();
+                suffixLabelStyling.decorations = labelDecorations;
+                state.output.append(label.slice(labelPlaceholderPos+2), suffixLabelStyling);
+            }
+        }
+        lastLabelName === labelName;
+    }
+    state.output.closeLevel("empty");
+}

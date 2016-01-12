@@ -36,6 +36,7 @@ CSL.Node.number = {
             // If further functions are added, they need to start with the same
             // abort condition.
             if (this.variables.length === 0) {
+
                 return;
             }
             if ("undefined" === typeof item) {
@@ -101,40 +102,12 @@ CSL.Node.number = {
                 state.processNumber(node, Item, varname, Item.type);
             }
 
-            //var values = state.tmp.shadow_numbers[varname].values;
-            //var blob;
-
-            state.output.openLevel(state.tmp.shadow_numbers[varname].masterStyling);
-            
-            var nums = state.tmp.shadow_numbers[varname].values;
-            var labelForm = state.tmp.shadow_numbers[varname].labelForm;
-            for (var i=0,ilen=nums.length;i<ilen;i++) {
-                var num = nums[i];
-                if (num.labelVisibility) {
-                    var label = CSL.STATUTE_SUBDIV_STRINGS[num.label];
-                    // And add a trailing delimiter.
-                    label = state.getTerm(label, labelForm, num.plural);
-                    if (!label) {
-                        label = num.label;
-                    }
-                    state.output.append(label+num.labelSuffix, "empty");
-                }
-                if (num.collapsible) {
-                    var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), num.styling, Item.id);
-                    if ("undefined" === typeof blob.gender) {
-                        blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
-                    }
-                    state.output.append(blob, "literal");
-                } else {
-                    state.output.append(num.particle + num.value, num.styling)
-                }
-            }
-
-            state.output.closeLevel("empty");
+            CSL.Util.outputNumericField(state, varname, Item.id);
 
             state.parallel.CloseVariable("number");
-            if (["locator", "locator-extra"].indexOf(this.variables[0]) > -1) { 
-                state.tmp.done_vars.push(this.variables[0]);
+            if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
+               && !state.tmp.just_looking) {
+                state.tmp.done_vars.push(this.variables_real[0]);
             }
         };
         this.execs.push(func);

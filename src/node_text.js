@@ -265,31 +265,7 @@ CSL.Node.text = {
                                     // XXX node_number.js. Should be a common function.
                                     // XXX BEGIN
                                     state.processNumber(this, item, this.variables[0], Item.type);
-                                    state.output.openLevel(state.tmp.shadow_numbers[this.variables[0]].masterStyling);
-                                    var nums = state.tmp.shadow_numbers[this.variables[0]].values;
-                                    var labelForm = state.tmp.shadow_numbers[this.variables[0]].labelForm;
-                                    for (var i=0,ilen=nums.length;i<ilen;i++) {
-                                        var num = nums[i];
-                                        if (num.labelVisibility) {
-                                            var label = CSL.STATUTE_SUBDIV_STRINGS[num.label];
-                                            // And add a trailing delimiter.
-                                            label = state.getTerm(label, labelForm, num.plural);
-                                            if (!label) {
-                                                label = num.label;
-                                            }
-                                            state.output.append(label+num.labelSuffix, "empty");
-                                        }
-                                        if (num.collapsible) {
-                                            var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), num.styling, Item.id);
-                                            if ("undefined" === typeof blob.gender) {
-                                                blob.gender = state.locale[state.opt.lang]["noun-genders"][this.variables[0]];
-                                            }
-                                            state.output.append(blob, "literal");
-                                        } else {
-                                            state.output.append(num.particle + num.value, num.styling)
-                                        }
-                                    }
-                                    state.output.closeLevel("empty");
+                                    CSL.Util.outputNumericField(state, this.variables[0], Item.id);
                                     // XXX END
 
                                     
@@ -299,8 +275,9 @@ CSL.Node.text = {
                                     //print("??FIXIT?? "+value);
                                     // true is for non-suppression of periods
                                     state.output.append(value, this, false, false, true);
-                                    if (["locator", "locator-extra"].indexOf(this.variables[0]) > -1) { 
-                                        state.tmp.done_vars.push(this.variables[0]);
+                                    if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
+                                       && !state.tmp.just_looking) { 
+                                        state.tmp.done_vars.push(this.variables_real[0]);
                                     }
                                 }
                             };
@@ -309,33 +286,7 @@ CSL.Node.text = {
                             // algorithm
                             func = function(state, Item) {
                                 state.processNumber(this, Item, this.variables[0], Item.type);
-                                state.output.openLevel(state.tmp.shadow_numbers[this.variables[0]].masterStyling);
-                                var nums = state.tmp.shadow_numbers[this.variables[0]].values;
-                                var labelForm = state.tmp.shadow_numbers[this.variables[0]].labelForm;
-                                for (var i=0,ilen=nums.length;i<ilen;i++) {
-                                    var num = nums[i];
-                                    if (num.labelVisibility) {
-                                        var label = CSL.STATUTE_SUBDIV_STRINGS[num.label];
-                                        // And add a trailing delimiter.
-                                        label = state.getTerm(label, labelForm, num.plural);
-                                        if (!label) {
-                                            label = num.label;
-                                        }
-                                        state.output.append(label+num.labelSuffix, "empty");
-                                    }
-                                    if (num.collapsible) {
-                                        var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), num.styling, Item.id);
-                                        if ("undefined" === typeof blob.gender) {
-                                            blob.gender = state.locale[state.opt.lang]["noun-genders"][this.variables[0]];
-                                        }
-                                        state.output.append(blob, "literal");
-
-                                    } else {
-                                        state.output.append(num.particle + num.value, num.styling)
-                                    }
-                                }
-
-                                state.output.closeLevel("empty");
+                                CSL.Util.outputNumericField(state, this.variables[0], Item.id);
                             }
                         } else if (["URL", "DOI"].indexOf(this.variables_real[0]) > -1) {
                             func = function (state, Item) {

@@ -795,7 +795,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  * [object] disambiguation parameters
  * [boolean] If true, include first-reference-note-number value in cite
  */
-CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
+CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     var use_parallels, ret;
     var oldTermSiblingLayer = this.tmp.group_context.value().slice();
     if (disambig) {
@@ -806,6 +806,11 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
     var itemSupp = {
         position: 1
     };
+
+    if (item) {
+        itemSupp.locator = item.locator;
+        itemSupp.label = item.label;
+    }
 
     if (this.registry.registry[Item.id] 
         && this.registry.citationreg.citationsByItemId
@@ -820,7 +825,9 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm) {
     this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
-    CSL.getCite.call(this, Item, itemSupp);
+
+    // Do not reset shadow_numbers when running ambiguous cites
+    CSL.getCite.call(this, Item, itemSupp, null, false);
     // !!!
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
         CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
@@ -965,12 +972,23 @@ CSL.getCitationCluster = function (inputList, citationID) {
         item = inputList[pos][1];
         last_collapsed = this.tmp.have_collapsed;
         params = {};
+        
+        // Reset shadow_numbers here, suppress reset in getCite()
+        this.tmp.shadow_numbers = {};
+        if (!this.tmp.just_looking && this.opt.hasPlaceholderTerm) {
+            var output = this.output;
+            this.output = new CSL.Output.Queue(this);
+            this.output.adjust = new CSL.Output.Queue.adjust();
+            CSL.getAmbiguousCite.call(this, Item, null, false, item);
+            this.output = output;
+        }
 
+        // true is to block reset of shadow numbers
         if (pos > 0) {
-            CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][0].id);
+            CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][0].id, true);
         } else {
             this.tmp.term_predecessor = false;
-            CSL.getCite.call(this, Item, item);
+            CSL.getCite.call(this, Item, item, null, true);
         }
         // Make a note of any errors
         if (!this.tmp.cite_renders_content) {
@@ -1087,9 +1105,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     for (pos = 0, len = myblobs.length; pos < len; pos += 1) {
         var buffer = [];
         this.output.queue = [myblobs[pos]];
-
         this.tmp.suppress_decorations = myparams[pos].suppress_decorations;
-        
         this.tmp.splice_delimiter = myparams[pos].splice_delimiter;
         //
         // oh, one last second thought on delimiters ...
@@ -1217,16 +1233,19 @@ CSL.getCitationCluster = function (inputList, citationID) {
  * (This is dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function (Item, item, prevItemID) {
+CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     var next, error_object;
     this.tmp.cite_renders_content = false;
     this.parallel.StartCite(Item, item, prevItemID);
-    CSL.citeStart.call(this, Item, item);
+    CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
     this.nameOutput = new CSL.NameOutput(this, Item, item);
+
+    // rerun?
     while (next < this[this.tmp.area].tokens.length) {
         next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }
+
     CSL.citeEnd.call(this, Item, item);
     this.parallel.CloseCite(this);
     // Odd place for this, but it seems to fit here
@@ -1244,7 +1263,10 @@ CSL.getCite = function (Item, item, prevItemID) {
 };
 
 
-CSL.citeStart = function (Item, item) {
+CSL.citeStart = function (Item, item, blockShadowNumberReset) {
+    if (!blockShadowNumberReset) {
+        this.tmp.shadow_numbers = {};
+    }
     this.tmp.disambiguate_count = 0;
     this.tmp.disambiguate_maxMax = 0;
     this.tmp.same_author_as_previous_cite = false;
@@ -1307,7 +1329,6 @@ CSL.citeStart = function (Item, item) {
     if (!this.tmp.just_looking && item && !item.position && this.registry.registry[Item.id]) {
         this.tmp.disambig_restore = CSL.cloneAmbigConfig(this.registry.registry[Item.id].disambig);
     }
-    this.tmp.shadow_numbers = {};
     // XXX This only applied to the "number" variable itself? Huh?
     //this.setNumberLabels(Item);
     this.tmp.first_name_string = false;

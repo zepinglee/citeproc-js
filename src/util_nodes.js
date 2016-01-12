@@ -3,7 +3,7 @@
 CSL.tokenExec = function (token, Item, item) {
     // Called on state object
     var next, maybenext, exec, debug;
-    debug = false;
+    debug = true;
     next = token.next;
     maybenext = false;
     //SNIP-START

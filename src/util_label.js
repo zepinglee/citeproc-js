@@ -24,7 +24,12 @@ CSL.evaluateLabel = function (node, state, Item, item) {
         var theItem = node.strings.term === "locator" ? item : Item;
         state.processNumber(false, theItem, node.strings.term, Item.type);
         plural = state.tmp.shadow_numbers[node.strings.term].plural;
-        state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+        if (!state.tmp.shadow_numbers[node.strings.term].labelForm
+           && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
+            state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+            state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
+        }
+        
         if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
             myterm = state.tmp.shadow_numbers[node.strings.term].label;
         }

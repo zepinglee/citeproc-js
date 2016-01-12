@@ -244,17 +244,26 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             // Xml: get string value of node content
             //
             target[form][0] = this.sys.xml.getNodeValue(term, 'single');
+            if (target[form][0].indexOf("%s") > -1) {
+                this.opt.hasPlaceholderTerm = true;
+            }
             //
             // Xml: get string value of attribute, plus
             // Xml: get string value of node content
             //
             target[form][1] = this.sys.xml.getNodeValue(term, 'multiple');
+            if (target[form][1].indexOf("%s") > -1) {
+                this.opt.hasPlaceholderTerm = true;
+            }
         } else {
             //
             // Xml: get string value of attribute, plus
             // Xml: get string value of node content
             //
             target[form] = this.sys.xml.getNodeValue(term);
+            if (target[form].indexOf("%s") > -1) {
+                this.opt.hasPlaceholderTerm = true;
+            }
         }
     }
     // If locale had a CSL 1.0.1-style ordinal definition, install the logic object
