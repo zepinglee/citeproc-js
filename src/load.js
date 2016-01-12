@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.67",
+    PROCESSOR_VERSION: "1.1.68",
 
     CONDITION_LEVEL_TOP: 1,
 

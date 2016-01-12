@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.68
+=========================
+
+- Revised handling for numeric variables
+  * Numeric variables are processed identically in cs:text and cs:number
+  * Label short-codes embedded in fields are recognized and pluralized
+  * Label override by leading short-code recognized in locator and number
+  * Per-number affixes can be specified in locale label terms with %s placeholder
+  * Prefix and suffix labels can be forced in locale label terms with %s placeholder
+  * Expansion and collapsing of page ranges in locators is supported
+
+=========================
 Changes in version 1.1.67
 =========================
 
