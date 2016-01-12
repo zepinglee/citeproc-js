@@ -60,7 +60,7 @@ citation
           </if>
         </choose>
         <group delimiter=" ">
-          <label variable="locator"/>
+          <label variable="locator" form="long"/>
           <number variable="locator"/>
         </group>
       </group>
