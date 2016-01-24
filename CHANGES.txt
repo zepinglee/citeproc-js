@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.70
+=========================
+
+- Fix a second bug, affecting all styles. Check for nesting name
+  failed erroneously, but failure did not show in tests b/c written
+  to console.log() rather than print().
+
+=========================
 Changes in version 1.1.69
 =========================
 
