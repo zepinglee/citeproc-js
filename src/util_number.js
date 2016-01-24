@@ -793,5 +793,5 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         }
         lastLabelName === labelName;
     }
-    state.output.closeLevel("empty");
+    state.output.closeLevel();
 }
