@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.69
+=========================
+
+- Fix a bug that manifested in Juris-M configuration with the
+  Vancouver style.
+
+=========================
 Changes in version 1.1.68
 =========================
 
