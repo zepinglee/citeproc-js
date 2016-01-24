@@ -97,7 +97,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
     var maketest = function (trylabel) {
         return function(Item, item) {
             var label;
-            state.processNumber(node, item, "locator");
+            state.processNumber(false, item, "locator");
             label = state.tmp.shadow_numbers.locator.label;
             if (trylabel === label) {
                 return true;
