@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.70",
+    PROCESSOR_VERSION: "1.1.71",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -4090,7 +4090,8 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         this.tmp.disambig_request = false;
     }
     var itemSupp = {
-        position: 1
+        position: 1,
+        "near-note": true
     };
     if (item) {
         itemSupp.locator = item.locator;

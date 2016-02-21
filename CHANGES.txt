@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.71
+=========================
+
+- Fix bug affecting styles making use of near-note.
+  Reported by Zotero user @tog
+  https://forums.zotero.org/discussion/56946/attribute-name-formshort-ignored/
+
+=========================
 Changes in version 1.1.70
 =========================
 
