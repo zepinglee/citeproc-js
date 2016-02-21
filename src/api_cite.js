@@ -804,7 +804,8 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         this.tmp.disambig_request = false;
     }
     var itemSupp = {
-        position: 1
+        position: 1,
+        "near-note": true
     };
 
     if (item) {
