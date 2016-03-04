@@ -163,8 +163,31 @@ var CSL = {
         ["(", "["],
         [")", "]"]
     ],
-    checkNestedBraceOpen: new RegExp(".*\\("),
-    checkNestedBraceClose: new RegExp(".*\\)"),
+    checkNestedBrace: function() {
+        this.depth = 0;
+        this.update = function(str) {
+            
+            // Receives affix string, returns with flipped parens.
+            
+            var str = str ? str : '';
+            var lst = str.split(/([\(\)])/);
+            for (var i=1,ilen=lst.length;i<ilen;i += 2) {
+                if (lst[i] === '(') {
+                    if (1 === (this.depth % 2)) {
+                        lst[i] = '['
+                    }
+                    this.depth += 1;
+                } else if (lst[i] === ')') {
+                    if (0 === (this.depth % 2)) {
+                        lst[i] = ']'
+                    }
+                    this.depth -= 1;
+                }
+            }
+            var ret = lst.join("");
+            return ret;
+        };
+    },
 
     MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","jurisdiction","archive","archive-place"],
 

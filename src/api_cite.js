@@ -880,9 +880,9 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
         }
     }
     // Paranoia
-    if (!this.tmp.splice_delimiter) {
-        this.tmp.splice_delimiter = "";
-    }
+    //if (!this.tmp.splice_delimiter) {
+    //    this.tmp.splice_delimiter = "";
+    //}
     return this.tmp.splice_delimiter;
 };
 
@@ -892,8 +892,8 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
  */
 CSL.getCitationCluster = function (inputList, citationID) {
     var result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
+    inputList = inputList ? inputList : [];
     this.tmp.last_primary_names_string = false;
-    this.tmp.nestedBraces = false;
     txt_esc = CSL.getSafeEscape(this);
     this.tmp.area = "citation";
     result = "";
@@ -903,6 +903,12 @@ CSL.getCitationCluster = function (inputList, citationID) {
     this.tmp.last_years_used = [];
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
+
+    this.output.checkNestedBrace = new CSL.checkNestedBrace();
+
+    var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix);
+    //var use_layout_prefix = this.citation.opt.layout_prefix;
+
     var suppressTrailingPunctuation = false;
     if (this.opt.xclass === "note" && this.citation.opt.suppressTrailingPunctuation) {
         suppressTrailingPunctuation = true;
@@ -1073,20 +1079,22 @@ CSL.getCitationCluster = function (inputList, citationID) {
         delimiter = delimiter.slice(0, 1);
     }
     //print("=== FROM CITE ===");
-    var use_layout_suffix = suffix;
+    suffix = this.output.checkNestedBrace.update(suffix);
+
+
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
         CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[i]);
     }
     if (!this.tmp.suppress_decorations && this.output.queue.length) {
         if (!(this.opt.development_extensions.apply_citation_wrapper
               && this.sys.wrapCitationEntry
-              && !this.tmp.just_looking
+               && !this.tmp.just_looking
               && this.tmp.area === "citation")) { 
 
             if (!suppressTrailingPunctuation) {
-                this.output.queue[this.output.queue.length - 1].strings.suffix = use_layout_suffix;
+                this.output.queue[this.output.queue.length - 1].strings.suffix = suffix;
             }
-            this.output.queue[0].strings.prefix = this.citation.opt.layout_prefix;
+            this.output.queue[0].strings.prefix = use_layout_prefix;
         }
     }
     if (this.opt.development_extensions.clean_up_csl_flaws) {
@@ -1118,7 +1126,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
         this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
         composite = this.output.string(this, this.output.queue);
-        // ZZ print("composite="+composite);
+
        
         this.tmp.suppress_decorations = false;
         // meaningless assignment
@@ -1180,6 +1188,17 @@ CSL.getCitationCluster = function (inputList, citationID) {
         if (buffer.length) {
             if ("string" === typeof buffer[0]) {
                 if (pos > 0) {
+                    // Awful. Should probably just not be using this.tmp.splice_delimiter at all.
+                    //print(JSON.stringify(myparams[pos-1], null, 2));
+                    //print(JSON.stringify(myparams[pos], null, 2));
+                    if (((myblobs.length-1) > pos && myparams[pos+1].have_collapsed) && !myparams[pos].have_collapsed) {
+                        //print(JSON.stringify(myparams[pos+1], null, 2));
+                        this.tmp.splice_delimiter = myparams[pos-1].splice_delimiter;
+                    }
+                    //print("pos="+pos)
+                    //print("objects.length="+objects.length)
+                    //print("myblobs.length="+myblobs.length)
+                    //buffer[0] = myparams[pos-1].splice_delimiter + buffer[0];
                     buffer[0] = this.tmp.splice_delimiter + buffer[0];
                 }
             } else {
@@ -1200,7 +1219,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
         //    && this.tmp.last_chr === use_layout_suffix.slice(0, 1)) {
         //    use_layout_suffix = use_layout_suffix.slice(1);
         //}
-        this.output.nestedBraces = false;
         if (!this.tmp.suppress_decorations) {
             len = this.citation.opt.layout_decorations.length;
             for (pos = 0; pos < len; pos += 1) {
@@ -1335,22 +1353,6 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.first_name_string = false;
     this.tmp.authority_stop_last = 0;
 
-    // Set up for nested parens conversion if appropriate.
-    if (this.opt.development_extensions.flip_parentheses_to_braces && item && item.prefix) {
-        var openBrace = CSL.checkNestedBraceOpen.exec(item.prefix);
-        var closeBrace = CSL.checkNestedBraceClose.exec(item.prefix);
-        if (openBrace) {
-            if (!closeBrace) {
-                this.output.nestedBraces = CSL.NestedBraces;
-            } else if (closeBrace[0].length < openBrace[0].length) {
-                this.output.nestedBraces = CSL.NestedBraces;
-            } else {
-                this.output.nestedBraces = false;
-            }
-        } else if (closeBrace) {
-            this.output.nestedBraces = false;
-        }
-    }
 };
 
 CSL.citeEnd = function (Item, item) {
@@ -1404,21 +1406,5 @@ CSL.citeEnd = function (Item, item) {
     }
     this.tmp.issued_date = false;
     this.tmp.renders_collection_number = false;
-    // Turn off nested parens conversion if appropriate.
-    // We don't try to track nesting in a serious way. User beware.
-    if (this.opt.development_extensions.flip_parentheses_to_braces && item && item.suffix) {
-        var openBrace = CSL.checkNestedBraceOpen.exec(item.suffix);
-        var closeBrace = CSL.checkNestedBraceClose.exec(item.suffix);
-        if (closeBrace) {
-            if (!openBrace) {
-                this.output.nestedBraces = false;
-            } else if (openBrace[0].length < closeBrace[0].length) {
-                this.output.nestedBraces = false;
-            } else {
-                this.output.nestedBraces = CSL.NestedBraces;
-            }
-        } else if (openBrace) {
-            this.output.nestedBraces = CSL.NestedBraces;
-        }
-    }
+
 };

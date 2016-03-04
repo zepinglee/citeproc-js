@@ -167,14 +167,10 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
     //SNIP-END
         blob = new CSL.Blob(undefined, this.formats.value()[token], token);
     }
-    // OKAY! Replace affix parens here.
-    if (this.nestedBraces) {
-        blob.strings.prefix = blob.strings.prefix.replace(this.nestedBraces[0][0], this.nestedBraces[0][1]);
-        blob.strings.prefix = blob.strings.prefix.replace(this.nestedBraces[1][0], this.nestedBraces[1][1]);
-        blob.strings.suffix = blob.strings.suffix.replace(this.nestedBraces[0][0], this.nestedBraces[0][1]);
-        blob.strings.suffix = blob.strings.suffix.replace(this.nestedBraces[1][0], this.nestedBraces[1][1]);
-    }
     curr = this.current.value();
+    if (!this.state.tmp.just_looking && this.checkNestedBrace) {
+        blob.strings.prefix = this.checkNestedBrace.update(blob.strings.prefix);
+    }
     curr.push(blob);
     this.current.push(blob);
 };
@@ -192,7 +188,10 @@ CSL.Output.Queue.prototype.closeLevel = function (name) {
     if (name && name !== this.current.value().levelname) {
         CSL.error("Level mismatch error:  wanted " + name + " but found " + this.current.value().levelname);
     }
-    this.current.pop();
+    var blob = this.current.pop();
+    if (!this.state.tmp.just_looking && this.checkNestedBrace) {
+        blob.strings.suffix = this.checkNestedBrace.update(blob.strings.suffix);
+    }
 };
 
 //
@@ -278,13 +277,6 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         }
     }
     blob = new CSL.Blob(str, token);
-    // OKAY! Replace affix parens here.
-    if (this.nestedBraces) {
-        blob.strings.prefix = blob.strings.prefix.replace(this.nestedBraces[0][0], this.nestedBraces[0][1]);
-        blob.strings.prefix = blob.strings.prefix.replace(this.nestedBraces[1][0], this.nestedBraces[1][1]);
-        blob.strings.suffix = blob.strings.suffix.replace(this.nestedBraces[0][0], this.nestedBraces[0][1]);
-        blob.strings.suffix = blob.strings.suffix.replace(this.nestedBraces[1][0], this.nestedBraces[1][1]);
-    }
     curr = this.current.value();
     if ("undefined" === typeof curr && this.current.mystack.length === 0) {
         // XXXX An operation like this is missing somewhere, this should NOT be necessary.
@@ -307,6 +299,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.parallel.AppendBlobPointer(curr);
     }
     if ("string" === typeof str) {
+
         curr.push(blob);
         if (blob.strings["text-case"]) {
             //
@@ -340,6 +333,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.fun.flipflopper.init(str, blob);
         //CSL.debug("(queue.append blob decorations): "+blob.decorations);
         this.state.fun.flipflopper.processTags();
+
     } else if (useblob) {
         curr.push(blob);
     } else {
@@ -413,7 +407,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 // to produce no output if they are found to be
                 // empty.
                 if (b && b.length) {
-                    b = txt_esc(blobjr.strings.prefix, state.tmp.nestedBraces) + b + txt_esc(blobjr.strings.suffix, state.tmp.nestedBraces);
+                    b = txt_esc(blobjr.strings.prefix) + b + txt_esc(blobjr.strings.suffix);
                     if ((state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support) && !state.tmp.suppress_decorations) {
                         for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
                             params = blobjr.decorations[j];
@@ -508,7 +502,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         use_suffix = blob.strings.suffix;
         if (b && b.length) {
             use_prefix = blob.strings.prefix;
-            b = txt_esc(use_prefix, state.tmp.nestedBraces) + b + txt_esc(use_suffix, state.tmp.nestedBraces);
+            b = txt_esc(use_prefix) + b + txt_esc(use_suffix);
             if (state.tmp.count_offset_characters) {
                 state.tmp.offset_characters += (use_prefix.length + use_suffix.length);
             }

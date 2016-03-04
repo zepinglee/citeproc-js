@@ -148,6 +148,9 @@ CSL.Node.layout = {
                         // Protect against double spaces, which would trigger an extra,
                         // explicit, non-breaking space.
                         prefix = (item.prefix + sp).replace(/\s+/g, " ");
+                        if (!state.tmp.just_looking) {
+                            prefix = state.output.checkNestedBrace.update(prefix);
+                        }
                         state.output.append(prefix, this, false, ignorePredecessor);
                     }
                 };
@@ -264,7 +267,11 @@ CSL.Node.layout = {
 
                                 sp = " ";
                             }
-                            state.output.append((sp + item.suffix), this);
+                            var suffix = item.suffix;
+                            if (!state.tmp.just_looking) {
+                                suffix = state.output.checkNestedBrace.update(suffix);
+                            }
+                            state.output.append((sp + suffix), this);
                         }
                     };
                     suffix_token.execs.push(func);
