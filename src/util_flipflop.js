@@ -139,7 +139,7 @@ CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
             oldStr = str;
             for (i = 0, ilen = 2; i < ilen; i += 1) {
                 if (this.quotechars[i + 2]) {
-                    str = str.replace(this.quotechars[i + 2], this.quotechars[0]);
+                    str = str.split(this.quotechars[i + 2]).join(this.quotechars[0]);
                 }
             }
         }
@@ -151,9 +151,9 @@ CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
             for (i = 0, ilen = 2; i < ilen; i += 1) {
                 if (this.quotechars[i + 4]) {
                     if (i === 0) {
-                        str = str.replace(this.quotechars[i + 4], " " + this.quotechars[1]);
+                        str = str.split(this.quotechars[i + 4]).join(" " + this.quotechars[1]);
                     } else {
-                        str = str.replace(this.quotechars[i + 4], this.quotechars[1]);
+                        str = str.split(this.quotechars[i + 4]).join(this.quotechars[1]);
                     }
                 }
             }
@@ -292,9 +292,9 @@ CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
 
     len = strs.length;
     for (pos = 0; pos < len; pos += 2) {
-        strs[pos] = strs[pos].replace("'", "\u2019", "g");
+        strs[pos] = strs[pos].split("'").join("\u2019");
         // Control for double spacing before leading apostrophes (e.g. '09)
-        strs[pos] = strs[pos].replace("  \u2019", " \u2019", "g");
+        strs[pos] = strs[pos].split("  \u2019").join(" \u2019");
         // Erroneous. Flipflop is run during queue append.
         // Escaping should be limited to output operations.
         // Anomaly spotted by Rintze Zelle, 2012-04-20
