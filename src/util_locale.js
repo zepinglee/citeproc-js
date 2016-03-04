@@ -338,8 +338,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                     } else if (attrname === "@skip-words") {
                         var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
-                    } else if (attrname === "@leading-noise-words" && lang_in === lang_out) {
-                        // For this parameter, we don't want fallback.
+                    } else if (attrname === "@leading-noise-words") {
                         var val = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts["leading-noise-words"] = val;
                     } else if (attrname === "@name-as-sort-order") {
