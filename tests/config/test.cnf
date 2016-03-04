@@ -1,6 +1,15 @@
 [tracemonkey]
 command: /home/bennett/src/jslibs/Linux_32_opt/jshost -u
 
+[jsc]
+command: jsc
+
+[v8]
+command: d8.sh
+
+[mozjs]
+command: js24
+
 [rhino]
 command: java -client -jar ./rhino/js-1.7R3.jar -opt 8
 
