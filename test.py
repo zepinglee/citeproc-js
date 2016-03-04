@@ -366,7 +366,16 @@ doh.register("%s.%s", [
     def runTests(self,bundle=False):
         cp = ConfigParser()
         cp.read(os.path.join(path("config"), "test.cnf"))
-        if True:
+        if self.opt.engine == "mozjs":
+            engine = cp.get("mozjs", "command")
+            nick = "mozjs"
+        elif self.opt.engine == "v8":
+            engine = cp.get("v8", "command")
+            nick = "v8"
+        elif self.opt.engine == "jsc":
+            engine = cp.get("jsc", "command")
+            nick = "jsc"
+        else:
             engine = cp.get("rhino","command")
             nick = "rhino"
         bundleext = ""
@@ -675,6 +684,9 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Attempt to validate style code for testing against the CSL schema.')
+    parser.add_option("-e", "--engine", dest="engine",
+                      default="rhino",
+                      help='Engine (default "rhino", alternatively "mozjs").')
     parser.add_option("-g", "--grind", dest="grind",
                       default=False,
                       action="store_true", 
