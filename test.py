@@ -8,7 +8,6 @@ from cStringIO import StringIO
 from cPickle import Pickler, Unpickler
 import subprocess as sub 
 import string
-from makejson import jsonwalker
 
 reload(sys)
 sys.setdefaultencoding("utf-8") # Needs Python Unicode build !
@@ -501,11 +500,6 @@ class CslTest:
                 else:
                     stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
                 self.data['csl'] = fixEndings(open(stylepath, "rb").read())
-            if False and element == "CSL" and self.opt.rhino_json:
-                w = jsonwalker()
-                doc = w.makedoc(self.data['csl'])
-                self.data['csl'] = w.walktojson(doc)
-                #print self.data['csl']
 
         self.extract("RESULT",required=True,is_json=False,rstrip=True)
         self.extract("INPUT",required=True,is_json=True)
