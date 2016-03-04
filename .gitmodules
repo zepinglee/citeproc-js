@@ -1,0 +1,6 @@
+[submodule "tests/fixtures/std"]
+	path = tests/fixtures/std
+	url = https://github.com/citation-style-language/test-suite
+[submodule "locale"]
+	path = locale
+	url = git@github.com:citation-style-language/locales.git
