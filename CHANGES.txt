@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.72
+=========================
+
+- More robust implementation of parens-flipping, enabled only
+  on note styles.
+
+- Fix global replacements that failed on many JS implementations.
+
+- Introduce string-based parsing of serialized XML.
+
+- Extend test framework to allow use of alternative JS engines.
+
+- Remove spaces from sort keys to fix sort behaviour on several
+  JS implementations.
+
+- Add a few test fixtures.
+
+=========================
 Changes in version 1.1.71
 =========================
 
