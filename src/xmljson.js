@@ -320,6 +320,13 @@ CSL_JSON.prototype.nodeNameIs = function (myjson,name) {
 
 CSL_JSON.prototype.makeXml = function (myjson) {
     //print("makeXml()");
+    if ("string" === typeof myjson) {
+        if (myjson.slice(0, 1) === "<") {
+            myjson = this.jsonStringWalker.walkToObject(myjson);
+        } else {
+            myjson = JSON.parse(myjson);
+        }
+    }
     return myjson;
 };
 
@@ -401,11 +408,24 @@ CSL_JSON.prototype.insertPublisherAndPlace = function(myxml) {
 };
 */
 
+CSL_JSON.prototype.isChildOfSubstitute = function(parents) {
+    if (parents.length > 0) {
+        var myparents = parents.slice();
+        var parent = myparents.pop();
+        if (parent === "substitute") {
+            return true;
+        } else {
+            return this.isChildOfSubstitute(myparents);
+        }
+    }
+    return false;
+};
+
 CSL_JSON.prototype.addMissingNameNodes = function(myjson,parents) {
     if (!parents) parents = [];
     if (myjson.name === "names") {
         // Trawl through children to decide whether a name node is needed here
-        if (parents.indexOf("substitute") === -1) {
+        if (!this.isChildOfSubstitute(parents)) {
             var addName = true;
             for (var i=0,ilen=myjson.children.length;i<ilen;i++) {
                 if (myjson.children[i].name === "name") {
@@ -510,4 +530,151 @@ CSL_JSON.prototype.inspectDateMacros = function(myjson) {
         }
     }
     return false;
+}
+
+/*
+ * String parser for XML inputs
+ */
+
+CSL_JSON.prototype.jsonStringWalker = new function() {
+    var _pos, _obj, _stack
+    this.walkToObject = walkToObject;
+
+    function walkToObject(str) {
+        var lst = _listifyString(str);
+        _init();
+        _walkToObj(lst);
+        return _obj.children[0];
+    }
+
+    function _init() {
+        _pos = 0;
+        _obj = {children:[]};
+        _stack = [_obj.children];
+    }
+
+    function _parseHtmlEntities(str) {
+        return str
+            .replace("&amp;", "&", "g")
+            .replace("&quot;", "\"", "g")
+            .replace(/&#([0-9]{1,6});/gi, function(match, numStr) {
+                var num = parseInt(numStr, 10); // read num as normal number
+                return String.fromCharCode(num);
+            })
+            .replace(/&#x([a-f0-9]{1,6});/gi, function(match, numStr){
+                var num = parseInt(numStr, 16); // read num as hex
+                return String.fromCharCode(num);
+            });
+    }
+
+    function _listifyString(str) {
+        str = str.split("\n").join(" ").replace(/>[	 ]+</g, "><").replace(/<\!--.*?-->/g, "");
+        var lst = str.split("><");
+        var stylePos = null;
+        for (var i=0,ilen=lst.length;i<ilen;i++) {
+            if (i > 0) {
+                lst[i] = "<" + lst[i];
+            }
+            if (i < (lst.length-1)) {
+                lst[i] = lst[i] + ">";
+            }
+            if ("number" != typeof stylePos) {
+                if (lst[i].slice(0, 7) === "<style " || lst[i].slice(0, 8) == "<locale ") {
+                    stylePos = i;
+                }
+            }
+        }
+        lst = lst.slice(stylePos);
+        // Combine open/close elements for empty terms,
+        // so that they will be passed through correctly
+        // as empty strings.
+        for (var i=lst.length-2;i>-1;i--) {
+            if (lst[i].slice(1).indexOf("<") === -1) {
+                var stub = lst[i].slice(0, 5);
+                if (stub === "<term") {
+                    if (lst[i+1].slice(0, 6) === "</term") {
+                        lst[i] = lst[i] + lst[i+1];
+                        lst = lst.slice(0, i+1).concat(lst.slice(i+2));
+                    }
+                } else if (["<sing", "<mult"].indexOf(stub) > -1) {
+                    if (lst[i].slice(-2) !== "/>" && lst[i+1].slice(0, 1) === "<") {
+                        lst[i] = lst[i] + lst[i+1];
+                        lst = lst.slice(0, i+1).concat(lst.slice(i+2));
+                    }
+                }
+            }
+        }
+        //for (i=0,ilen=lst.length;i<ilen;i++) {
+        //    print(lst[i]);
+        //}
+        return lst;
+    }
+
+    function _getAttributes(elem) {
+        var m = elem.match(/([^\"=	 ]+)=\"[^\"]*\"/g);
+        if (m) {
+            for (var i=0,ilen=m.length;i<ilen;i++) {
+                m[i] = m[i].replace(/=.*/, "");
+            }
+        }
+        return m;
+    }
+
+    function _getAttribute(elem, attr) {
+        var rex = RegExp('^.*[	 ]+' + attr + '=\"([^\"]*)\".*$');
+        var m = elem.match(rex);
+        return m ? m[1] : null;
+    }
+
+    function _getTagName(elem) {
+        var rex = RegExp("^<([^	 />]+)");
+        var m = elem.match(rex);
+        return m ? m[1] : null;
+    }
+    
+    function _walkToObj(lst, isStyle) {
+        var elem = lst[_pos];
+        if (elem.slice(0, 2) === "</" && elem.slice(1).indexOf("<") === -1) {
+            _pos += 1;
+            _stack.pop();
+            if (_pos === lst.length) {
+                return _obj;
+            } else {
+                _walkToObj(lst, isStyle);
+            }
+        }
+        var obj = {};
+        obj.name = _getTagName(elem);
+        obj.attrs = {};
+        var attributes = _getAttributes(elem);
+        if (attributes) {
+            for (var i=0,ilen=attributes.length;i<ilen;i++) {
+                var attr = {
+                    name: attributes[i],
+                    value: _getAttribute(elem, attributes[i])
+                }
+                obj.attrs[attr.name] = _parseHtmlEntities(attr.value);
+            }
+        }
+        
+        if (elem.slice(1).indexOf("<") > -1) {
+            var m = elem.match(/^.*>([^<]*)<.*$/);
+            obj.children = [_parseHtmlEntities(m[1])]
+            _stack.slice(-1)[0].push(obj);
+        } else if (elem.slice(-2) === "/>" && _getTagName(elem) === 'term') {
+            _stack.slice(-1)[0].push('');
+        } else {
+            obj.children = [];
+            _stack.slice(-1)[0].push(obj);
+            if (elem.slice(-2).indexOf("/>") === -1) {
+                _stack.push(obj.children);
+            }
+        }
+        _pos += 1;
+        if (_pos >= lst.length) {
+            return _obj;
+        } else {
+            _walkToObj(lst, isStyle);
+        }
+    }
 }

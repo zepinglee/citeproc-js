@@ -12,12 +12,15 @@ var CSL_CHROME = function () {
         CSL_IS_IE = true;
         DOMParser = function() {};
         DOMParser.prototype.parseFromString = function(str, contentType) {
+                print("fucko");
             if ("undefined" != typeof ActiveXObject) {
+                print("fucko1");
                 var xmldata = new ActiveXObject('MSXML.DomDocument');
                 xmldata.async = false;
                 xmldata.loadXML(str);
                 return xmldata;
             } else if ("undefined" != typeof XMLHttpRequest) {
+                print("fucko2");
                 var xmldata = new XMLHttpRequest;
                 if (!contentType) {
                     contentType = 'text/xml';
@@ -28,6 +31,9 @@ var CSL_CHROME = function () {
                 }
                 xmldata.send(null);
                 return xmldata.responseXML;
+            } else if ("undefined" != typeof marknote) {
+                var parser = new marknote.Parser();
+                return parser.parse(str);
             }
         };
         this.hasAttributes = function (node) {
@@ -381,13 +387,24 @@ CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
     }
 };
 
+CSL_CHROME.prototype.isChildOfSubstitute = function(node) {
+    if (node.parentNode) {
+        if (node.parentNode.tagName.toLowerCase() === "substitute") {
+            return true;
+        } else {
+            return this.isChildOfSubstitute(node.parentNode);
+        }
+    }
+    return false;
+};
+
 CSL_CHROME.prototype.addMissingNameNodes = function(myxml) {
     var nameslist = myxml.getElementsByTagName("names");
     for (var i = 0, ilen = nameslist.length; i < ilen; i += 1) {
         var names = nameslist.item(i);
         var namelist = names.getElementsByTagName("name");
         if ((!namelist || namelist.length === 0)
-            && names.parentNode.tagName.toLowerCase() !== "substitute") {
+            && !this.isChildOfSubstitute(names)) {
             
             var doc = names.ownerDocument;
             var name = doc.createElement("name");

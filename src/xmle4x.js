@@ -231,10 +231,22 @@ CSL_E4X.prototype.insertPublisherAndPlace = function(myxml) {
         }
 };
 
+CSL_E4X.prototype.isChildOfSubstitute = function(node) {
+    if (node.parent()) {
+        if (node.parent().localName() === "substitute") {
+            return true;
+        } else {
+            return this.isChildOfSubstitute(node.parent());
+        }
+    }
+    return false;
+};
+
 CSL_E4X.prototype.addMissingNameNodes = function(myxml) {
+    print("Oh, shit, it's e4x!");
     default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
     for each (node in myxml..names) {
-        if ("xml" == typeof node && node.parent().localName() !== "substitute" && node.elements("name").length() === 0) {
+        if ("xml" == typeof node && !this.isChildOfSubstitute(node) && node.elements("name").length() === 0) {
             var name = <name/>;
             node.appendChild(name);
         }
