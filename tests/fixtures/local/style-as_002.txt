@@ -29,6 +29,11 @@ bibliography
 	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
 	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
   </info>
+  <locale>
+    <terms>
+      <term name="and" form="short">&amp;</term>
+    </terms>
+  </locale>
   <macro name="editor">
 	<names variable="editor" delimiter=", ">
 	  <name and="symbol" initialize-with="." delimiter=", " name-as-sort-order="all" delimiter-precedes-last="never"/>

@@ -19,6 +19,11 @@ Doe, John J, Jane G Roe &#38; Richard Q Snoakes.
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <terms>
+      <term name="and" form="symbol">&amp;</term>
+    </terms>
+  </locale>
   <macro name="container-title">
     <text strip-periods="true" variable="container-title" form="short" />
   </macro>

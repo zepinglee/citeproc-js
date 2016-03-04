@@ -24,6 +24,11 @@ trans.: John Doe with Setsuo Miyazawa and Eri Osaka, Japan Federation of Bar Ass
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <terms>
+      <term name="translator" form="verb-short">trans.</term>
+    </terms>
+  </locale>
   <citation>
     <layout>
       <group delimiter=": ">

@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
-???
+>>[0] Bob Hancke et al., eds.
 <<===== RESULT =====<<
 
 

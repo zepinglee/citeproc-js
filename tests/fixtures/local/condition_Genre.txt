@@ -25,6 +25,12 @@ bibliography
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <terms>
+      <term name="instant-message">instant message</term>
+      <term name="email">email</term>
+    </terms>
+  </locale>
   <citation>
     <layout>
       <text value="NONE"/>

@@ -31,6 +31,12 @@ Huang Huaixin 黄懷信, Zhang Maorong 張懋鎔, Tian Xudong 田旭東, et al. 
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+
+  <locale>
+    <style-options
+                   name-as-sort-order="ja zh kr my hu vi"
+                   name-never-short="ja zh kr my hu vi"/>
+  </locale>
   <citation et-al-min="4" et-al-use-first="3">
     <layout>
       <names variable="editor">

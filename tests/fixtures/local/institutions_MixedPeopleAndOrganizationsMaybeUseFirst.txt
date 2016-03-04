@@ -22,6 +22,11 @@ substitute-use-first always includes the requested institution name parts.
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+    <terms>
+      <term name="and" form="short">&amp;</term>
+    </terms>
+  </locale>
   <citation
     et-al-min="6"
     et-al-use-first="1">

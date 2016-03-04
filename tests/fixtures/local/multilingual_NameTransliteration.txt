@@ -29,6 +29,10 @@ Beato Takeshi, T. Kitano, R. Atkinson
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
+  <locale>
+      <style-options name-as-sort-order="ja zh kr my hu vi"
+                     name-never-short="ja zh kr my hu vi"/>
+  </locale>
   <citation>
     <sort>
       <key variable="author"/>
