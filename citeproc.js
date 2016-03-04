@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.71",
+    PROCESSOR_VERSION: "1.1.73",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -122,26 +122,32 @@ var CSL = {
         ["(", "["],
         [")", "]"]
     ],
-    checkNestedBrace: function() {
-        this.depth = 0;
-        this.update = function(str) {
-            var str = str ? str : '';
-            var lst = str.split(/([\(\)])/);
-            for (var i=1,ilen=lst.length;i<ilen;i += 2) {
-                if (lst[i] === '(') {
-                    if (1 === (this.depth % 2)) {
-                        lst[i] = '['
+    checkNestedBrace: function(state) {
+        if (state.opt.xclass === "note") {
+            this.depth = 0;
+            this.update = function(str) {
+                var str = str ? str : '';
+                var lst = str.split(/([\(\)])/);
+                for (var i=1,ilen=lst.length;i<ilen;i += 2) {
+                    if (lst[i] === '(') {
+                        if (1 === (this.depth % 2)) {
+                            lst[i] = '['
+                        }
+                        this.depth += 1;
+                    } else if (lst[i] === ')') {
+                        if (0 === (this.depth % 2)) {
+                            lst[i] = ']'
+                        }
+                        this.depth -= 1;
                     }
-                    this.depth += 1;
-                } else if (lst[i] === ')') {
-                    if (0 === (this.depth % 2)) {
-                        lst[i] = ']'
-                    }
-                    this.depth -= 1;
                 }
+                var ret = lst.join("");
+                return ret;
             }
-            var ret = lst.join("");
-            return ret;
+        } else {
+            this.update = function(str) {
+                return str;
+            }
         };
     },
     MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","jurisdiction","archive","archive-place"],
@@ -670,7 +676,6 @@ CSL.System.Xml = {
 };
 CSL.getSortCompare = function (default_locale) {
     if (CSL.stringCompare) {
-        print("has stringCompare()");
         return CSL.stringCompare;
     }
     var strcmp;
@@ -4172,7 +4177,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     this.tmp.last_years_used = [];
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
-    this.output.checkNestedBrace = new CSL.checkNestedBrace();
+    this.output.checkNestedBrace = new CSL.checkNestedBrace(this);
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix);
     var suppressTrailingPunctuation = false;
     if (this.opt.xclass === "note" && this.citation.opt.suppressTrailingPunctuation) {
@@ -5229,7 +5234,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                     } else if (attrname === "@skip-words") {
                         var skip_words = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts[attrname.slice(1)] = skip_words;
-                    } else if (attrname === "@leading-noise-words" && lang_in === lang_out) {
+                    } else if (attrname === "@leading-noise-words") {
                         var val = attributes[attrname].split(/\s*,\s*/);
                         this.locale[lang_out].opts["leading-noise-words"] = val;
                     } else if (attrname === "@name-as-sort-order") {

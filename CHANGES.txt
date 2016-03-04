@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.73
+=========================
+
+- Permit use of leading-noise-words in style-level locale declarations.
+
+- Suppress parens flip on all but note styles.
+
+- Make test fixtures work with standard CSL locales.
+
+=========================
 Changes in version 1.1.72
 =========================
 
