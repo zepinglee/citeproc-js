@@ -904,7 +904,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
 
-    this.output.checkNestedBrace = new CSL.checkNestedBrace();
+    this.output.checkNestedBrace = new CSL.checkNestedBrace(this);
 
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix);
     //var use_layout_prefix = this.citation.opt.layout_prefix;
