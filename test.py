@@ -198,7 +198,7 @@ class Params:
         self.runners = os.path.join( self.tests, "runners")
         self.makedirs()
         self.initConfig()
-        self.copySource()
+        self.getFilePointers()
 
     def makedirs(self):
         for dir in ("std", "citeproc-js", "runners"):
@@ -210,43 +210,17 @@ class Params:
             if not os.path.exists(p):
                 os.makedirs(p)
 
-    def path(self):
-        return (path("run"),)
-        ## The stuff below is irrelevant
-        if self.force:
-            print "one"
-            return (path(self.force),)
-        else:
-            print "two"
-            return (path("run"),)
-
     def getSourcePaths(self):
-        if self.opt.processor:
+        #if self.opt.processor:
+        if False:
             print "opt.processor is WIP"
         else:
             if len(self.args) == 2:
                 filename = "%s_%s.txt" % tuple(self.args)
-                filepath = None
-                for path in self.path():
-                    if os.path.exists( os.path.join(path, "humans", filename)):
-                        filepath = (path,os.path.join("humans", filename))
-                        break
-                if not filepath:
-                    raise MissingHumansFile(filename,[os.path.join(p,"humans") for p in self.path()])
-                self.files['humans'][filename] = (filepath)
+                self.files['humans'][filename] = os.path.split(self.file_pointers[filename])
             else:
-                for path in self.path():
-                    filenames = os.listdir(os.path.join(path,"humans"))
-                    filenames.sort()
-                    for filename in filenames:
-                        # citeproc-js can only reconcile one level of flip-floppery
-                        #if filename == "decorations_NestedQuotesInnerReverse.txt":
-                        #    continue
-                        if not filename.endswith(".txt"): continue
-                        if args:
-                            if not filename.startswith("%s_" % self.args[0]): continue
-                        if not self.files['humans'].has_key(filename):
-                            self.files['humans'][filename] = (path,os.path.join("humans",filename))
+                for filename in self.file_pointers:
+                    self.files['humans'][filename] = os.path.split(self.file_pointers[filename])
     
     def clearSource(self):
         for subdir in ["run"]:
@@ -258,7 +232,7 @@ class Params:
         groups = {}
         for filename in self.files['humans'].keys():
             hpath = self.files['humans'][filename]
-            mpath = os.path.join(self.files['humans'][filename][0], "machines", "%s.json" % filename[:-4] )
+            mpath = os.path.join("tests", "fixtures", "run", "machines", "%s.json" % filename[:-4] )
             hp = os.path.sep.join(hpath)
             mp = os.path.join(mpath)
             #if force:
@@ -273,7 +247,8 @@ class Params:
                 if self.opt.verbose:
                     print "Old: %s" % mp
                 self.grindFile(hpath,filename,mp)
-            if not self.opt.processor:
+            #if not self.opt.processor:
+            if True:
                 m = re.match("([-a-z]*)_.*",filename)
                 if m:
                     groupkey = m.group(1)
@@ -284,10 +259,7 @@ class Params:
                         groups[groupkey]["mtime"] = mmod
         if len(self.args) < 2:
             for group in groups.keys():
-                if self.opt.teststyles:
-                    gp = os.path.join(path("styletests"), "%s.js"%group)
-                else:
-                    gp = os.path.join(path("bundled"), "%s.js"%group)
+                gp = os.path.join(path("bundled"), "%s.js"%group)
                 needs_gp = True
                 if os.path.exists( gp ):
                     needs_gp = False
@@ -296,10 +268,7 @@ class Params:
                 if needs_gp or groups[group]["mtime"] > gt:
                     if self.opt.verbose:
                         sys.stdout.write("!")
-                    if self.opt.teststyles:
-                        ofh = open( os.path.join(path("styletests"), "%s.js" % group), "w+b" )
-                    else:
-                        ofh = open( os.path.join(path("bundled"), "%s.js" % group), "w+b" )
+                    ofh = open( os.path.join(path("bundled"), "%s.js" % group), "w+b" )
                     group_text = '''dojo.provide("%s.%s");
 doh.register("%s.%s", [
 ''' % (self.category,group,self.category,group)
@@ -320,12 +289,10 @@ doh.register("%s.%s", [
         ofh = open( os.path.join(path("runners"), "run.js"), "w+b")
         header = 'dojo.require("doh.runner");\n'
         ofh.write(header)
-        if self.opt.processor:
+        #if self.opt.processor:
+        if False:
             testpath = path("citeproc-js")
             self.category = "citeproc_js"
-        elif self.opt.teststyles:
-            testpath = path("styletests")
-            self.category = "styletests"
         else:
             testpath = path("bundled")
             self.category = "std"
@@ -398,16 +365,23 @@ doh.register("%s.%s", [
             old_opt,old_pos = unpickler.load()
             if self.opt == old_opt:
                 skip_to_pos = old_pos
+                for i in range(0,skip_to_pos,1):
+                    sys.stdout.write(".")
         pos = -1
         files = self.files['humans'].keys()
         files.sort()
+        cp = ConfigParser()
+        cp.read(os.path.join(path("config"), "test.cnf"))
+        validator_path = cp.get("validation", "validator")
+        csl_schema_path = cp.get("validation", "schema")
+        cslm_schema_path = cp.get("validation", "schema-m")
         for filename in files:
             pos += 1
             if pos < skip_to_pos: continue
             p = self.files['humans'][filename]
             test = CslTest(opt,p,filename,pos=pos)
             test.parse()
-            test.validate()
+            test.validate(validator_path, csl_schema_path, cslm_schema_path)
         if os.path.exists( self.pickle ):
             os.unlink(self.pickle)
 
@@ -442,34 +416,18 @@ command: java -client -jar ./rhino/js-1.7R3.jar -opt 8
             ofh.write(test_template)
             ofh.close()
 
-    def copySource(self):
-        for filename in os.listdir(os.path.join(path("run"), "humans")):
-            os.unlink(os.path.join(path("run"), "humans", filename))
-        if self.opt.teststyles:
-            sourcedirs = []
-            cp = ConfigParser()
-            cp.read(os.path.join(path("config"), "test.cnf"))
-            styletesttopdir = cp.get("style", "testdirs")
-            if os.path.exists(styletesttopdir):
-                for subdir in os.listdir(styletesttopdir):
-                    fullpath = os.path.join(styletesttopdir, subdir)
-                    if not os.path.isdir(fullpath) or subdir == ".git":
-                        continue
-                    sourcedirs.append(fullpath)
-        else:
-            sourcedirs = [path("local"), path("std")]
+    def getFilePointers(self):
+        self.file_pointers = {}
+        sourcedirs = [path("local"), path("std")]
         for sourcedir in sourcedirs:
             filenames = os.listdir(sourcedir)
             filenames.sort()
             for filename in filenames:
                 if not filename.endswith(".txt"):
                     continue
-                filepath = os.path.join(path("run"), "humans", filename)
-                if os.path.exists(filepath):
+                if self.file_pointers.has_key(filename):
                     print "WARNING: duplicate fixture name \"%s\"" % filename
-                ofh = open(filepath, "w+b")
-                ofh.write(open(os.path.join(sourcedir, filename), "rb").read())
-                ofh.close()
+                self.file_pointers[filename] = os.path.join(sourcedir, filename)
 
 class CslTest:
     def __init__(self,opt,hpath,testname,pos=0):
@@ -492,13 +450,7 @@ class CslTest:
         for element in ["MODE","CSL"]:
             self.extract(element,required=True,is_json=False)
             if element == "CSL" and self.data['csl'].endswith('.csl'):
-                if self.opt.teststyles:
-                    cp = ConfigParser()
-                    cp.read(os.path.join(path("config"), "test.cnf"))
-                    stylesdir = cp.get("style", "styles")
-                    stylepath = os.path.join(stylesdir, self.data['csl'])
-                else:
-                    stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
+                stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
                 self.data['csl'] = fixEndings(open(stylepath, "rb").read())
 
         self.extract("RESULT",required=True,is_json=False,rstrip=True)
@@ -596,24 +548,20 @@ class CslTest:
         s = json.dumps(self.data, indent=4, sort_keys=True, ensure_ascii=False )
         s = s.replace(u"\u200b", "\\u200b")
         open(mpath,"w+b").write(s)
-    def validate(self):
+    def validate(self, validator_path, csl_schema_path, cslm_schema_path):
         if self.opt.verbose:
             print self.testname
-        if not os.path.exists(os.path.join("..","jing")):
-            print "Error: jing not found as sibling of processor archive."
-            print "  Looked in: %s" % os.path.join("..","jing")
-            sys.exit()
-        m = re.match("(?sm).*version=\"([.0-9a-z]+)\".*",self.data["csl"])
+        m = re.match("(?sm).*version=\"1.1mlz1\".*",self.data["csl"])
         if m:
-            rnc_path = os.path.join("csl","%s" % m.group(1), "csl.rnc")
+            rnc_path = cslm_schema_path
         else:
-            print "Error: Unable to find CSL version in %s" % self.hp
-            sys.exit()
+            rnc_path = csl_schema_path
         tfd,tfilename = tempfile.mkstemp(dir=".")
         os.write(tfd,self.data["csl"])
         os.close(tfd)
-        
-        jfh = os.popen("java -jar %s -c %s %s" % (os.path.join("..","jing","bin","jing.jar"),rnc_path,tfilename))
+
+        jfh = os.popen("%s %s %s" % (validator_path,rnc_path,tfilename))
+
         success = True
         plural = ""
         while 1:
@@ -652,7 +600,8 @@ class CslTest:
 
             pickler.dump( (opt, self.pos) )
             sys.exit()
-        
+        sys.stdout.write(".")
+        sys.stdout.flush()
  
 if __name__ == "__main__":
 
@@ -680,19 +629,15 @@ if __name__ == "__main__":
                       help='Attempt to validate style code for testing against the CSL schema.')
     parser.add_option("-e", "--engine", dest="engine",
                       default="rhino",
-                      help='Engine (default "rhino", alternatively "mozjs").')
+                      help='Valid entries are "rhino" (default), "mozjs", "jsc" or "v8."')
     parser.add_option("-g", "--grind", dest="grind",
                       default=False,
                       action="store_true", 
-                      help='Force grinding of human-readable test code into machine-readable form.')
-    parser.add_option("-S", "--styles", dest="teststyles",
-                      default=False,
-                      action="store_true", 
-                      help='Run style tests only.')
-    parser.add_option("-p", "--processor", dest="processor",
-                      default=False,
-                      action="store_true", 
-                      help='Run processor tests (cannot be used with -c, -g or -s opts, takes only test name as single argument).')
+                      help='Grind human-readable test code into machine-readable form (used only for debugging the test framework).')
+    #parser.add_option("-p", "--processor", dest="processor",
+    #                  default=False,
+    #                  action="store_true", 
+    #                  help='Run processor tests (cannot be used with -c, -g or -s opts, takes only test name as single argument).')
     parser.add_option("-v", "--verbose", dest="verbose",
                       default=False,
                       action="store_true", 
@@ -701,10 +646,6 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Create the citeproc.js bundle and exit.')
-    parser.add_option("-Z", "--zotero-bundle-only", dest="makezoterobundle",
-                      default=False,
-                      action="store_true", 
-                      help='Create a citeproc_zotero.js bundle with embedded dom (not e4x) support suitable for use in most environments, and exit.')
 
     (opt, args) = parser.parse_args()
 
@@ -715,8 +656,6 @@ if __name__ == "__main__":
 
     bundlecount = 0
     if opt.makebundle:
-        bundlecount += 1
-    if opt.makezoterobundle:
         bundlecount += 1
 
     if bundlecount > 1:
@@ -732,19 +671,6 @@ if __name__ == "__main__":
         license.apply()
         sys.exit()
 
-    if opt.makezoterobundle:
-        bundler = Bundle(mode="zotero")
-        bundler.deleteOldBundle()
-        bundler.createNewBundle()
-        license = ApplyLicense()
-        license.apply(True)
-        sys.exit()
-
-    if not opt.teststyles and not opt.testrun and not opt.grind and not opt.cranky and not opt.processor and not opt.bundle:
-
-        parser.print_help()
-        sys.exit()
-    
     # Testing sequence:
     # + Get single tests working
     #   Get automatic grinding for single tests working
@@ -758,19 +684,22 @@ if __name__ == "__main__":
     #
     # Validation
     #
-    if opt.bundle and (opt.teststyles or opt.processor or opt.grind or opt.cranky or opt.testrun or len(args)):
+    #if opt.bundle and (opt.processor or opt.grind or opt.cranky or opt.testrun or len(args)):
+    if opt.bundle and (opt.grind or opt.cranky or opt.testrun or len(args)):
         print parser.print_help()
         print "\nError: Option -r must be used alone"
         sys.exit()
-    if opt.processor and (opt.grind or opt.cranky or opt.testrun or opt.teststyles):
-        parser.print_help()
-        print "\nError: Option -p cannot be used with options -c, -g, -s or -S.\n"
-        sys.exit()
-    elif opt.processor and len(args) and len(args) != 1:
-        parser.print_help()
-        print "\nError: Use only one argument (the test name) with the -p option.\n"
-        sys.exit()
-    elif (opt.grind or opt.cranky or opt.testrun or opt.teststyles) and len(args) and len(args) != 2 and len(args) != 1:
+    #if opt.processor and (opt.grind or opt.cranky or opt.testrun):
+    #    parser.print_help()
+    #    print "\nError: Option -p cannot be used with options -c, -g, -s or -S.\n"
+    #    sys.exit()
+    #elif opt.processor and len(args) and len(args) != 1:
+    #if len(args) and len(args) != 1:
+    #    parser.print_help()
+    #    print "\nError: Use only one argument (the test name) with the -p option.\n"
+    #    sys.exit()
+    #elif (opt.grind or opt.cranky or opt.testrun) and len(args) and len(args) != 2 and len(args) != 1:
+    if (opt.grind or opt.cranky or opt.testrun) and len(args) and len(args) != 2 and len(args) != 1:
         parser.print_help()
         print "\nError: Use one or two arguments with the -c, -g, -s or -S options (group name plus"
         print "       optionally the test name).\n"
@@ -779,13 +708,11 @@ if __name__ == "__main__":
     #
     # Set up paths engine
     # 
-    if opt.teststyles:
-        category = "styletests"
-    else:
-        category = "std"
-    if opt.processor:
-        params = Params(opt,args,"citeproc_js",force="citeproc_js")
-    elif len(args) < 2:
+    category = "std"
+    #if opt.processor:
+    #    params = Params(opt,args,"citeproc_js",force="citeproc_js")
+    #elif len(args) < 2:
+    if len(args) < 2:
         params = Params(opt,args,category,force="std")
     else:
         params = Params(opt,args,category)
@@ -804,9 +731,9 @@ if __name__ == "__main__":
         opt.verbose = True
         opt.testrun = True
     try:
-        if opt.cranky or opt.grind or opt.testrun or opt.teststyles:
+        if opt.cranky or opt.grind or opt.testrun:
             params.getSourcePaths()
-            if opt.grind or ((opt.testrun or opt.teststyles) and opt.bundle):
+            if opt.grind or ((opt.testrun) and opt.bundle):
                 params.clearSource()
                 params.refreshSource(force=True)
                 print ""
@@ -820,12 +747,12 @@ if __name__ == "__main__":
                 bundle.createNewBundle()
                 #license = ApplyLicense()
                 #license.apply()
-            if opt.testrun or opt.teststyles:
+            if opt.testrun:
                 params.buildRunner()
                 params.runTests(bundle=opt.bundle)
-        elif opt.processor:
-            params.buildRunner()
-            params.runTests()
+        #elif opt.processor:
+        #    params.buildRunner()
+        #    params.runTests()
     except (KeyboardInterrupt, SystemExit):
         for file in os.listdir("."):
             if not file.startswith("tmp") or not len(file) == 9: continue

@@ -1,6 +1,3 @@
-[tracemonkey]
-command: /home/bennett/src/jslibs/Linux_32_opt/jshost -u
-
 [jsc]
 command: jsc
 
@@ -13,9 +10,7 @@ command: js24
 [rhino]
 command: java -client -jar ./rhino/js-1.7R3.jar -opt 8
 
-[rhino-json]
-command: java -client -jar ./rhino/js-1.7R3.jar -opt 8
-
-[style]
-testdirs: /home/bennett/src/mlz-styles
-styles: /home/bennett/src/mlz-styles
+[validation]
+validator: java -client -jar ./jing/jing-20131210.jar -c
+schema: ./csl-schemata/csl/csl.rnc
+schema-m: ./csl-schemata/csl-m/csl-mlz.rnc
