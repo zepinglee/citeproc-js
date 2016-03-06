@@ -20,9 +20,13 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
       version="1.1mlz1"
       default-locale="en-US-x-translat-en">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
     <style-options punctuation-in-quote="true"/>
@@ -65,7 +69,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <macro name="un-sales-number-identifier">
     <group delimiter=": ">
       <text term="number-00"/>
-      <text variable="issue"/>
+      <number variable="issue"/>
     </group>
   </macro>
   <macro name="issued-month">
@@ -82,7 +86,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
   <macro name="document-number-parens-un-only">
     <choose>
       <if jurisdiction="un.org">
-        <text variable="number" prefix="(" suffix=")"/>
+        <number variable="number" prefix="(" suffix=")"/>
       </if>
     </choose>
   </macro>
@@ -91,7 +95,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
       <text variable="collection-title"/>
       <group delimiter=" ">
         <text term="number-01" />
-        <text variable="collection-number"/>
+        <number variable="collection-number"/>
       </group>
     </group>
   </macro>
@@ -158,6 +162,7 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
         "collection-number": "81", 
         "collection-title": "Serie de Comercio Internacional", 
         "id": "ITEM-1", 
+        "issue": "S.07.II.G.6", 
         "issued": {
             "date-parts": [
                 [
@@ -166,24 +171,23 @@ Rosales, Osvaldo and Mikio Kuwayama (2007), “América latina y china e india:
                 ]
             ]
         }, 
+        "jurisdiction": "un.org", 
+        "language": "es", 
+        "multi": {
+            "_keys": {
+                "publisher": {
+                    "en": "United Nations - ECLAC"
+                }, 
+                "publisher-place": {
+                    "en": "Santiago"
+                }
+            }
+        }, 
         "number": "LC/L.2656-P", 
         "publisher": "Naciones Unidas - ECLAC", 
         "publisher-place": "Santiago de Chile", 
         "title": "América latina y china e india: hacia una nueva alianza de comercio e inversión", 
-        "type": "book", 
-        "language": "es",
-        "jurisdiction": "un.org",
-        "issue": "S.07.II.G.6",
-		"multi":{
-			"_keys":{
-				"publisher":{
-					"en":"United Nations - ECLAC"
-				},
-				"publisher-place":{
-					"en":"Santiago"
-				}
-			}
-		}
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

@@ -35,8 +35,8 @@ One.  Two.
 [
     {
         "id": "ITEM-1", 
+        "note": "Two", 
         "title": "One", 
-        "note": "Two",
         "type": "book"
     }
 ]

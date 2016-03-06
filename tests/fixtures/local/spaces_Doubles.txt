@@ -26,47 +26,47 @@ One. Two. [parental suffix-prefix-over-the-hill]
         {
             "id": "ITEM-1", 
             "locator": "sibling suffix-prefix"
-        },
+        }, 
         {
             "id": "ITEM-2", 
             "locator": "sibling suffix-delimiter"
-        },
+        }, 
         {
             "id": "ITEM-3", 
             "locator": "sibling delimiter-prefix"
-        },
+        }, 
         {
             "id": "ITEM-4", 
             "locator": "parental suffix-prefix-downhill"
-        },
+        }, 
         {
             "id": "ITEM-5", 
             "locator": "parental suffix-prefix-uphill"
-        },
+        }, 
         {
             "id": "ITEM-6", 
             "locator": "parental prefix-prefix"
-        },
+        }, 
         {
             "id": "ITEM-7", 
             "locator": "parental suffix-delimiter"
-        },
+        }, 
         {
             "id": "ITEM-8", 
             "locator": "parental delimiter-prefix"
-        },
+        }, 
         {
             "id": "ITEM-9", 
             "locator": "parental suffix-suffix"
-        },
+        }, 
         {
             "id": "ITEM-10", 
             "locator": "parental delimiter-prefix-prefix"
-        },
+        }, 
         {
             "id": "ITEM-11", 
             "locator": "parental suffix-suffix-delimiter"
-        },
+        }, 
         {
             "id": "ITEM-12", 
             "locator": "parental suffix-prefix-over-the-hill"

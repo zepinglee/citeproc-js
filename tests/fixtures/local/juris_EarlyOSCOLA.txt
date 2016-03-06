@@ -11,17 +11,17 @@ citation
 
 >>===== ABBREVIATIONS =====>>
 {
-  "default": {
-    "container-title": {
-      "A.C.": "!jurisdiction>>>A.C.",
-      "E.W.C.A. Civ.": "!jurisdiction>>>E.W.C.A. Civ.",
-      "H&N": "!jurisdiction>>>H&N"
-    },
-    "institution-part": {
-       "House of Lords": "H.L.",
-       "Court of Appeal": "C.A."
+    "default": {
+        "container-title": {
+            "A.C.": "!jurisdiction>>>A.C.", 
+            "E.W.C.A. Civ.": "!jurisdiction>>>E.W.C.A. Civ.", 
+            "H&N": "!jurisdiction>>>H&N"
+        }, 
+        "institution-part": {
+            "Court of Appeal": "C.A.", 
+            "House of Lords": "H.L."
+        }
     }
-  }
 }
 <<===== ABBREVIATIONS =====<<
 

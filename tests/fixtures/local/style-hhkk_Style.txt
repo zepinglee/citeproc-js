@@ -583,7 +583,7 @@ citation
 {
     "jp": {
         "place": {
-            "jp;saiko-saibansho": "最判",
+            "jp;saiko-saibansho": "最判", 
             "jp;tokyo-chiho-saibansho;hachioji-shibu": "東京地八王子支判"
         }
     }
@@ -591,22 +591,16 @@ citation
 <<== ABBREVIATIONS ==<<
 
 >>===== CSL =====>>
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.1mlz1" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.1mlz1" year-range-format="expanded" default-locale="ja-x-translit-ja-hrkt">
   <info>
-    <title>MLZ 法律編集者懇話会</title>
-    <id>http://citationstylist.org/styles/mlz-horitsu-henshu-sha-konwa-kai</id>
-    <link href="http://citationstylist.org/uploads/mlz-horitsu-henshu-sha-konwa-kai" rel="self"/>
-    <link href="http://www.houkyouikushien.or.jp/katsudo/pdf/horitsu.pdf" rel="documentation"/>
-    <author>
-      <name>Frank Bennett</name>
-      <email>biercenator@gmail.com</email>
-    </author>
-    <summary>A style for Japanese legal publishing compiled by the Japan Legal Editors Group.</summary>
-    <category field="law"/>
-    <category citation-format="note"/>
-    <updated>2010-04-24T04:49:00+09:00</updated>
-    <rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <style-options skip-words="but or yet so for and nor a an the at by from in into of on to with up down as via onto over till is this that within"/>

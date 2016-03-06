@@ -96,11 +96,15 @@ Item Five is an ARTICLE-JOURNAL with both VOLUME and ISSUE, and both of them are
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <citation>
     <layout delimiter="&#x0A;">
@@ -155,31 +159,31 @@ Item Five is an ARTICLE-JOURNAL with both VOLUME and ISSUE, and both of them are
         "id": "ITEM-2", 
         "title": "Item Two", 
         "type": "book"
-    },
+    }, 
     {
+        "author": [
+            {
+                "family": "Snoapes", 
+                "given": "John"
+            }
+        ], 
         "id": "ITEM-3", 
         "title": "Item Three", 
-        "type": "chapter",
-        "author": [
-          {
-             "family": "Snoapes",
-             "given": "John"
-          }
-        ]
-    },
+        "type": "chapter"
+    }, 
     {
         "id": "ITEM-4", 
+        "issue": "1", 
         "title": "Item Four", 
-        "type": "article-journal",
-        "volume": "Supplement",
-        "issue": "1"
-    },
+        "type": "article-journal", 
+        "volume": "Supplement"
+    }, 
     {
         "id": "ITEM-5", 
+        "issue": "4", 
         "title": "Item Five", 
-        "type": "article-journal",
-        "volume": "2",
-        "issue": "4"
+        "type": "article-journal", 
+        "volume": "2"
     }
 ]
 <<===== INPUT =====<<

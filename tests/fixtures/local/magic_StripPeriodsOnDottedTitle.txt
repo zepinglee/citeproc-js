@@ -31,9 +31,9 @@ The XYZ of Cong Rec and OpenCongress.org
 >>===== INPUT =====>>
 [
     {
-        "type": "book",
         "id": "ITEM-1", 
-        "title": "The X.Y.Z. of Cong. Rec. and OpenCongress.org"
+        "title": "The X.Y.Z. of Cong. Rec. and OpenCongress.org", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

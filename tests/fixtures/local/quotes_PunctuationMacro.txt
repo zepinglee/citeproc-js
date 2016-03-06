@@ -52,17 +52,17 @@ bibliography
 
 >>===== INPUT =====>>
 [
-	{
-		"id": 276,
-		"type": "chapter",
-		"title": "Chapter Title",
-		"URL": "http://example.com",
-		"author": [
-			{
-				"family": "Smith",
-				"given": "John"
-			}
-		]
-	}
+    {
+        "URL": "http://example.com", 
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ], 
+        "id": 276, 
+        "title": "Chapter Title", 
+        "type": "chapter"
+    }
 ]
 <<===== INPUT =====<<

@@ -5,12 +5,12 @@ citation
 
 >>== ABBREVIATIONS ==>>
 {
-    "us": {
+    "default": {
         "title": {
             "1st Session": "1st Sess."
         }
-    },
-    "default": {
+    }, 
+    "us": {
         "title": {
             "1st Session": "1st Sess."
         }

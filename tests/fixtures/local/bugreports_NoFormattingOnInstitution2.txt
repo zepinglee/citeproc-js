@@ -50,7 +50,7 @@ bibliography
             {
                 "family": "Doe", 
                 "given": "John"
-            },
+            }, 
             {
                 "literal": "Big Outfit"
             }

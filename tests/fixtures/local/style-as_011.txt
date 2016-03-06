@@ -10,23 +10,17 @@ bibliography
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.1mlz1"
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
 	   page-range-format="expanded"
 	   demote-non-dropping-particle="never">
   <info>
-	<title>Antarctic Science</title>
-	<id>http://www.zotero.org/styles/antarctic-science</id>
-	<link href="http://www.zotero.org/styles/antarctic-science" rel="self"/>
-	<author>
-	  <name>Frank Bennett</name>
-	  <email>biercenator@gmail.com</email>
-	</author>
-	<category citation-format="author-date"/>
-	<category field="generic-base"/>
-	<updated/>
-	<summary>Antarctic Science (Cambridge Journals)</summary>
-	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <terms>
@@ -106,7 +100,7 @@ bibliography
 	</choose>
   </macro>
   <macro name="publisher">
-	<group delimiter=": " subgroup-delimiter=", " and="symbol">
+	<group delimiter=": ">
 	  <text variable="publisher-place"/>
 	  <text variable="publisher"/>
 	</group>
@@ -319,53 +313,53 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id": 4,
-    "type": "paper-conference",
-    "multi": {
-      "_keys": {}
-    },
-	"DOI": "10.3133/of2007-1047.srp102",
-    "title": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model",
-	"container-title": "Antarctica: a keystone in a changing world",
-	"event": "Online Proceedings of the 10th ISAES",
-    "shortTitle": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica",
-	"note": "{:number-of-pages: 5} {:number: USGS Open-File Report 2007–1047, Short Research Paper 102}",
-    "author": [
-      {
-        "family": "Schöner",
-        "given": "R."
-      },
-      {
-        "family": "Viereck-Goette",
-        "given": "L."
-      },
-      {
-        "family": "Schneider",
-        "given": "J."
-      },
-      {
-        "family": "Bomfleur",
-        "given": "B."
-      }
-    ],
-    "editor": [
-      {
-        "family": "Cooper",
-        "given": "A. K."
-      },
-      {
-        "family": "Raymond",
-        "given": "C. R."
-      }
-    ],
-    "issued": {
-      "date-parts": [
-        [
-          2007
-        ]
-      ]
+    {
+        "DOI": "10.3133/of2007-1047.srp102", 
+        "author": [
+            {
+                "family": "Schöner", 
+                "given": "R."
+            }, 
+            {
+                "family": "Viereck-Goette", 
+                "given": "L."
+            }, 
+            {
+                "family": "Schneider", 
+                "given": "J."
+            }, 
+            {
+                "family": "Bomfleur", 
+                "given": "B."
+            }
+        ], 
+        "container-title": "Antarctica: a keystone in a changing world", 
+        "editor": [
+            {
+                "family": "Cooper", 
+                "given": "A. K."
+            }, 
+            {
+                "family": "Raymond", 
+                "given": "C. R."
+            }
+        ], 
+        "event": "Online Proceedings of the 10th ISAES", 
+        "id": 4, 
+        "issued": {
+            "date-parts": [
+                [
+                    2007
+                ]
+            ]
+        }, 
+        "multi": {
+            "_keys": {}
+        }, 
+        "note": "{:number-of-pages: 5} {:number: USGS Open-File Report 2007–1047, Short Research Paper 102}", 
+        "shortTitle": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica", 
+        "title": "Triassic-Jurassic sediments and multiple volcanic events in North Victoria Land, Antarctica: A revised stratigraphic model", 
+        "type": "paper-conference"
     }
-  }
 ]
 <<===== INPUT===== <<

@@ -40,27 +40,27 @@ citation
 [
     {
         "id": "ITEM-1", 
-        "type": "book",
+        "type": "book", 
         "volume": "12"
-    },
+    }, 
     {
         "id": "ITEM-2", 
-        "type": "book",
+        "type": "book", 
         "volume": "11 - 20"
-    },
+    }, 
     {
         "id": "ITEM-3", 
-        "type": "book",
+        "type": "book", 
         "volume": "10"
-    },
+    }, 
     {
         "id": "ITEM-4", 
-        "type": "book",
+        "type": "book", 
         "volume": "2"
-    },
+    }, 
     {
         "id": "ITEM-5", 
-        "type": "book",
+        "type": "book", 
         "volume": "1"
     }
 ]

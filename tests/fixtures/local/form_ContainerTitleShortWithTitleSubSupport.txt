@@ -10,8 +10,8 @@ Journal A: Long version
 
 >>===== OPTIONS =====>>
 {
-  "main_title_from_short_title":true,
-  "uppercase_subtitles": true
+    "main_title_from_short_title": true, 
+    "uppercase_subtitles": true
 }
 <<===== OPTIONS =====<<
 

@@ -32,17 +32,17 @@ citation
 [
     {
         "id": "ITEM-1", 
-        "page": "1-2",
+        "page": "1-2", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-2", 
-        "page": "128-35",
+        "page": "128-35", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-3", 
-        "page": "155\\-1",
+        "page": "155\\-1", 
         "type": "book"
     }
 ]

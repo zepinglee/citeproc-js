@@ -32,9 +32,9 @@ citation
 >>===== INPUT =====>>
 [
     {
-      "title": "Kitchens v. Grohman", 
-      "type": "legal_case", 
-      "id": "ITEM-1"
+        "id": "ITEM-1", 
+        "title": "Kitchens v. Grohman", 
+        "type": "legal_case"
     }
 ]
 <<===== INPUT =====<<

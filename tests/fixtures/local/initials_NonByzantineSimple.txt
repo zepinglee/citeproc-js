@@ -41,7 +41,7 @@ citation
         ], 
         "id": "ITEM-1", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {

@@ -39,9 +39,13 @@ T51 edn. --- Non-numeric
       class="note"
       version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <terms>
@@ -82,106 +86,105 @@ T51 edn. --- Non-numeric
             "citationID": "CITATION-1", 
             "citationItems": [
                 {
-                    "id": "ITEM-1",
-                    "locator" : "1"
+                    "id": "ITEM-1", 
+                    "locator": "1"
                 }, 
                 {
-                    "id": "ITEM-2",
-		"locator" : "2 - 3"
-                },
+                    "id": "ITEM-2", 
+                    "locator": "2 - 3"
+                }, 
                 {
-                    "id": "ITEM-3",
-		"locator" : "4 & 6"
-                },
+                    "id": "ITEM-3", 
+                    "locator": "4 & 6"
+                }, 
                 {
-                    "id": "ITEM-4",
-		"locator" : "7, 8 & 9"
-                },
+                    "id": "ITEM-4", 
+                    "locator": "7, 8 & 9"
+                }, 
                 {
-                    "id": "ITEM-5",
-		"locator" : "10-13 & 20"
-                },
+                    "id": "ITEM-5", 
+                    "locator": "10-13 & 20"
+                }, 
                 {
-                    "id": "ITEM-6",
-		"locator" : "15, 17, 19, 20, 21"
-                },
+                    "id": "ITEM-6", 
+                    "locator": "15, 17, 19, 20, 21"
+                }, 
                 {
-                    "id": "ITEM-7",
-		"locator" : "16, 28, 30, 31, 32, 34, 36"
-                },
+                    "id": "ITEM-7", 
+                    "locator": "16, 28, 30, 31, 32, 34, 36"
+                }, 
                 {
-                    "id": "ITEM-8",
-		"locator" : "25, 15, 17, 19, 20, 21, 23, 24"
-                },
+                    "id": "ITEM-8", 
+                    "locator": "25, 15, 17, 19, 20, 21, 23, 24"
+                }, 
                 {
-                    "id": "ITEM-9",
-		"locator" : "38, 37 - 40"
-                },
+                    "id": "ITEM-9", 
+                    "locator": "38, 37 - 40"
+                }, 
                 {
-                    "id": "ITEM-10",
-		"locator" : "43-41"
-                },
+                    "id": "ITEM-10", 
+                    "locator": "43-41"
+                }, 
                 {
-                    "id": "ITEM-11",
-		"locator" : "205 - 2000"
-                },
+                    "id": "ITEM-11", 
+                    "locator": "205 - 2000"
+                }, 
                 {
-                    "id": "ITEM-12",
-		"locator" : "1 vol + 1 CD"
-                },
+                    "id": "ITEM-12", 
+                    "locator": "1 vol + 1 CD"
+                }, 
                 {
-                    "id": "ITEM-13",
-		"locator" : "12nd"
-                },
+                    "id": "ITEM-13", 
+                    "locator": "12nd"
+                }, 
                 {
-                    "id": "ITEM-14",
-		"locator" : "12a-c"
-                },
+                    "id": "ITEM-14", 
+                    "locator": "12a-c"
+                }, 
                 {
-                    "id": "ITEM-15",
-		"locator" : "12th Yellow-tailed Wooly Monkey"
-                },
+                    "id": "ITEM-15", 
+                    "locator": "12th Yellow-tailed Wooly Monkey"
+                }, 
                 {
-                    "id": "ITEM-16",
-		"locator" : "T51"
-                },
+                    "id": "ITEM-16", 
+                    "locator": "T51"
+                }, 
                 {
-                    "id": "ITEM-17",
-		"locator" : "Locator 1"
-                },
+                    "id": "ITEM-17", 
+                    "locator": "Locator 1"
+                }, 
                 {
-                    "id": "ITEM-18",
-		"locator" : "Locators 1 - 6"
-                },
+                    "id": "ITEM-18", 
+                    "locator": "Locators 1 - 6"
+                }, 
                 {
-                    "id": "ITEM-19",
-        "locator": "\"42 locatorX\""
-                },
+                    "id": "ITEM-19", 
+                    "locator": "\"42 locatorX\""
+                }, 
                 {
-                    "id": "ITEM-20",
-        "locator": "\"42 - 47 locatorz\""
-                },
+                    "id": "ITEM-20", 
+                    "locator": "\"42 - 47 locatorz\""
+                }, 
                 {
-                    "id": "ITEM-21",
-        "locator": "T51 edn."
-                },
+                    "id": "ITEM-21", 
+                    "locator": "T51 edn."
+                }, 
                 {
-                    "id": "ITEM-22",
-        "locator": "T51 & T53"
-                },
+                    "id": "ITEM-22", 
+                    "locator": "T51 & T53"
+                }, 
                 {
-                    "id": "ITEM-23",
-        "locator": "12:xx"
-                },
+                    "id": "ITEM-23", 
+                    "locator": "12:xx"
+                }, 
                 {
-                    "id": "ITEM-24",
-        "locator": "12 13"
-                },
+                    "id": "ITEM-24", 
+                    "locator": "12 13"
+                }, 
                 {
-                    "id": "ITEM-25",
-        "locator": "12th folio"
+                    "id": "ITEM-25", 
+                    "locator": "12th folio"
                 }
-
             ], 
             "properties": {
                 "noteIndex": 1

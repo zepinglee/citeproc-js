@@ -11,23 +11,17 @@ bibliography
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.1mlz1"
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
 	   page-range-format="expanded"
 	   demote-non-dropping-particle="never">
   <info>
-	<title>Antarctic Science</title>
-	<id>http://www.zotero.org/styles/antarctic-science</id>
-	<link href="http://www.zotero.org/styles/antarctic-science" rel="self"/>
-	<author>
-	  <name>Frank Bennett</name>
-	  <email>biercenator@gmail.com</email>
-	</author>
-	<category citation-format="author-date"/>
-	<category field="generic-base"/>
-	<updated/>
-	<summary>Antarctic Science (Cambridge Journals)</summary>
-	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <terms>
@@ -107,7 +101,7 @@ bibliography
 	</choose>
   </macro>
   <macro name="publisher">
-	<group delimiter=": " subgroup-delimiter=", " and="symbol">
+	<group delimiter=": ">
 	  <text variable="publisher-place"/>
 	  <text variable="publisher"/>
 	</group>
@@ -320,57 +314,57 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id": 9,
-    "type": "article-journal",
-    "multi": {
-      "_keys": {}
-    },
-    "title": "Broad-scale factors influencing the biodiversity of coastal benthic communities of the Ross Sea",
-    "container-title": "Deep Sea Research Part II: Topical Studies in Oceanography",
-    "note": "{:status: in press}",
-    "author": [
-      {
-        "family": "Thrush",
-        "given": "S."
-      },
-      {
-        "family": "Dayton",
-        "given": "P."
-      },
-      {
-        "family": "Cattaneo-Vietti",
-        "given": "R."
-      },
-      {
-        "family": "Chiantore",
-        "given": "M."
-      },
-      {
-        "family": "Cummings",
-        "given": "V."
-      },
-      {
-        "family": "Andrew",
-        "given": "N."
-      },
-      {
-        "family": "Hawes",
-        "given": "I."
-      },
-      {
-        "family": "Kim",
-        "given": "S."
-      },
-      {
-        "family": "Kvitek",
-        "given": "R."
-      },
-      {
-        "family": "Schwarz",
-        "given": "A. M"
-      }
-    ]
-  }
+    {
+        "author": [
+            {
+                "family": "Thrush", 
+                "given": "S."
+            }, 
+            {
+                "family": "Dayton", 
+                "given": "P."
+            }, 
+            {
+                "family": "Cattaneo-Vietti", 
+                "given": "R."
+            }, 
+            {
+                "family": "Chiantore", 
+                "given": "M."
+            }, 
+            {
+                "family": "Cummings", 
+                "given": "V."
+            }, 
+            {
+                "family": "Andrew", 
+                "given": "N."
+            }, 
+            {
+                "family": "Hawes", 
+                "given": "I."
+            }, 
+            {
+                "family": "Kim", 
+                "given": "S."
+            }, 
+            {
+                "family": "Kvitek", 
+                "given": "R."
+            }, 
+            {
+                "family": "Schwarz", 
+                "given": "A. M"
+            }
+        ], 
+        "container-title": "Deep Sea Research Part II: Topical Studies in Oceanography", 
+        "id": 9, 
+        "multi": {
+            "_keys": {}
+        }, 
+        "note": "{:status: in press}", 
+        "title": "Broad-scale factors influencing the biodiversity of coastal benthic communities of the Ross Sea", 
+        "type": "article-journal"
+    }
 ]
 <<===== INPUT===== <<

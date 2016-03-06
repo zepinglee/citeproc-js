@@ -148,8 +148,8 @@ bibliography
 >>===== INPUT =====>>
 [
     {
-        "id":"ITEM-1",
-        "title":"R\u00e9GULATION DES RELATIONS DE TRAIL ET CULTURE SPORTIVE L ' exemple des entreprises de la distribution d ' articles de sport R\u00e9gula des relations de travail et culture sportive L \u2019 exemple des entreprises de la distribution d \u2019 articles de sport"
+        "id": "ITEM-1", 
+        "title": "RéGULATION DES RELATIONS DE TRAIL ET CULTURE SPORTIVE L ' exemple des entreprises de la distribution d ' articles de sport Régula des relations de travail et culture sportive L ’ exemple des entreprises de la distribution d ’ articles de sport"
     }
 ]
 <<===== INPUT =====<<

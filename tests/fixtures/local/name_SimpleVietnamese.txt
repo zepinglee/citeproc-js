@@ -43,7 +43,7 @@ Cao Đài Lê
                 "given": "Cao Đài"
             }
         ], 
-        "id": "ITEM-1",
+        "id": "ITEM-1", 
         "type": "book"
     }
 ]

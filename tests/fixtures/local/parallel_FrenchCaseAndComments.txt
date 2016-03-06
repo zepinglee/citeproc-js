@@ -19,18 +19,13 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
       version="1.1mlz1"
       page-range-format="chicago">
   <info>
-    <title>Bluebook (demo-x)</title>
-    <id>http://gsl-nagoya-u.net/http/pub/bluebook-demo-x</id>
-    <link rel="self" href="http://gsl-nagoya-u.net/http/pub/bluebook-demo-x.csl" />
-    <link href="http://www.legalbluebook.com/" rel="documentation" />
-    <author>
-      <name>Frank Bennett</name>
-      <email>biercenator@gmail.com</email>
-    </author>
-    <summary>Bluebook Style for legal materials (CSL 1.0 experimental)</summary>
-    <category field="generic-base" />
-    <category citation-format="note" />
-    <updated>2010-04-24T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
 	<terms>
@@ -91,19 +86,21 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 	  </choose>
 	  <choose>
         <if locator="page" match="none">
-		  <label form="symbol" variable="locator" suffix=" "/>
+		  <label form="symbol" variable="locator"/>
 	    </if>
 	  </choose>
 	  <text variable="locator"/>
 	</group>
   </macro>
   <macro name="bb-point-locator-base">
-	<choose>
-      <if locator="page" match="none">
-		<label form="symbol" variable="locator" suffix=" "/>
-	  </if>
-	</choose>
-	<text variable="locator"/>
+    <group delimiter=" ">
+  	<choose>
+        <if locator="page" match="none">
+	  	<label form="symbol" variable="locator" suffix=" "/>
+	    </if>
+  	  </choose>
+  	  <text variable="locator"/>
+    </group>
   </macro>
 
   <!-- ### LEGAL CASE ### -->
@@ -416,10 +413,8 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
                 "given": "J."
             }
         ], 
-        "container-title": "JCP G",
-        "volume": "2000",
-        "authority": "Cass. 1ere civ.",
-        "number": "10296",
+        "authority": "Cass. 1ere civ.", 
+        "container-title": "JCP G", 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [
@@ -430,8 +425,10 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
                 ]
             ]
         }, 
-        "type": "legal_case"
-    },
+        "number": "10296", 
+        "type": "legal_case", 
+        "volume": "2000"
+    }, 
     {
         "author": [
             {
@@ -439,12 +436,8 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
                 "given": "PHillip"
             }
         ], 
-        "container-title": "D.",
-        "volume": "2000",
-        "section": "somm.",
-        "authority": "Cass. 1ere civ.",
-        "number": "10296",
-        "page": "358",
+        "authority": "Cass. 1ere civ.", 
+        "container-title": "D.", 
         "id": "ITEM-2", 
         "issued": {
             "date-parts": [
@@ -455,8 +448,12 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
                 ]
             ]
         }, 
-        "type": "legal_case"
-    },
+        "number": "10296", 
+        "page": "358", 
+        "section": "somm.", 
+        "type": "legal_case", 
+        "volume": "2000"
+    }, 
     {
         "author": [
             {
@@ -464,12 +461,8 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
                 "given": "S."
             }
         ], 
-        "container-title": "D.",
-        "volume": "2000",
-        "section": "somm.",
-        "authority": "Cass. 1ere civ.",
-        "number": "10296",
-        "page": "900",
+        "authority": "Cass. 1ere civ.", 
+        "container-title": "D.", 
         "id": "ITEM-3", 
         "issued": {
             "date-parts": [
@@ -480,7 +473,11 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
                 ]
             ]
         }, 
-        "type": "legal_case"
+        "number": "10296", 
+        "page": "900", 
+        "section": "somm.", 
+        "type": "legal_case", 
+        "volume": "2000"
     }
 ]
 <<===== INPUT =====<<

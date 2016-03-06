@@ -48,10 +48,10 @@ Normalizes punctuation and grouping when multiple numbers are provided in input.
 >>===== INPUT =====>>
 [
     {
+        "edition": "edn. T51", 
         "id": "item-21", 
-        "type": "book", 
         "title": "Non-numeric (unrecognized label)", 
-        "edition": "edn. T51"
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

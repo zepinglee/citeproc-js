@@ -6,30 +6,30 @@ citation
 [
     [
         {
-            "id": "ITEM-1",
-            "locator": "10",
-            "label": "paragraph"
+            "id": "ITEM-1", 
+            "label": "paragraph", 
+            "locator": "10"
         }
-    ],
+    ], 
     [
         {
-            "id": "ITEM-1",
-            "locator": ", sec. 100 & 153",
-            "label": "page"
+            "id": "ITEM-1", 
+            "label": "page", 
+            "locator": ", sec. 100 & 153"
         }
-    ],
+    ], 
     [
         {
-            "id": "ITEM-1",
-            "locator": ", p. 827",
-            "label": "page"
+            "id": "ITEM-1", 
+            "label": "page", 
+            "locator": ", p. 827"
         }
-    ],
+    ], 
     [
         {
-            "id": "ITEM-1",
-            "locator": "829",
-            "label": "page"
+            "id": "ITEM-1", 
+            "label": "page", 
+            "locator": "829"
         }
     ]
 ]
@@ -51,11 +51,15 @@ White Slave Traffic (Mann) Act 36 Stat. pp. 825 829 (1910)
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <citation>
     <layout>

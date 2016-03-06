@@ -17,11 +17,15 @@ bibliography
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0.1">
+      version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
   <style-options punctuation-in-quote="true"
@@ -30,7 +34,9 @@ bibliography
                  name-never-short="ja zh kr my hu vi"/>
   </locale>
   <citation>
-    <text value="BOGUS"/>
+    <layout>
+      <text value="BOGUS"/>
+    </layout>
   </citation>
   <bibliography>
     <layout locale="ja">
@@ -66,21 +72,21 @@ bibliography
 [
     {
         "id": "ITEM-1", 
+        "language": "en", 
         "title": "An English Title", 
-        "type": "book",
-        "language": "en"
-    },
+        "type": "book"
+    }, 
     {
         "id": "ITEM-2", 
+        "language": "ja", 
         "title": "A Japanese Title", 
-        "type": "book",
-        "language": "ja"
-    },
+        "type": "book"
+    }, 
     {
         "id": "ITEM-3", 
+        "language": "en", 
         "title": "'An Exception' (an English title, but quoted)", 
-        "type": "book",
-        "language": "en"
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

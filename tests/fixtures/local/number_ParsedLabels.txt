@@ -46,8 +46,8 @@ chappie 15; ch’ppie 15
 >>===== INPUT =====>>
 [
     {
-        "number": "ch. 15",
         "id": "ITEM-1", 
+        "number": "ch. 15", 
         "type": "legislation"
     }
 ]

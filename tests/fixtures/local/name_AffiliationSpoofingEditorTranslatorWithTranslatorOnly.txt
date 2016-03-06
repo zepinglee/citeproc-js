@@ -1,6 +1,6 @@
 >>===== OPTIONS =====>>
 {
-  "spoof_institutional_affiliations": true
+    "spoof_institutional_affiliations": true
 }
 <<===== OPTIONS =====<<
 >>===== MODE =====>>
@@ -32,8 +32,8 @@ trans.: John Doe with Setsuo Miyazawa and Eri Osaka, Japan Federation of Bar Ass
   <citation>
     <layout>
       <group delimiter=": ">
-        <label variable="translator" form="verb-short"/>
         <names variable="editor translator">
+          <label form="verb-short" suffix=": "/>
           <name and="text"/>
         </names>
       </group>

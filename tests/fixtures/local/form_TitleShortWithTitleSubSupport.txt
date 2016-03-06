@@ -10,10 +10,10 @@ Book A
 
 >>===== OPTIONS =====>>
 {
-  "static_statute_locator":true,
-  "clobber_locator_if_no_statute_section":false,
-  "handle_parallel_articles":true,
-  "main_title_from_short_title":true
+    "clobber_locator_if_no_statute_section": false, 
+    "handle_parallel_articles": true, 
+    "main_title_from_short_title": true, 
+    "static_statute_locator": true
 }
 <<===== OPTIONS =====<<
 

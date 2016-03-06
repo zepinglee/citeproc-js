@@ -33,27 +33,27 @@ citation
 [
     {
         "id": "ITEM-1", 
-        "title": "民法",
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Latn-hepburn":"Minpō"
-				}
-			}
-		}
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Latn-hepburn": "Minpō"
+                }
+            }
+        }, 
+        "title": "民法", 
+        "type": "book"
     }, 
     {
         "id": "ITEM-2", 
-        "title": "刑法",
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Latn-hepburn":"Keihō"
-				}
-			}
-		}
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Latn-hepburn": "Keihō"
+                }
+            }
+        }, 
+        "title": "刑法", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

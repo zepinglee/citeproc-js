@@ -220,146 +220,146 @@ bibliography
 
 >>===== INPUT =====>>
 [
-	{
-		"id": 5965,
-		"type": "article-journal",
-		"multi": {
-			"main": {},
-			"_keys": {}
-		},
-		"system_id": "0_A675KUZH",
-		"title": "Alzheimer disease",
-		"author": [
-			{
-				"family": "Smith",
-				"given": "A.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			},
-			{
-				"family": "Jones",
-				"given": "B.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			},
-			{
-				"family": "Carson",
-				"given": "C.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			}
-		]
-	},
-	{
-		"id": 6181,
-		"type": "article-journal",
-		"multi": {
-			"main": {},
-			"_keys": {}
-		},
-		"system_id": "0_ZK8ATU8I",
-		"title": "Cutting corners",
-		"author": [
-			{
-				"family": "Smith",
-				"given": "A.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			},
-			{
-				"family": "Martin",
-				"given": "G.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			}
-		]
-	},
-	{
-		"id": 5995,
-		"type": "article-journal",
-		"multi": {
-			"main": {},
-			"_keys": {}
-		},
-		"system_id": "0_FUVH7FJC",
-		"title": "Downs syndrome",
-		"author": [
-			{
-				"family": "Smith",
-				"given": "A.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			},
-			{
-				"family": "Jones",
-				"given": "B.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			}
-		]
-	},
-	{
-		"id": 6193,
-		"type": "article-journal",
-		"multi": {
-			"main": {},
-			"_keys": {}
-		},
-		"system_id": "0_U8JUC5TX",
-		"title": "History repeats itself",
-		"author": [
-			{
-				"family": "Smith",
-				"given": "A.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			}
-		]
-	},
-	{
-		"id": 6202,
-		"type": "article-journal",
-		"multi": {
-			"main": {},
-			"_keys": {}
-		},
-		"system_id": "0_PBAMNNVC",
-		"title": "New approaches to staining",
-		"author": [
-			{
-				"family": "Smith",
-				"given": "A.",
-				"isInstitution": "",
-				"multi": {
-					"_key": {},
-					"main": false
-				}
-			}
-		]
-	}
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "A.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }, 
+            {
+                "family": "Jones", 
+                "given": "B.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }, 
+            {
+                "family": "Carson", 
+                "given": "C.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }
+        ], 
+        "id": 5965, 
+        "multi": {
+            "_keys": {}, 
+            "main": {}
+        }, 
+        "system_id": "0_A675KUZH", 
+        "title": "Alzheimer disease", 
+        "type": "article-journal"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "A.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }, 
+            {
+                "family": "Martin", 
+                "given": "G.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }
+        ], 
+        "id": 6181, 
+        "multi": {
+            "_keys": {}, 
+            "main": {}
+        }, 
+        "system_id": "0_ZK8ATU8I", 
+        "title": "Cutting corners", 
+        "type": "article-journal"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "A.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }, 
+            {
+                "family": "Jones", 
+                "given": "B.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }
+        ], 
+        "id": 5995, 
+        "multi": {
+            "_keys": {}, 
+            "main": {}
+        }, 
+        "system_id": "0_FUVH7FJC", 
+        "title": "Downs syndrome", 
+        "type": "article-journal"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "A.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }
+        ], 
+        "id": 6193, 
+        "multi": {
+            "_keys": {}, 
+            "main": {}
+        }, 
+        "system_id": "0_U8JUC5TX", 
+        "title": "History repeats itself", 
+        "type": "article-journal"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "A.", 
+                "isInstitution": "", 
+                "multi": {
+                    "_key": {}, 
+                    "main": false
+                }
+            }
+        ], 
+        "id": 6202, 
+        "multi": {
+            "_keys": {}, 
+            "main": {}
+        }, 
+        "system_id": "0_PBAMNNVC", 
+        "title": "New approaches to staining", 
+        "type": "article-journal"
+    }
 ]
 <<===== INPUT =====<<

@@ -8,23 +8,23 @@ citation
 
 >>===== CITATIONS =====>>
 [
-  [
-    {
-      "citationID": "1necv8vpj7",
-      "properties": {
-        "noteIndex": 1,
-        "index": 0
-      },
-      "citationItems": [
+    [
         {
-          "id": 246
-        }
-      ],
-      "schema": "https://github.com/citation-style-language/schema/raw/master/csl-citation.json"
-    },
-    [],
-    []
-  ]
+            "citationID": "1necv8vpj7", 
+            "citationItems": [
+                {
+                    "id": 246
+                }
+            ], 
+            "properties": {
+                "index": 0, 
+                "noteIndex": 1
+            }, 
+            "schema": "https://github.com/citation-style-language/schema/raw/master/csl-citation.json"
+        }, 
+        [], 
+        []
+    ]
 ]
 <<===== CITATIONS===== <<
 

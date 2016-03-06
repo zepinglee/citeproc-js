@@ -42,7 +42,7 @@ citation
         ], 
         "id": "ITEM-1", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
@@ -52,7 +52,7 @@ citation
         ], 
         "id": "ITEM-2", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
@@ -62,7 +62,7 @@ citation
         ], 
         "id": "ITEM-3", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
@@ -72,7 +72,7 @@ citation
         ], 
         "id": "ITEM-4", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
@@ -82,7 +82,7 @@ citation
         ], 
         "id": "ITEM-5", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
@@ -92,7 +92,7 @@ citation
         ], 
         "id": "ITEM-6", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {

@@ -37,9 +37,7 @@ Some Book or Other, 1965 [October 3, 1855]
 >>===== INPUT =====>>
 [
     {
-        "title": "Some Book or Other",
         "id": "ITEM-1", 
-        "note":"{:original-date: 1855-10-03}",
         "issued": {
             "date-parts": [
                 [
@@ -49,6 +47,8 @@ Some Book or Other, 1965 [October 3, 1855]
                 ]
             ]
         }, 
+        "note": "{:original-date: 1855-10-03}", 
+        "title": "Some Book or Other", 
         "type": "book"
     }
 ]

@@ -31,19 +31,21 @@ September 20, 2006; August 30, 1999
 >>===== INPUT =====>>
 [
     {
-        "title": "Some English Book or Other",
         "id": "ITEM-1", 
         "issued": {
+            "date-parts": [], 
             "raw": "September 20, 2006"
         }, 
+        "title": "Some English Book or Other", 
         "type": "book"
-    },
+    }, 
     {
-        "title": "Some Turkish Book or Other",
         "id": "ITEM-2", 
         "issued": {
+            "date-parts": [], 
             "raw": "ağustos 30, 1999"
         }, 
+        "title": "Some Turkish Book or Other", 
         "type": "book"
     }
 ]

@@ -10,23 +10,17 @@ bibliography
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.1mlz1"
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
 	   page-range-format="expanded"
 	   demote-non-dropping-particle="never">
   <info>
-	<title>Antarctic Science</title>
-	<id>http://www.zotero.org/styles/antarctic-science</id>
-	<link href="http://www.zotero.org/styles/antarctic-science" rel="self"/>
-	<author>
-	  <name>Frank Bennett</name>
-	  <email>biercenator@gmail.com</email>
-	</author>
-	<category citation-format="author-date"/>
-	<category field="generic-base"/>
-	<updated/>
-	<summary>Antarctic Science (Cambridge Journals)</summary>
-	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <macro name="editor">
 	<names variable="editor" delimiter=", ">
@@ -101,7 +95,7 @@ bibliography
 	</choose>
   </macro>
   <macro name="publisher">
-	<group delimiter=": " subgroup-delimiter=", " and="symbol">
+	<group delimiter=": ">
 	  <text variable="publisher-place"/>
 	  <text variable="publisher"/>
 	</group>
@@ -314,31 +308,31 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id": 6,
-    "type": "article-journal",
-    "multi": {
-      "_keys": {}
-    },
-    "title": "A new macroflora from the South Orkney Islands, Antarctica: evidence of an Early to Middle Jurassic age for the Powell Island Conglomerate",
-    "container-title": "Antarctic Science",
-    "page": "185-195",
-    "volume": "12",
-    "issue": "02",
-    "shortTitle": "A new macroflora from the South Orkney Islands, Antarctica",
-    "author": [
-      {
-        "family": "Cantrill",
-        "given": "D. J."
-      }
-    ],
-    "issued": {
-      "date-parts": [
-        [
-          2000
-        ]
-      ]
+    {
+        "author": [
+            {
+                "family": "Cantrill", 
+                "given": "D. J."
+            }
+        ], 
+        "container-title": "Antarctic Science", 
+        "id": 6, 
+        "issue": "02", 
+        "issued": {
+            "date-parts": [
+                [
+                    2000
+                ]
+            ]
+        }, 
+        "multi": {
+            "_keys": {}
+        }, 
+        "page": "185-195", 
+        "shortTitle": "A new macroflora from the South Orkney Islands, Antarctica", 
+        "title": "A new macroflora from the South Orkney Islands, Antarctica: evidence of an Early to Middle Jurassic age for the Powell Island Conglomerate", 
+        "type": "article-journal", 
+        "volume": "12"
     }
-  }
 ]
 <<===== INPUT===== <<

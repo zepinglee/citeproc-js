@@ -39,10 +39,12 @@ citation
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <locale>
-    <term name="paragraph" form="short">
-      <single>para.</single>
-      <multiple>paras.</multiple>
-    </term>
+    <terms>
+      <term name="paragraph" form="short">
+        <single>para.</single>
+        <multiple>paras.</multiple>
+      </term>
+    </terms>
   </locale>
   <citation>
     <layout>
@@ -51,7 +53,7 @@ citation
           <label variable="volume"/>
           <number variable="volume"/>
         </group>
-        <number variable="page"/>
+        <text variable="page"/>
       </group>
     </layout>
   </citation>

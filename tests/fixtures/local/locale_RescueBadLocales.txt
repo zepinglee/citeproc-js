@@ -32,14 +32,14 @@ His Anonymous Life; Her anonymouse laife
 [
     {
         "id": "ITEM-1", 
+        "language": "English", 
         "title": "His anonymous life", 
-        "language": "English",
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-2", 
+        "language": "XnotEnglish", 
         "title": "Her anonymouse laife", 
-        "language": "XnotEnglish",
         "type": "book"
     }
 ]

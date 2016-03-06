@@ -7,7 +7,7 @@ citation
     [
         {
             "id": "ITEM-1"
-        },
+        }, 
         {
             "id": "ITEM-2"
         }
@@ -39,23 +39,13 @@ reversion though, like this:
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" page-range-format="chicago" version="1.1mlz1" year-range-format="expanded" default-locale="ja-JP-x-translit-ja-alalc97">
   <info>
-    <title>MLZ American Law Style</title>
-    <id>http://citationstylist.org/styles/mlz-amlaw</id>
-    <link href="http://citationstylist.org/uploads/mlz-amlaw" rel="self"/>
-    <link href="https://docs.legis.wisconsin.gov/statutes/statutes/809/II/19/1/e" rel="documentation"/>
-    <author>
-      <name>Frank Bennett</name>
-      <email>biercenator@gmail.com</email>
-    </author>
-    <summary>The style mandated by statute for use in the Wisconsin Court of Appeals
-    in the United States. Courts, legal publishers and other institutions 
-    in the United States each have particular citation requirements. This style
-    can be adapted to local rules.
-    </summary>
-    <category field="law"/>
-    <category citation-format="note"/>
-    <updated>2010-04-24T04:49:00+09:00</updated>
-    <rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <style-options skip-words="but or yet so for and nor a an the at by from in into of on to with up down as via onto over till is this that within"/>
@@ -389,17 +379,12 @@ reversion though, like this:
 
   <macro name="oscola-non-paragraph-point-locators">
     <group delimiter=" ">
-      <choose>
-        <if locator="paragraph" match="all" type="periodical"/>
-        <else>
           <choose>
             <if locator="page" match="none">
               <label form="short" variable="locator"/>
             </if>
           </choose>
           <number variable="locator"/>
-        </else>
-      </choose>
     </group>
   </macro>
   <macro name="oscola-editor-translator-context">
@@ -988,8 +973,7 @@ reversion though, like this:
         <group delimiter=" ">
           <group delimiter=", ">
             <choose>
-              <if match="all" position="subsequent" type="periodical"/>
-              <else-if match="none" type="thesis">
+              <if match="none" type="thesis">
                 <group delimiter=", " subgroup-delimiter="; ">
                   <choose>
                     <if type="chapter book manuscript" match="none">
@@ -1007,7 +991,7 @@ reversion though, like this:
                   </choose>
                 </group>
                 <text macro="us-edition"/>
-              </else-if>
+              </if>
             </choose>
             <choose>
               <if variable="locator-revision">
@@ -2639,12 +2623,9 @@ reversion though, like this:
     </sort>
     <layout suffix=".">
       <choose>
-        <if type="periodical">
-          <text macro="wisconsin-secondary-first"/>
-        </if>
-        <else-if match="any" type="treaty" variable="jurisdiction">
+        <if match="any" type="treaty" variable="jurisdiction">
           <text macro="jurisdiction-filter"/>
-        </else-if>
+        </if>
         <else>
           <text macro="wisconsin-secondary-first"/>
         </else>
@@ -2652,7 +2633,6 @@ reversion though, like this:
     </layout>
   </bibliography>
 </style>
-
 <<===== CSL =====<<
 
 

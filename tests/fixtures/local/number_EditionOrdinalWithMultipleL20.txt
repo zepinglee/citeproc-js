@@ -47,10 +47,10 @@ Normalizes punctuation and grouping when multiple numbers are provided in input.
 >>===== INPUT =====>>
 [
     {
+        "edition": "\"42 - 47 editionz\"", 
         "id": "item-20", 
         "title": "Normalized, quotes preserved, non-numeric", 
-        "type": "book", 
-        "edition": "\"42 - 47 editionz\""
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

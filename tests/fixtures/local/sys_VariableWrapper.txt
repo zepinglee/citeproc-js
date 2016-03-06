@@ -35,7 +35,7 @@ wrapping function supplied by the test framework.
         }, 
         [], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-2", 
@@ -48,7 +48,12 @@ wrapping function supplied by the test framework.
                 "noteIndex": 2
             }
         }, 
-        [["CITATION-1",1]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ]
+        ], 
         []
     ]
 ]
@@ -83,7 +88,7 @@ wrapping function supplied by the test framework.
     </layout>
   </citation>
   <bibliography>
-    <layout delimiter="; ">
+    <layout>
       <group delimiter=", ">
         <text variable="title"/>
         <date variable="issued" form="text" date-parts="year"/>

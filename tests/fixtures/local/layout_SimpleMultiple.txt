@@ -14,9 +14,13 @@ bibliography
       class="in-text"
       version="1.1mlz1">
   <info>
-    <id>http://pzotero.com</id>
-    <title>another style for test</title>
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <citation>
     <layout locale="en">
@@ -39,13 +43,16 @@ bibliography
 
 >>===== INPUT =====>>
 [
-   {
-      "id":"ID-1",
-      "type": "book",
-      "title": "The Story of Civilization",
-      "author": [
-         { "family":"Durant", "given": "Will" }
-      ]
-   }
+    {
+        "author": [
+            {
+                "family": "Durant", 
+                "given": "Will"
+            }
+        ], 
+        "id": "ID-1", 
+        "title": "The Story of Civilization", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

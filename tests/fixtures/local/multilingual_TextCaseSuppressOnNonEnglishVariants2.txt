@@ -10,11 +10,22 @@ My title in Chinese [Ye Olde Title in English]
 
 >>===== LANGPARAMS =====>>
 {
-    "persons":["translit"],
-    "institutions":["translit"],
-    "titles":["orig","translat"],
-    "publishers":["translat"],
-    "places":["translat"]
+    "institutions": [
+        "translit"
+    ], 
+    "persons": [
+        "translit"
+    ], 
+    "places": [
+        "translat"
+    ], 
+    "publishers": [
+        "translat"
+    ], 
+    "titles": [
+        "orig", 
+        "translat"
+    ]
 }
 <<===== LANGPARAMS =====<<
 

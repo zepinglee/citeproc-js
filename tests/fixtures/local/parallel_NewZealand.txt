@@ -12,35 +12,16 @@ Failing parallel collapse in New Zealand Law style
 
 
 >>===== CSL =====>>
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.1mlz1" encoding="UTF-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" version="1.1mlz1" class="note" default-locale="en">
   <info>
-    <title>New Zealand Law Style Guide (MLZ)</title>
-    <id>http://citationstylist.org/styles/mlz-new-zealand-law</id>
-    <link href="http://citationstylist.org/styles/mlz-new-zealand-law" rel="self"/>
-    <link href="http://www.lawfoundation.org.nz/style-guide/index.html" rel="documentation"/>
-    <author>
-      <name>Julia Caldwell</name>
-      <email>caldwelljules@gmail.com</email>
-    </author>
-    <contributor>
-      <name>Jack Newberry</name>
-    </contributor>
-    <contributor>
-      <name> John Prebble </name>
-      <email> john.prebble@vuw.ac.nz</email>
-    </contributor>
-    <contributor>
-      <name> Frank Bennett </name>
-    </contributor>
-    <updated>2012-01-25T17:11:46.774311</updated>
-    <rights>This work is licensed under a Creative Commons
-    Attribution-Share Alike 3.0 Unported License
-    http://creativecommons.org/licenses/by-sa/3.0/</rights>
-    <category field="law"/>
-    <category citation-format="note"/>
-    <summary> This citation style is written to be consistent with the New Zealand Law Style Guide 2010.
-    </summary>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
     <style-options punctuation-in-quote="false"/>
@@ -841,49 +822,49 @@ Failing parallel collapse in New Zealand Law style
 
 >>===== INPUT =====>>
 [
-   {
-      "id": "ITEM-1",
-      "type": "legal_case",
-      "title": "Smith v. Jones",
-      "container-title": "XVC",
-      "page": "33",
-      "volume": "20",
-      "note": "{:jurisdiction:nz}",
-      "author": [
-         {
-            "family": "High Court",
-            "isInstitution": "true"
-         }
-      ],
-      "issued": {
-         "date-parts": [
-            [
-               2010
+    {
+        "author": [
+            {
+                "family": "High Court", 
+                "isInstitution": "true"
+            }
+        ], 
+        "container-title": "XVC", 
+        "id": "ITEM-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    2010
+                ]
             ]
-         ]
-      }
-   },
-   {
-      "id": "ITEM-2",
-      "type": "legal_case",
-      "title": "Smith v. Jones",
-      "container-title": "DDR",
-      "page": "23",
-      "volume": "10",
-      "note": "{:jurisdiction:nz}",
-      "author": [
-         {
-            "family": "High Court",
-            "isInstitution": "true"
-         }
-      ],
-      "issued": {
-         "date-parts": [
-            [
-               2010
+        }, 
+        "note": "{:jurisdiction:nz}", 
+        "page": "33", 
+        "title": "Smith v. Jones", 
+        "type": "legal_case", 
+        "volume": "20"
+    }, 
+    {
+        "author": [
+            {
+                "family": "High Court", 
+                "isInstitution": "true"
+            }
+        ], 
+        "container-title": "DDR", 
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    2010
+                ]
             ]
-         ]
-      }
-   }
+        }, 
+        "note": "{:jurisdiction:nz}", 
+        "page": "23", 
+        "title": "Smith v. Jones", 
+        "type": "legal_case", 
+        "volume": "10"
+    }
 ]
 <<===== INPUT =====<<

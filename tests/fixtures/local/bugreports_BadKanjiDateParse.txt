@@ -31,11 +31,12 @@ citation
 >>===== INPUT =====>>
 [
     {
-        "title": "Some Book or Other",
         "id": "ITEM-1", 
         "issued": {
+            "date-parts": [], 
             "raw": "四月 1, 1976"
         }, 
+        "title": "Some Book or Other", 
         "type": "book"
     }
 ]

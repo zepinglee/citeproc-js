@@ -41,42 +41,42 @@ John Doe, Jane Roe, Richard Noakes, &#38; Deacon Snoakes
         "author": [
             {
                 "family": "John Doe"
-            },
+            }, 
             {
                 "family": "Jane Roe"
             }
         ], 
         "id": "ITEM-1", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
                 "literal": "Doe John Co"
-            },
+            }, 
             {
                 "literal": "Roe Jane Co"
-            },
+            }, 
             {
                 "literal": "Noakes Richard Co"
             }
         ], 
         "id": "ITEM-2", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
                 "literal": "John Doe"
-            },
+            }, 
             {
                 "literal": "Jane Roe"
-            },
+            }, 
             {
                 "literal": "Richard Noakes"
-            },
+            }, 
             {
-                "literal": "Deacon Snoakes" 
+                "literal": "Deacon Snoakes"
             }
         ], 
         "id": "ITEM-3", 

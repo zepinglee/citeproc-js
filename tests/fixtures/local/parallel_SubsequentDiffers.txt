@@ -29,7 +29,7 @@ citation
         }, 
         [], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-2", 
@@ -42,9 +42,14 @@ citation
                 "noteIndex": 2
             }
         }, 
-        [["CITATION-1",1]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-3", 
@@ -57,7 +62,16 @@ citation
                 "noteIndex": 3
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ]
+        ], 
         []
     ]
 ]
@@ -67,34 +81,12 @@ citation
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.1mlz1" demote-non-dropping-particle="sort-only" default-locale="en-GB">
   <info>
-    <title>Australian Guide to Legal Citation</title>
-    <title-short>AGLC</title-short>
-    <id>http://www.zotero.org/styles/australian-guide-to-legal-citation</id>
-    <link href="http://www.zotero.org/styles/australian-guide-to-legal-citation" rel="self"/>
-    <link href="https://forums.zotero.org/discussion/4841/new-australian-legal-citation-style/?Focus=20831#Comment_20831" rel="documentation"/>
-    <author>
-      <name>Sebastian Karcher</name>
-    </author>
-    <author>
-      <name>Anton Hughes</name>
-      <email>antonh@lawtec.net</email>
-    </author>
-    <author>
-      <name>Bruce D'Arcus</name>
-      <email>bdarcus@gmail.com</email>
-    </author>
-    <author>
-      <name>Nancy Sims</name>
-      <email>nsims@umich.edu</email>
-    </author>
-    <author>
-      <name>Nic Suzor</name>
-      <email>nic@suzor.com</email>
-    </author>
-    <category citation-format="note"/>
-    <category field="law"/>
-    <summary>A modification of the Bluebook legal citation style for Australian conditions.</summary>
-    <updated>2012-10-25T21:15:26+00:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
@@ -138,7 +130,7 @@ citation
     <choose>
       <if type="article-journal article-magazine article-newspaper legal_case">
         <group delimiter=" ">
-          <text variable="volume"/>
+          <number variable="volume"/>
           <choose>
             <if type="legal_case">
               <choose>
@@ -148,15 +140,19 @@ citation
                 <else-if variable="authority number" match="all">
                   <!--Assume that only cases with a Medium Neutral Citation have a docket number -->
                   <group delimiter=" ">
-                    <text variable="authority" form="short" strip-periods="true"/>
-                    <text variable="number"/>
+                    <names variable="authority">
+                      <name form="short"/>
+                    </names>
+                    <number variable="number"/>
                     <text macro="issued-full" prefix="(" suffix=")"/>
                   </group>
                 </else-if>
                 <else>
                   <group delimiter=", " prefix="(" suffix=")">
                     <text value="Unreported"/>
-                    <text variable="authority"/>
+                    <names variable="authority">
+                      <name/>
+                    </names>
                     <names variable="author">
                       <name name-as-sort-order="all" delimiter-precedes-last="never" and="text" delimiter=", " sort-separator=" "/>
                     </names>
@@ -174,7 +170,7 @@ citation
     </choose>
   </macro>
   <macro name="page-first">
-    <text variable="page-first"/>
+    <number variable="page-first"/>
   </macro>
   <citation et-al-min="4" et-al-use-first="1">
     <layout suffix="." delimiter="; ">
@@ -182,15 +178,17 @@ citation
         <if position="subsequent">
           <choose>
             <if type="legal_case bill legislation manuscript" match="any">
+              <group delimiter=" ">
               <group delimiter=", ">
                 <text variable="title-short"/>
               </group>
-              <group delimiter=" " prefix=" ">
+              <group delimiter=" ">
                 <text macro="date-parenthesis"/>
                 <text macro="article-case-info"/>
               </group>
-              <group delimiter=", " prefix=" ">
+              <group delimiter=", ">
                 <text macro="page-first"/>
+              </group>
               </group>
             </if>
           </choose>

@@ -12,9 +12,13 @@ The Story of Civilization, 24 mars 1894 (accessed February 15, 2000); The Story 
       class="in-text"
       version="1.1mlz1">
   <info>
-    <id>http://pzotero.com</id>
-    <title>another style for test</title>
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <macro name="citation">
       <group delimiter=" ">
@@ -46,29 +50,53 @@ The Story of Civilization, 24 mars 1894 (accessed February 15, 2000); The Story 
 
 >>===== INPUT =====>>
 [
-   {
-      "id":"ID-1",
-      "type": "book",
-      "title": "The Story of Civilization",
-      "issued": {
-        "date-parts": [[1894,3,24]]
-      },
-      "accessed": {
-        "date-parts": [[2000,2,15]]
-      },
-      "language": "fr"
-   },
-   {
-      "id":"ID-2",
-      "type": "book",
-      "title": "The Story of Another Civilization",
-      "issued": {
-        "date-parts": [[1827,9,13]]
-      },
-      "accessed": {
-        "date-parts": [[2000,2,20]]
-      },
-      "language": "en"
-   }
+    {
+        "accessed": {
+            "date-parts": [
+                [
+                    2000, 
+                    2, 
+                    15
+                ]
+            ]
+        }, 
+        "id": "ID-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    1894, 
+                    3, 
+                    24
+                ]
+            ]
+        }, 
+        "language": "fr", 
+        "title": "The Story of Civilization", 
+        "type": "book"
+    }, 
+    {
+        "accessed": {
+            "date-parts": [
+                [
+                    2000, 
+                    2, 
+                    20
+                ]
+            ]
+        }, 
+        "id": "ID-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    1827, 
+                    9, 
+                    13
+                ]
+            ]
+        }, 
+        "language": "en", 
+        "title": "The Story of Another Civilization", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

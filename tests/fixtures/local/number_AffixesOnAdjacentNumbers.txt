@@ -34,8 +34,8 @@ citation
 >>===== INPUT =====>>
 [
     {
+        "collection-number": "2002", 
         "id": "ITEM-1", 
-        "collection-number": "2002",
         "volume": "3"
     }
 ]

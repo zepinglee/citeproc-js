@@ -26,12 +26,10 @@ trans.: Setsuo Miyazawa, Eri Osaka, Japan Federation of Bar Associations, and Jo
   </locale>
   <citation>
     <layout>
-      <group delimiter=": ">
-        <label variable="translator" form="verb-short"/>
-        <names variable="editor translator">
-          <name and="text"/>
-        </names>
-      </group>
+      <names variable="editor translator">
+        <label form="verb-short" suffix=": "/>
+        <name and="text"/>
+      </names>
     </layout>
   </citation>
 </style>
@@ -40,31 +38,31 @@ trans.: Setsuo Miyazawa, Eri Osaka, Japan Federation of Bar Associations, and Jo
 
 >>===== INPUT =====>>
 [
-	{
-		"id": 10775,
-		"type": "book",
-		"translator": [
-			{
-				"family": "Miyazawa",
-				"given": "Setsuo",
-				"isInstitution": ""
-			},
-			{
-				"family": "Osaka",
-				"given": "Eri",
-				"isInstitution": ""
-			},
-			{
-				"family": "Japan Federation of Bar Associations",
-				"given": "",
-				"isInstitution": 1
-			},
+    {
+        "id": 10775, 
+        "translator": [
             {
-				"family": "Doe",
-				"given": "John",
-				"isInstitution": ""
+                "family": "Miyazawa", 
+                "given": "Setsuo", 
+                "isInstitution": ""
+            }, 
+            {
+                "family": "Osaka", 
+                "given": "Eri", 
+                "isInstitution": ""
+            }, 
+            {
+                "family": "Japan Federation of Bar Associations", 
+                "given": "", 
+                "isInstitution": 1
+            }, 
+            {
+                "family": "Doe", 
+                "given": "John", 
+                "isInstitution": ""
             }
-		]
-	}
+        ], 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

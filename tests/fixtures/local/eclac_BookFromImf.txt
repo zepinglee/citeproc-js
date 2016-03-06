@@ -21,9 +21,13 @@ IMF (International Monetary Fund) (2009), “Regional economic outlook : asia 
       class="note"
       version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
     <style-options punctuation-in-quote="true"/>
@@ -66,7 +70,7 @@ IMF (International Monetary Fund) (2009), “Regional economic outlook : asia 
   <macro name="un-sales-number-identifier">
     <group delimiter=": ">
       <text term="number-00"/>
-      <text variable="number"/>
+      <number variable="number"/>
     </group>
   </macro>
   <macro name="issued-month">
@@ -83,7 +87,7 @@ IMF (International Monetary Fund) (2009), “Regional economic outlook : asia 
   <macro name="document-number-parens-un-only">
     <choose>
       <if jurisdiction="un.org">
-        <text variable="number" prefix="(" suffix=")"/>
+        <number variable="number" prefix="(" suffix=")"/>
       </if>
     </choose>
   </macro>
@@ -92,7 +96,7 @@ IMF (International Monetary Fund) (2009), “Regional economic outlook : asia 
       <text variable="collection-title"/>
       <group delimiter=" ">
         <text term="number-01" />
-        <text variable="collection-number"/>
+        <number variable="collection-number"/>
       </group>
     </group>
   </macro>
@@ -153,10 +157,10 @@ IMF (International Monetary Fund) (2009), “Regional economic outlook : asia 
                 ]
             ]
         }, 
+        "jurisdiction": "imf.org", 
         "number": "1,000,000", 
         "publisher": "IMF (International Monetary Fund)", 
         "publisher-place": "Washington, DC", 
-        "jurisdiction": "imf.org",
         "title": "Regional economic outlook : asia and pacific. world economic and financial surveys", 
         "type": "book"
     }

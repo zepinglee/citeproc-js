@@ -7,8 +7,8 @@ citation
 {
     "default": {
         "classic": {
-            "Blackstone, Commentaries": "Bl Comm",
-            "Bankton, Institute II": "Bankton <sc>Institute</sc> II"
+            "Bankton, Institute II": "Bankton <sc>Institute</sc> II", 
+            "Blackstone, Commentaries": "Bl Comm"
         }
     }
 }

@@ -12,19 +12,123 @@ citation
 >>=====  CITATIONS =====>>
 [
     [
-        {"citationID":"29lvik1jdg", "citationItems":[{"uri":["http://zotero.org/users/67180/items/S4BWKRXZ"], "id":3}], "properties":{"field":"{\"citationID\":\"29lvik1jdg\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/S4BWKRXZ\"]}]}", "index":0, "noteIndex":0}}, [], []
-    ],
+        {
+            "citationID": "29lvik1jdg", 
+            "citationItems": [
+                {
+                    "id": 3, 
+                    "uri": [
+                        "http://zotero.org/users/67180/items/S4BWKRXZ"
+                    ]
+                }
+            ], 
+            "properties": {
+                "field": "{\"citationID\":\"29lvik1jdg\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/S4BWKRXZ\"]}]}", 
+                "index": 0, 
+                "noteIndex": 0
+            }
+        }, 
+        [], 
+        []
+    ], 
     [
-        {"citationID":"17gb9ben28", "citationItems":[{"uri":["http://zotero.org/users/67180/items/PHDTVW3W"], "id":6}], "properties":{"field":"{\"citationID\":\"17gb9ben28\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/PHDTVW3W\"]}]}", "index":1, "noteIndex":0}}, [["29lvik1jdg", 0]], []
-    ],
+        {
+            "citationID": "17gb9ben28", 
+            "citationItems": [
+                {
+                    "id": 6, 
+                    "uri": [
+                        "http://zotero.org/users/67180/items/PHDTVW3W"
+                    ]
+                }
+            ], 
+            "properties": {
+                "field": "{\"citationID\":\"17gb9ben28\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/PHDTVW3W\"]}]}", 
+                "index": 1, 
+                "noteIndex": 0
+            }
+        }, 
+        [
+            [
+                "29lvik1jdg", 
+                0
+            ]
+        ], 
+        []
+    ], 
     [
-    	{"citationID":"dkd3aklcr", "citationItems":[{"uri":["http://zotero.org/users/67180/items/MTHEQ8WZ"], "id":2}], "properties":{"field":"{\"citationID\":\"dkd3aklcr\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/MTHEQ8WZ\"]}]}", "index":2, "noteIndex":0}}, [["29lvik1jdg", 0], ["17gb9ben28", 0]], []
-    ],
+        {
+            "citationID": "dkd3aklcr", 
+            "citationItems": [
+                {
+                    "id": 2, 
+                    "uri": [
+                        "http://zotero.org/users/67180/items/MTHEQ8WZ"
+                    ]
+                }
+            ], 
+            "properties": {
+                "field": "{\"citationID\":\"dkd3aklcr\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/MTHEQ8WZ\"]}]}", 
+                "index": 2, 
+                "noteIndex": 0
+            }
+        }, 
+        [
+            [
+                "29lvik1jdg", 
+                0
+            ], 
+            [
+                "17gb9ben28", 
+                0
+            ]
+        ], 
+        []
+    ], 
     [
-        {"citationID":"29lvik1jdg", "citationItems":[{"uri":["http://zotero.org/users/67180/items/S4BWKRXZ"], "id":3}], "properties":{"field":"{\"citationID\":\"29lvik1jdg\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/S4BWKRXZ\"]}]}", "index":0, "noteIndex":0}}, [], []
-    ],
+        {
+            "citationID": "29lvik1jdg", 
+            "citationItems": [
+                {
+                    "id": 3, 
+                    "uri": [
+                        "http://zotero.org/users/67180/items/S4BWKRXZ"
+                    ]
+                }
+            ], 
+            "properties": {
+                "field": "{\"citationID\":\"29lvik1jdg\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/S4BWKRXZ\"]}]}", 
+                "index": 0, 
+                "noteIndex": 0
+            }
+        }, 
+        [], 
+        []
+    ], 
     [
-        {"citationID":"17gb9ben28", "citationItems":[{"uri":["http://zotero.org/users/67180/items/PHDTVW3W"], "id":6}], "properties":{"field":"{\"citationID\":\"17gb9ben28\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/PHDTVW3W\"]}]}", "index":1, "noteIndex":0}}, [["29lvik1jdg", 0]], []
+        {
+            "citationID": "17gb9ben28", 
+            "citationItems": [
+                {
+                    "id": 6, 
+                    "uri": [
+                        "http://zotero.org/users/67180/items/PHDTVW3W"
+                    ]
+                }
+            ], 
+            "properties": {
+                "field": "{\"citationID\":\"17gb9ben28\",\"citationItems\":[{\"uri\":[\"http://zotero.org/users/67180/items/PHDTVW3W\"]}]}", 
+                "index": 1, 
+                "noteIndex": 0
+            }
+        }, 
+        [
+            [
+                "29lvik1jdg", 
+                0
+            ]
+        ], 
+        []
     ]
 ]
 <<=====  CITATIONS =====<<

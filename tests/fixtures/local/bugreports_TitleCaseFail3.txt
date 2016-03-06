@@ -8,22 +8,22 @@ citation
 
 >>===== CITATIONS =====>>
 [
-  [
-    {
-      "citationID": "10gk1bpdes",
-      "properties": {
-        "noteIndex": 0,
-        "index": 0
-      },
-      "citationItems": [
+    [
         {
-          "id": "ITEM-1"
-        }
-      ]
-    },
-    [],
-    []
-  ]
+            "citationID": "10gk1bpdes", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1"
+                }
+            ], 
+            "properties": {
+                "index": 0, 
+                "noteIndex": 0
+            }
+        }, 
+        [], 
+        []
+    ]
 ]
 <<===== CITATIONS===== <<
 
@@ -31,18 +31,13 @@ citation
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" page-range-format="chicago" version="1.1mlz1" year-range-format="expanded" default-locale="en-US">
 <!-- This style is made from JLME -->
 <info>
-	<title>MLZ Bluebook (WBL)</title>
-	<id>http://citationstyles.org/styles/mlz-bluebook-WBL</id>
-	<link href="http://citationstyles.org/styles/mlz-cms-full" rel="self"/>
-	<author>
-		<name>WBL</name>
-		<email></email>
-	</author>
-	<summary>Bluebook (MLZ version)</summary>
-	<category field="generic-base"/>
-	<category citation-format="note"/>
-	<updated>2014-02-09T08:35:07.635673</updated>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <citation>
     <layout delimiter="; ">

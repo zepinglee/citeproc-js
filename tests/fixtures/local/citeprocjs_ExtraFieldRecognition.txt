@@ -35,8 +35,8 @@ His Anonymous Life (Rocky Mountain Time Zone)
 [
     {
         "id": "ITEM-1", 
+        "note": "{:abstract:Rocky Mountain Time Zone}", 
         "title": "His Anonymous Life", 
-        "note": "{:abstract:Rocky Mountain Time Zone}",
         "type": "book"
     }
 ]

@@ -10,23 +10,17 @@ bibliography
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.1mlz1"
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
 	   page-range-format="expanded"
 	   demote-non-dropping-particle="never">
   <info>
-	<title>Antarctic Science</title>
-	<id>http://www.zotero.org/styles/antarctic-science</id>
-	<link href="http://www.zotero.org/styles/antarctic-science" rel="self"/>
-	<author>
-	  <name>Frank Bennett</name>
-	  <email>biercenator@gmail.com</email>
-	</author>
-	<category citation-format="author-date"/>
-	<category field="generic-base"/>
-	<updated/>
-	<summary>Antarctic Science (Cambridge Journals)</summary>
-	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <macro name="editor">
 	<names variable="editor" delimiter=", ">
@@ -101,7 +95,7 @@ bibliography
 	</choose>
   </macro>
   <macro name="publisher">
-	<group delimiter=": " subgroup-delimiter=", " and="symbol">
+	<group delimiter=": ">
 	  <text variable="publisher-place"/>
 	  <text variable="publisher"/>
 	</group>
@@ -314,27 +308,31 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id": 14,
-    "type": "map",
-    "multi": {
-      "_keys": {}
-    },
-    "title": "Geología de la región al sur del Canal Beagle, Chile. Carta Geológica de Chile",
-    "publisher": "Instituto de Investigaciones Geológicas",
-    "publisher-place": "Santiago",
-    "event-place": "Santiago",
-    "note": "{:genre: 1:500 000} {:annote: With supplementary text, 48 pp.}",
-	"number": "36",
-	"issued": {
-		"date-parts": [[1979]]
-	},
-    "author": [
-      {
-        "family": "Suarez",
-        "given": "M."
-      }
-    ]
-  }
+    {
+        "author": [
+            {
+                "family": "Suarez", 
+                "given": "M."
+            }
+        ], 
+        "event-place": "Santiago", 
+        "id": 14, 
+        "issued": {
+            "date-parts": [
+                [
+                    1979
+                ]
+            ]
+        }, 
+        "multi": {
+            "_keys": {}
+        }, 
+        "note": "{:genre: 1:500 000} {:annote: With supplementary text, 48 pp.}", 
+        "number": "36", 
+        "publisher": "Instituto de Investigaciones Geológicas", 
+        "publisher-place": "Santiago", 
+        "title": "Geología de la región al sur del Canal Beagle, Chile. Carta Geológica de Chile", 
+        "type": "map"
+    }
 ]
 <<===== INPUT===== <<

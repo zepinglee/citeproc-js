@@ -4,44 +4,80 @@ citation
 
 >>===== CITATION-ITEMS =====>>
 [
-  [
-    { "id": "ITEM-1" }
-  ],
-  [
-    { "id": "ITEM-2" }
-  ],
-  [
-    { "id": "ITEM-1" },
-    { "id": "ITEM-2" }
-  ],
-  [
-    { "id": "ITEM-3" }
-  ],
-  [
-    { "id": "ITEM-4" }
-  ],
-  [
-    { "id": "ITEM-3" },
-    { "id": "ITEM-4" }
-  ],
-  [
-    { "id": "ITEM-1" },
-    { "id": "ITEM-3" }
-  ],
-  [
-    { "id": "ITEM-4" },
-    { "id": "ITEM-2" }
-  ],
-  [
-    { "id": "ITEM-4" },
-    { "id": "ITEM-2" },
-    { "id": "ITEM-3" }
-  ],
-  [
-    { "id": "ITEM-2" },
-    { "id": "ITEM-3" },
-    { "id": "ITEM-1" }
-  ]
+    [
+        {
+            "id": "ITEM-1"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-2"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-1"
+        }, 
+        {
+            "id": "ITEM-2"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-3"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-4"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-3"
+        }, 
+        {
+            "id": "ITEM-4"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-1"
+        }, 
+        {
+            "id": "ITEM-3"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-4"
+        }, 
+        {
+            "id": "ITEM-2"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-4"
+        }, 
+        {
+            "id": "ITEM-2"
+        }, 
+        {
+            "id": "ITEM-3"
+        }
+    ], 
+    [
+        {
+            "id": "ITEM-2"
+        }, 
+        {
+            "id": "ITEM-3"
+        }, 
+        {
+            "id": "ITEM-1"
+        }
+    ]
 ]
 <<===== CITATION-ITEMS =====<<
 
@@ -67,9 +103,13 @@ Only Me, “My Way, the Right Way,” Nov. 13, 1992; 島田紳助、「ネタ作
       version="1.1mlz1"
       default-locale="ja-JP">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <style-options punctuation-in-quote="true"/>

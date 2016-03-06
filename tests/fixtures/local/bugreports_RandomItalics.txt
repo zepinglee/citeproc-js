@@ -9,51 +9,51 @@ citation
 
 >>===== CITATIONS =====>>
 [
-  [
-    {
-      "citationID": "10gk1bpdes",
-      "properties": {
-        "noteIndex": 0,
-        "index": 0
-      },
-      "citationItems": [
-        {
-          "locator": "347",
-          "label": "page",
-          "id": 576
-        }
-      ]
-    },
-    [],
-    []
-  ],
-  [
-    {
-      "citationID": "1s6a3fqtgr",
-      "properties": {
-        "unsorted": true,
-        "noteIndex": 0,
-        "index": 1
-      },
-      "citationItems": [
-        {
-          "label": "page",
-          "id": "597"
-        },
-        {
-          "label": "page",
-          "id": "576"
-        }
-      ]
-    },
     [
-      [
-        "10gk1bpdes",
-        0
-      ]
-    ],
-    []
-  ]
+        {
+            "citationID": "10gk1bpdes", 
+            "citationItems": [
+                {
+                    "id": 576, 
+                    "label": "page", 
+                    "locator": "347"
+                }
+            ], 
+            "properties": {
+                "index": 0, 
+                "noteIndex": 0
+            }
+        }, 
+        [], 
+        []
+    ], 
+    [
+        {
+            "citationID": "1s6a3fqtgr", 
+            "citationItems": [
+                {
+                    "id": "597", 
+                    "label": "page"
+                }, 
+                {
+                    "id": "576", 
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "index": 1, 
+                "noteIndex": 0, 
+                "unsorted": true
+            }
+        }, 
+        [
+            [
+                "10gk1bpdes", 
+                0
+            ]
+        ], 
+        []
+    ]
 ]
 <<===== CITATIONS===== <<
 

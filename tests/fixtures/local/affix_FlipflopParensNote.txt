@@ -5,33 +5,33 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] (Comment. [Inside parens Smith, 2000; and Jones, 2001, ending parens].)
+>>[0] (Comment. [Inside parens (Smith), 2000; and (Jones), 2001, ending parens].)
 <<===== RESULT =====<<
 
 
 >>===== CITATIONS =====>>
 [
-  [
-    {
-      "citationID": "CITATION-1",
-      "citationItems": [
+    [
         {
-          "id": "ITEM-1",
-          "prefix": "Comment. (Inside parens "
-        },
-        {
-          "id": "ITEM-2",
-          "prefix": "and",
-          "suffix": ", ending parens)."
-        }
-      ],
-      "properties": {
-        "noteIndex": 1
-      }
-    },
-    [],
-    []
-  ]
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1", 
+                    "prefix": "Comment. (Inside parens "
+                }, 
+                {
+                    "id": "ITEM-2", 
+                    "prefix": "and", 
+                    "suffix": ", ending parens)."
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
 ]
 <<===== CITATIONS =====<<
 
@@ -55,7 +55,7 @@ citation
     <layout delimiter="; " prefix="(" suffix=")">
       <group delimiter=" ">
         <group delimiter=", ">
-          <text macro="author" prefix='(' suffix=')'/>
+          <text macro="author" prefix="(" suffix=")"/>
           <date variable="issued" date-parts="year" form="text"/>
         </group>
       </group>

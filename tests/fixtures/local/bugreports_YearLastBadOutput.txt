@@ -31,11 +31,12 @@ January 1, 1989
 >>===== INPUT =====>>
 [
     {
-        "title": "Some Book or Other",
         "id": "ITEM-1", 
         "issued": {
+            "date-parts": [], 
             "raw": "01/01/1989"
         }, 
+        "title": "Some Book or Other", 
         "type": "book"
     }
 ]

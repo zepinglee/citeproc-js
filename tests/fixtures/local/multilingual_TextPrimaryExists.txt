@@ -36,27 +36,27 @@ citation
 [
     {
         "id": "ITEM-1", 
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Hrkt": "お"
+                }
+            }
+        }, 
         "title": "Aardvaark", 
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Hrkt":"お"
-				}
-			}
-		}
+        "type": "book"
     }, 
     {
         "id": "ITEM-2", 
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Hrkt": "あ"
+                }
+            }
+        }, 
         "title": "Zzzzzzzzz", 
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Hrkt":"あ"
-				}
-			}
-		}
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

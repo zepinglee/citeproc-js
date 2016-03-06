@@ -336,21 +336,25 @@ citation
 
 >>===== INPUT =====>>
 [
-	{
-		"title" : "This is some title",
-		"volume" : "2003",
-		"author": [
-          {
-			"literal" : "Institution01"
-		  },
-          {
-			"literal" : "Institution02"
-		  }
-        ],
-		"issued" : {
-			"date-parts": [
-			[2003,1] ]
-		}
-	}
+    {
+        "author": [
+            {
+                "literal": "Institution01"
+            }, 
+            {
+                "literal": "Institution02"
+            }
+        ], 
+        "issued": {
+            "date-parts": [
+                [
+                    2003, 
+                    1
+                ]
+            ]
+        }, 
+        "title": "This is some title", 
+        "volume": "2003"
+    }
 ]
 <<===== INPUT =====<<

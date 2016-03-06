@@ -5,15 +5,15 @@ citation
 
 
 >>===== RESULT =====>>
-1965年6月1日 + 10月 (Japan)
-1 juin 1965 + octobre (France)
-June 1, 1965 + October (US English)
-1. Juni 1965 + Oktober (Austria)
-1. Juni 1965 + Oktober (Austria)
-1965年6月1日 + 10月 (Mainland China)
-1965年6月1日 + 10月 (Taiwan)
-1 de Junho de 1965 + Outubro (Portugal)
-1 de Junho de 1965 + Outubro (Portugal)
+1965年6月1日+10月 (Japan)
+1 juin 1965+octobre (France)
+June 1, 1965+October (US English)
+1. Juni 1965+Oktober (Austria)
+1. Juni 1965+Oktober (Austria)
+1965年6月1日+10月 (Mainland China)
+1965年6月1日+10月 (Taiwan)
+1 de Junho de 1965+Outubro (Portugal)
+1 de Junho de 1965+Outubro (Portugal)
 <<===== RESULT =====<<
 
 
@@ -23,9 +23,13 @@ June 1, 1965 + October (US English)
       class="note"
       version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="de-AT">
     <terms>
@@ -79,7 +83,7 @@ June 1, 1965 + October (US English)
       </names>
       <date variable="issued" form="text" date-parts="year-month-day"/>
     </group>
-    <text term="month-10" prefix=" + "/>
+    <text term="month-10" prefix="+"/>
   </macro>
   <citation>
     <layout locale="ja" delimiter="&#x0A;">
@@ -124,10 +128,10 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "ja",
+        "language": "ja", 
         "title": "His Anonymous Life", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-2", 
         "issued": {
@@ -139,9 +143,9 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "fr",
+        "language": "fr", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-3", 
         "issued": {
@@ -154,7 +158,7 @@ June 1, 1965 + October (US English)
             ]
         }, 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-4", 
         "issued": {
@@ -166,9 +170,9 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "de-DE",
+        "language": "de-DE", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-5", 
         "issued": {
@@ -180,9 +184,9 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "de-AT",
+        "language": "de-AT", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-6", 
         "issued": {
@@ -194,9 +198,9 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "zh-CH",
+        "language": "zh-CH", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-7", 
         "issued": {
@@ -208,9 +212,9 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "zh-TW",
+        "language": "zh-TW", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-8", 
         "issued": {
@@ -222,9 +226,9 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "pt-BR",
+        "language": "pt-BR", 
         "type": "book"
-    },
+    }, 
     {
         "id": "ITEM-9", 
         "issued": {
@@ -236,7 +240,7 @@ June 1, 1965 + October (US English)
                 ]
             ]
         }, 
-        "language": "pt-PT",
+        "language": "pt-PT", 
         "type": "book"
     }
 ]

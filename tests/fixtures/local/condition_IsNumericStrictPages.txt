@@ -29,27 +29,27 @@ Volume is non-numeric: 2nd volume / Page is non-numeric: 2nd page
         {
             "id": "ITEM-3"
         }
-    ],
+    ], 
     [
         {
             "id": "ITEM-4"
         }
-    ],
+    ], 
     [
         {
             "id": "ITEM-5"
         }
-    ],
+    ], 
     [
         {
             "id": "ITEM-6"
         }
-    ],
+    ], 
     [
         {
             "id": "ITEM-7"
         }
-    ],
+    ], 
     [
         {
             "id": "ITEM-8"
@@ -92,7 +92,7 @@ Volume is non-numeric: 2nd volume / Page is non-numeric: 2nd page
               <text value="Page is non-numeric:"/>
             </else>
           </choose>
-          <number variable="page"/>
+          <text variable="page"/>
         </group>
       </group>
     </layout>

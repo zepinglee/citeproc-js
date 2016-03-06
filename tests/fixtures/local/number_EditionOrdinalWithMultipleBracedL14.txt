@@ -47,11 +47,11 @@ Normalizes punctuation and grouping when multiple numbers are provided in input.
 
 >>===== INPUT =====>>
 [
-	{
-		"id": "ITEM-14",
-		"title": "Suffix left untouched, not ordinalized, numeric, singular",
-		"edition" : "12a-c,e",
-		"type": "book"
-	}
+    {
+        "edition": "12a-c,e", 
+        "id": "ITEM-14", 
+        "title": "Suffix left untouched, not ordinalized, numeric, singular", 
+        "type": "book"
+    }
 ]
 <<===== INPUT =====<<

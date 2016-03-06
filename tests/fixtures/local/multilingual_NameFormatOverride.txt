@@ -35,12 +35,16 @@ Family Name; Family Name Given Name; Kyaw Zay Ya U; ဦး; Family Name Given
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0"
+      version="1.1mlz1"
       default-locale="en-US-x-translit-my-alalc97">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
   <style-options 
@@ -65,92 +69,92 @@ Family Name; Family Name Given Name; Kyaw Zay Ya U; ဦး; Family Name Given
     {
         "author": [
             {
-                "family": "Family Name",
-                "given": "Given Name",
-                "multi":{
-                  "_key":{
-				    "ja-alalc97":{
-               	      "family": "Kyaw Zay Ya",
-					  "given": "U"
-					}
-                  }
-				}
-			}
-        ],
+                "family": "Family Name", 
+                "given": "Given Name", 
+                "multi": {
+                    "_key": {
+                        "ja-alalc97": {
+                            "family": "Kyaw Zay Ya", 
+                            "given": "U"
+                        }
+                    }
+                }
+            }
+        ], 
         "id": "ITEM-1", 
-        "language": "en",
+        "language": "en", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
-                "family": "Family Name",
-                "given": "Given Name",
-                "multi":{
-                  "main": "my-alalc97",
-                  "_key":{
-				    "ja-alalc97":{
-               	      "family": "Kyaw Zay Ya",
-					  "given": "U"
-					}
-                  }
-				}
-			}
-        ],
+                "family": "Family Name", 
+                "given": "Given Name", 
+                "multi": {
+                    "_key": {
+                        "ja-alalc97": {
+                            "family": "Kyaw Zay Ya", 
+                            "given": "U"
+                        }
+                    }, 
+                    "main": "my-alalc97"
+                }
+            }
+        ], 
         "id": "ITEM-2", 
-        "language": "en",
+        "language": "en", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
-                "family": "Family Name",
-                "given": "Given Name",
-                "multi":{
-                  "_key":{
-				    "my-alalc97":{
-               	      "family": "Kyaw Zay Ya",
-					  "given": "U"
-					}
-                  }
-				}
-			}
-        ],
+                "family": "Family Name", 
+                "given": "Given Name", 
+                "multi": {
+                    "_key": {
+                        "my-alalc97": {
+                            "family": "Kyaw Zay Ya", 
+                            "given": "U"
+                        }
+                    }
+                }
+            }
+        ], 
         "id": "ITEM-3", 
-        "language": "en",
+        "language": "en", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
-                "family": "ဦး",
+                "family": "ဦး", 
                 "given": "ေက်ာ္ေဇယ်"
-			}
-        ],
+            }
+        ], 
         "id": "ITEM-4", 
-        "language": "en",
+        "language": "en", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
-                "family": "Family Name",
+                "family": "Family Name", 
                 "given": "Given Name"
-			}
-        ],
+            }
+        ], 
         "id": "ITEM-5", 
-        "language": "my",
+        "language": "my", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
-                "family": "Family Name",
+                "family": "Family Name", 
                 "given": "Given Name"
-			}
-        ],
+            }
+        ], 
         "id": "ITEM-6", 
-        "language": "fr-FR",
+        "language": "fr-FR", 
         "type": "book"
     }
 ]

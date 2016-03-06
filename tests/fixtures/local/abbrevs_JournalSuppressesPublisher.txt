@@ -7,7 +7,7 @@ citation
 {
     "default": {
         "title": {
-            "Waffle and Blurf":"!publisher,place>>>{stet}"
+            "Waffle and Blurf": "!publisher,place>>>{stet}"
         }
     }
 }
@@ -34,7 +34,7 @@ Waffle and Blurf, 2000
         <text variable="title" form="short"/>
         <choose>
           <if match="all" variable="publisher">
-            <text variable="place"/>
+            <text variable="publisher-place"/>
             <text variable="publisher"/>
           </if>
         </choose>

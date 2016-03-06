@@ -39,27 +39,27 @@ Zzzzzzzzz; Aardvaark
 [
     {
         "id": "ITEM-1", 
-        "title": "Aardvaark",
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Hrkt":"お"
-				}
-			}
-		}		
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Hrkt": "お"
+                }
+            }
+        }, 
+        "title": "Aardvaark", 
+        "type": "book"
     }, 
     {
         "id": "ITEM-2", 
-        "title": "Zzzzzzzzz",
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Hrkt":"あ"
-				}
-			}
-		}
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Hrkt": "あ"
+                }
+            }
+        }, 
+        "title": "Zzzzzzzzz", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

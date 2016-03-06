@@ -5,25 +5,25 @@ citation
 
 >>== ABBREVIATIONS ==>>
 {
-        "default": {
-            "container-title": {},
-            "collection-title": {},
-            "institution-entire": {},
-            "institution-part": {
-				"Society of Motion Picture and Television Engineers": "SMPTE",
-				"Society of Cable Telecommunications Engineers": "SCTE",
-				"Bureau of Labor Statistics": "BLS",
-				"Standard Occupational Classification Policy Committee": "SOCPC"
-			},
-            "nickname": {},
-            "number": {},
-            "title": {},
-            "place": {},
-            "hereinafter": {},
-            "classic": {},
-            "container-phrase": {},
-            "title-phrase": {}
-        }
+    "default": {
+        "classic": {}, 
+        "collection-title": {}, 
+        "container-phrase": {}, 
+        "container-title": {}, 
+        "hereinafter": {}, 
+        "institution-entire": {}, 
+        "institution-part": {
+            "Bureau of Labor Statistics": "BLS", 
+            "Society of Cable Telecommunications Engineers": "SCTE", 
+            "Society of Motion Picture and Television Engineers": "SMPTE", 
+            "Standard Occupational Classification Policy Committee": "SOCPC"
+        }, 
+        "nickname": {}, 
+        "number": {}, 
+        "place": {}, 
+        "title": {}, 
+        "title-phrase": {}
+    }
 }
 <<== ABBREVIATIONS ==<<
 
@@ -36,11 +36,15 @@ SMPTE.
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <citation>
     <layout suffix="." delimiter="; ">

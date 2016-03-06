@@ -34,7 +34,7 @@ citation
         }, 
         [], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-2", 
@@ -47,9 +47,14 @@ citation
                 "noteIndex": 2
             }
         }, 
-        [["CITATION-1",1]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-3", 
@@ -62,9 +67,18 @@ citation
                 "noteIndex": 3
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-4", 
@@ -77,9 +91,22 @@ citation
                 "noteIndex": 4
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-5", 
@@ -92,9 +119,26 @@ citation
                 "noteIndex": 5
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ], 
+            [
+                "CITATION-4", 
+                4
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-6", 
@@ -107,9 +151,30 @@ citation
                 "noteIndex": 6
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ], 
+            [
+                "CITATION-4", 
+                4
+            ], 
+            [
+                "CITATION-5", 
+                5
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-7", 
@@ -122,9 +187,34 @@ citation
                 "noteIndex": 7
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ], 
+            [
+                "CITATION-4", 
+                4
+            ], 
+            [
+                "CITATION-5", 
+                5
+            ], 
+            [
+                "CITATION-6", 
+                6
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-8", 
@@ -137,9 +227,38 @@ citation
                 "noteIndex": 8
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ], 
+            [
+                "CITATION-4", 
+                4
+            ], 
+            [
+                "CITATION-5", 
+                5
+            ], 
+            [
+                "CITATION-6", 
+                6
+            ], 
+            [
+                "CITATION-7", 
+                7
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-9", 
@@ -152,9 +271,42 @@ citation
                 "noteIndex": 9
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ], 
+            [
+                "CITATION-4", 
+                4
+            ], 
+            [
+                "CITATION-5", 
+                5
+            ], 
+            [
+                "CITATION-6", 
+                6
+            ], 
+            [
+                "CITATION-7", 
+                7
+            ], 
+            [
+                "CITATION-8", 
+                8
+            ]
+        ], 
         []
-    ],
+    ], 
     [
         {
             "citationID": "CITATION-10", 
@@ -167,7 +319,44 @@ citation
                 "noteIndex": 10
             }
         }, 
-        [["CITATION-1",1],["CITATION-2",2],["CITATION-3",3],["CITATION-4",4],["CITATION-5",5],["CITATION-6",6],["CITATION-7",7],["CITATION-8",8],["CITATION-9",9]], 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ], 
+            [
+                "CITATION-3", 
+                3
+            ], 
+            [
+                "CITATION-4", 
+                4
+            ], 
+            [
+                "CITATION-5", 
+                5
+            ], 
+            [
+                "CITATION-6", 
+                6
+            ], 
+            [
+                "CITATION-7", 
+                7
+            ], 
+            [
+                "CITATION-8", 
+                8
+            ], 
+            [
+                "CITATION-9", 
+                9
+            ]
+        ], 
         []
     ]
 ]

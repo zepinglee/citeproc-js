@@ -351,7 +351,7 @@ This test applies to the following issue:
     {
         "author": [
             {
-                "family": "Adelberg",
+                "family": "Adelberg", 
                 "given": "Steven"
             }
         ], 
@@ -359,13 +359,13 @@ This test applies to the following issue:
         "issued": {
             "date-parts": [
                 [
-                    "1978" 
+                    "1978"
                 ]
             ]
         }, 
         "title": "Book A", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
@@ -376,17 +376,17 @@ This test applies to the following issue:
         "issued": {
             "date-parts": [
                 [
-                    "2010" 
+                    "2010"
                 ]
             ]
         }, 
         "title": "Book B", 
         "type": "book"
-    },
+    }, 
     {
         "author": [
             {
-                "family": "Argyris",
+                "family": "Argyris", 
                 "given": "Clement"
             }
         ], 
@@ -394,7 +394,7 @@ This test applies to the following issue:
         "issued": {
             "date-parts": [
                 [
-                    "1976" 
+                    "1976"
                 ]
             ]
         }, 

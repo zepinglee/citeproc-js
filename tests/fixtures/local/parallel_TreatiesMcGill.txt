@@ -8,50 +8,40 @@ citation
 
 >>===== CITATIONS =====>>
 [
-  [
-    {
-      "citationItems": [
+    [
         {
-          "label": "page",
-          "id": 21
-        },
-        {
-          "label": "page",
-          "id": 27
-        }
-      ],
-      "properties": {
-        "noteIndex": 1,
-        "index": 0
-      },
-      "citationID": "gfmrj5f3s"
-    },
-    [],
-    []
-  ]
+            "citationID": "gfmrj5f3s", 
+            "citationItems": [
+                {
+                    "id": 21, 
+                    "label": "page"
+                }, 
+                {
+                    "id": 27, 
+                    "label": "page"
+                }
+            ], 
+            "properties": {
+                "index": 0, 
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
 ]
 <<===== CITATIONS===== <<
 >>===== CSL =====>>
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.1mlz1" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" default-locale="en" version="1.1mlz1">
   <info>
-    <title>MLZ Canadian Guide to Uniform Legal Citation, 7th ed. (McGill Guide)</title>
-    <id>http://citationstylist.org/styles/mlz-mcgill-en-v7</id>
-    <link href="http://citationstylist.org/uploads/mlz-mcgill-guide-v7" rel="self"/>
-    <link href="http://lawjournal.mcgill.ca/citeguide.php" rel="documentation"/>
-    <author>
-      <name>Liam McHugh-Russell</name>
-      <email>liam.mchugh.russell@gmail.com</email>
-    </author>
-    <contributor>
-      <name>Frank Bennett</name>
-    </contributor>
-    <updated>2008-10-29T21:01:24+00:00</updated>
-    <rights>This work is licensed under a Creative Commons
-    Attribution-Share Alike 3.0 Unported License
-    http://creativecommons.org/licenses/by-sa/3.0/</rights>
-    <category field="law"/>
-    <category citation-format="note"/>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
     <style-options punctuation-in-quote="false"/>

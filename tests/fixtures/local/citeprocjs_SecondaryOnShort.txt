@@ -33,15 +33,15 @@ citation
 [
     {
         "id": "ITEM-1", 
-        "title": "民法",
-        "type": "book",
-		"multi":{
-			"_keys":{
-				"title":{
-					"ja-Latn-hepburn":"Minpō"
-				}
-			}
-		}
+        "multi": {
+            "_keys": {
+                "title": {
+                    "ja-Latn-hepburn": "Minpō"
+                }
+            }
+        }, 
+        "title": "民法", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<

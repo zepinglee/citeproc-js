@@ -4,29 +4,23 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry"><span style="font-variant:small-caps;">Barrett</span>, <span style="font-variant:small-caps;">P.J.</span>, <span style="font-variant:small-caps;">Payne</span>, <span style="font-variant:small-caps;">A.R.</span> &#38; <span style="font-variant:small-caps;">Ward</span>, <span style="font-variant:small-caps;">B.L.</span> 1983. Modern sedimentation in McMurdo Sound, Antarctica. <i>In</i> Oliver, R.L., James, P.R. &#38; Jago, J.B., <i>eds.</i> <i>Antarctic earth science</i>. Canberra: Australian Academy of Science &#38; Cambridge: Cambridge University Press, 550–554.</div>
+  <div class="csl-entry"><span style="font-variant:small-caps;">Barrett</span>, <span style="font-variant:small-caps;">P.J.</span>, <span style="font-variant:small-caps;">Payne</span>, <span style="font-variant:small-caps;">A.R.</span> &#38; <span style="font-variant:small-caps;">Ward</span>, <span style="font-variant:small-caps;">B.L.</span> 1983. Modern sedimentation in McMurdo Sound, Antarctica. <i>In</i> Oliver, R.L., James, P.R. &#38; Jago, J.B., <i>eds.</i> <i>Antarctic earth science</i>. Cambridge: Cambridge University Press, 550–554.</div>
 </div>
 <<===== RESULT===== <<
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.1mlz1"
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
 	   page-range-format="expanded"
 	   demote-non-dropping-particle="never">
   <info>
-	<title>Antarctic Science</title>
-	<id>http://www.zotero.org/styles/antarctic-science</id>
-	<link href="http://www.zotero.org/styles/antarctic-science" rel="self"/>
-	<author>
-	  <name>Frank Bennett</name>
-	  <email>biercenator@gmail.com</email>
-	</author>
-	<category citation-format="author-date"/>
-	<category field="generic-base"/>
-	<updated/>
-	<summary>Antarctic Science (Cambridge Journals)</summary>
-	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <terms>
@@ -106,7 +100,7 @@ bibliography
 	</choose>
   </macro>
   <macro name="publisher">
-	<group delimiter=": " subgroup-delimiter=", " and="symbol">
+	<group delimiter=": ">
 	  <text variable="publisher-place"/>
 	  <text variable="publisher"/>
 	</group>
@@ -319,52 +313,52 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id": 3,
-    "type": "chapter",
-    "multi": {
-      "_keys": {}
-    },
-    "title": "Modern sedimentation in McMurdo Sound, Antarctica",
-    "container-title": "Antarctic earth science",
-    "publisher": "Australian Academy of Science; Cambridge University Press",
-    "publisher-place": "Canberra; Cambridge",
-    "page": "550–554",
-    "author": [
-      {
-        "family": "Barrett",
-        "given": "P. J."
-      },
-      {
-        "family": "Payne",
-        "given": "A. R."
-      },
-      {
-        "family": "Ward",
-        "given": "B. L."
-      }
-    ],
-    "editor": [
-      {
-        "family": "Oliver",
-        "given": "R. L."
-      },
-      {
-        "family": "James",
-        "given": "P. R."
-      },
-      {
-        "family": "Jago",
-        "given": "J. B."
-      }
-    ],
-    "issued": {
-      "date-parts": [
-        [
-          1983
-        ]
-      ]
+    {
+        "author": [
+            {
+                "family": "Barrett", 
+                "given": "P. J."
+            }, 
+            {
+                "family": "Payne", 
+                "given": "A. R."
+            }, 
+            {
+                "family": "Ward", 
+                "given": "B. L."
+            }
+        ], 
+        "container-title": "Antarctic earth science", 
+        "editor": [
+            {
+                "family": "Oliver", 
+                "given": "R. L."
+            }, 
+            {
+                "family": "James", 
+                "given": "P. R."
+            }, 
+            {
+                "family": "Jago", 
+                "given": "J. B."
+            }
+        ], 
+        "id": 3, 
+        "issued": {
+            "date-parts": [
+                [
+                    1983
+                ]
+            ]
+        }, 
+        "multi": {
+            "_keys": {}
+        }, 
+        "page": "550–554", 
+        "publisher": "Cambridge University Press", 
+        "publisher-place": "Cambridge", 
+        "title": "Modern sedimentation in McMurdo Sound, Antarctica", 
+        "type": "chapter"
     }
-  }
 ]
 <<===== INPUT===== <<

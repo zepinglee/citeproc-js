@@ -5,12 +5,12 @@ citation
 
 >>===== ABBREVIATIONS =====>>
 {
-  "default": {
-    "number": {
-      "42 - 47 editionz": "42nd–47th editions",
-      "42 editionX": "42nd edition"
+    "default": {
+        "number": {
+            "42 - 47 editionz": "42nd–47th editions", 
+            "42 editionX": "42nd edition"
+        }
     }
-  }
 }
 <<===== ABBREVIATIONS =====<<
 

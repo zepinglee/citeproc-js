@@ -4,7 +4,7 @@ bibliography
 
 >>===== OPTIONS =====>>
 {
-  "spoof_institutional_affiliations": true
+    "spoof_institutional_affiliations": true
 }
 <<===== OPTIONS =====<<
 

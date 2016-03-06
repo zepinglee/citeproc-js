@@ -33,7 +33,7 @@ mhra.csl
 [
     {
         "id": "ITEM-1", 
-        "title": "'\"Black Power”, and the Roots of the African American Freedom Struggle",
+        "title": "'\"Black Power”, and the Roots of the African American Freedom Struggle", 
         "type": "article"
     }
 ]

@@ -10,23 +10,17 @@ bibliography
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.1mlz1"
+<style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0"
 	   page-range-format="expanded"
 	   demote-non-dropping-particle="never">
   <info>
-	<title>Antarctic Science</title>
-	<id>http://www.zotero.org/styles/antarctic-science</id>
-	<link href="http://www.zotero.org/styles/antarctic-science" rel="self"/>
-	<author>
-	  <name>Frank Bennett</name>
-	  <email>biercenator@gmail.com</email>
-	</author>
-	<category citation-format="author-date"/>
-	<category field="generic-base"/>
-	<updated/>
-	<summary>Antarctic Science (Cambridge Journals)</summary>
-	<link href="http://journals.cambridge.org/images/fileUpload/documents/ans_ifc.pdf" rel="documentation"/>
-	<rights>This work is licensed under a Creative Commons Attribution-Share Alike 3.0 License: http://creativecommons.org/licenses/by-sa/3.0/</rights>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
     <terms>
@@ -106,7 +100,7 @@ bibliography
 	</choose>
   </macro>
   <macro name="publisher">
-	<group delimiter=": " subgroup-delimiter=", " and="symbol">
+	<group delimiter=": ">
 	  <text variable="publisher-place"/>
 	  <text variable="publisher"/>
 	</group>
@@ -319,37 +313,37 @@ bibliography
 
 >>===== INPUT =====>>
 [
-  {
-    "id": 12,
-    "type": "article-journal",
-    "multi": {
-      "_keys": {}
-    },
-    "title": "Surface radiation balance in Antarctica as measured with automatic weather stations",
-    "container-title": "Journal of Geophysical Research",
-    "volume": "109",
-    "DOI": "10.1029/2003JD004394",
-    "author": [
-      {
-        "family": "Van den Broeke",
-        "given": "M. R."
-      },
-      {
-        "family": "Reijmer",
-        "given": "C. H."
-      },
-      {
-        "family": "Van der Wal",
-        "given": "R. S. W."
-      }
-    ],
-    "issued": {
-      "date-parts": [
-        [
-          2004
-        ]
-      ]
+    {
+        "DOI": "10.1029/2003JD004394", 
+        "author": [
+            {
+                "family": "Van den Broeke", 
+                "given": "M. R."
+            }, 
+            {
+                "family": "Reijmer", 
+                "given": "C. H."
+            }, 
+            {
+                "family": "Van der Wal", 
+                "given": "R. S. W."
+            }
+        ], 
+        "container-title": "Journal of Geophysical Research", 
+        "id": 12, 
+        "issued": {
+            "date-parts": [
+                [
+                    2004
+                ]
+            ]
+        }, 
+        "multi": {
+            "_keys": {}
+        }, 
+        "title": "Surface radiation balance in Antarctica as measured with automatic weather stations", 
+        "type": "article-journal", 
+        "volume": "109"
     }
-  }
 ]
 <<===== INPUT===== <<
