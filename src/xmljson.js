@@ -19,60 +19,10 @@
 
   The following script will generate correctly formatted JSON
   from a CSL style or locale file:
-
-#!/usr/bin/python
-''' Make me a module
-'''
-
-from xml.dom import minidom
-import json,re
-
-class jsonwalker:
-    
-    def __init__(self):
-        pass
-
-    def makedoc(self,xmlstring):
-        #xmlstring = re.sub("(?ms)^<\?[^>]*\?>","",xmlstring);
-        dom = minidom.parseString(xmlstring)
-        return dom.documentElement
-
-    def walktojson(self, elem):
-        obj = {}
-        obj["name"] = elem.nodeName
-        obj["attrs"] = {}
-        if elem.attributes:
-            for key in elem.attributes.keys():
-                obj["attrs"][key] = elem.attributes[key].value
-        obj["children"] = []
-        if len(elem.childNodes) == 0 and elem.nodeName == "term":
-            obj["children"] = [""]
-        for child in elem.childNodes:
-            if child.nodeName == "#comment":
-                pass
-            elif child.nodeName == "#text":
-                if len(elem.childNodes) == 1 and elem.nodeName in ["term","single","multiple"]:
-                    obj["children"].append(child.wholeText)
-            else:
-                obj["children"].append(self.walktojson(child))
-        return obj
-
-if __name__ == "__main__":
-
-    import sys
-    w = jsonwalker()
-    doc = w.makedoc(open(sys.argv[1]).read())
-    obj = w.walktojson(doc)
-    print json.dumps(obj,indent=2)
-
 */
 
-// Don't clobber an existing value if this has already been declared.
-if ("undefined" === typeof CSL_IS_IE) {
-    var CSL_IS_IE;
-};
-
-var CSL_JSON = function () {
+CSL.XmlJSON = function (dataObj) {
+    this.dataObj = dataObj;
     this.institution = {
         name:"institution",
         attrs:{
@@ -96,7 +46,7 @@ var CSL_JSON = function () {
 /**
  * No need for cleaning with native JSON.
  */
-CSL_JSON.prototype.clean = function (json) {
+CSL.XmlJSON.prototype.clean = function (json) {
     return json;
 };
 
@@ -104,7 +54,7 @@ CSL_JSON.prototype.clean = function (json) {
 /**
  * Methods to call on a node.
  */
-CSL_JSON.prototype.getStyleId = function (myjson, styleName) {
+CSL.XmlJSON.prototype.getStyleId = function (myjson, styleName) {
     var tagName = 'id';
     if (styleName) {
         tagName = 'title';
@@ -112,7 +62,7 @@ CSL_JSON.prototype.getStyleId = function (myjson, styleName) {
     return myjson.attrs[tagName];
 };
 
-CSL_JSON.prototype.children = function (myjson) {
+CSL.XmlJSON.prototype.children = function (myjson) {
     //print("children()");
     if (myjson && myjson.children.length) {
         return myjson.children.slice();
@@ -121,12 +71,12 @@ CSL_JSON.prototype.children = function (myjson) {
     }
 };
 
-CSL_JSON.prototype.nodename = function (myjson) {
+CSL.XmlJSON.prototype.nodename = function (myjson) {
     //print("nodename()");
     return myjson.name;
 };
 
-CSL_JSON.prototype.attributes = function (myjson) {
+CSL.XmlJSON.prototype.attributes = function (myjson) {
     //print("attributes()");
     var ret = {};
     for (var attrname in myjson.attrs) {
@@ -136,7 +86,7 @@ CSL_JSON.prototype.attributes = function (myjson) {
 };
 
 
-CSL_JSON.prototype.content = function (myjson) {
+CSL.XmlJSON.prototype.content = function (myjson) {
     //print("content()");
     // xmldom.js and xmle4x.js have "undefined" as default
     var ret = "";
@@ -154,9 +104,9 @@ CSL_JSON.prototype.content = function (myjson) {
 };
 
 
-CSL_JSON.prototype.namespace = {}
+CSL.XmlJSON.prototype.namespace = {}
 
-CSL_JSON.prototype.numberofnodes = function (myjson) {
+CSL.XmlJSON.prototype.numberofnodes = function (myjson) {
     //print("numberofnodes()");
     if (myjson && "number" == typeof myjson.length) {
         return myjson.length;
@@ -167,7 +117,7 @@ CSL_JSON.prototype.numberofnodes = function (myjson) {
 
 // getAttributeName() removed. Looks like it was not being used.
 
-CSL_JSON.prototype.getAttributeValue = function (myjson,name,namespace) {
+CSL.XmlJSON.prototype.getAttributeValue = function (myjson,name,namespace) {
     //print("getAttributeValue()");
     var ret = "";
     if (namespace) {
@@ -185,7 +135,7 @@ CSL_JSON.prototype.getAttributeValue = function (myjson,name,namespace) {
     return ret;
 }
 
-CSL_JSON.prototype.getNodeValue = function (myjson,name) {
+CSL.XmlJSON.prototype.getNodeValue = function (myjson,name) {
     //print("getNodeValue()");
     var ret = "";
     if (name){
@@ -210,7 +160,7 @@ CSL_JSON.prototype.getNodeValue = function (myjson,name) {
     return ret;
 }
 
-CSL_JSON.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myjson,nodename,partname,attrname,val) {
+CSL.XmlJSON.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myjson,nodename,partname,attrname,val) {
     //print("setAttributeOnNodeIdentifiedByNameAttribute()");
     var pos, len, xml, nodes, node;
     if (attrname.slice(0,1) === '@'){
@@ -224,7 +174,7 @@ CSL_JSON.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myjso
     }
 }
 
-CSL_JSON.prototype.deleteNodeByNameAttribute = function (myjson,val) {
+CSL.XmlJSON.prototype.deleteNodeByNameAttribute = function (myjson,val) {
     //print("deleteNodeByNameAttribute()");
     var i, ilen;
     for (i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
@@ -237,7 +187,7 @@ CSL_JSON.prototype.deleteNodeByNameAttribute = function (myjson,val) {
     }
 }
 
-CSL_JSON.prototype.deleteAttribute = function (myjson,attrname) {
+CSL.XmlJSON.prototype.deleteAttribute = function (myjson,attrname) {
     //print("deleteAttribute()");
     var i, ilen;
     if ("undefined" !== typeof myjson.attrs[attrname]) {
@@ -245,13 +195,13 @@ CSL_JSON.prototype.deleteAttribute = function (myjson,attrname) {
     }
 }
 
-CSL_JSON.prototype.setAttribute = function (myjson,attr,val) {
+CSL.XmlJSON.prototype.setAttribute = function (myjson,attr,val) {
     //print("setAttribute()");
     myjson.attrs[attr] = val;
     return false;
 }
 
-CSL_JSON.prototype.nodeCopy = function (myjson,clone) {
+CSL.XmlJSON.prototype.nodeCopy = function (myjson,clone) {
     //print("nodeCopy()");
     if (!clone) {
         var clone = {};
@@ -283,7 +233,7 @@ CSL_JSON.prototype.nodeCopy = function (myjson,clone) {
     return clone;
 }
 
-CSL_JSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
+CSL.XmlJSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
     //print("getNodesByName()");
     var nodes, node, pos, len;
     if (!ret) {
@@ -310,7 +260,7 @@ CSL_JSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
     return ret;
 }
 
-CSL_JSON.prototype.nodeNameIs = function (myjson,name) {
+CSL.XmlJSON.prototype.nodeNameIs = function (myjson,name) {
     //print("nodeNameIs()");
     if (name == myjson.name) {
         return true;
@@ -318,7 +268,7 @@ CSL_JSON.prototype.nodeNameIs = function (myjson,name) {
     return false;
 }
 
-CSL_JSON.prototype.makeXml = function (myjson) {
+CSL.XmlJSON.prototype.makeXml = function (myjson) {
     //print("makeXml()");
     if ("string" === typeof myjson) {
         if (myjson.slice(0, 1) === "<") {
@@ -330,7 +280,7 @@ CSL_JSON.prototype.makeXml = function (myjson) {
     return myjson;
 };
 
-CSL_JSON.prototype.insertChildNodeAfter = function (parent,node,pos,datejson) {
+CSL.XmlJSON.prototype.insertChildNodeAfter = function (parent,node,pos,datejson) {
     //print("insertChildNodeAfter()");
     // Function is misnamed: this replaces the node
     for (var i=0,ilen=parent.children.length;i<ilen;i+=1) {
@@ -343,7 +293,7 @@ CSL_JSON.prototype.insertChildNodeAfter = function (parent,node,pos,datejson) {
 };
 
 
-CSL_JSON.prototype.insertPublisherAndPlace = function(myjson) {
+CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myjson) {
     if (myjson.name === "group") {
         var useme = true;
         var mustHaves = ["publisher","publisher-place"];
@@ -368,7 +318,7 @@ CSL_JSON.prototype.insertPublisherAndPlace = function(myjson) {
     }    
 }
 /*
-CSL_JSON.prototype.insertPublisherAndPlace = function(myxml) {
+CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myxml) {
     var group = myxml.getElementsByTagName("group");
     for (var i = 0, ilen = group.length; i < ilen; i += 1) {
         var node = group.item(i);
@@ -408,7 +358,7 @@ CSL_JSON.prototype.insertPublisherAndPlace = function(myxml) {
 };
 */
 
-CSL_JSON.prototype.isChildOfSubstitute = function(parents) {
+CSL.XmlJSON.prototype.isChildOfSubstitute = function(parents) {
     if (parents.length > 0) {
         var myparents = parents.slice();
         var parent = myparents.pop();
@@ -421,8 +371,10 @@ CSL_JSON.prototype.isChildOfSubstitute = function(parents) {
     return false;
 };
 
-CSL_JSON.prototype.addMissingNameNodes = function(myjson,parents) {
-    if (!parents) parents = [];
+CSL.XmlJSON.prototype.addMissingNameNodes = function(myjson,parents) {
+    if (!parents) {
+        parents = [];
+    }
     if (myjson.name === "names") {
         // Trawl through children to decide whether a name node is needed here
         if (!this.isChildOfSubstitute(parents)) {
@@ -448,7 +400,7 @@ CSL_JSON.prototype.addMissingNameNodes = function(myjson,parents) {
 }
 
 
-CSL_JSON.prototype.addInstitutionNodes = function(myjson) {
+CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
     //print("addInstitutionNodes()");
     var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
     // The idea here is to map relevant attributes from name and nampart=family
@@ -505,7 +457,7 @@ CSL_JSON.prototype.addInstitutionNodes = function(myjson) {
         this.addInstitutionNodes(myjson.children[i]);
     }
 }
-CSL_JSON.prototype.flagDateMacros = function(myjson) {
+CSL.XmlJSON.prototype.flagDateMacros = function(myjson) {
     //print("flagDateMacros()");
     for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
         if (myjson.children[i].name === "macro") {
@@ -515,7 +467,7 @@ CSL_JSON.prototype.flagDateMacros = function(myjson) {
         }
     }
 }
-CSL_JSON.prototype.inspectDateMacros = function(myjson) {
+CSL.XmlJSON.prototype.inspectDateMacros = function(myjson) {
     //print("inspectDateMacros()");
     if (!myjson || !myjson.children) {
         return false;
@@ -536,36 +488,11 @@ CSL_JSON.prototype.inspectDateMacros = function(myjson) {
  * String parser for XML inputs
  */
 
-CSL_JSON.prototype.jsonStringWalker = new function() {
-    var _pos, _obj, _stack
-    this.walkToObject = walkToObject;
+CSL.parseXml = function(str) {
 
-    function walkToObject(str) {
-        var lst = _listifyString(str);
-        _init();
-        _walkToObj(lst);
-        return _obj.children[0];
-    }
-
-    function _init() {
-        _pos = 0;
-        _obj = {children:[]};
-        _stack = [_obj.children];
-    }
-
-    function _parseHtmlEntities(str) {
-        return str
-            .split("&amp;").join("&")
-            .split("&quot;").join("\"")
-            .replace(/&#([0-9]{1,6});/gi, function(match, numStr) {
-                var num = parseInt(numStr, 10); // read num as normal number
-                return String.fromCharCode(num);
-            })
-            .replace(/&#x([a-f0-9]{1,6});/gi, function(match, numStr){
-                var num = parseInt(numStr, 16); // read num as hex
-                return String.fromCharCode(num);
-            });
-    }
+    var _pos = 0;
+    var _obj = {children:[]};
+    var _stack = [_obj.children];
 
     function _listifyString(str) {
         str = str.split("\n").join(" ").replace(/>[	 ]+</g, "><").replace(/<\!--.*?-->/g, "");
@@ -604,10 +531,21 @@ CSL_JSON.prototype.jsonStringWalker = new function() {
                 }
             }
         }
-        //for (i=0,ilen=lst.length;i<ilen;i++) {
-        //    print(lst[i]);
-        //}
         return lst;
+    }
+
+    function _decodeHtmlEntities(str) {
+        return str
+            .split("&amp;").join("&")
+            .split("&quot;").join("\"")
+            .replace(/&#([0-9]{1,6});/gi, function(match, numStr) {
+                var num = parseInt(numStr, 10); // read num as normal number
+                return String.fromCharCode(num);
+            })
+            .replace(/&#x([a-f0-9]{1,6});/gi, function(match, numStr){
+                var num = parseInt(numStr, 16); // read num as hex
+                return String.fromCharCode(num);
+            });
     }
 
     function _getAttributes(elem) {
@@ -632,17 +570,8 @@ CSL_JSON.prototype.jsonStringWalker = new function() {
         return m ? m[1] : null;
     }
     
-    function _walkToObj(lst, isStyle) {
-        var elem = lst[_pos];
-        if (elem.slice(0, 2) === "</" && elem.slice(1).indexOf("<") === -1) {
-            _pos += 1;
-            _stack.pop();
-            if (_pos === lst.length) {
-                return _obj;
-            } else {
-                _walkToObj(lst, isStyle);
-            }
-        }
+
+    function _castObjectFromOpeningTag(elem) {
         var obj = {};
         obj.name = _getTagName(elem);
         obj.attrs = {};
@@ -653,28 +582,58 @@ CSL_JSON.prototype.jsonStringWalker = new function() {
                     name: attributes[i],
                     value: _getAttribute(elem, attributes[i])
                 }
-                obj.attrs[attr.name] = _parseHtmlEntities(attr.value);
+                obj.attrs[attr.name] = _decodeHtmlEntities(attr.value);
             }
         }
-        
-        if (elem.slice(1).indexOf("<") > -1) {
-            var m = elem.match(/^.*>([^<]*)<.*$/);
-            obj.children = [_parseHtmlEntities(m[1])]
-            _stack.slice(-1)[0].push(obj);
-        } else if (elem.slice(-2) === "/>" && _getTagName(elem) === 'term') {
-            _stack.slice(-1)[0].push('');
-        } else {
-            obj.children = [];
-            _stack.slice(-1)[0].push(obj);
-            if (elem.slice(-2).indexOf("/>") === -1) {
-                _stack.push(obj.children);
+        obj.children = [];
+        return obj;
+    }
+
+    function _extractTextFromCompositeElement(elem) {
+        var m = elem.match(/^.*>([^<]*)<.*$/);
+        return _decodeHtmlEntities(m[1]);
+    }
+
+    function _appendToChildren(obj) {
+        _stack.slice(-1)[0].push(obj);
+    }
+
+    function _extendStackWithNewChildren(obj) {
+        _stack.push(obj.children);
+    }
+
+    function processElement(elem) {
+        var obj;
+        if (elem.slice(1).indexOf('<') > -1) {
+            // withtext
+            var tag = elem.slice(0, elem.indexOf('>')+1);
+            obj = _castObjectFromOpeningTag(tag);
+            obj.children = [_extractTextFromCompositeElement(elem)];
+            _appendToChildren(obj);
+        } else if (elem.slice(-2) === '/>') {
+            // singleton
+            obj = _castObjectFromOpeningTag(elem);
+            // Empty term as singleton
+            if (_getTagName(elem) === 'term') {
+                obj.children.push('');
             }
-        }
-        _pos += 1;
-        if (_pos >= lst.length) {
-            return _obj;
+            _appendToChildren(obj);
+        } else if (elem.slice(0, 2) === '</') {
+            // close
+            _stack.pop();
         } else {
-            _walkToObj(lst, isStyle);
+            // open
+            obj = _castObjectFromOpeningTag(elem);
+            _appendToChildren(obj)
+            _extendStackWithNewChildren(obj);
         }
     }
+
+    var lst = _listifyString(str);
+
+    for (var i=0,ilen=lst.length;i<ilen;i++) {
+        var elem = lst[i];
+        processElement(elem);
+    }
+    return _obj.children[0];
 }

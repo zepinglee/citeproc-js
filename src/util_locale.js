@@ -42,14 +42,14 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     if (beShy && this.locale[langspec.best]) {
         return;
     }
-    localexml = this.sys.xml.makeXml(this.sys.retrieveLocale("en-US"));
+    localexml = CSL.setupXml(this.sys.retrieveLocale("en-US"));
     this.localeSet(localexml, "en-US", langspec.best);
     if (langspec.best !== "en-US") {
         if (langspec.base !== langspec.best) {
-            localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.base));
+            localexml = CSL.setupXml(this.sys.retrieveLocale(langspec.base));
             this.localeSet(localexml, langspec.base, langspec.best);
         }
-        localexml = this.sys.xml.makeXml(this.sys.retrieveLocale(langspec.best));
+        localexml = CSL.setupXml(this.sys.retrieveLocale(langspec.best));
         this.localeSet(localexml, langspec.best, langspec.best);        
     }
     this.localeSet(this.cslXml, "", langspec.best);
@@ -117,20 +117,20 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     // Xml: Test if node is "locale" (nb: ns declarations need to be invoked
     // on every access to the xml object; bundle this with the functions
     //
-    locale = this.sys.xml.makeXml();
-    if (this.sys.xml.nodeNameIs(myxml, 'locale')) {
-        locale = myxml;
+    locale = myxml.makeXml();
+    if (myxml.nodeNameIs(myxml.dataObj, 'locale')) {
+        locale = myxml.dataObj;
     } else {
         //
         // Xml: get a list of all "locale" nodes
         //
-        nodes = this.sys.xml.getNodesByName(myxml, "locale");
-        for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+        nodes = myxml.getNodesByName(myxml.dataObj, "locale");
+        for (pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
             blob = nodes[pos];
             //
             // Xml: get locale xml:lang
             //
-            if (this.sys.xml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
+            if (myxml.getAttributeValue(blob, 'lang', 'xml') === lang_in) {
                 locale = blob;
                 break;
             }
@@ -139,11 +139,11 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     //
     // Xml: get a list of any cs:type nodes within locale
     //
-    nodes = this.sys.xml.getNodesByName(locale, 'type');
-    for (i = 0, ilen = this.sys.xml.numberofnodes(nodes); i < ilen; i += 1) {
+    nodes = myxml.getNodesByName(locale, 'type');
+    for (i = 0, ilen = myxml.numberofnodes(nodes); i < ilen; i += 1) {
         var typenode = nodes[i];
-        var type = this.sys.xml.getAttributeValue(typenode, 'name');
-        var gender = this.sys.xml.getAttributeValue(typenode, 'gender');
+        var type = myxml.getAttributeValue(typenode, 'name');
+        var gender = myxml.getAttributeValue(typenode, 'gender');
         this.opt.gender[type] = gender;
     }
     //
@@ -152,7 +152,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
 
     // If we are setting CSL 1.0.1 ordinals inside a style, wipe the
     // slate clean and start over.
-    var hasCslOrdinals101 = this.sys.xml.getNodesByName(locale, 'term', 'ordinal').length;
+    var hasCslOrdinals101 = myxml.getNodesByName(locale, 'term', 'ordinal').length;
     if (hasCslOrdinals101) {
         for (var key in this.locale[lang_out].ord.keys) {
             delete this.locale[lang_out].terms[key];
@@ -160,28 +160,28 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         this.locale[lang_out].ord = {"1.0.1":false,keys:{}};
     }
 
-    nodes = this.sys.xml.getNodesByName(locale, 'term');
+    nodes = myxml.getNodesByName(locale, 'term');
     // Collect ordinals info as for 1.0.1, but save only if 1.0.1 toggle triggers
     var ordinals101 = {"last-digit":{},"last-two-digits":{},"whole-number":{}};
     var ordinals101_toggle = false;
     var genderized_terms = {};
-    for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+    for (pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
         term = nodes[pos];
         //
         // Xml: get string value of attribute
         //
-        termname = this.sys.xml.getAttributeValue(term, 'name');
+        termname = myxml.getAttributeValue(term, 'name');
         if (termname === "sub verbo") {
             termname = "sub-verbo";
         }
         if (termname.slice(0,7) === "ordinal") {
-            var termstring = this.sys.xml.getNodeValue(term);
+            var termstring = myxml.getNodeValue(term);
             if (termname === "ordinal") {
                 ordinals101_toggle = true;
             } else {
-                var match = this.sys.xml.getAttributeValue(term, 'match');
+                var match = myxml.getAttributeValue(term, 'match');
                 var termstub = termname.slice(8);
-                var genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
+                var genderform = myxml.getAttributeValue(term, 'gender-form');
                 if (!genderform) {
                     genderform = "neuter";
                 }
@@ -209,21 +209,21 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         //
         // Xml: get string value of form attribute, if any
         //
-        if (this.sys.xml.getAttributeValue(term, 'form')) {
-            form = this.sys.xml.getAttributeValue(term, 'form');
+        if (myxml.getAttributeValue(term, 'form')) {
+            form = myxml.getAttributeValue(term, 'form');
         }
         //
         // Xml: get string value of gender attribute, if any
         // 
-        if (this.sys.xml.getAttributeValue(term, 'gender-form')) {
-            genderform = this.sys.xml.getAttributeValue(term, 'gender-form');
+        if (myxml.getAttributeValue(term, 'gender-form')) {
+            genderform = myxml.getAttributeValue(term, 'gender-form');
         }
         //
         // Xml: set global gender assignment for variable associated
         // with term name
         // 
-        if (this.sys.xml.getAttributeValue(term, 'gender')) {
-            this.locale[lang_out]["noun-genders"][termname] = this.sys.xml.getAttributeValue(term, 'gender');
+        if (myxml.getAttributeValue(term, 'gender')) {
+            this.locale[lang_out]["noun-genders"][termname] = myxml.getAttributeValue(term, 'gender');
         }
         // Work on main segment or gender-specific sub-segment as appropriate
         if (genderform) {
@@ -238,12 +238,12 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         //
         // Xml: test of existence of node
         //
-        if (this.sys.xml.numberofnodes(this.sys.xml.getNodesByName(term, 'multiple'))) {
+        if (myxml.numberofnodes(myxml.getNodesByName(term, 'multiple'))) {
             //
             // Xml: get string value of attribute, plus
             // Xml: get string value of node content
             //
-            target[form][0] = this.sys.xml.getNodeValue(term, 'single');
+            target[form][0] = myxml.getNodeValue(term, 'single');
             if (target[form][0].indexOf("%s") > -1) {
                 this.opt.hasPlaceholderTerm = true;
             }
@@ -251,7 +251,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             // Xml: get string value of attribute, plus
             // Xml: get string value of node content
             //
-            target[form][1] = this.sys.xml.getNodeValue(term, 'multiple');
+            target[form][1] = myxml.getNodeValue(term, 'multiple');
             if (target[form][1].indexOf("%s") > -1) {
                 this.opt.hasPlaceholderTerm = true;
             }
@@ -260,7 +260,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             // Xml: get string value of attribute, plus
             // Xml: get string value of node content
             //
-            target[form] = this.sys.xml.getNodeValue(term);
+            target[form] = myxml.getNodeValue(term);
             if (target[form].indexOf("%s") > -1) {
                 this.opt.hasPlaceholderTerm = true;
             }
@@ -314,14 +314,14 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     //
     // Xml: get list of nodes by node type
     //
-    nodes = this.sys.xml.getNodesByName(locale, 'style-options');
-    for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+    nodes = myxml.getNodesByName(locale, 'style-options');
+    for (pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
         if (true) {
             styleopts = nodes[pos];
             //
             // Xml: get list of attributes on a node
             //
-            attributes = this.sys.xml.attributes(styleopts);
+            attributes = myxml.attributes(styleopts);
             for (attrname in attributes) {
                 if (attributes.hasOwnProperty(attrname)) {
                     if (attrname === "@punctuation-in-quote" || attrname === "@limit-day-ordinals-to-day-1") {
@@ -370,14 +370,14 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     //
     // Xml: get list of nodes by type
     //
-    nodes = this.sys.xml.getNodesByName(locale, 'date');
-    for (pos = 0, len = this.sys.xml.numberofnodes(nodes); pos < len; pos += 1) {
+    nodes = myxml.getNodesByName(locale, 'date');
+    for (pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
         if (true) {
             date = nodes[pos];
             //
             // Xml: get string value of attribute
             //
-            this.locale[lang_out].dates[this.sys.xml.getAttributeValue(date, "form")] = date;
+            this.locale[lang_out].dates[myxml.getAttributeValue(date, "form")] = date;
         }
     }
 };

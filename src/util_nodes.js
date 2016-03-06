@@ -54,10 +54,10 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     var hasDate = false;
     var macroid = false;
-    macro_nodes = this.sys.xml.getNodesByName(this.cslXml, 'macro', mkey);
+    macro_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, 'macro', mkey);
     if (macro_nodes.length) {
-        macroid = this.sys.xml.getAttributeValue(macro_nodes[0],'cslid');
-        hasDate = this.sys.xml.getAttributeValue(macro_nodes[0], "macro-has-date");
+        macroid = this.cslXml.getAttributeValue(macro_nodes[0],'cslid');
+        hasDate = this.cslXml.getAttributeValue(macro_nodes[0], "macro-has-date");
     }
     if (hasDate) {
         mkey = mkey + "@" + this.build.current_default_locale;
@@ -86,7 +86,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     CSL.Node.group.build.call(macro_key_token, this, target);
 
     // Node does not exist in the CSL
-    if (!this.sys.xml.getNodeValue(macro_nodes)) {
+    if (!this.cslXml.getNodeValue(macro_nodes)) {
         throw "CSL style error: undefined macro \"" + mkey + "\"";
     }
 
@@ -151,7 +151,7 @@ CSL.runAltMacro = function (state, alt_macro, Item, item) {
         flag[1] = false;
         var mytarget = CSL.getMacroTarget.call(state, alt_macro);
         if (mytarget) {
-            var macro_nodes = state.sys.xml.getNodesByName(state.cslXml, 'macro', alt_macro);
+            var macro_nodes = state.cslXml.getNodesByName(state.cslXml.dataObj, 'macro', alt_macro);
             CSL.buildMacro.call(state, mytarget, macro_nodes);
             CSL.configureMacro.call(state, mytarget);
         }
@@ -197,23 +197,23 @@ CSL.configureMacro = function (mytarget) {
  */
 CSL.XmlToToken = function (state, tokentype, explicitTarget) {
     var name, txt, attrfuncs, attributes, decorations, token, key, target;
-    name = state.sys.xml.nodename(this);
+    name = state.cslXml.nodename(this);
     //CSL.debug(tokentype + " : " + name);
     if (state.build.skip && state.build.skip !== name) {
         return;
     }
     if (!name) {
-        txt = state.sys.xml.content(this);
+        txt = state.cslXml.content(this);
         if (txt) {
             state.build.text = txt;
         }
         return;
     }
-    if (!CSL.Node[state.sys.xml.nodename(this)]) {
+    if (!CSL.Node[state.cslXml.nodename(this)]) {
         throw "Undefined node name \"" + name + "\".";
     }
     attrfuncs = [];
-    attributes = state.sys.xml.attributes(this);
+    attributes = state.cslXml.attributes(this);
     decorations = CSL.setDecorations.call(this, state, attributes);
     token = new CSL.Token(name, tokentype);
     if (tokentype !== CSL.END || name === "if" || name === "else-if" || name === "layout") {

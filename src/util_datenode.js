@@ -7,38 +7,38 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     // This may be a little reckless: not sure what happens on no-date conditions
     this.build.date_key = true;
 
-    form = this.sys.xml.getAttributeValue(node, "form");
+    form = this.cslXml.getAttributeValue(node, "form");
     var lingo;
-    if ("accessed" === this.sys.xml.getAttributeValue(node, "variable")) {
+    if ("accessed" === this.cslXml.getAttributeValue(node, "variable")) {
         lingo = this.opt["default-locale"][0];
     } else {
-        lingo = this.sys.xml.getAttributeValue(node, "lingo");
+        lingo = this.cslXml.getAttributeValue(node, "lingo");
     }
 
     if (!this.getDate(form)) {
         return parent;
     }
 
-    var dateparts = this.sys.xml.getAttributeValue(node, "date-parts");
+    var dateparts = this.cslXml.getAttributeValue(node, "date-parts");
 
-    variable = this.sys.xml.getAttributeValue(node, "variable");
-    prefix = this.sys.xml.getAttributeValue(node, "prefix");
-    suffix = this.sys.xml.getAttributeValue(node, "suffix");
-    display = this.sys.xml.getAttributeValue(node, "display");
-    cslid = this.sys.xml.getAttributeValue(node, "cslid");
+    variable = this.cslXml.getAttributeValue(node, "variable");
+    prefix = this.cslXml.getAttributeValue(node, "prefix");
+    suffix = this.cslXml.getAttributeValue(node, "suffix");
+    display = this.cslXml.getAttributeValue(node, "display");
+    cslid = this.cslXml.getAttributeValue(node, "cslid");
     
     //
     // Xml: Copy a node
     //
-    datexml = this.sys.xml.nodeCopy(this.getDate(form, ("accessed" === variable)));
-    this.sys.xml.setAttribute(datexml, 'lingo', this.opt.lang);
-    this.sys.xml.setAttribute(datexml, 'form', form);
-    this.sys.xml.setAttribute(datexml, 'date-parts', dateparts);
-    this.sys.xml.setAttribute(datexml, "cslid", cslid);
+    datexml = this.cslXml.nodeCopy(this.getDate(form, ("accessed" === variable)));
+    this.cslXml.setAttribute(datexml, 'lingo', this.opt.lang);
+    this.cslXml.setAttribute(datexml, 'form', form);
+    this.cslXml.setAttribute(datexml, 'date-parts', dateparts);
+    this.cslXml.setAttribute(datexml, "cslid", cslid);
     //
     // Xml: Set attribute
     //
-    this.sys.xml.setAttribute(datexml, 'variable', variable);
+    this.cslXml.setAttribute(datexml, 'variable', variable);
     //
     // Xml: Set flag
     //
@@ -46,19 +46,19 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
         //
         // Xml: Set attribute
         //
-        this.sys.xml.setAttribute(datexml, "prefix", prefix);
+        this.cslXml.setAttribute(datexml, "prefix", prefix);
     }
     if (suffix) {
         //
         // Xml: Set attribute
         //
-        this.sys.xml.setAttribute(datexml, "suffix", suffix);
+        this.cslXml.setAttribute(datexml, "suffix", suffix);
     }
     if (display) {
         //
         // Xml: Set attribute
         //
-        this.sys.xml.setAttribute(datexml, "display", display);
+        this.cslXml.setAttribute(datexml, "display", display);
     }
     //
     // Step through any date-part children of the layout date node,
@@ -68,16 +68,16 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     // tests: language_BaseLocale
     // tests: date_LocalizedTextInStyleLocaleWithTextCase
     // 
-    children = this.sys.xml.children(node);
+    children = this.cslXml.children(node);
     for (key in children) {
         // Ah. Object children is XML. Can pass it along,
         // but hasOwnProperty() won't work on it.
         //if (children.hasOwnProperty(key)) {
             // lie to jslint
             subnode = children[key];
-            if ("date-part" === this.sys.xml.nodename(subnode)) {
-                partname = this.sys.xml.getAttributeValue(subnode, "name");
-                subchildren = this.sys.xml.attributes(subnode);
+            if ("date-part" === this.cslXml.nodename(subnode)) {
+                partname = this.cslXml.getAttributeValue(subnode, "name");
+                subchildren = this.cslXml.attributes(subnode);
                 for (attr in subchildren) {
                     if (subchildren.hasOwnProperty(attr)) {
                         if ("@name" === attr) {
@@ -89,29 +89,29 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
                             }
                         }
                         val = subchildren[attr];
-                        this.sys.xml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
+                        this.cslXml.setAttributeOnNodeIdentifiedByNameAttribute(datexml, "date-part", partname, attr, val);
                     }
                 }
             }
             //}
     }
     
-    if ("year" === this.sys.xml.getAttributeValue(node, "date-parts")) {
+    if ("year" === this.cslXml.getAttributeValue(node, "date-parts")) {
 
         //
         // Xml: Find one node by attribute and delete
         //
-        this.sys.xml.deleteNodeByNameAttribute(datexml, 'month');
+        this.cslXml.deleteNodeByNameAttribute(datexml, 'month');
         //
         // Xml: Find one node by attribute and delete
         //
-        this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
+        this.cslXml.deleteNodeByNameAttribute(datexml, 'day');
         
-    } else if ("year-month" === this.sys.xml.getAttributeValue(node, "date-parts")) {
+    } else if ("year-month" === this.cslXml.getAttributeValue(node, "date-parts")) {
         //
         // Xml: Find one node by attribute and delete
         //
-        this.sys.xml.deleteNodeByNameAttribute(datexml, 'day');
+        this.cslXml.deleteNodeByNameAttribute(datexml, 'day');
     }
-    return this.sys.xml.insertChildNodeAfter(parent, node, pos, datexml);
+    return this.cslXml.insertChildNodeAfter(parent, node, pos, datexml);
 };

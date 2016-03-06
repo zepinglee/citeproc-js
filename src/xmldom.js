@@ -2,25 +2,17 @@
  * Functions for parsing an XML object using E4X.
  */
 
-// Don't clobber an existing value if this has already been declared.
-if ("undefined" === typeof CSL_IS_IE) {
-    var CSL_IS_IE;
-};
-
-var CSL_CHROME = function () {
-    if ("undefined" == typeof DOMParser || CSL_IS_IE) {
-        CSL_IS_IE = true;
+CSL.XmlDOM = function (dataObj) {
+    this.dataObj = dataObj;
+    if ("undefined" == typeof DOMParser) {
         DOMParser = function() {};
         DOMParser.prototype.parseFromString = function(str, contentType) {
-                print("fucko");
             if ("undefined" != typeof ActiveXObject) {
-                print("fucko1");
                 var xmldata = new ActiveXObject('MSXML.DomDocument');
                 xmldata.async = false;
                 xmldata.loadXML(str);
                 return xmldata;
             } else if ("undefined" != typeof XMLHttpRequest) {
-                print("fucko2");
                 var xmldata = new XMLHttpRequest;
                 if (!contentType) {
                     contentType = 'text/xml';
@@ -111,7 +103,7 @@ var CSL_CHROME = function () {
  * No need for cleaning with the DOM, I think.  This will probably just be a noop.
  * But first, let's get XML mode switching up and running.
  */
-CSL_CHROME.prototype.clean = function (xml) {
+CSL.XmlDOM.prototype.clean = function (xml) {
     xml = xml.replace(/<\?[^?]+\?>/g, "");
     xml = xml.replace(/<![^>]+>/g, "");
     xml = xml.replace(/^\s+/, "");
@@ -124,7 +116,7 @@ CSL_CHROME.prototype.clean = function (xml) {
 /**
  * Methods to call on a node.
  */
-CSL_CHROME.prototype.getStyleId = function (myxml, styleName) {
+CSL.XmlDOM.prototype.getStyleId = function (myxml, styleName) {
     var text = "";
     var tagName = "id";
     if (styleName) {
@@ -149,7 +141,7 @@ CSL_CHROME.prototype.getStyleId = function (myxml, styleName) {
     return text;
 };
 
-CSL_CHROME.prototype.children = function (myxml) {
+CSL.XmlDOM.prototype.children = function (myxml) {
     var children, pos, len, ret;
     if (myxml) {
         ret = [];
@@ -165,12 +157,12 @@ CSL_CHROME.prototype.children = function (myxml) {
     }
 };
 
-CSL_CHROME.prototype.nodename = function (myxml) {
+CSL.XmlDOM.prototype.nodename = function (myxml) {
     var ret = myxml.nodeName;
     return ret;
 };
 
-CSL_CHROME.prototype.attributes = function (myxml) {
+CSL.XmlDOM.prototype.attributes = function (myxml) {
     var ret, attrs, attr, key, xml, pos, len;
     ret = new Object();
     if (myxml && this.hasAttributes(myxml)) {
@@ -184,7 +176,7 @@ CSL_CHROME.prototype.attributes = function (myxml) {
 };
 
 
-CSL_CHROME.prototype.content = function (myxml) {
+CSL.XmlDOM.prototype.content = function (myxml) {
     var ret;
     if ("undefined" != typeof myxml.textContent) {
         ret = myxml.textContent;
@@ -197,11 +189,11 @@ CSL_CHROME.prototype.content = function (myxml) {
 };
 
 
-CSL_CHROME.prototype.namespace = {
+CSL.XmlDOM.prototype.namespace = {
     "xml":"http://www.w3.org/XML/1998/namespace"
 }
 
-CSL_CHROME.prototype.numberofnodes = function (myxml) {
+CSL.XmlDOM.prototype.numberofnodes = function (myxml) {
     if (myxml) {
         return myxml.length;
     } else {
@@ -209,12 +201,12 @@ CSL_CHROME.prototype.numberofnodes = function (myxml) {
     }
 };
 
-CSL_CHROME.prototype.getAttributeName = function (attr) {
+CSL.XmlDOM.prototype.getAttributeName = function (attr) {
     var ret = attr.name;
     return ret;
 }
 
-CSL_CHROME.prototype.getAttributeValue = function (myxml,name,namespace) {
+CSL.XmlDOM.prototype.getAttributeValue = function (myxml,name,namespace) {
     var ret = "";
     if (namespace) {
         name = namespace+":"+name;
@@ -228,7 +220,7 @@ CSL_CHROME.prototype.getAttributeValue = function (myxml,name,namespace) {
 //
 // Can't this be, you know ... simplified?
 //
-CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
+CSL.XmlDOM.prototype.getNodeValue = function (myxml,name) {
     var ret = null;
     if (name){
         var vals = myxml.getElementsByTagName(name);
@@ -257,7 +249,7 @@ CSL_CHROME.prototype.getNodeValue = function (myxml,name) {
     return ret;
 }
 
-CSL_CHROME.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,partname,attrname,val) {
+CSL.XmlDOM.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myxml,nodename,partname,attrname,val) {
     var pos, len, xml, nodes, node;
     if (attrname.slice(0,1) === '@'){
         attrname = attrname.slice(1);
@@ -272,7 +264,7 @@ CSL_CHROME.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myx
     }
 }
 
-CSL_CHROME.prototype.deleteNodeByNameAttribute = function (myxml,val) {
+CSL.XmlDOM.prototype.deleteNodeByNameAttribute = function (myxml,val) {
     var pos, len, node, nodes;
     nodes = myxml.childNodes;
     for (pos = 0, len = nodes.length; pos < len; pos += 1) {
@@ -286,11 +278,11 @@ CSL_CHROME.prototype.deleteNodeByNameAttribute = function (myxml,val) {
     }
 }
 
-CSL_CHROME.prototype.deleteAttribute = function (myxml,attr) {
+CSL.XmlDOM.prototype.deleteAttribute = function (myxml,attr) {
     myxml.removeAttribute(attr);
 }
 
-CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
+CSL.XmlDOM.prototype.setAttribute = function (myxml,attr,val) {
     if (!myxml.ownerDocument) {
         myxml = myxml.firstChild;
     }
@@ -304,12 +296,12 @@ CSL_CHROME.prototype.setAttribute = function (myxml,attr,val) {
     return false;
 }
 
-CSL_CHROME.prototype.nodeCopy = function (myxml) {
+CSL.XmlDOM.prototype.nodeCopy = function (myxml) {
     var cloned_node = myxml.cloneNode(true);
     return cloned_node;
 }
 
-CSL_CHROME.prototype.getNodesByName = function (myxml,name,nameattrval) {
+CSL.XmlDOM.prototype.getNodesByName = function (myxml,name,nameattrval) {
     var ret, nodes, node, pos, len;
     ret = [];
     nodes = myxml.getElementsByTagName(name);
@@ -324,14 +316,14 @@ CSL_CHROME.prototype.getNodesByName = function (myxml,name,nameattrval) {
     return ret;
 }
 
-CSL_CHROME.prototype.nodeNameIs = function (myxml,name) {
+CSL.XmlDOM.prototype.nodeNameIs = function (myxml,name) {
     if (name == myxml.nodeName) {
         return true;
     }
     return false;
 }
 
-CSL_CHROME.prototype.makeXml = function (myxml) {
+CSL.XmlDOM.prototype.makeXml = function (myxml) {
     var ret, topnode;
     if (!myxml) {
         myxml = "<docco><bogus/></docco>";
@@ -341,14 +333,14 @@ CSL_CHROME.prototype.makeXml = function (myxml) {
     return nodetree.firstChild;
 };
 
-CSL_CHROME.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
+CSL.XmlDOM.prototype.insertChildNodeAfter = function (parent,node,pos,datexml) {
     var myxml, xml;
     myxml = this.importNode(node.ownerDocument, datexml);
     parent.replaceChild(myxml, node);
      return parent;
 };
 
-CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
+CSL.XmlDOM.prototype.insertPublisherAndPlace = function(myxml) {
     var group = myxml.getElementsByTagName("group");
     for (var i = 0, ilen = group.length; i < ilen; i += 1) {
         var node = group.item(i);
@@ -387,7 +379,7 @@ CSL_CHROME.prototype.insertPublisherAndPlace = function(myxml) {
     }
 };
 
-CSL_CHROME.prototype.isChildOfSubstitute = function(node) {
+CSL.XmlDOM.prototype.isChildOfSubstitute = function(node) {
     if (node.parentNode) {
         if (node.parentNode.tagName.toLowerCase() === "substitute") {
             return true;
@@ -398,7 +390,7 @@ CSL_CHROME.prototype.isChildOfSubstitute = function(node) {
     return false;
 };
 
-CSL_CHROME.prototype.addMissingNameNodes = function(myxml) {
+CSL.XmlDOM.prototype.addMissingNameNodes = function(myxml) {
     var nameslist = myxml.getElementsByTagName("names");
     for (var i = 0, ilen = nameslist.length; i < ilen; i += 1) {
         var names = nameslist.item(i);
@@ -414,7 +406,7 @@ CSL_CHROME.prototype.addMissingNameNodes = function(myxml) {
 };
 
 
-CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
+CSL.XmlDOM.prototype.addInstitutionNodes = function(myxml) {
     var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
     names = myxml.getElementsByTagName("names");
     for (pos = 0, len = names.length; pos < len; pos += 1) {
@@ -453,7 +445,7 @@ CSL_CHROME.prototype.addInstitutionNodes = function(myxml) {
 };
 
 
-CSL_CHROME.prototype.flagDateMacros = function(myxml) {
+CSL.XmlDOM.prototype.flagDateMacros = function(myxml) {
     var pos, len, thenode, thedate;
     nodes = myxml.getElementsByTagName("macro");
     for (pos = 0, len = nodes.length; pos < len; pos += 1) {

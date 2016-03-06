@@ -787,6 +787,15 @@ CSL.CLOSURES = new RegExp(".*[\\]\\)]");
 if (!CSL.debug) {
     load("./src/print.js");
 }
+if (!CSL.XmlJSON) {
+    load("./src/xmljson.js");
+}
+if (!CSL.XmlDOM) {
+    load("./src/xmldom.js");
+}
+if (!CSL.XmlE4X && "undefined" !== typeof XML) {
+    load("./src/xmle4x.js");
+}
 if (!CSL.System) {
     load("./src/system.js");
 }

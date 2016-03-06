@@ -11,7 +11,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if (sys.variableWrapper) {
         CSL.VARIABLE_WRAPPER_PREPUNCT_REX = new RegExp('^([' + [" "].concat(CSL.SWAPPING_PUNCTUATION).join("") + ']*)(.*)');
     }
-    this.sys.xml = new CSL.System.Xml.Parsing();
     // XXXX This should be restored -- temporarily suspended for testing of JSON style support.
     if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {
         style = "";
@@ -58,29 +57,28 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     //
     this.dateput = new CSL.Output.Queue(this);
 
-    this.cslXml = this.sys.xml.makeXml(style);
+    this.cslXml = CSL.setupXml(style);
 
     if (this.opt.development_extensions.csl_reverse_lookup_support || this.sys.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
         this.setCslNodeIds = function(myxml, nodename) {
-            var children = this.sys.xml.children(myxml);
-            this.sys.xml.setAttribute(myxml, 'cslid', this.build.cslNodeId);
+            var children = this.cslXml.children(myxml);
+            this.cslXml.setAttribute(myxml, 'cslid', this.build.cslNodeId);
             this.opt.nodenames.push(nodename);
             this.build.cslNodeId += 1;
-            for (var i = 0, ilen = this.sys.xml.numberofnodes(children); i < ilen; i += 1) {
-                nodename = this.sys.xml.nodename(children[i]);
+            for (var i = 0, ilen = this.cslXml.numberofnodes(children); i < ilen; i += 1) {
+                nodename = this.cslXml.nodename(children[i]);
                 if (nodename) {
                     this.setCslNodeIds(children[i], nodename);
                 }
             }
         };
-        this.setCslNodeIds(this.cslXml, "style");
+        this.setCslNodeIds(this.cslXml.dataObj, "style");
     }
-    this.sys.xml.addMissingNameNodes(this.cslXml);
-    this.sys.xml.addInstitutionNodes(this.cslXml);
-    this.sys.xml.insertPublisherAndPlace(this.cslXml);
-    this.sys.xml.flagDateMacros(this.cslXml);
-
+    this.cslXml.addMissingNameNodes(this.cslXml.dataObj);
+    this.cslXml.addInstitutionNodes(this.cslXml.dataObj);
+    this.cslXml.insertPublisherAndPlace(this.cslXml.dataObj);
+    this.cslXml.flagDateMacros(this.cslXml.dataObj);
     //
     // Note for posterity: tried manipulating the XML here to insert
     // a list of the upcoming date-part names.  The object is apparently
@@ -91,9 +89,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     // which should be simpler anyway.
     //
 
-    attrs = this.sys.xml.attributes(this.cslXml);
+    attrs = this.cslXml.attributes(this.cslXml.dataObj);
     if ("undefined" === typeof attrs["@sort-separator"]) {
-        this.sys.xml.setAttribute(this.cslXml, "sort-separator", ", ");
+        this.cslXml.setAttribute(this.cslXml.dataObj, "sort-separator", ", ");
     }
 
     //if ("undefined" === typeof attrs["@name-delimiter"]) {
@@ -148,13 +146,13 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     
     this.setStyleAttributes();
 
-    this.opt.xclass = sys.xml.getAttributeValue(this.cslXml, "class");
+    this.opt.xclass = this.cslXml.getAttributeValue(this.cslXml.dataObj, "class");
     this.opt.class = this.opt.xclass;
-    this.opt.styleID = this.sys.xml.getStyleId(this.cslXml);
+    this.opt.styleID = this.cslXml.getStyleId(this.cslXml.dataObj);
     if (CSL.setSuppressedJurisdictions) {
         CSL.setSuppressedJurisdictions(this.opt.styleID, this.opt.suppressedJurisdictions);
     }
-    this.opt.styleName = this.sys.xml.getStyleId(this.cslXml, true);
+    this.opt.styleName = this.cslXml.getStyleId(this.cslXml.dataObj, true);
 
     if (this.opt.version.slice(0,4) === "1.1m") {
         this.opt.development_extensions.static_statute_locator = true;
@@ -219,11 +217,11 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.macros = {};
 
     this.build.area = "citation";
-    var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
+    var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
 
     this.build.area = "bibliography";
-    var area_nodes = this.sys.xml.getNodesByName(this.cslXml, this.build.area);
+    var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
 
     this.juris = {};
@@ -285,17 +283,17 @@ CSL.makeBuilder = function (me, target) {
     };
     function buildStyle (node) {
         var starttag, origparent;
-        if (me.sys.xml.numberofnodes(me.sys.xml.children(node))) {
+        if (me.cslXml.numberofnodes(me.cslXml.children(node))) {
             origparent = node;
             enterFunc(origparent);
-            for (var i=0;i<me.sys.xml.numberofnodes(me.sys.xml.children(origparent));i+=1) {
-                node = me.sys.xml.children(origparent)[i];
-                if (me.sys.xml.nodename(node) === null) {
+            for (var i=0;i<me.cslXml.numberofnodes(me.cslXml.children(origparent));i+=1) {
+                node = me.cslXml.children(origparent)[i];
+                if (me.cslXml.nodename(node) === null) {
                     continue;
                 }
-                if (me.sys.xml.nodename(node) === "date") {
+                if (me.cslXml.nodename(node) === "date") {
                     CSL.Util.fixDateNode.call(me, origparent, i, node)
-                    node = me.sys.xml.children(origparent)[i];
+                    node = me.cslXml.children(origparent)[i];
                 }
                 buildStyle(node, enterFunc, leaveFunc, singletonFunc);
             }
@@ -309,7 +307,7 @@ CSL.makeBuilder = function (me, target) {
 
 
 CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
-    if (!this.sys.xml.getNodeValue(area_nodes)) return;
+    if (!this.cslXml.getNodeValue(area_nodes)) return;
     var builder = CSL.makeBuilder(this, target);
     var mynode;
     if ("undefined" === typeof area_nodes.length) {
@@ -323,7 +321,6 @@ CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
 
 CSL.Engine.prototype.setStyleAttributes = function () {
     var dummy, attr, key, attributes, attrname;
-    dummy = {};
     // Protect against DOM engines that deliver a top-level document
     // (needed for createElement) that does not contain our top-level node.
     // 
@@ -332,21 +329,31 @@ CSL.Engine.prototype.setStyleAttributes = function () {
     //   (1) typeof this.cslXml.tagName === "undefined"; and
     //   (2) !this.cslXml.tagName === false
     // Coerced, it becomes an empty string.
-    var cslXml = this.cslXml;
+    
 
     // Some releases of citeproc-node call the top-level node "cslstyle":
     //   https://bitbucket.org/fbennett/citeproc-js/issue/165/citeproc-now-failing-to-run-on-nodejs
-	var tagName = this.cslXml.tagName ? ("" + this.cslXml.tagName).toLowerCase() : "";
-    if (tagName !== 'style' && tagName !== 'cslstyle') {
-        if (this.cslXml.getElementsByTagName) {
-            var cslXml = this.cslXml.getElementsByTagName('style')[0];
-        }
-    }
-    dummy.name = this.sys.xml.nodename(cslXml);
-    //
-    // Xml: more of it
-    //
-    attributes = this.sys.xml.attributes(cslXml);
+
+
+    // XXXXX
+    // This was all VERY WRONG.
+    // We can't call DOM functions outside of the parsing instance!!!
+    // May need to come back here if commenting this out breaks things,
+    // and it could be tough slog to get it fixed.
+    // XXXXX
+
+    var dummy = {};
+
+    //var cslXml = this.cslXml;
+	//var tagName = this.cslXml.tagName ? ("" + this.cslXml.tagName).toLowerCase() : "";
+    //if (tagName !== 'style' && tagName !== 'cslstyle') {
+    //    if (this.cslXml.getElementsByTagName) {
+    //        var cslXml = this.cslXml.getElementsByTagName('style')[0];
+    //    }
+    //}
+    //dummy.name = this.sys.xml.nodename(cslXml);
+    dummy.name = this.cslXml.nodename(this.cslXml.dataObj);
+    attributes = this.cslXml.attributes(this.cslXml.dataObj);
     for (attrname in attributes) {
         if (attributes.hasOwnProperty(attrname)) {
             // attr = attributes[key];

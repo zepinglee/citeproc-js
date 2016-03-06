@@ -121,10 +121,10 @@ CSL.Node.group = {
                             for (var jurisdiction in res) {
                                 var macroCount = 0;
                                 state.juris[jurisdiction] = {};
-                                var myXml = state.sys.xml.makeXml(res[jurisdiction]);
-                                var myNodes = state.sys.xml.getNodesByName(myXml, "law-module");
+                                var myXml = CSL.setupXml(res[jurisdiction]);
+                                var myNodes = myXml.getNodesByName(myXml.dataObj, "law-module");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
-                                    var myTypes = state.sys.xml.getAttributeValue(myNodes[i],"types");
+                                    var myTypes = myXml.getAttributeValue(myNodes[i],"types");
                                     if (myTypes) {
                                         state.juris[jurisdiction].types = {};
                                         myTypes =  myTypes.split(/\s+/);
@@ -136,9 +136,9 @@ CSL.Node.group = {
                                 if (!state.juris[jurisdiction].types) {
                                     state.juris[jurisdiction].types = CSL.MODULE_TYPES;
                                 }
-                                var myNodes = state.sys.xml.getNodesByName(myXml, "macro");
+                                var myNodes = myXml.getNodesByName(myXml.dataObj, "macro");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
-                                    var myName = state.sys.xml.getAttributeValue(myNodes[i], "name");
+                                    var myName = myXml.getAttributeValue(myNodes[i], "name");
                                     if (!CSL.MODULE_MACROS[myName]) {
                                         CSL.debug("CSL: skipping non-modular macro name \"" + myName + "\" in module context");
                                         continue;
