@@ -559,7 +559,6 @@ class CslTest:
         tfd,tfilename = tempfile.mkstemp(dir=".")
         os.write(tfd,self.data["csl"])
         os.close(tfd)
-
         jfh = os.popen("%s %s %s" % (validator_path,rnc_path,tfilename))
 
         success = True
