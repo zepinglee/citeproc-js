@@ -148,12 +148,14 @@ RhinoTest.prototype._fixAllNames = function(input){
 // this method.)
 //
 RhinoTest.prototype.retrieveLocale = function(lang){
-    if ("undefined" === typeof CSL_JSON) {
-        var ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
-        ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+    var ret;
+    try {
+        ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
+    } catch (e) {}
+    if (ret) {
+        ret = CSL.stripXmlProcessingInstruction(ret);
+        return XML(ret);
     } else {
-        var s = readFile("./locale/locales-"+lang+".json");
-        ret = JSON.parse(s);
+        return false;
     }
-    return ret;
 };

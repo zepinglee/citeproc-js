@@ -145,6 +145,7 @@ CSL.Node.group = {
                                     };
                                     macroCount++;
                                     state.juris[jurisdiction][myName] = [];
+                                    // Must use the same XML parser for style and modules.
                                     state.buildTokenLists(myNodes[i], state.juris[jurisdiction][myName]);
                                     state.configureTokenList(state.juris[jurisdiction][myName]);
                                 }

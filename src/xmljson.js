@@ -485,9 +485,23 @@ CSL.XmlJSON.prototype.inspectDateMacros = function(myjson) {
 }
 
 /*
+ * Clean serialized XML
+ */
+CSL.stripXmlProcessingInstruction = function (xml) {
+    if (!xml) {
+        return xml;
+    }
+    xml = xml.replace(/^<\?[^?]+\?>/, "");
+    xml = xml.replace(/<!--[^>]+-->/g, "");
+    xml = xml.replace(/^\s+/g, "");
+    xml = xml.replace(/\s+$/g, "");
+    return xml;
+};
+
+
+/*
  * String parser for XML inputs
  */
-
 CSL.parseXml = function(str) {
 
     var _pos = 0;

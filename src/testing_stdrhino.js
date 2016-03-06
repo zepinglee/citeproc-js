@@ -166,7 +166,9 @@ StdRhinoTest.prototype.run = function(){
             throw "ERROR: missing in CSL.LANG_BASES: " + lang_base;
         }
     }
-    this.style = new CSL.Engine(this,this.test.csl);
+    var testCSL = CSL.stripXmlProcessingInstruction(this.test.csl);
+    testCSL = XML(testCSL);
+    this.style = new CSL.Engine(this,testCSL);
     this.style.fun.dateparser.addDateParserMonths(["ocak", "Şubat", "mart", "nisan", "mayıs", "haziran", "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık", "bahar", "yaz", "sonbahar", "kış"]);
 
     //this.style.setOutputFormat("rtf");
@@ -307,7 +309,12 @@ StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) 
     try {
         ret = readFile("./tests/fixtures/local/styles/juris-" + id + ".csl");
     } catch (e) {}
-    return ret;
+    if (ret) {
+        ret = CSL.stripXmlProcessingInstruction(ret);
+        return XML(ret);
+    } else {
+        return false;
+    }
 }
  
 //
@@ -316,20 +323,14 @@ StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) 
 // this method.)
 //
 StdRhinoTest.prototype.retrieveLocale = function(lang){
-    if ("undefined" === typeof CSL_JSON) {
-        try {
-            var ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
-            ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
-        } catch (e) {
-            ret = false;
-        }
+    var ret;
+    try {
+        ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
+    } catch (e) {}
+    if (ret) {
+        ret = CSL.stripXmlProcessingInstruction(ret);
+        return XML(ret);
     } else {
-        try {
-            var s = readFile("./locale/locales-"+lang+".json");
-            ret = JSON.parse(s);
-        } catch (e) {
-            ret = false;
-        }
+        return false;
     }
-    return ret;
 };

@@ -25,7 +25,7 @@
 
 if ("undefined" !== typeof XML) {
     try {
-        //load("./src/xmle4x.js");
+        load("./src/xmle4x.js");
     } catch (e) {
         throw "OOPS: "+e;
     }

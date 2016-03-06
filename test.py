@@ -118,20 +118,20 @@ class ApplyLicense:
 class Bundle:
     
     def __init__(self, mode=None):
-        if mode == "zotero":
-            self.citeproc = "citeproc_zotero.js"
-        elif mode == "generic":
-            self.citeproc = "citeproc_generic.js"
-        else:
-            self.citeproc = "citeproc.js"
-        self.mode = mode
+        self.citeprocs = [
+            {
+                "bundle_name": "citeproc.js", 
+                "e4x": False,
+                "note": "without e4x support"
+            },
+            {
+                "bundle_name": "citeproc_with_e4x.js",
+                "e4x": True,
+                "note": "with e4x support"
+            }
+        ]
         f = ["load"]
-        if mode == "zotero":
-            f.extend(["print_zotero", "xmldom"])
-        elif mode == "generic":
-            f.extend(["print", "xmldom"])
-        else:
-            f.extend(["print"])
+        f.extend(["print"])
         f.extend(["xmljson","xmldom","xmle4xLoad","system","sort","util_disambig","util_nodes","util_dateparser","build"]);
         f.extend(["util_static_locator","util_processor","util_citationlabel","api_control"]);
         f.extend(["queue","state","api_cite","api_bibliography","util_integration","api_update"]);
@@ -151,33 +151,31 @@ class Bundle:
         f.extend(["disambig_cites", "util_modules","util_name_particles"]);
         self.files = f
     
-    def deleteOldBundle(self):
-        if os.path.exists( self.citeproc ):
-            os.unlink(self.citeproc)
-
-    def cleanFile(self, subfile):
+    def deleteOldBundles(self):
+        for citeproc in self.citeprocs:
+            if os.path.exists(citeproc["bundle_name"]):
+                os.unlink(citeproc["bundle_name"])
+                
+    def cleanFile(self, subfile, e4xSupport):
         subfile = fixEndings(subfile)
         subfile = re.sub("(?m)^(\/\*.*?\*\/)$", "", subfile)
         subfile = re.sub("(?sm)^\s*\/\*.*?^\s*\*\/","",subfile)
         subfile = re.sub("(?sm)^\s*//SNIP-START.*?^\s*//SNIP-END","",subfile)
         subfile = re.sub("(?sm)^\s*//.*?$","",subfile)
-        subfile = re.sub("(?sm)^\s*load.*?$","",subfile)
+        if not e4xSupport:
+            subfile = re.sub("(?sm)^\s*load.*?$","",subfile)
         subfile = re.sub("(?sm)^\s*\n","",subfile)
         return subfile
 
-    def createNewBundle(self):
-        file = ""
-        for f in self.files:
-            filename = os.path.join( "src", "%s.js"%f)
-            ifh = open(filename, "rb")
-            file += self.cleanFile(ifh.read())
-        open(self.citeproc,"w+b").write(file)
-        if self.mode == "zotero":
-            print "Wrote bundle code with dom (not e4x) support and Zotero error handling to ./citeproc_zotero.js "
-        elif self.mode == "generic":
-            print "Wrote bundle code with dom (not e4x) support and generic error handling to ./citeproc_generic.js "
-        if self.mode == "generic":
-            open(os.path.join("demo", self.citeproc),"w+b").write(file)
+    def createNewBundles(self):
+        for citeproc in self.citeprocs:
+            file = ""
+            for f in self.files:
+                filename = os.path.join( "src", "%s.js" % f)
+                ifh = open(filename, "rb")
+                file += self.cleanFile(ifh.read(), citeproc["e4x"])
+            open(citeproc["bundle_name"],"w+b").write(file)
+            print "Wrote %s (processor %s)" % (citeproc["bundle_name"], citeproc["note"])
 
 class Params:
     def __init__(self,opt,args,category,force=None):
@@ -664,8 +662,8 @@ if __name__ == "__main__":
 
     if opt.makebundle:
         bundler = Bundle()
-        bundler.deleteOldBundle()
-        bundler.createNewBundle()
+        bundler.deleteOldBundles()
+        bundler.createNewBundles()
         license = ApplyLicense()
         license.apply()
         sys.exit()
@@ -742,8 +740,8 @@ if __name__ == "__main__":
                 params.validateSource()
             if opt.bundle:
                 bundle = Bundle()
-                bundle.deleteOldBundle()
-                bundle.createNewBundle()
+                bundle.deleteOldBundles()
+                bundle.createNewBundles()
                 #license = ApplyLicense()
                 #license.apply()
             if opt.testrun:

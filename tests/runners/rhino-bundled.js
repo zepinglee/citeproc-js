@@ -56,7 +56,7 @@ dojo.registerModulePath("doh","./dojo/util/doh");
 
 //load("./src/xmle4x.js");
 //load("./xmldom.js");
-load("./citeproc.js");
+load("./citeproc_with_e4x.js");
 
 print("#####");
 print("Testing with rhino: "+environment["file.encoding"]);

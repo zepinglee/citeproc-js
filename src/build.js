@@ -12,9 +12,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         CSL.VARIABLE_WRAPPER_PREPUNCT_REX = new RegExp('^([' + [" "].concat(CSL.SWAPPING_PUNCTUATION).join("") + ']*)(.*)');
     }
     // XXXX This should be restored -- temporarily suspended for testing of JSON style support.
-    if ("undefined" === typeof CSL_JSON && "string" !== typeof style) {
-        style = "";
-    }
     if (CSL.retrieveStyleModule) {
         this.sys.retrieveStyleModule = CSL.retrieveStyleModule;
     }
