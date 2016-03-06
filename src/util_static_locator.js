@@ -87,7 +87,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
         
         // Labels embedded in number variable
         var value = "" + Item.number;
-        value = value.replace("\\", "", "g");
+        value = value.split("\\").join("");
         // Get first word, parse out labels only if it parses
         var firstword = value.split(/\s+/)[0];
         var firstlabel = CSL.STATUTE_SUBDIV_STRINGS[firstword];

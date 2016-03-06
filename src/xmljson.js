@@ -555,8 +555,8 @@ CSL_JSON.prototype.jsonStringWalker = new function() {
 
     function _parseHtmlEntities(str) {
         return str
-            .replace("&amp;", "&", "g")
-            .replace("&quot;", "\"", "g")
+            .split("&amp;").join("&")
+            .split("&quot;").join("\"")
             .replace(/&#([0-9]{1,6});/gi, function(match, numStr) {
                 var num = parseInt(numStr, 10); // read num as normal number
                 return String.fromCharCode(num);

@@ -287,7 +287,7 @@ CSL.DateParser = new function () {
             txt = txt.replace(/\s*[0-9]{2}:[0-9]{2}(?::[0-9]+)/,"");
             var m = txt.match(kanjiMonthDay);
             if (m) {
-                txt = txt.replace(/\s+/, "", "g");
+                txt = txt.replace(/\s+/g, "");
                 txt = txt.replace(kanjiYear, "");
                 txt = txt.replace(kanjiMonthDay, "-");
                 txt = txt.replace(kanjiRange, "/");

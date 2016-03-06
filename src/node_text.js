@@ -335,7 +335,7 @@ CSL.Node.text = {
                                     value = state.getVariable(Item, this.variables[0], form);
                                     if (value) {
                                         value = "" + value;
-                                        value = value.replace("\\", "", "g");
+                                        value = value.split("\\").join("");
                                         state.output.append(value, this);
                                     }
                                 }

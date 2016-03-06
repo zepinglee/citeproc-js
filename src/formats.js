@@ -244,14 +244,14 @@ CSL.Output.Formats.prototype.rtf = {
             text = "";
         }
         return text
-        .replace(/([\\{}])/g, "\\$1", "g")
+        .replace(/([\\{}])/g, "\\$1")
         .replace(CSL.SUPERSCRIPTS_REGEXP,
                  function(aChar) {
                      return "\\super " + CSL.SUPERSCRIPTS[aChar] + "\\nosupersub{}";
                  })
         .replace(/[\u007F-\uFFFF]/g,
                  function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}"; })
-        .replace("\t", "\\tab{}", "g");
+        .split("\t").join("\\tab{}");
     },
     "@passthrough/true": CSL.Output.Formatters.passthrough,
     "@font-style/italic":"{\\i{}%%STRING%%}",
