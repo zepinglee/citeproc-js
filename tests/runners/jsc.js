@@ -54,7 +54,7 @@ dojo.registerModulePath("csl", "./src");
 dojo.registerModulePath("csl.output", "./src/output");
 dojo.registerModulePath("doh", "./dojo-sm/util/doh");
 
-load("./src/xmljson.js");
+//load("./src/xmljson.js");
 load("./src/load.js");
 
 //print("#####");
