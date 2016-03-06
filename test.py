@@ -132,7 +132,7 @@ class Bundle:
             f.extend(["print", "xmldom"])
         else:
             f.extend(["print"])
-        f.extend(["system","sort","util_disambig","util_nodes","util_dateparser","build"]);
+        f.extend(["xmljson","xmldom","xmle4xLoad","system","sort","util_disambig","util_nodes","util_dateparser","build"]);
         f.extend(["util_static_locator","util_processor","util_citationlabel","api_control"]);
         f.extend(["queue","state","api_cite","api_bibliography","util_integration","api_update"]);
         f.extend(["util_locale","node_bibliography","node_choose","node_citation","node_comment"]);
