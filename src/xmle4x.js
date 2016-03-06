@@ -243,7 +243,6 @@ CSL_E4X.prototype.isChildOfSubstitute = function(node) {
 };
 
 CSL_E4X.prototype.addMissingNameNodes = function(myxml) {
-    print("Oh, shit, it's e4x!");
     default xml namespace = "http://purl.org/net/xbiblio/csl"; with({});
     for each (node in myxml..names) {
         if ("xml" == typeof node && !this.isChildOfSubstitute(node) && node.elements("name").length() === 0) {
