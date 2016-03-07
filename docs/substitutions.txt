@@ -17,6 +17,14 @@
 
    <span style="background:#cccccc;border-radius:0.5em;padding-left:0.25em;padding-right:0.25em;font-weight:bold;font-family:'Courier New', Courier, monospace">jing</span>
 
+.. |python| raw:: html
+
+   <span style="background:#cccccc;border-radius:0.5em;padding-left:0.25em;padding-right:0.25em;font-weight:bold;font-family:'Courier New', Courier, monospace">python</span>
+
+.. |rhino| raw:: html
+
+   <span style="background:#cccccc;border-radius:0.5em;padding-left:0.25em;padding-right:0.25em;font-weight:bold;font-family:'Courier New', Courier, monospace">rhino</span>
+
 .. |--| unicode:: U+2013
    :trim:
 

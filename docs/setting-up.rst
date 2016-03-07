@@ -30,14 +30,14 @@ git
    |git| installed locally to obtain the sources.
 
 Python
-   A Python interpreter is required to run the test suite. Both
-   Python 2.7 and Python 3.5 are supported.
+   The ``test.py`` script that runs the test suite is written in
+   |python|. Both Python 2.7 and Python 3.5 are supported.
 
 .. _javascript-engines:
 
 Java
-   The Rhino JavaScript interpreter shipped with the processor
-   sources depends on Java.
+   The |rhino| JavaScript interpreter and the |jing| XML validator included
+   in the processor sources depend on Java.
 
 ---------------------
 Obtaining the sources

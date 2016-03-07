@@ -13,60 +13,76 @@ Introduction
 ------------
 
 The CSL test suite is an essential backdrop to |citeproc-js|
-development. This chapter explains the options to the ``test.py``
-script, the use of alternative JavaScript engines, the use of the
-optional |jing| schema validator in the test framework, and the syntax
-of the CSL test fixtures.
+development. This chapter explains the basic features of the
+``./test.py`` script that runs the suite.
 
-The matters covered in this chapter are not essential to deployment,
-but familiarity with the test framework is helpful when isolating
-formatting issues and other processor bugs encountered in production.
+---------------------------
+Running individual fixtures
+---------------------------
 
--------------------
-System requirements
--------------------
+The processor ships with a set of local tests, and includes the
+official CSL test fixtures as a submodule, in the following locations:
 
-For faster processing, install a standalone JS engine
-compiled for your platform.  Supported engines are:
+.. table:: CSL test fixture locations
 
-   * `Mozilla Spidermonkey`__
-   * `WebKit JavaScriptCore`__
-   * `Google V8`__
+   +------------------------------+-------------------------------------------------+
+   | **Fixture type**             | **Relative path**                               |
+   +------------------------------+-------------------------------------------------+
+   | |citeproc-js| local tests    | ``./tests/fixtures/local``                      |
+   +------------------------------+-------------------------------------------------+
+   | Official CSL test suite      | ``./tests/fixtures/std/processor-tests/humans`` |
+   +------------------------------+-------------------------------------------------+
 
-   Packaged binaries of these engines (with names such as ``js24``,
-   ``jsc``, or ``d8``) may be available for your platform.
+Fixture names have two elements separated by an underscore, with a
+``.txt`` extension (e.g. ``name_WesternSimple.txt``). To run a single
+test, provide the test name as the argument to the ``-s`` option. For
+cut-and-paste convenience, various forms of the name are recognized::
+
+     ./test.py -s name WesternSimple
+     ./test.py -s name_WesternSimple
+     ./test.py -s name_WesternSimple.txt
+
+------------------------------
+Alternative JavaScript engines
+------------------------------
+
+The Rhino JavaScript engine bundled with the processor sources is very
+solid, but also very slow. For faster processing, install a standalone
+JS engine compiled for your platform. In addition to Rhino, three
+engines are supported:
+
+.. table:: JavaScript Engine Info
+
+   +--------------------+-------------+-----------------+----------------------------------------------+
+   |                    |             |**Configuration**|                                              |
+   |**Name**            |**Browser**  ||br| **Nickname**|**Default** **Command**                       |
+   +--------------------+-------------+-----------------+----------------------------------------------+
+   |  Rhino             |   (none)    |  ``rhino``      | java -client -jar ./rhino/js-1.7R3.jar -opt 8|
+   +--------------------+-------------+-----------------+----------------------------------------------+
+   | `Spidermonkey`__   |   Firefox   |  ``mozjs``      | js24                                         |
+   +--------------------+-------------+-----------------+----------------------------------------------+
+   | `V8`__             |Google Chrome|  ``v8``         | d8                                           |
+   +--------------------+-------------+-----------------+----------------------------------------------+
+   | `JavascriptCore`__ |   Safari    |  ``jsc``        | jsc                                          |
+   +--------------------+-------------+-----------------+----------------------------------------------+
 
 __ https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey/Build_Documentation
 
-__ https://github.com/Lichtso/JSC-Standalone
-
 __ https://github.com/v8/v8/wiki/Building%20with%20Gyp
 
+__ https://github.com/Lichtso/JSC-Standalone
 
 
-+++++
-Rhino
-+++++
+Here are some numbers to give an idea of the relative performance of
+the engines. The times are for a complete run of the test suite
+on a 64-bit Ubuntu laptop that I use for development:
 
-To run the test suite with the default Rhino interpreter, enter the
-project directory and invoke the test script as follows::
-
-    cd citeproc-js
-    ./test.py -r
-
-++++++++++++++++++++++++++++++
-Alternative JavaScript Engines
-++++++++++++++++++++++++++++++
-
-Tests run much faster with an alternative JavaScript engine. Here are
-some comparison timings on a 64-bit Ubuntu laptop:
-
-.. table:: Completion times for citeproc-js tests
+.. table:: Completion times for |citeproc-js| tests
 
    +---------------+----------------+
    |**Engine**     |**(seconds)**   |
    +---------------+----------------+
-   |Rhino          |              66|
+   |Rhino          |              55|
    +---------------+----------------+
    |Spidermonkey 24|              31|
    |               |                |
@@ -76,17 +92,53 @@ some comparison timings on a 64-bit Ubuntu laptop:
    |JavaScriptCore |              20|
    +---------------+----------------+
 
-To run tests with an alternative engine, begin by installing one of
-those listed under :ref:`Basic Requirements: JavaScript
-<javascript-engines>` above, and confirm that it can be invoked from
-the command line. Then edit the configuration file at
-``./tests/config/test.cnf`` as required.
+After installing an engine on your system (as a binary package, or by
+compiling from scratch), check that it will run from the command line,
+and then edit its ``command`` entry in the configuration file at
+``./tests/config/test.cnf`` as required: [#]_
 
 .. literalinclude:: ../tests/config/test.cnf
 
-For example, if you compile a version of Mozilla Spidermonkey in your
-path that can be invoked with the command ``js38``, you would replace
-the ``command:`` entry under ``[mozjs]`` with ``js38``.
+.. [#] Note the use of a shell script for ``d8``, the standalone
+       version of the Google Chrome V8 engine, which (apparently) must
+       be run from the directory containing its binary.)
 
-Note that the entry for the Google V8 engine (``d8``) is called via
-a shell script. 
+Once configured, an alternative engine can be run by giving its
+nickname to the ``./test.py`` script::
+
+    ./test.py -e jsc -r
+
+---------------------------
+Validating test-fixture CSL
+---------------------------
+
+The syntax of CSL styles is defined by a RELAX NG schema. In addition
+to official CSL, the processor supports CSL-M, an extended version of
+the language with a separate schema. Styles of the two types are
+distinguished by the ``version`` attribute on the top-level
+node:
+
+.. table:: CSL versions
+
+   +---------------+--------------+--------------------------------------------------------------------------------------+
+   |**CSL** |br|   |**attribute** | **sample style node**                                                                |
+   |**version**    ||br| **value**|                                                                                      |
+   +---------------+--------------+--------------------------------------------------------------------------------------+
+   | CSL 1.0       | 1.0          | ``<style xmlns="http://purl.org/net/xbiblio/csl" version="1.0" class="note"/>``      |
+   +---------------+--------------+--------------------------------------------------------------------------------------+
+   | CSL-M         | 1.1mlz1      | ``<style xmlns="http://purl.org/net/xbiblio/csl" version="1.1mlz1" class="note"/>``  |
+   +---------------+--------------+--------------------------------------------------------------------------------------+
+
+The bundled |jing| validator can be used to check that fixtures are
+syntactically correct. To run the validator against all fixtures,
+use the ``-c`` option with no argument::
+
+    ./test.py -c
+
+To test a single fixture, provide its name::
+
+    ./test.py -c name_WesternSimple.txt
+
+The script does not explicitly report success (apart from writing a
+progress dot to the console): it produces chatter only if a test
+fails.

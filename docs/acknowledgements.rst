@@ -19,6 +19,7 @@ years. Particular thanks are due to the following:
 * Sebastian Karcher
 * Simon Kornblith
 * Carles Pina
+* Robert Richards
 * Dan Stillman
 
 * Rintze Zelle
