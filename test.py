@@ -275,10 +275,10 @@ doh.register("%s.%s", [
                         if self.opt.verbose:
                             sys.stdout.write("+")
                         entry_text = '''    function(){
-        var test = new StdRhinoTest("%s");
+        var test = new StdRhinoTest("%s", "%s");
         doh.assertEqual(test.result, test.run());
     }, 
-''' % filename
+''' % (filename, self.opt.engine)
                         ofh.write(entry_text)
                     ofh.write("]);\n")
 
@@ -305,7 +305,7 @@ doh.register("%s.%s", [
         doh.assertEqual(test.result, test.run());
     },
 ])
-''' % (set,file[:-4],file[:-4],set)
+''' % (set, file[:-4], file[:-4], self.opt.engine)
                 ofh.write(body)
                 has_files = True
         else:
@@ -447,6 +447,8 @@ class CslTest:
         ## print "kkk: %s" % (self.testname,)
         for element in ["MODE","CSL"]:
             self.extract(element,required=True,is_json=False)
+            if element == "MODE" and self.opt.engine == "rhino":
+                self.data['mode'] = "%s-rhino" % self.data['mode']
             if element == "CSL" and self.data['csl'].endswith('.csl'):
                 stylepath = os.path.join(os.path.join(path("styles")), self.data['csl'])
                 self.data['csl'] = fixEndings(open(stylepath, "rb").read())

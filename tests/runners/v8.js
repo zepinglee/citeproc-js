@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 and 2010 Frank G. Bennett, Jr. All Rights Reserved.
+ * Copyright (c) 2009 and 2016 Frank G. Bennett, Jr. All Rights Reserved.
  *
  * The contents of this file are subject to the Common Public
  * Attribution License Version 1.0 (the “License”); you may not use
@@ -41,9 +41,6 @@ dojo.tests = {
 };
 =====*/
 
-//
-// XXXXX rhino specific
-//
 load("./dojo-sm/dojo/dojo.js");
 dojo.registerModulePath("dojo","./dojo-sm/dojo");
 dojo.registerModulePath("dojox","./dojo-sm/dojox");
@@ -54,19 +51,7 @@ dojo.registerModulePath("csl", "./src");
 dojo.registerModulePath("csl.output", "./src/output");
 dojo.registerModulePath("doh", "./dojo-sm/util/doh");
 
-//load("./src/xmljson.js");
 load("./src/load.js");
 
-//print("#####");
-//print("Testing with rhino: "+environment["file.encoding"]);
-//if ("UTF-8" != environment["file.encoding"]){
-//	environment["file.encoding"] = "UTF-8";
-//	environment["sun.jnu.encoding"] = "UTF-8";
-//	CSL.debug("Reset Rhino file.encoding to UTF-8");
-//}
-//CSL.debug("#####");
-
-load("./src/testing_v8.js");
-load("./src/testing_stdv8.js");
-
+load("./src/test_runner.js");
 load("./tests/runners/run.js");

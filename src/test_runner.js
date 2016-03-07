@@ -1,35 +1,98 @@
-var StdRhinoTest = function(myname,custom){
+var StdRhinoTest = function(myname,engineNickname){
     this.myname = myname;
+    this.engineNickname = engineNickname;
     this._cache = {};
-    // "default" now actually means something: the default jurisdiction.
     this._acache = {};
     this._acache["default"] = new CSL.AbbreviationSegments();
     this._ids = [];
     if (myname){
         var test;
-        //if ("undefined" != typeof custom && custom == "custom"){
-        //    test = snarf("./tests/custom/" + myname + ".json", "UTF-8");
-        //} else if ("undefined" != typeof custom && custom == "local"){
-        //    test = snarf("./tests/local/machines/" + myname + ".json", "UTF-8");
-        //} else {
-        //    test = snarf("./tests/std/machines/" + myname + ".json", "UTF-8");
-        //}
-        test = snarf("./tests/fixtures/run/machines/" + myname + ".json", "UTF-8");
+        if (this.engineNickname == "rhino") {
+            test = readFile("./tests/fixtures/run/machines/" + myname + ".json", "UTF-8");
+        } else if (this.engineNickname == "jsc") {
+            test = readFile("./tests/fixtures/run/machines/" + myname + ".json");
+        } else if (this.engineNickname === "mozjs") {
+            test = snarf("./tests/fixtures/run/machines/" + myname + ".json", "UTF-8");
+        } else if (this.engineNickname == "v8") {
+            test = read("./tests/fixtures/run/machines/" + myname + ".json");
+        } else {
+            print("Aiyeeee!");
+        }
         eval( "this.test = "+test);
         this.result = this.test.result;
         this._setCache();
     }
 };
 
-//
 // Retrieve properly composed item from phoney database.
-// (Deployments must provide an instance object with
+// (Deployments MUST provide an instance object with
 // this method.)
-//
 StdRhinoTest.prototype.retrieveItem = function(id){
     return this._cache[id];
 };
 
+// Retrieve locale object from filesystem
+// (Deployments MUST provide an instance object with
+// this method.)
+StdRhinoTest.prototype.retrieveLocale = function(lang){
+    try {
+        var ret = null;
+        if (this.engineNickname == "rhino") {
+            ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
+        } else if (this.engineNickname == "jsc") {
+            ret = readFile("./locale/locales-"+lang+".xml");
+        } else if (this.engineNickname === "mozjs") {
+            ret = snarf("./locale/locales-"+lang+".xml", "UTF-8");
+        } else if (this.engineNickname == "v8") {
+            ret = read("./locale/locales-"+lang+".xml");
+        }
+        ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
+    } catch (e) {
+        ret = false;
+    }
+    if (this.engineNickname == "rhino") {
+        if (ret) {
+            ret = CSL.stripXmlProcessingInstruction(ret);
+            ret = XML(ret);
+        } else {
+            ret = false;
+        }
+    }
+    return ret;
+};
+
+// Retrieve style module, for law support
+// (Deployments MAY provide an instance object with
+// this method.)
+StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) {
+    var ret = null;
+    var id = [jurisdiction];
+    if (preference) {
+        id.push(preference);
+    }
+    id = id.join("-");
+    try {
+        if (this.engineNickname == "rhino") {
+            ret = readFile("./tests/fixtures/local/styles/juris-" + id + ".csl", "UTF-8");
+        } else if (this.engineNickname == "jsc") {
+            ret = readFile("./tests/fixtures/local/styles/juris-" + id + ".csl");
+        } else if (this.engineNickname === "mozjs") {
+            ret = snarf("./tests/fixtures/local/styles/juris-" + id + ".csl", "UTF-8");
+        } else if (this.engineNickname == "v8") {
+            ret = read("./tests/fixtures/local/styles/juris-" + id + ".csl");
+        }
+    } catch (e) {}
+    if (this.engineNickname == "rhino") {
+        if (ret) {
+            ret = CSL.stripXmlProcessingInstruction(ret);
+            ret = XML(ret);
+        } else {
+            ret = false;
+        }
+    }
+    return ret;
+}
+ 
 StdRhinoTest.prototype.getAbbreviation = function(dummyListNameVar, obj, jurisdiction, category, key){
     var newkey = key;
     if (!this._acache[jurisdiction]) {
@@ -85,11 +148,10 @@ StdRhinoTest.prototype.addAbbreviation = function(jurisdiction,category,key,val)
     this._acache[jurisdiction][category][key] = val;
 };
 
-//
 // Build phoney database.
-//
 StdRhinoTest.prototype._setCache = function(){
-    for each (item in this.test.input){
+    for (var i=0,ilen=this.test.input.length;i<ilen;i++) {
+        var item = this.test.input[i];
         this._cache[item.id] = item;
         this._ids.push(item.id);
     }
@@ -99,11 +161,19 @@ StdRhinoTest.prototype._setCache = function(){
 StdRhinoTest.prototype._readTest = function(){
     var test;
     var filename = "std/machines/" + this.myname + ".json";
-    //
-    var teststring = snarf(filename);
-    //
+    
+    var teststring = null;
+    if (this.engineNickname == "rhino") {
+        ret = readFile(filename, "UTF-8");
+    } else if (this.engineNickname == "jsc") {
+        ret = readFile(filename);
+    } else if (this.engineNickname === "mozjs") {
+        ret = snarf(filename, "UTF-8");
+    } else if (this.engineNickname == "v8") {
+        ret = read(filename);
+    }
+
     // Grab test data in an object.
-    //
     try {
         eval( "test = "+teststring );
     } catch(e){
@@ -119,9 +189,6 @@ StdRhinoTest.prototype.run = function(){
     // print(this.myname);
     var len, pos, ret, id_set, nick;
     ret = new Array();
-
-    // XXX Uncomment for local sys_VariableWrapper.txt test.
-
 
     function variableWrapper(params, prePunct, str, postPunct) {
         //print(JSON.stringify(params,null,2));
@@ -157,10 +224,24 @@ StdRhinoTest.prototype.run = function(){
             throw "ERROR: missing in CSL.LANG_BASES: " + lang_base;
         }
     }
-    this.style = new CSL.Engine(this,this.test.csl);
+    var testCSL = this.test.csl;
+    if (this.engineNickname == "rhino") {
+        testCSL = CSL.stripXmlProcessingInstruction(this.test.csl);
+        testCSL = XML(testCSL);
+    }
+    this.style = new CSL.Engine(this,testCSL);
     this.style.fun.dateparser.addDateParserMonths(["ocak", "Şubat", "mart", "nisan", "mayıs", "haziran", "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık", "bahar", "yaz", "sonbahar", "kış"]);
 
-    //this.style.setOutputFormat("rtf");
+    var mode = this.test.mode.split("-");
+    var submode = {};
+    for (var i=1,ilen=mode.length;i<ilen;i++) {
+        submode[mode[i]] = true;
+    }
+    this.test.mode = mode[0];
+
+    if (submode["rtf"]) {
+        this.style.setOutputFormat("rtf");
+    }
     //this.style.setParseNames(true);
     this.style.opt.development_extensions.static_statute_locator = true;
     this.style.opt.development_extensions.clobber_locator_if_no_statute_section = true;
@@ -201,32 +282,31 @@ StdRhinoTest.prototype.run = function(){
         }
     }
 
-    if (this.test.mode === "bibliography-nosort") {
-        nosort = true;
-    }
     if (this.test.bibentries){
-        for each (id_set in this.test.bibentries){
-            this.style.updateItems(id_set, nosort);
+        for (i=0,ilen=this.test.bibentries.length;i<ilen;i++) {
+            var id_set = this.test.bibentries[i];
+            this.style.updateItems(id_set, submode["nosort"]);
         }
     } else if (!this.test.citations) {
-        this.style.updateItems(this._ids, nosort);
+        this.style.updateItems(this._ids, submode["nosort"]);
     }
     if (!this.test.citation_items && !this.test.citations){
         var citation = [];
-        for each (item in this.style.registry.reflist){
+        for (var i=0,ilen=this.style.registry.reflist.length;i<ilen;i++) {
+            var item = this.style.registry.reflist[i];
             citation.push({"id":item.id});
         }
         this.test.citation_items = [citation];
     }
     var citations = [];
     if (this.test.citation_items){
-        for each (var citation in this.test.citation_items){
-            // sortCitationCluster(), we hardly knew ya
-            // this.style.sortCitationCluster(citation);
+        for (var i=0,ilen=this.test.citation_items.length;i<ilen;i++) {
+            var citation = this.test.citation_items[i];
             citations.push(this.style.makeCitationCluster(citation));
         }
     } else if (this.test.citations){
-        for each (var citation in this.test.citations.slice(0,-1)){
+        for (var i=0,ilen=this.test.citations.slice(0, -1).length;i<ilen;i++) {
+            var citation = this.test.citations.slice(0,-1)[i];
             this.style.processCitationCluster(citation[0],citation[1],citation[2]);
         };
         if (this.test.input2) {
@@ -240,7 +320,7 @@ StdRhinoTest.prototype.run = function(){
     for (var pos in result){
         indexMap[""+result[pos][0]] = pos;
     };
-    for (var cpos in this.style.registry.citationreg.citationByIndex){
+    for (var cpos=0;cpos<this.style.registry.citationreg.citationByIndex.length;cpos++){
         var citation = this.style.registry.citationreg.citationByIndex[cpos];
         if (indexMap[""+cpos]){
             citations.push(">>["+cpos+"] "+result[indexMap[cpos]][1]);
@@ -249,14 +329,14 @@ StdRhinoTest.prototype.run = function(){
         }
     };
     ret = citations.join("\n");
-    if (this.test.mode == "bibliography" || this.test.mode == "bibliography-nosort"){
+    if (this.test.mode == "bibliography" && !submode["header"]){
         if (this.test.bibsection){
             var ret = this.style.makeBibliography(this.test.bibsection);
         } else {
             var ret = this.style.makeBibliography();
         }
         ret = ret[0]["bibstart"] + ret[1].join("") + ret[0]["bibend"];
-    } else if (this.test.mode == "bibliography-header"){
+    } else if (this.test.mode == "bibliography" && submode["header"]){
         var obj = this.style.makeBibliography()[0];
         var lst = [];
         for (var key in obj) {
@@ -282,36 +362,9 @@ StdRhinoTest.prototype.run = function(){
         }
         ret = ret.replace(/^\s+/,"").replace(/\s+$/,"");
     }
-    if (this.test.mode !== "bibliography" && this.test.mode !== "citation" && this.test.mode !== "bibliography-header" && this.test.mode != "bibliography-nosort") {
+    if (this.test.mode !== "bibliography" && this.test.mode !== "citation") {
         throw "Invalid mode in test file "+this.myname+": "+this.test.mode;
     }
     return ret;
 };
 
-StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) {
-    var ret = null;
-    var id = [jurisdiction];
-    if (preference) {
-        id.push(preference);
-    }
-    id = id.join("-");
-    try {
-        ret = snarf("./tests/fixtures/local/styles/juris-" + id + ".csl");
-    } catch (e) {}
-    return ret;
-}
- 
-//
-// Retrieve locale object from filesystem
-// (Deployments must provide an instance object with
-// this method.)
-//
-StdRhinoTest.prototype.retrieveLocale = function(lang){
-    try {
-        var ret = snarf("./locale/locales-"+lang+".xml");
-        ret = ret.replace(/\s*<\?[^>]*\?>\s*\n/g, "");
-    } catch (e) {
-        ret = false;
-    }
-    return ret;
-};
