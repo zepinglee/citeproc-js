@@ -1199,7 +1199,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
                     //print("objects.length="+objects.length)
                     //print("myblobs.length="+myblobs.length)
                     //buffer[0] = myparams[pos-1].splice_delimiter + buffer[0];
-                    buffer[0] = this.tmp.splice_delimiter + buffer[0];
+                    buffer[0] = txt_esc(this.tmp.splice_delimiter) + buffer[0];
                 }
             } else {
                 if (pos > 0) {
