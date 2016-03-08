@@ -39,12 +39,14 @@ CSL.Node.names = {
             // init names
             func = function (state, Item, item) {
                 state.tmp.can_substitute.push(true);
-                if (this.variables[0] === "authority") {
-                    state.parallel.StartVariable("authority");
-                    state.parallel.AppendToVariable(Item.authority,"authority");
-                } else {
+//                if (this.variables[0] === "authority") {
+print("Whoa? "+this.variables[0]);
+//                    state.parallel.StartVariable("authority");
+//                    state.parallel.AppendToVariable(Item.authority,"authority");
+//                } else {
+print("Huhnnn? "+this.variables[0]);
                     state.parallel.StartVariable("names",this.variables[0]);
-                }
+//                }
                 state.nameOutput.init(this);
             };
             this.execs.push(func);
@@ -163,11 +165,11 @@ CSL.Node.names = {
                     state.tmp.can_substitute.replace(false, CSL.LITERAL);
                 }
                 
-                if (this.variables[0] === "authority") {
-                    state.parallel.CloseVariable("authority");
-                } else {
+//                if (this.variables[0] === "authority") {
+//                    state.parallel.CloseVariable("authority");
+//                } else {
                     state.parallel.CloseVariable("names");
-                }
+//                }
 
                 // For posterity ...
                 //
