@@ -552,6 +552,7 @@ CSL.parseXml = function(str) {
         return str
             .split("&amp;").join("&")
             .split("&quot;").join("\"")
+            .split("&gt;").join(">").split("&lt;").join("<")
             .replace(/&#([0-9]{1,6});/gi, function(match, numStr) {
                 var num = parseInt(numStr, 10); // read num as normal number
                 return String.fromCharCode(num);
