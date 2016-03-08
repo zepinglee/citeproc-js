@@ -1,6 +1,35 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.74
+=========================
+
+- Migrate repo to git.
+
+- Fix issue with raw affix affecting French styles.
+
+- Include CSL test suite, CSL locales, CSL and CSL-M schemata,
+  and a new citeproc-js-docs repo as submodules.
+
+- Implement a string-based XML-to-JS converter.
+
+- Bundle DOM and JSON walking parsers and XML-to-JS converter in
+  processor instance, and sniff input to select parser.
+
+- Provide with-E4X and without-E4X versions of the processor code.
+
+- Clean up the test script a bit.
+
+- Fix support for alternative JS engines.
+  
+- Merge JS runners into a single file.
+
+- Add jing validator to project repo, and fix test.py -c to
+  report correct source filename on error.
+
+- Remove unused files.
+
+=========================
 Changes in version 1.1.73
 =========================
 
