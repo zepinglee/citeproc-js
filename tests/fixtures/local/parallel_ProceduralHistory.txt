@@ -1013,15 +1013,15 @@ citation
               </if>
             </choose>
             <choose>
-              <if variable="locator-revision">
-                <text variable="locator-revision"/>
+              <if variable="locator-extra">
+                <text variable="locator-extra"/>
                 <text macro="us-issued-date"/>
               </if>
             </choose>
           </group>
         </group>
         <choose>
-          <if match="none" variable="locator-revision">
+          <if match="none" variable="locator-extra">
             <text macro="us-issued-date"/>
           </if>
         </choose>

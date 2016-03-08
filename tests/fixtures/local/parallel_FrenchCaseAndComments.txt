@@ -96,7 +96,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
     <group delimiter=" ">
   	<choose>
         <if locator="page" match="none">
-	  	<label form="symbol" variable="locator" suffix=" "/>
+	  	<label form="symbol" variable="locator"/>
 	    </if>
   	  </choose>
   	  <text variable="locator"/>
@@ -129,20 +129,22 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		  <group delimiter=" ">
 			<choose>
 			  <if variable="issue">
-				<text variable="volume" prefix="[" suffix="]"/>
-				<text variable="issue"/>
+				<number variable="volume" prefix="[" suffix="]"/>
+				<number variable="issue"/>
 			  </if>
 			  <else>
-				<text variable="volume"/>
+				<number variable="volume"/>
 			  </else>
 			</choose>
 			<text variable="container-title" form="short"/>
 			<group>
-			  <text variable="page"/>
+			  <number variable="page"/>
 			  <text macro="bb-point-locator-comma"/>
 			</group>
 			<group prefix="(" suffix=")" delimiter=" ">
-			  <text variable="authority" form="short"/>
+              <names variable="authority">
+                <name form="short"/>
+              </name>
 			  <date variable="issued">
 				<date-part name="year"/>	
 			  </date>
@@ -153,15 +155,17 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
       <else>
 		<!-- Civil law cases -->
 		<group delimiter=", ">
-		  <text variable="authority"/>
+          <names variable="authority">
+            <name form="short"/>
+          </name>
 		  <text variable="title" form="short"/>
 		  <date variable="issued" form="text"/>
 		  <text variable="container-title" font-style="italic" strip-periods="true"/>
-		  <text variable="volume"/>
+		  <number variable="volume"/>
           <group delimiter=" ">
 			<text variable="section"/>
             <label variable="page" form="short"/>
-            <text variable="page"/>
+            <number variable="page"/>
 		  </group>
           <text variable="number"/>
           <group delimiter=" ">
@@ -180,11 +184,11 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
       <group delimiter=" ">
 		<choose>
 		  <if variable="issue">
-			<text variable="volume" prefix="[" suffix="]"/>
-			<text variable="issue"/>
+			<number variable="volume" prefix="[" suffix="]"/>
+			<number variable="issue"/>
 		  </if>
 		  <else>
-			<text variable="volume"/>
+			<number variable="volume"/>
 		  </else>
 		</choose>
         <text variable="container-title" form="short"/>
@@ -193,7 +197,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
             <text macro="bb-point-locator-base"/>
 		  </if>
 		  <else>
-		    <text variable="page"/>
+		    <number variable="page"/>
 		  </else>
 		</choose>
       </group>
@@ -243,10 +247,10 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
   <macro name="bb-statute-subsequent">
 	<group delimiter="">
 	  <group delimiter=" ">
-		<text variable="volume"/>
+		<number variable="volume"/>
 		<text variable="container-title"/>
-		<text variable="number"/>
-		<text variable="page"/>
+		<number variable="number"/>
+		<number variable="page"/>
 		<choose>
 		  <if is-numeric="section">
 			<text term="section" form="symbol"/>
@@ -365,9 +369,9 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		</names>
 		<text variable="title" font-style="italic"/>
 		<group delimiter=" ">
-		  <text variable="volume"/>
+		  <number variable="volume"/>
 		  <text variable="container-title" form="short" font-variant="small-caps"/>
-		  <text variable="page-first"/>
+		  <number variable="page-first"/>
 		</group>
 	  </group>
 	  <text macro="bb-issued"/>
