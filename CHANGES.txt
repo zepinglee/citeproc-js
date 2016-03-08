@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.75
+=========================
+
+- Unescape angle brackets in string-based parser.
+  (checked Zotero styles repo to confirm that all
+  names entities used in CSL styles are now covered).
+
+=========================
 Changes in version 1.1.74
 =========================
 
