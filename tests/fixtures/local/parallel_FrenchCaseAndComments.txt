@@ -144,7 +144,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 			<group prefix="(" suffix=")" delimiter=" ">
               <names variable="authority">
                 <name form="short"/>
-              </name>
+              </names>
 			  <date variable="issued">
 				<date-part name="year"/>	
 			  </date>
@@ -157,7 +157,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		<group delimiter=", ">
           <names variable="authority">
             <name form="short"/>
-          </name>
+          </names>
 		  <text variable="title" form="short"/>
 		  <date variable="issued" form="text"/>
 		  <text variable="container-title" font-style="italic" strip-periods="true"/>
@@ -167,7 +167,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
             <label variable="page" form="short"/>
             <number variable="page"/>
 		  </group>
-          <text variable="number"/>
+          <number variable="number"/>
           <group delimiter=" ">
             <text variable="genre"/>
   		    <names variable="author">
@@ -245,6 +245,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 	</group>
   </macro>
   <macro name="bb-statute-subsequent">
+   <group delimiter=" ">
 	<group delimiter="">
 	  <group delimiter=" ">
 		<number variable="volume"/>
@@ -259,7 +260,8 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		</choose>
 	  </group>
 	  <text macro="bb-point-locator-comma"/>
-	  <date prefix=" (" variable="issued" date-parts="year" form="text" suffix=")"/>
+     </group>
+	 <date prefix="(" variable="issued" date-parts="year" form="text" suffix=")"/>
 	</group>
   </macro>
   <macro name="bb-code-first">
@@ -311,7 +313,6 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		<text macro="bb-issued"/>
 	  </group>
 	</group>
-    <text variable="references" prefix=" [" suffix="]"/>
   </macro>
   <macro name="bb-book-subsequent">
     <group delimiter=", ">
