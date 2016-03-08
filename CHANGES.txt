@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.76
+=========================
+
+- Fix parallel cite test failure.
+
+=========================
 Changes in version 1.1.75
 =========================
 

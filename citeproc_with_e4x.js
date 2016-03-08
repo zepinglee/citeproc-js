@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.75",
+    PROCESSOR_VERSION: "1.1.76",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -11260,10 +11260,21 @@ CSL.Parallel.prototype.StartVariable = function (variable, real_variable) {
         this.data.value = "";
         this.data.blobs = [];
         var is_mid = this.isMid(variable);
-        if (real_variable === "authority" && this.variable === "names:front") {
-            this.try_cite = true;
-            this.in_series = false;
-        } else if (this.target === "front" && is_mid) {
+        if (real_variable === "authority" && this.variable === "names:front" && this.sets.value().length) {
+            var prev = this.sets.value()[(this.sets.value().length - 1)].Item;
+            var thisAuthority = false;
+            if (this.cite.Item.authority && this.cite.Item.authority.length) {
+                thisAuthority = this.cite.Item.authority[0].literal;
+            }
+            var thatAuthority = false;
+            if (prev.authority && prev.authority.length) {
+                thatAuthority = prev.authority[0].literal;
+            }
+            if (thisAuthority !== thatAuthority) {
+                this.try_cite = true;
+                this.in_series = false;
+            }
+         } else if (this.target === "front" && is_mid) {
             this.target = "mid";
         } else if (this.target === "mid" && !is_mid && this.cite.Item.title && variable !== "names") {
             this.target = "back";
