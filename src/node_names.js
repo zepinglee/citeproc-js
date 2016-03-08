@@ -39,7 +39,12 @@ CSL.Node.names = {
             // init names
             func = function (state, Item, item) {
                 state.tmp.can_substitute.push(true);
-                state.parallel.StartVariable("names",this.variables[0]);
+                if (this.variables[0] === "authority") {
+                    state.parallel.StartVariable("authority");
+                    state.parallel.AppendToVariable(Item.authority,"authority");
+                } else {
+                    state.parallel.StartVariable("names",this.variables[0]);
+                }
                 state.nameOutput.init(this);
             };
             this.execs.push(func);
@@ -158,7 +163,11 @@ CSL.Node.names = {
                     state.tmp.can_substitute.replace(false, CSL.LITERAL);
                 }
                 
-                state.parallel.CloseVariable("names");
+                if (this.variables[0] === "authority") {
+                    state.parallel.CloseVariable("authority");
+                } else {
+                    state.parallel.CloseVariable("names");
+                }
 
                 // For posterity ...
                 //
