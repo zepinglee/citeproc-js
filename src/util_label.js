@@ -44,7 +44,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 
 CSL.castLabel = function (state, node, term, plural, mode) {
     var label_form = node.strings.form;
-    if (state.tmp.group_context.value()[5]) {
+    if (state.tmp.group_context.value()[5] && label_form !== "static") {
         label_form = state.tmp.group_context.value()[5];
     }
     var ret = state.getTerm(term, label_form, plural, false, mode);
