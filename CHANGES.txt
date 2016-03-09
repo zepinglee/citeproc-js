@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.77
+=========================
+
+- Fix failure of locale-based numeric-term embedded affixes on
+  first number in field.
+
+- Add "static" term form to CSL-M schema, and mask it from
+  changes via the label-form attribute.
+
+- Add -nojuris mode option to ./test.py
+
+=========================
 Changes in version 1.1.76
 =========================
 
