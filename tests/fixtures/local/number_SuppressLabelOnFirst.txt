@@ -52,7 +52,7 @@ citation-nojuris
   
   <locale>
     <terms>
-      <term name="paragraph" form="embed">[%s]</term>
+      <term name="paragraph" form="static">[%s]</term>
     </terms>
   </locale>
   
@@ -111,7 +111,7 @@ citation-nojuris
     <!-- Pinpoint forms (with label) that are preceded by a space in a full-form cite -->
     <choose>
       <if locator="paragraph">
-        <label variable="locator" form="embed"/>
+        <label variable="locator" form="static"/>
         <number variable="locator"/>
       </if>
     </choose>
