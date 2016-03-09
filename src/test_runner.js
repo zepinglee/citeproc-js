@@ -66,6 +66,9 @@ StdRhinoTest.prototype.retrieveLocale = function(lang){
 // this method.)
 StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) {
     var ret = null;
+    if (this.submode.nojuris) {
+        return ret;
+    }
     var id = [jurisdiction];
     if (preference) {
         id.push(preference);
@@ -233,13 +236,13 @@ StdRhinoTest.prototype.run = function(){
     this.style.fun.dateparser.addDateParserMonths(["ocak", "Şubat", "mart", "nisan", "mayıs", "haziran", "temmuz", "ağustos", "eylül", "ekim", "kasım", "aralık", "bahar", "yaz", "sonbahar", "kış"]);
 
     var mode = this.test.mode.split("-");
-    var submode = {};
+    this.submode = {};
     for (var i=1,ilen=mode.length;i<ilen;i++) {
-        submode[mode[i]] = true;
+        this.submode[mode[i]] = true;
     }
     this.test.mode = mode[0];
 
-    if (submode["rtf"]) {
+    if (this.submode["rtf"]) {
         this.style.setOutputFormat("rtf");
     }
     //this.style.setParseNames(true);
@@ -285,10 +288,10 @@ StdRhinoTest.prototype.run = function(){
     if (this.test.bibentries){
         for (i=0,ilen=this.test.bibentries.length;i<ilen;i++) {
             var id_set = this.test.bibentries[i];
-            this.style.updateItems(id_set, submode["nosort"]);
+            this.style.updateItems(id_set, this.submode["nosort"]);
         }
     } else if (!this.test.citations) {
-        this.style.updateItems(this._ids, submode["nosort"]);
+        this.style.updateItems(this._ids, this.submode["nosort"]);
     }
     if (!this.test.citation_items && !this.test.citations){
         var citation = [];
@@ -329,14 +332,14 @@ StdRhinoTest.prototype.run = function(){
         }
     };
     ret = citations.join("\n");
-    if (this.test.mode == "bibliography" && !submode["header"]){
+    if (this.test.mode == "bibliography" && !this.submode["header"]){
         if (this.test.bibsection){
             var ret = this.style.makeBibliography(this.test.bibsection);
         } else {
             var ret = this.style.makeBibliography();
         }
         ret = ret[0]["bibstart"] + ret[1].join("") + ret[0]["bibend"];
-    } else if (this.test.mode == "bibliography" && submode["header"]){
+    } else if (this.test.mode == "bibliography" && this.submode["header"]){
         var obj = this.style.makeBibliography()[0];
         var lst = [];
         for (var key in obj) {
