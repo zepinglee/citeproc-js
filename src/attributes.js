@@ -802,6 +802,17 @@ CSL.Attributes["@is-parallel"] = function (state, arg) {
     this.strings.set_parallel_condition = values;
 };
 
+CSL.Attributes["@require-label-type"] = function (state, arg) {
+    // Constrain rendering of the group with a requirement that
+    // it render a term with the expected form via cs:label at
+    // least once.
+
+    // This attribute is a complement to @label-form and
+    // modular jurisdiction support, as it makes macros
+    // that adapt to shifting local term definitions
+    // possible.
+}
+
 CSL.Attributes["@gender"] = function (state, arg) {
     this.gender = arg;
 }
@@ -989,6 +1000,7 @@ CSL.Attributes["@delimiter"] = function (state, arg) {
 CSL.Attributes["@match"] = function (state, arg) {
     this.match = arg;
 };
+
 
 CSL.Attributes["@names-min"] = function (state, arg) {
     var val = parseInt(arg, 10);
