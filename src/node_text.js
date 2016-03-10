@@ -115,20 +115,15 @@ CSL.Node.text = {
                             formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
                             number.setFormatter(formatter);
                             state.output.append(number, "literal");
-                            //
-                            // don't ask :)
-                            // obviously the variable naming scheme needs
-                            // a little touching up
                             firstoutput = false;
-                            len = state.tmp.group_context.mystack.length;
-                            for (pos = 0; pos < len; pos += 1) {
-                                flag = state.tmp.group_context.mystack[pos];
-                                if (!flag[2] && (flag[1] || (!flag[1] && !flag[0]))) {
+                            // XXX Can we do something better for length here?
+                            for (var i=0,ilen=state.tmp.group_context.mystack.length; i<ilen; i++) {
+                                flags = state.tmp.group_context.mystack[i];
+                                if (!flags.variable_success && (flags.variable_attempt || (!flags.variable_attempt && !flags.term_intended))) {
                                     firstoutput = true;
                                     break;
                                 }
                             }
-                            // firstoutput = state.tmp.group_context.mystack.indexOf(true) === -1;
                             specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
                             if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag) {
                                 state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
@@ -167,10 +162,7 @@ CSL.Node.text = {
                         // if the term is not an empty string, say
                         // that we rendered a term
                         if (term !== "") {
-                            flag = state.tmp.group_context.value();
-                            //print("setting TERM to true [0]");
-                            flag[0] = true;
-                            state.tmp.group_context.replace(flag);
+                            state.tmp.group_context.tip.term_intended = true;
                         }
                         
                         // capitalize the first letter of a term, if it is the
@@ -324,7 +316,7 @@ CSL.Node.text = {
                                 var value = state.transform.abbrevs["default"]["hereinafter"][Item.id];
                                 if (value) {
                                     state.output.append(value, this);
-                                    state.tmp.group_context.value()[2] = true;
+                                    state.tmp.group_context.tip.variable_success = true;
                                 }
                             }
                         } else {
@@ -350,12 +342,7 @@ CSL.Node.text = {
                 } else if (this.strings.value) {
                     // for the text value attribute.
                     func = function (state, Item) {
-                        var flag;
-                        flag = state.tmp.group_context.value();
-                        // say that we rendered a term
-                        //print("  setting [0] to true based on: " + this.strings.value);
-                        flag[0] = true;
-                        state.tmp.group_context.replace(flag);
+                        state.tmp.group_context.tip.term_intended = true;
                         state.output.append(this.strings.value, this);
                     };
                     this.execs.push(func);

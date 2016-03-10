@@ -48,14 +48,11 @@ CSL.NameOutput.prototype.init = function (names) {
     // before, after
     //this.label = {};
     
-    this.state.tmp.group_context.value()[1] = true;
+    this.state.tmp.group_context.tip.variable_attempt = true;
 
     if (!this.state.tmp.value.length) {
         return;
     }
-
-    // Set to true if something happens
-    //this.state.tmp.group_context.value()[2] = false;
 };
 
 
@@ -67,12 +64,7 @@ CSL.NameOutput.prototype.reinit = function (names) {
         // names node, and on what conditions? For each attribute,
         // and decoration, is it an override, or is it additive?
         this.variables = names.variables;
-        // Set to true if something happens
-        //this.state.tmp.group_context.value()[2] = false;
-        //if (this.state.tmp.group_context.value()[2]) {
-        //    this.state.tmp.group_context.value()[2] = true;
-        //}
-
+        
         // Not sure why this is necessary. Guards against a memory leak perhaps?
         var oldval = this.state.tmp.value.slice();
         this.state.tmp.value = [];
@@ -177,13 +169,8 @@ CSL.NameOutput.prototype.outputNames = function () {
     if (this.name.strings.form === "count") {
         if (this.state.tmp.extension || this.names_count != 0) {
             this.state.output.append(this.names_count, "empty");
-            this.state.tmp.group_context.value()[2] = true;
+            this.state.tmp.group_context.tip.variable_success = true;
         }
-        //else {
-        //    this.state.tmp.group_context.value()[1] = true;
-        //    
-        //    this.state.tmp.group_context.value()[2] = false;
-        //}
         return;
     }
 

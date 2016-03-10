@@ -330,7 +330,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 }
             }
             //print("-- VAR: "+variable);
-            flag = state.tmp.group_context.value();
+            //flag = state.tmp.group_context.tip;
             if (output) {
                 for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
                     var variable = this.variables_real[i];
@@ -338,7 +338,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                         state.tmp.cite_renders_content = true;
                     }
                     //print("  setting [2] to true based on: " + arg);
-                    flag[2] = true;
+                    state.tmp.group_context.tip.variable_success = true;
                     // For util_substitute.js, subsequent-author-substitute
                     if (state.tmp.can_substitute.value() 
                         && state.tmp.area === "bibliography"
@@ -350,9 +350,9 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 state.tmp.can_substitute.replace(false,  CSL.LITERAL);
             } else {
                 //print("  setting [1] to true based on: " + arg);
-                flag[1] = true;
+                state.tmp.group_context.tip.variable_attempt = true;
             }
-            state.tmp.group_context.replace(flag);
+            //state.tmp.group_context.replace(flag);
         };
         this.execs.push(func);
     } else if (["if",  "else-if", "condition"].indexOf(this.name) > -1) {
@@ -1335,10 +1335,6 @@ CSL.Attributes["@use-first"] = function (state, arg) {
 
 CSL.Attributes["@stop-last"] = function (state, arg) {
     this.strings["stop-last"] = parseInt(arg, 10) * -1;
-};
-
-CSL.Attributes["@oops"] = function (state, arg) {
-    this.strings.oops = arg;
 };
 
 CSL.Attributes["@use-last"] = function (state, arg) {

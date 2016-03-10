@@ -226,7 +226,14 @@ CSL.Engine.Tmp = function () {
     // stack flag used for term handling.  Set to true
     // if at least one variable has tried to render, and
     // no variables had content.
-    this.group_context = new CSL.Stack([false, false, false], CSL.LITERAL);
+    this.group_context = new CSL.Stack({
+        term_intended: false,
+        variable_attempt: false,
+        variable_success: false,
+        output_tip: undefined,
+        label_form:  undefined,
+        parallel_conditions: undefined
+    });
     //
     // boolean flag used to control first-letter capitalization
     // of terms.  Set to true if any item preceding the term

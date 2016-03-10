@@ -15,30 +15,25 @@ CSL.Node.group = {
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("group", this);
+                // XXX Can we do something better for length here?
                 if (state.tmp.group_context.mystack.length) {
-                    state.output.current.value().parent = state.tmp.group_context.value()[4];
+                    state.output.current.value().parent = state.tmp.group_context.tip.output_tip;
                 }
 
 
                 // fieldcontextflag
-                var label_form = state.tmp.group_context.value()[5];
+                var label_form = state.tmp.group_context.tip.label_form;
                 if (!label_form && this.strings.label_form_override) {
                     label_form = this.strings.label_form_override;
                 }
-                state.tmp.group_context.push([false, false, false, false, state.output.current.value(), label_form, this.strings.set_parallel_condition], CSL.LITERAL);
-                // XXX
-                // XXX Oops is deprecated.
-                // XXX
-                // Oops is triggered in two situations:
-                //   (1) Where rendering of content fails; and
-                //   (2) Where content is rendered, but the rendered
-                //       content within the group is entirely removed
-                //       before the output queue is flattened.
-                // The "this" value above should be used to grab
-                // the target of the "oops" delimiter in both cases.
-                if (this.strings.oops) {
-                    state.tmp.group_context.value()[3] = this.strings.oops;
-                }
+                state.tmp.group_context.push({
+                    term_intended: false,
+                    variable_attempt: false,
+                    variable_success: false,
+                    output_tip: state.output.current.tip,
+                    label_form: label_form,
+                    parallel_conditions: this.strings.set_parallel_condition
+                });
             };
             //
             // Paranoia.  Assure that this init function is the first executed.
@@ -214,30 +209,22 @@ CSL.Node.group = {
             
             // quashnonfields
             func = function (state, Item) {
-                var flag = state.tmp.group_context.pop();
-
+                var flags = state.tmp.group_context.pop();
                 state.output.endTag();
-                //
-                // 0 marks an intention to render a term or value
-                // 1 marks an attempt to render a variable
-                // 2 marks an actual variable rendering
-                // 3 is an oops substitute string, rendered when nothing else does
-                //
-                var upperflag = state.tmp.group_context.value();
                 // print("leaving with flags: "+flag+" (stack length: "+ (state.tmp.group_context.mystack.length + 1) +")");
-                if (flag[1]) {
-                    state.tmp.group_context.value()[1] = true;
+                if (flags.variable_attempt) {
+                    state.tmp.group_context.tip.variable_attempt = true;
                 }
-                if (flag[2] || (flag[0] && !flag[1])) {
+                if (flags.variable_success || (flags.term_intended && !flags.variable_attempt)) {
                     if (!this.isJurisLocatorLabel) {
-                        state.tmp.group_context.value()[2] = true;
+                        state.tmp.group_context.tip.variable_success = true;
                     }
                     var blobs = state.output.current.value().blobs;
                     var pos = state.output.current.value().blobs.length - 1;
-                    if (!state.tmp.just_looking && "undefined" !== typeof flag[6]) {
+                    if (!state.tmp.just_looking && "undefined" !== typeof flags.parallel_conditions) {
                         var parallel_condition_object = {
                             blobs: blobs,
-                            conditions: flag[6],
+                            conditions: flags.parallel_conditions,
                             id: Item.id,
                             pos: pos
                         };
@@ -246,14 +233,6 @@ CSL.Node.group = {
                 } else {
                     if (state.output.current.value().blobs) {
                         state.output.current.value().blobs.pop();
-                    }
-                    // Oops. Replace the delimiter TWO levels above the
-                    // current level with the oops string value. Used for
-                    // very rare cases in which the ACTUAL rendering/non-rendering
-                    // of a name value (not the presence/non-presence of field
-                    // content) alters delimiter joins.
-                    if (state.tmp.group_context.value()[3]) {
-                        state.output.current.mystack[state.output.current.mystack.length - 2].strings.delimiter = state.tmp.group_context.value()[3];
                     }
                 }
             };

@@ -29,10 +29,8 @@ CSL.Node.label = {
 
                 }
                 if (termtxt) {
-                    flag = state.tmp.group_context.value();
-                    //print("setting TERM to true [0]");
-                    flag[0] = true;
-                    state.tmp.group_context.replace(flag);
+                    state.tmp.group_context.tip.term_intended = true;
+
                 }
                 if (termtxt.indexOf("%s") === -1) {
                     // Suppress output here if we have an embedded term

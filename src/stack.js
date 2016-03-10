@@ -11,6 +11,8 @@
  */
 CSL.Stack = function (val, literal) {
     this.mystack = [];
+    this.tip = {};
+    this.length = 0;
     if (literal || val) {
         this.mystack.push(val);
     }
@@ -26,6 +28,7 @@ CSL.Stack.prototype.push = function (val, literal) {
     } else {
         this.mystack.push("");
     }
+    this.tip = this.mystack[this.mystack.length - 1];
 };
 
 /**
@@ -33,6 +36,7 @@ CSL.Stack.prototype.push = function (val, literal) {
  */
 CSL.Stack.prototype.clear = function () {
     this.mystack = [];
+    this.tip = {};
 };
 
 /**
@@ -52,6 +56,7 @@ CSL.Stack.prototype.replace = function (val, literal) {
     } else {
         this.mystack[(this.mystack.length - 1)] = "";
     }
+    this.tip = this.mystack[this.mystack.length - 1];
 };
 
 
@@ -60,7 +65,13 @@ CSL.Stack.prototype.replace = function (val, literal) {
  * <p>Just does what it says.</p>
  */
 CSL.Stack.prototype.pop = function () {
-    return this.mystack.pop();
+    var ret = this.mystack.pop();
+    if (this.mystack.length) {
+        this.tip = this.mystack[this.mystack.length - 1];
+    } else {
+        this.tip = {};
+    }
+    return ret;
 };
 
 

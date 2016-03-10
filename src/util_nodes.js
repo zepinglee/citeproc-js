@@ -146,9 +146,9 @@ CSL.getMacroTarget = function (mkey) {
 }
 
 CSL.runAltMacro = function (state, alt_macro, Item, item) {
-    var flag = state.tmp.group_context.value();
-    if (((flag[1] && !flag[2]) || (!flag[0] && !flag[1])) && alt_macro) {
-        flag[1] = false;
+    var flags = state.tmp.group_context.tip;
+    if (((flags.variable_attempt && !flags.variable_success) || (!flags.term_intended && !flags.variable_attempt)) && alt_macro) {
+        flags.variable_attempt = false;
         var mytarget = CSL.getMacroTarget.call(state, alt_macro);
         if (mytarget) {
             var macro_nodes = state.cslXml.getNodesByName(state.cslXml.dataObj, 'macro', alt_macro);

@@ -210,7 +210,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
                 }
             }
             //this.state.output.append(blobs[i], style, true);
-            this.state.tmp.group_context.value()[2] = true;
+            this.state.tmp.group_context.tip.variable_success = true;
             this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
             if (str === "!here>>>") {
                 blobs[i] = false;
@@ -510,7 +510,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         blob = this._join([given, second], (name["comma-dropping-particle"] + " "));
     }
     // XXX Just generally assume for the present that personal names render something
-    this.state.tmp.group_context.value()[2] = true;
+    this.state.tmp.group_context.tip.variable_success = true;
     this.state.tmp.can_substitute.replace(false, CSL.LITERAL);
     this.state.tmp.term_predecessor = true;
     // notSerious
