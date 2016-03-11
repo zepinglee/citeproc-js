@@ -195,7 +195,6 @@ rendering within a citation.
         <!-- If rendered, will join with comma -->
         <group delimiter=" " require="label-empty-or-alpha">
           <choose>
-          <choose>
             <if type="book">
               <text value="p."/>
             </if>
