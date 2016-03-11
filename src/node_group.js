@@ -28,6 +28,10 @@ CSL.Node.group = {
                 }
                 var condition = false;
                 var force_suppress = false;
+                //if (state.tmp.group_context.tip.condition) {
+                //    condition = state.tmp.group_context.tip.condition;
+                //    force_suppress = state.tmp.group_context.tip.force_suppress;
+                //} else 
                 if (this.strings.reject) {
                     condition = {
                         test: this.strings.reject,
