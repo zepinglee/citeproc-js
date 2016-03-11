@@ -164,6 +164,18 @@ CSL.Node.text = {
                         if (term !== "") {
                             state.tmp.group_context.tip.term_intended = true;
                         }
+                        if (state.tmp.group_context.tip.condition) {
+                            if (state.tmp.group_context.tip.condition.test === "label-empty-or-alpha") {
+                                if (!term || term.match(/^[a-zA-Z]/)) {
+                                    state.tmp.group_context.tip.force_suppress = false;
+                                } else {
+                                    state.tmp.group_context.tip.force_suppress = true;
+                                }
+                                if (state.tmp.group_context.tip.condition.not) {
+                                    state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
+                                }
+                            }
+                        }
                         
                         // capitalize the first letter of a term, if it is the
                         // first thing rendered in a citation (or if it is
@@ -343,6 +355,18 @@ CSL.Node.text = {
                     // for the text value attribute.
                     func = function (state, Item) {
                         state.tmp.group_context.tip.term_intended = true;
+                        if (state.tmp.group_context.tip.condition) {
+                            if (state.tmp.group_context.tip.condition.test === "label-empty-or-alpha") {
+                                if (!this.strings.value || this.strings.value.match(/^[a-zA-Z0-9]/)) {
+                                    state.tmp.group_context.tip.force_suppress = false;
+                                } else {
+                                    state.tmp.group_context.tip.force_suppress = true;
+                                }
+                                if (state.tmp.group_context.tip.condition.not) {
+                                    state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
+                                }
+                            }
+                        }
                         state.output.append(this.strings.value, this);
                     };
                     this.execs.push(func);
