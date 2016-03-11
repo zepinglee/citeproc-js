@@ -802,15 +802,30 @@ CSL.Attributes["@is-parallel"] = function (state, arg) {
     this.strings.set_parallel_condition = values;
 };
 
-CSL.Attributes["@require-label-type"] = function (state, arg) {
-    // Constrain rendering of the group with a requirement that
-    // it render a term with the expected form via cs:label at
-    // least once.
+CSL.Attributes["@require"] = function (state, arg) {
+    this.strings.require = arg;
 
-    // This attribute is a complement to @label-form and
-    // modular jurisdiction support, as it makes macros
-    // that adapt to shifting local term definitions
-    // possible.
+    // Introduced to constrain rendering of the group with a
+    // requirement that it either render an alpha term via cs:label or
+    // cs:text at least once, or render without any label. That
+    // behaviour is invoked with "label-empty-or-alpha" as arg.
+
+    // This attribute is a complement to @label-form and modular
+    // jurisdiction support, as it makes macros that adapt to shifting
+    // local term definitions possible.
+}
+
+CSL.Attributes["@reject"] = function (state, arg) {
+    this.strings.reject = arg;
+
+    // Introduced to constrain rendering of the group with a
+    // requirement that it render some label via cs:label or cs:text,
+    // and that it NOT be alpha. That behaviour is invoked with
+    // "label-empty-or-alpha" as arg.
+
+    // This attribute is a complement to @label-form and modular
+    // jurisdiction support, as it makes macros that adapt to shifting
+    // local term definitions possible.
 }
 
 CSL.Attributes["@gender"] = function (state, arg) {

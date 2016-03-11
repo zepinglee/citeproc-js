@@ -804,7 +804,10 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         variable_success: flags.variable_success,
         output_tip: flags.output_tip,
         label_form: flags.label_form,
-        parallel_conditions: flags.parallel_conditions
+        parallel_conditions: flags.parallel_conditions,
+        condition: flags.condition,
+        force_suppress: flags.force_suppress,
+        done_vars: flags.done_vars.slice()
     }
     if (disambig) {
         this.tmp.disambig_request = disambig;

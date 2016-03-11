@@ -26,13 +26,32 @@ CSL.Node.group = {
                 if (!label_form && this.strings.label_form_override) {
                     label_form = this.strings.label_form_override;
                 }
+                var condition = false;
+                var force_suppress = false;
+                if (this.strings.reject) {
+                    condition = {
+                        test: this.strings.reject,
+                        not: true
+                    }
+                    force_suppress = true;
+                    done_vars = [];
+                } else if (this.strings.require) {
+                    condition = {
+                        test: this.strings.require,
+                        not: false
+                    }
+                    done_vars = [];
+                }
                 state.tmp.group_context.push({
                     term_intended: false,
                     variable_attempt: false,
                     variable_success: false,
                     output_tip: state.output.current.tip,
                     label_form: label_form,
-                    parallel_conditions: this.strings.set_parallel_condition
+                    parallel_conditions: this.strings.set_parallel_condition,
+                    condition: condition,
+                    force_suppress: force_suppress,
+                    done_vars: state.tmp.group_context.tip.done_vars.slice()
                 });
             };
             //
@@ -215,7 +234,7 @@ CSL.Node.group = {
                 if (flags.variable_attempt) {
                     state.tmp.group_context.tip.variable_attempt = true;
                 }
-                if (flags.variable_success || (flags.term_intended && !flags.variable_attempt)) {
+                if (!flags.force_suppress && (flags.variable_success || (flags.term_intended && !flags.variable_attempt))) {
                     if (!this.isJurisLocatorLabel) {
                         state.tmp.group_context.tip.variable_success = true;
                     }
@@ -231,6 +250,13 @@ CSL.Node.group = {
                         state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
                     }
                 } else {
+                    if (flags.force_suppress) {
+                        for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
+                            if (state.tmp.done_vars.indexOf(flags.done_vars[i]) > -1) {
+                                state.tmp.done_vars = state.tmp.done_vars.slice(0, i).concat(state.tmp.done_vars.slice(i+1));
+                            }
+                        }
+                    }
                     if (state.output.current.value().blobs) {
                         state.output.current.value().blobs.pop();
                     }

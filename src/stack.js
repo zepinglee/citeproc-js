@@ -11,11 +11,10 @@
  */
 CSL.Stack = function (val, literal) {
     this.mystack = [];
-    this.tip = {};
-    this.length = 0;
     if (literal || val) {
         this.mystack.push(val);
     }
+    this.tip = this.mystack[0];
 };
 
 /**

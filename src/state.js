@@ -232,7 +232,10 @@ CSL.Engine.Tmp = function () {
         variable_success: false,
         output_tip: undefined,
         label_form:  undefined,
-        parallel_conditions: undefined
+        parallel_conditions: undefined,
+        condition: false,
+        force_suppress: false,
+        done_vars: []
     });
     //
     // boolean flag used to control first-letter capitalization

@@ -108,6 +108,7 @@ CSL.Node.number = {
             if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
                && !state.tmp.just_looking) {
                 state.tmp.done_vars.push(this.variables_real[0]);
+                state.tmp.group_context.tip.done_vars.push(this.variables_real[0]);
             }
         };
         this.execs.push(func);
