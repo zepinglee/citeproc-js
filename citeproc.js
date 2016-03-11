@@ -10,7 +10,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.78",
+    PROCESSOR_VERSION: "1.1.79",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -9953,6 +9953,18 @@ CSL.Node.text = {
                         if (term !== "") {
                             state.tmp.group_context.tip.term_intended = true;
                         }
+                        if (state.tmp.group_context.tip.condition) {
+                            if (state.tmp.group_context.tip.condition.test === "label-empty-or-alpha") {
+                                if (!term || term.match(/^[a-zA-Z]/)) {
+                                    state.tmp.group_context.tip.force_suppress = false;
+                                } else {
+                                    state.tmp.group_context.tip.force_suppress = true;
+                                }
+                                if (state.tmp.group_context.tip.condition.not) {
+                                    state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
+                                }
+                            }
+                        }
                         if (!state.tmp.term_predecessor && !(state.opt["class"] === "in-text" && state.tmp.area === "citation")) {
                             myterm = CSL.Output.Formatters["capitalize-first"](state, term);
                         } else {
@@ -10082,6 +10094,18 @@ CSL.Node.text = {
                 } else if (this.strings.value) {
                     func = function (state, Item) {
                         state.tmp.group_context.tip.term_intended = true;
+                        if (state.tmp.group_context.tip.condition) {
+                            if (state.tmp.group_context.tip.condition.test === "label-empty-or-alpha") {
+                                if (!this.strings.value || this.strings.value.match(/^[a-zA-Z0-9]/)) {
+                                    state.tmp.group_context.tip.force_suppress = false;
+                                } else {
+                                    state.tmp.group_context.tip.force_suppress = true;
+                                }
+                                if (state.tmp.group_context.tip.condition.not) {
+                                    state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
+                                }
+                            }
+                        }
                         state.output.append(this.strings.value, this);
                     };
                     this.execs.push(func);
