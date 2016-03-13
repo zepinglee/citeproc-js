@@ -1,0 +1,83 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+>>[0] [3]–[5]
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1", 
+                    "locator": "para. 3-5"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <locale>
+    <terms>
+      <term name="paragraph" form="static">[%s]</term>
+    </terms>
+  </locale>
+  <macro name="xjuris-locator-label">
+    <!-- The label applied to pinpoint locators -->
+    <choose>
+      <if locator="paragraph">
+        <label variable="locator" form="static"/>
+      </if>
+      <else>
+        <label variable="locator" form="symbol"/>
+      </else>
+    </choose>
+  </macro>
+  <macro name="xjuris-default-spotter">
+    <group delimiter=" " reject="label-empty-or-alpha">
+      <text macro="xjuris-locator-label"/>
+      <number variable="locator"/>
+    </group>
+  </macro>
+  <citation>
+    <layout>
+      <text macro="xjuris-default-spotter"/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "ITEM-1",
+        "title": "Title", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<
