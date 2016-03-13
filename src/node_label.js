@@ -30,7 +30,9 @@ CSL.Node.label = {
                 }
                 if (termtxt) {
                     state.tmp.group_context.tip.term_intended = true;
-
+                    //if (!state.tmp.just_looking) {
+                    //    print("TERM INTENDED");
+                    //}
                 }
                 if (state.tmp.group_context.tip.condition) {
                     if (state.tmp.group_context.tip.condition.test === "label-empty-or-alpha") {
@@ -43,6 +45,9 @@ CSL.Node.label = {
                             state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
                         }
                     }
+                    //if (!state.tmp.just_looking) {
+                    //    print("  condition seen");
+                    //}
                 }
                 if (termtxt.indexOf("%s") === -1) {
                     // Suppress output here if we have an embedded term

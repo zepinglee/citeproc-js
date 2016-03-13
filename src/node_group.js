@@ -28,11 +28,10 @@ CSL.Node.group = {
                 }
                 var condition = false;
                 var force_suppress = false;
-                //if (state.tmp.group_context.tip.condition) {
-                //    condition = state.tmp.group_context.tip.condition;
-                //    force_suppress = state.tmp.group_context.tip.force_suppress;
-                //} else 
-                if (this.strings.reject) {
+                if (state.tmp.group_context.tip.condition) {
+                    condition = state.tmp.group_context.tip.condition;
+                    force_suppress = state.tmp.group_context.tip.force_suppress;
+                } else if (this.strings.reject) {
                     condition = {
                         test: this.strings.reject,
                         not: true
@@ -46,6 +45,10 @@ CSL.Node.group = {
                     }
                     done_vars = [];
                 }
+                // CONDITION
+                //if (!state.tmp.just_looking) {
+                //    print("  pushing condition[" + state.tmp.group_context.mystack.length + "]: "+condition+" "+force_suppress);
+                //}
                 state.tmp.group_context.push({
                     term_intended: false,
                     variable_attempt: false,
@@ -238,6 +241,13 @@ CSL.Node.group = {
                 if (flags.variable_attempt) {
                     state.tmp.group_context.tip.variable_attempt = true;
                 }
+                if (state.tmp.group_context.tip.condition) {
+                    state.tmp.group_context.tip.force_suppress = flags.force_suppress;
+                }
+                // CONDITION
+                //if (!state.tmp.just_looking) {
+                //    print("  see flags.condition[" + state.tmp.group_context.mystack.length + "]: "+flags.condition+" "+flags.force_suppress);
+                //}
                 if (!flags.force_suppress && (flags.variable_success || (flags.term_intended && !flags.variable_attempt))) {
                     if (!this.isJurisLocatorLabel) {
                         state.tmp.group_context.tip.variable_success = true;
