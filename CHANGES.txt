@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.80
+=========================
+
+- Force per-word sorting on all sort keys.
+
+- Fix bug in new reject and require attributes that caused
+  test to fail when rendered label was nested in a macro
+  or condition statement.
+
+- Move in CSL-M tests migrated from standard CSL test suite.
+
+=========================
 Changes in version 1.1.79
 =========================
 
