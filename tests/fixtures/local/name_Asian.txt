@@ -1,0 +1,63 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+Miyamoto Musashi
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.1mlz1">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <locale xml:lang="ja">
+    <style-options name-as-sort-order="ja" name-never-short="ja"/>
+  </locale>
+  <citation>
+    <layout>
+      <names variable="author">
+        <name />
+      </names>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Miyamoto", 
+                "given": "Musashi", 
+                "multi": {
+                    "_key": {}, 
+                    "main": "ja"
+                }
+            }
+        ], 
+        "id": "simple-sticky-name-1", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1645", 
+                    "12", 
+                    "27"
+                ]
+            ]
+        }, 
+        "title": "A Book of Five Rings", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<
