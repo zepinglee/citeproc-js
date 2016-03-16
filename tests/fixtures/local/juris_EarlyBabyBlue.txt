@@ -3,12 +3,6 @@ citation
 <<===== MODE =====<<
 
 
->>===== OPTIONS =====>>
-{
-  "require_explicit_legal_case_title_short": true
-}
-<<===== OPTIONS =====<<
-
 >>===== ABBREVIATIONS =====>>
 {
     "default": {
@@ -86,12 +80,9 @@ citation
     <!-- style-options jurisdiction-preference="babyblue"/ -->
     <terms>
       <term name="ibid">id.</term>
+      <term name="paragraph" form="static">[%s]</term>
     </terms>
   </locale>
-
-  <macro name="at-locator-label">
-    <text value="at"/>
-  </macro>
 
   <macro name="juris-title">
     <text value="[HINT: Install the Myles plugin, available at https://juris-m.github.io/downloads]"/>
@@ -105,25 +96,10 @@ citation
   <macro name="juris-main-short">
     <text value=""/>
   </macro>
-  <macro name="juris-default-spotter">
-    <text value=""/>
-  </macro>
-  <macro name="juris-default-spotter-short">
-    <text value=""/>
-  </macro>
-  <macro name="juris-comma-spotter">
-    <text value=""/>
-  </macro>
-  <macro name="juris-comma-spotter-short">
-    <text value=""/>
-  </macro>
   <macro name="juris-tail">
     <text value=""/>
   </macro>
   <macro name="juris-tail-short">
-    <text value=""/>
-  </macro>
-  <macro name="juris-locator-label">
     <text value=""/>
   </macro>
   <macro name="juris-locator">
@@ -136,8 +112,12 @@ citation
       <if position="ibid-with-locator">
         <group delimiter=" ">
           <text term="ibid"/>
-          <group delimiter=" ">
-            <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+          <group delimiter=" " require="label-empty">
+            <group><text value="TXT"/></group>
+            <text value="at"/>
+            <text macro="juris-locator" label-form="symbol"/>
+          </group>
+          <group delimiter=" " reject="label-empty">
             <text macro="juris-locator" label-form="symbol"/>
           </group>
         </group>
@@ -187,9 +167,12 @@ citation
                   <text term="note"/>
                   <text variable="first-reference-note-number"/>
                 </group>
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
-                  <text macro="juris-locator" label-form="symbol"/>
+                <group delimiter=" " require="label-empty">
+                  <text value="at"/>
+                  <text macro="juris-locator"/>
+                </group>
+                <group delimiter=" " reject="label-empty">
+                  <text macro="juris-locator"/>
                 </group>
               </group>
             </if>
@@ -215,11 +198,13 @@ citation
                       <text macro="juris-main-short"/>
                     </else>
                   </choose>
-                  <text macro="juris-comma-spotter-short" label-form="symbol"/>
+                  <group delimiter=" " reject="label-empty">
+                    <text macro="juris-locator" label-form="symbol"/>
+                  </group>
                 </group>
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
-                  <text macro="juris-locator" label-form="symbol"/>
+                <group delimiter=" " require="label-empty">
+                  <text value="at"/>
+                  <text macro="juris-locator"/>
                 </group>
                 <text macro="juris-tail-short"/>
               </group>
@@ -265,19 +250,24 @@ citation
                 </choose>
                 <choose>
                   <if match="all" variable="locator number" type="report">
-                    <group delimiter=" ">
-                      <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
-                      <text macro="juris-locator" label-form="symbol"/>
+                    <group delimiter=" " require="label-empty">
+                      <text value="at"/>
+                      <text macro="juris-locator"/>
+                    </group>
+                    <group delimiter=" " reject="label-empty">
+                      <text macro="juris-locator"/>
                     </group>
                   </if>
                   <else>
-                    <text macro="juris-comma-spotter" label-form="symbol"/>
+                    <group require="label-empty-or-alpha">
+                      <text macro="juris-locator" label-form="symbol"/>
+                    </group>
                   </else>
                 </choose>
               </group>
             </group>
           </group>
-          <text macro="juris-default-spotter" label-form="symbol"/>
+          <text macro="juris-locator" label-form="symbol"/>
           <text macro="juris-tail"/>
         </group>
       </else>

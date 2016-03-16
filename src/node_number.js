@@ -96,6 +96,10 @@ CSL.Node.number = {
             
             var node = this;
 
+            if (state.tmp.group_context.tip.force_suppress) {
+                return false;
+            }
+
             if (varname === "locator") {
                 state.processNumber(node, item, varname, Item.type);
             } else {

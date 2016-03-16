@@ -30,7 +30,7 @@ CSL.Node.group = {
                 var force_suppress = false;
                 if (state.tmp.group_context.tip.condition) {
                     condition = state.tmp.group_context.tip.condition;
-                    force_suppress = state.tmp.group_context.tip.force_suppress;
+                    force_suppress = false;
                 } else if (this.strings.reject) {
                     condition = {
                         test: this.strings.reject,

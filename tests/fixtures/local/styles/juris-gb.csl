@@ -93,43 +93,34 @@
     </choose>
   </macro>
 
-  <macro name="juris-default-spotter">
-    <text macro="juris-locator"/>
-  </macro>
-
-  <macro name="juris-comma-spotter">
-    <choose>
-      <if position="first" locator="page" match="all">
-        <text macro="juris-locator"/>
-      </if>
-    </choose>
-  </macro>
-
-  <macro name="juris-default-spotter">
-    <choose>
-      <if locator="paragraph" variable="collection-number" match="all">
-        <number variable="locator" prefix="[" suffix="]"/>
-      </if>
-      <else>
-        <number variable="locator"/>
-      </else>
-    </choose>
-  </macro>
-
-  <macro name="juris-locator-label">
-    <choose>
-      <if locator="page paragraph" match="none">
-        <label variable="locator" form="symbol"/>
-      </if>
-    </choose>
-  </macro>
-
   <macro name="juris-tail">
     <text value=""/>
   </macro>
 
   <macro name="juris-tail-short">
     <text value=""/>
+  </macro>
+
+  <macro name="juris-locator">
+    <group delimiter=" ">
+      <choose>
+        <if locator="page">
+            <number variable="locator"/>
+        </if>
+        <else-if locator="paragraph">
+          <group>
+            <label variable="locator" form="static"/>
+            <number variable="locator"/>
+          </group>
+        </else-if>
+        <else>
+          <group delimiter=" ">
+            <label variable="locator" form="symbol"/>
+            <number variable="locator"/>
+          </group>
+        </else>
+      </choose>
+    </group>
   </macro>
 
   <citation>

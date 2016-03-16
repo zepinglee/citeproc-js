@@ -59,7 +59,19 @@ CSL.XmlJSON.prototype.getStyleId = function (myjson, styleName) {
     if (styleName) {
         tagName = 'title';
     }
-    return myjson.attrs[tagName];
+    var ret = "";
+    var children = myjson.children;
+    for (var i=0,ilen=children.length;i<ilen;i++) {
+        if (children[i].name === 'info') {
+            var grandkids = children[i].children;
+            for (var j=0,jlen=grandkids.length;j<jlen;j++) {
+                if (grandkids[j].name === tagName) {
+                    ret = grandkids[j].children[0];
+                }
+            }
+        }
+    }
+    return ret;
 };
 
 CSL.XmlJSON.prototype.children = function (myjson) {
