@@ -4,6 +4,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.1.81
 =========================
 
+- Remove unused macros from modular code tests.
+
+- Fix minor bugs in require and reject code.
+
+- Fix bug in "romanesque" regular expressions.
+
+- Return styleID from JSON parser.
+
 =========================
 Changes in version 1.1.80
 =========================
