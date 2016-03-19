@@ -456,7 +456,7 @@ var CSL = {
     ],
     LANGS: {
         "af-ZA":"Afrikaans",
-        "ar-AR":"Arabic",
+        "ar":"Arabic",
         "bg-BG":"Bulgarian",
         "ca-AD":"Catalan",
         "cs-CZ":"Czech",
@@ -506,7 +506,7 @@ var CSL = {
     },
     LANG_BASES: {
         af: "af_ZA",
-        ar: "ar_AR",
+        ar: "ar",
         bg: "bg_BG",
         ca: "ca_AD",
         cs: "cs_CZ",
