@@ -80,24 +80,6 @@ class ApplyLicense:
             for file in os.listdir(p):
                 if not file.startswith("citeproc"):
                     continue
-                if file == "CHANGES.txt" or file == "DESIDERATA.txt":
-                    continue
-                if file.endswith(".src"):
-                    continue
-                if file.endswith(".xml"):
-                    continue
-                if file.endswith(".json"):
-                    continue
-                if file.endswith(".sh"):
-                    continue
-                if file.endswith(".csl"):
-                    continue
-                if file.endswith(".py"):
-                    continue
-                if file.endswith(".html"):
-                    continue
-                if file.endswith(".css"):
-                    continue
                 self.process_file(p,file)
 
     def process_file(self,p,file):
@@ -744,8 +726,8 @@ if __name__ == "__main__":
                 bundle = Bundle()
                 bundle.deleteOldBundles()
                 bundle.createNewBundles()
-                #license = ApplyLicense()
-                #license.apply()
+                license = ApplyLicense()
+                license.apply()
             if opt.testrun:
                 params.buildRunner()
                 params.runTests(bundle=opt.bundle)
