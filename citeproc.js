@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.81",
+    PROCESSOR_VERSION: "1.1.83",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -10107,7 +10107,6 @@ CSL.Node.text = {
                                 var value = state.transform.abbrevs["default"]["hereinafter"][Item.id];
                                 if (value) {
                                     state.output.append(value, this);
-                                    print("  -- node_text.js --> true");
                                     state.tmp.group_context.tip.variable_success = true;
                                 }
                             }
@@ -13923,16 +13922,12 @@ CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
         }
     }
     if (str.indexOf(this.quotechars[1]) > -1) {
-        var oldStr = null;
-        while (str !== oldStr) {
-            oldStr = str;
-            for (i = 0, ilen = 2; i < ilen; i += 1) {
-                if (this.quotechars[i + 4]) {
-                    if (i === 0) {
-                        str = str.split(this.quotechars[i + 4]).join(" " + this.quotechars[1]);
-                    } else {
-                        str = str.split(this.quotechars[i + 4]).join(this.quotechars[1]);
-                    }
+        for (i = 0, ilen = 2; i < ilen; i += 1) {
+            if (this.quotechars[i + 4]) {
+                if (i === 0 && this.quotechars[i + 4] !== this.quotechars[1]) {
+                    str = str.split(this.quotechars[i + 4]).join(" " + this.quotechars[1]);
+                } else {
+                    str = str.split(this.quotechars[i + 4]).join(this.quotechars[1]);
                 }
             }
         }
