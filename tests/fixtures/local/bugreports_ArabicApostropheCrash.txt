@@ -16,7 +16,7 @@ The cause was an unnecessary while(){} statement that never cleared
 if straight quotes were set as inner quotes, and the string contained
 an apostrophe.
 
-Fixed by 
+Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b16876780bdd25f2a684679420cde
 
 >>===== RESULT =====>>
 >>[0] "Junior’s", <i>Wikipedia, the Free Encyclopedia</i>, 26 ديسمبر, 2015, https://en.wikipedia.org/w/index.php?title=Junior%27s&#38;oldid=696914641.
