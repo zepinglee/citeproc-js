@@ -145,16 +145,12 @@ CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
         }
     }
     if (str.indexOf(this.quotechars[1]) > -1) {
-        var oldStr = null;
-        while (str !== oldStr) {
-            oldStr = str;
-            for (i = 0, ilen = 2; i < ilen; i += 1) {
-                if (this.quotechars[i + 4]) {
-                    if (i === 0) {
-                        str = str.split(this.quotechars[i + 4]).join(" " + this.quotechars[1]);
-                    } else {
-                        str = str.split(this.quotechars[i + 4]).join(this.quotechars[1]);
-                    }
+        for (i = 0, ilen = 2; i < ilen; i += 1) {
+            if (this.quotechars[i + 4]) {
+                if (i === 0 && this.quotechars[i + 4] !== this.quotechars[1]) {
+                    str = str.split(this.quotechars[i + 4]).join(" " + this.quotechars[1]);
+                } else {
+                    str = str.split(this.quotechars[i + 4]).join(this.quotechars[1]);
                 }
             }
         }
