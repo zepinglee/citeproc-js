@@ -317,7 +317,6 @@ CSL.Node.text = {
                                 var value = state.transform.abbrevs["default"]["hereinafter"][Item.id];
                                 if (value) {
                                     state.output.append(value, this);
-                                    print("  -- node_text.js --> true");
                                     state.tmp.group_context.tip.variable_success = true;
                                 }
                             }
