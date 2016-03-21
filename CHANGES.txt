@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.84
+=========================
+
+- Replace reject and require conditions with smarter
+  comma-safe value
+
+=========================
 Changes in version 1.1.83
 =========================
 

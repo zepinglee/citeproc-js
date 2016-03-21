@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.83",
+    PROCESSOR_VERSION: "1.1.84",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -659,10 +659,23 @@ var CSL = {
         if (state.tmp.group_context.tip.condition) {
             if (state.tmp.group_context.tip.condition.test) {
                 var testres;
-                if (state.tmp.group_context.tip.condition.test === "label-empty-or-alpha") {
-                    testres = !termtxt || termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
-                } else if (state.tmp.group_context.tip.condition.test === "label-empty") {
-                    testres = !termtxt;
+                if (state.tmp.group_context.tip.condition.test === "comma-safe") {
+                    var empty = !termtxt;
+                    var alpha = termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
+                    var num = state.tmp.just_did_number;
+                    if (num) {
+                        if (empty) {
+                            testres = true;
+                        } else {
+                            testres = false;
+                        }
+                    } else {
+                        if (empty || alpha) {
+                            testres = true;
+                        } else {
+                            testres = false;
+                        }
+                    }
                 }
                 if (testres) {
                     state.tmp.group_context.tip.force_suppress = false;
@@ -8500,6 +8513,11 @@ CSL.NameOutput.prototype.renderAllNames = function () {
     var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
+        if (this.freeters[v].length || this.institutions[v].length) {
+            if (!this.state.tmp.group_context.tip.condition) {
+                this.state.tmp.just_did_number = false;
+            }
+        }
         pos = this.nameset_base + i;
         if (this.freeters[v].length) {
             this.freeters[v] = this._renderNames(v, this.freeters[v], pos);
@@ -9788,6 +9806,9 @@ CSL.Node.number = {
             if (varname === "locator") {
                 state.processNumber(node, item, varname, Item.type);
             } else {
+                if (!state.tmp.group_context.tip.condition && Item[varname]) {
+                    state.tmp.just_did_number = true;
+                }
                 state.processNumber(node, Item, varname, Item.type);
             }
             CSL.Util.outputNumericField(state, varname, Item.id);
@@ -10033,6 +10054,9 @@ CSL.Node.text = {
                         }
                         state.parallel.StartVariable(parallel_variable);
                         state.parallel.AppendToVariable(Item[parallel_variable],parallel_variable);
+                        if (!state.tmp.group_context.tip.condition && Item[this.variables[0]]) {
+                            state.tmp.just_did_number = false;
+                        }
                     };
                     this.execs.push(func);
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1
