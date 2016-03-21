@@ -177,7 +177,7 @@ citation
         <group delimiter=", ">
           <text variable="title"/>
           <!-- If rendered, will join with comma -->
-          <group delimiter=" " require="label-empty-or-alpha">
+          <group delimiter=" " require="comma-safe">
             <choose>
               <if locator="page" match="none">
                 <label variable="locator" form="short"/>
