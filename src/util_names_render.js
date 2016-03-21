@@ -6,6 +6,12 @@ CSL.NameOutput.prototype.renderAllNames = function () {
     var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
+
+        if (this.freeters[v].length || this.institutions[v].length) {
+            if (!this.state.tmp.group_context.tip.condition) {
+                this.state.tmp.just_did_number = false;
+            }
+        }
         
         pos = this.nameset_base + i;
         if (this.freeters[v].length) {

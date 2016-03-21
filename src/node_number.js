@@ -101,8 +101,12 @@ CSL.Node.number = {
             }
 
             if (varname === "locator") {
+                // amazing that we reach this. should abort sooner if no content?
                 state.processNumber(node, item, varname, Item.type);
             } else {
+                if (!state.tmp.group_context.tip.condition && Item[varname]) {
+                    state.tmp.just_did_number = true;
+                }
                 state.processNumber(node, Item, varname, Item.type);
             }
 

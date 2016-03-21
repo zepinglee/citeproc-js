@@ -207,6 +207,10 @@ CSL.Node.text = {
                         }
                         state.parallel.StartVariable(parallel_variable);
                         state.parallel.AppendToVariable(Item[parallel_variable],parallel_variable);
+
+                        if (!state.tmp.group_context.tip.condition && Item[this.variables[0]]) {
+                            state.tmp.just_did_number = false;
+                        }
                     };
                     this.execs.push(func);
 
