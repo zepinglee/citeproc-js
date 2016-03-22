@@ -892,10 +892,6 @@ CSL.Attributes["@name"] = function (state, arg) {
     this.strings.name = arg;
 };
 
-CSL.Attributes["@alternative-macro"] = function (state, arg) {
-    this.alt_macro = arg;
-};
-
 /**
  * Store the form attribute (of a term node) on the state object.
  * <p>For reference when the closing node of a macro

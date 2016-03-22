@@ -47,7 +47,6 @@ CSL.expandMacro = function (macro_key_token, target) {
     var mkey, start_token, key, end_token, navi, macro_nodes, newoutput, mergeoutput, end_of_macro, func;
 
     mkey = macro_key_token.postponed_macro;
-    var alt_macro = macro_key_token.alt_macro;
 
     // Decorations and affixes are in wrapper applied in cs:text
     macro_key_token = new CSL.Token("group", CSL.START);
@@ -79,7 +78,6 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     if (CSL.MODULE_MACROS[mkey]) {
         macro_key_token.juris = mkey;
-        macro_key_token.alt_macro = alt_macro;
         this.opt.update_mode = CSL.POSITION;
     }
     // Macro group is treated as a real node in the style
@@ -97,15 +95,14 @@ CSL.expandMacro = function (macro_key_token, target) {
         CSL.configureMacro.call(this, mytarget);
     }
     if (!this.build.extension) {
-        var func = function(macro_name, alt_macro) {
+        var func = function(macro_name) {
             return function (state, Item, item) {
                 var next = 0;
                 while (next < state.macros[macro_name].length) {
                     next = CSL.tokenExec.call(state, state.macros[macro_name][next], Item, item);
                 }
-                CSL.runAltMacro(state, alt_macro, Item, item);
             }
-        }(mkey, alt_macro);
+        }(mkey);
         var text_node = new CSL.Token("text", CSL.SINGLETON);
         text_node.execs.push(func);
         target.push(text_node);
@@ -124,10 +121,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     }
     if (macro_key_token.juris) {
         end_of_macro.juris = mkey;
-        if (alt_macro) {
-            end_of_macro.alt_macro = alt_macro;
-        }
-    }
+     }
     // Macro group is treated as a real node in the style
     CSL.Node.group.build.call(end_of_macro, this, target, true);
 
@@ -143,23 +137,6 @@ CSL.getMacroTarget = function (mkey) {
         this.macros[mkey] = mytarget;
     }
     return mytarget;
-}
-
-CSL.runAltMacro = function (state, alt_macro, Item, item) {
-    var flags = state.tmp.group_context.tip;
-    if (((flags.variable_attempt && !flags.variable_success) || (!flags.term_intended && !flags.variable_attempt)) && alt_macro) {
-        flags.variable_attempt = false;
-        var mytarget = CSL.getMacroTarget.call(state, alt_macro);
-        if (mytarget) {
-            var macro_nodes = state.cslXml.getNodesByName(state.cslXml.dataObj, 'macro', alt_macro);
-            CSL.buildMacro.call(state, mytarget, macro_nodes);
-            CSL.configureMacro.call(state, mytarget);
-        }
-        var next = 0;
-        while (next < state.macros[alt_macro].length) {
-            next = CSL.tokenExec.call(state, state.macros[alt_macro][next], Item, item);
-        }
-    }
 }
 
 CSL.buildMacro = function (mytarget, macro_nodes) {
