@@ -763,7 +763,9 @@ var CSL = {
         if (state.tmp.group_context.tip.condition) {
             if (state.tmp.group_context.tip.condition.test) {
                 var testres;
-                if (state.tmp.group_context.tip.condition.test === "comma-safe") {
+                if (state.tmp.group_context.tip.condition.test === "empty-label") {
+                    testres = !termtxt;
+                } else if (state.tmp.group_context.tip.condition.test === "comma-safe") {
                     var empty = !termtxt;
                     var alpha = termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
                     var num = state.tmp.just_did_number;

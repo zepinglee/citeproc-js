@@ -1,8 +1,9 @@
 /*global CSL: true */
 
 CSL.Node.group = {
-    build: function (state, target) {
+    build: function (state, target, realGroup) {
         var func, execs;
+        this.realGroup = realGroup;
         if (this.tokentype === CSL.START) {
             CSL.Util.substituteStart.call(this, state, target);
             if (state.build.substitute_level.value()) {
@@ -15,51 +16,63 @@ CSL.Node.group = {
             // newoutput
             func = function (state, Item) {
                 state.output.startTag("group", this);
-                // XXX Can we do something better for length here?
-                if (state.tmp.group_context.mystack.length) {
-                    state.output.current.value().parent = state.tmp.group_context.tip.output_tip;
-                }
-
-
-                // fieldcontextflag
-                var label_form = state.tmp.group_context.tip.label_form;
-                if (!label_form && this.strings.label_form_override) {
-                    label_form = this.strings.label_form_override;
-                }
-                var condition = false;
-                var force_suppress = false;
-                if (state.tmp.group_context.tip.condition) {
-                    condition = state.tmp.group_context.tip.condition;
-                    force_suppress = false;
-                } else if (this.strings.reject) {
-                    condition = {
-                        test: this.strings.reject,
-                        not: true
+                
+                if (this.strings.label_form_override) {
+                    if (!state.tmp.group_context.tip.label_form) {
+                        state.tmp.group_context.tip.label_form = this.strings.label_form_override;
                     }
-                    force_suppress = true;
-                    done_vars = [];
-                } else if (this.strings.require) {
-                    condition = {
-                        test: this.strings.require,
-                        not: false
-                    }
-                    done_vars = [];
                 }
-                // CONDITION
-                //if (!state.tmp.just_looking) {
-                //    print("  pushing condition[" + state.tmp.group_context.mystack.length + "]: "+condition+" "+force_suppress);
-                //}
-                state.tmp.group_context.push({
-                    term_intended: false,
-                    variable_attempt: false,
-                    variable_success: false,
-                    output_tip: state.output.current.tip,
-                    label_form: label_form,
-                    parallel_conditions: this.strings.set_parallel_condition,
-                    condition: condition,
-                    force_suppress: force_suppress,
-                    done_vars: state.tmp.group_context.tip.done_vars.slice()
-                });
+                
+                if (this.realGroup) {
+                    var condition = false;
+                    var force_suppress = false;
+
+                    // XXX Can we do something better for length here?
+                    if (state.tmp.group_context.mystack.length) {
+                        state.output.current.value().parent = state.tmp.group_context.tip.output_tip;
+                    }
+                    
+                    // fieldcontextflag
+                    var label_form = state.tmp.group_context.tip.label_form;
+                    if (!label_form) {
+                        label_form = this.strings.label_form_override;
+                    }
+                    
+                    if (state.tmp.group_context.tip.condition) {
+                        condition = state.tmp.group_context.tip.condition;
+                        force_suppress = state.tmp.group_context.tip.force_suppress;
+                        //force_suppress: false;
+                    } else if (this.strings.reject) {
+                        condition = {
+                            test: this.strings.reject,
+                            not: true
+                        }
+                        force_suppress = true;
+                        done_vars = [];
+                    } else if (this.strings.require) {
+                        condition = {
+                            test: this.strings.require,
+                            not: false
+                        }
+                        done_vars = [];
+                    }
+                    // CONDITION
+                    //if (!state.tmp.just_looking) {
+                    //    print("  pushing condition[" + state.tmp.group_context.mystack.length + "]: "+condition+" "+force_suppress);
+                    //}
+                    state.tmp.group_context.push({
+                        term_intended: false,
+                        variable_attempt: false,
+                        variable_success: false,
+                        variable_success_parent: state.tmp.group_context.tip.variable_success,
+                        output_tip: state.output.current.tip,
+                        label_form: label_form,
+                        parallel_conditions: this.strings.set_parallel_condition,
+                        condition: condition,
+                        force_suppress: force_suppress,
+                        done_vars: state.tmp.group_context.tip.done_vars.slice()
+                    });
+                }
             };
             //
             // Paranoia.  Assure that this init function is the first executed.
@@ -214,7 +227,7 @@ CSL.Node.group = {
         }
 
         if (this.tokentype === CSL.END) {
-
+            
             // Unbundle and print publisher lists
             // Same constraints on creating the necessary function here
             // as above. The full content of the group formatting token
@@ -235,44 +248,43 @@ CSL.Node.group = {
             
             // quashnonfields
             func = function (state, Item) {
-                var flags = state.tmp.group_context.pop();
                 state.output.endTag();
-                // print("leaving with flags: "+flag+" (stack length: "+ (state.tmp.group_context.mystack.length + 1) +")");
-                if (flags.variable_attempt) {
-                    state.tmp.group_context.tip.variable_attempt = true;
-                }
-                if (state.tmp.group_context.tip.condition) {
-                    state.tmp.group_context.tip.force_suppress = flags.force_suppress;
-                }
-                // CONDITION
-                //if (!state.tmp.just_looking) {
-                //    print("  see flags.condition[" + state.tmp.group_context.mystack.length + "]: "+flags.condition+" "+flags.force_suppress);
-                //}
-                if (!flags.force_suppress && (flags.variable_success || (flags.term_intended && !flags.variable_attempt))) {
-                    if (!this.isJurisLocatorLabel) {
-                        state.tmp.group_context.tip.variable_success = true;
+                if (this.realGroup) {
+                    var flags = state.tmp.group_context.pop();
+                    var params = ["variable_success", "force_suppress","term_intended", "variable_attempt"]
+                    //print("flags="+JSON.stringify(flags, params));
+                    //print("parent="+JSON.stringify(state.tmp.group_context.tip, params))
+                    if (state.tmp.group_context.tip.condition) {
+                        state.tmp.group_context.tip.force_suppress = flags.force_suppress;
                     }
-                    var blobs = state.output.current.value().blobs;
-                    var pos = state.output.current.value().blobs.length - 1;
-                    if (!state.tmp.just_looking && "undefined" !== typeof flags.parallel_conditions) {
-                        var parallel_condition_object = {
-                            blobs: blobs,
-                            conditions: flags.parallel_conditions,
-                            id: Item.id,
-                            pos: pos
-                        };
-                        state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
-                    }
-                } else {
-                    if (flags.force_suppress) {
-                        for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
-                            if (state.tmp.done_vars.indexOf(flags.done_vars[i]) > -1) {
-                                state.tmp.done_vars = state.tmp.done_vars.slice(0, i).concat(state.tmp.done_vars.slice(i+1));
+                    if (!flags.force_suppress && (flags.variable_success || (flags.term_intended && !flags.variable_attempt))) {
+                        if (!this.isJurisLocatorLabel) {
+                            state.tmp.group_context.tip.variable_success = true;
+                        }
+                        var blobs = state.output.current.value().blobs;
+                        var pos = state.output.current.value().blobs.length - 1;
+                        if (!state.tmp.just_looking && "undefined" !== typeof flags.parallel_conditions) {
+                            var parallel_condition_object = {
+                                blobs: blobs,
+                                conditions: flags.parallel_conditions,
+                                id: Item.id,
+                                pos: pos
+                            };
+                            state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
+                        }
+                    } else {
+                        state.tmp.group_context.tip.variable_attempt = flags.variable_attempt;
+                        if (flags.force_suppress && !state.tmp.group_context.tip.condition) {
+                            state.tmp.group_context.tip.variable_success = flags.variable_success_parent;
+                            for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
+                                if (state.tmp.done_vars.indexOf(flags.done_vars[i]) > -1) {
+                                    state.tmp.done_vars = state.tmp.done_vars.slice(0, i).concat(state.tmp.done_vars.slice(i+1));
+                                }
                             }
                         }
-                    }
-                    if (state.output.current.value().blobs) {
-                        state.output.current.value().blobs.pop();
+                        if (state.output.current.value().blobs) {
+                            state.output.current.value().blobs.pop();
+                        }
                     }
                 }
             };

@@ -30,9 +30,6 @@ CSL.Node.label = {
                 }
                 if (termtxt) {
                     state.tmp.group_context.tip.term_intended = true;
-                    //if (!state.tmp.just_looking) {
-                    //    print("TERM INTENDED");
-                    //}
                 }
                 CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, termtxt);
                 if (termtxt.indexOf("%s") === -1) {

@@ -3,7 +3,7 @@
 CSL.tokenExec = function (token, Item, item) {
     // Called on state object
     var next, maybenext, exec, debug;
-    debug = true;
+    debug = false;
     next = token.next;
     maybenext = false;
     //SNIP-START
@@ -82,8 +82,8 @@ CSL.expandMacro = function (macro_key_token, target) {
         macro_key_token.alt_macro = alt_macro;
         this.opt.update_mode = CSL.POSITION;
     }
-
-    CSL.Node.group.build.call(macro_key_token, this, target);
+    // Macro group is treated as a real node in the style
+    CSL.Node.group.build.call(macro_key_token, this, target, true);
 
     // Node does not exist in the CSL
     if (!this.cslXml.getNodeValue(macro_nodes)) {
@@ -128,8 +128,8 @@ CSL.expandMacro = function (macro_key_token, target) {
             end_of_macro.alt_macro = alt_macro;
         }
     }
-
-    CSL.Node.group.build.call(end_of_macro, this, target);
+    // Macro group is treated as a real node in the style
+    CSL.Node.group.build.call(end_of_macro, this, target, true);
 
     this.build.macro_stack.pop();
 };
@@ -253,7 +253,8 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget) {
     } else {
         target = state[state.build.area].tokens;
     }
-    CSL.Node[name].build.call(token, state, target);
+    // True flags real nodes in the style
+    CSL.Node[name].build.call(token, state, target, true);
 };
 
 

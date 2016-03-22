@@ -1376,6 +1376,7 @@ CSL.Attributes["@reverse-order"] = function (state, arg) {
 };
 
 CSL.Attributes["@display"] = function (state, arg) {
+    state.opt.using_display = true;
     this.strings.cls = arg;
 };
 

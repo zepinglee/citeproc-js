@@ -15,14 +15,15 @@ CSL.Node.layout = {
                     } else {
                         suffix = state.bibliography.opt.layout_suffix;
                     }
-                    // Fix up duplicate terminal punctuation, reported by Carles Pina 2010-07-15
-                    var chr = suffix.slice(0, 1);
-                    var topblobs = state.output.current.value().blobs;
-                    if (topblobs.length) {
-                        if (chr && topblobs[topblobs.length-1].strings.suffix.slice(-1) === chr) {
-                            topblobs[topblobs.length-1].strings.suffix = topblobs[topblobs.length-1].strings.suffix.slice(0, -1);
-                        }
-                        topblobs[topblobs.length-1].strings.suffix += suffix;
+
+                    // If @display is used, layout suffix is placed on the last
+                    // immediate child of the layout, which we assume will be a
+                    // @display group node.
+                    var topblob = state.output.current.value();
+                    if (state.opt.using_display) {
+                        topblob.blobs[topblob.blobs.length-1].strings.suffix = suffix;
+                    } else {
+                        topblob.strings.suffix = suffix;
                     }
                     if (state.bibliography.opt["second-field-align"]) {
                         // closes bib_other
@@ -43,7 +44,6 @@ CSL.Node.layout = {
             }
 
             func = function (state, Item, item) {
-
                 if (state.opt.development_extensions.apply_citation_wrapper
                     && state.sys.wrapCitationEntry
                     && !state.tmp.just_looking
