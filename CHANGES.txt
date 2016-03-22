@@ -1,6 +1,27 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.85
+=========================
+
+- Remove stale alternative-macro support from processor,
+  and fix tests to remove it from there.
+
+- Update CSL-M schema to add empty-label value on reject and require.
+
+- Enhancements and bugfixes for require and reject:
+
+    - Handle group_context only on real nodes in the style.
+    - Treat the outer group on macros as a real group node in the style.
+    - Fix a bug in the application of layout suffix on bibliographies.
+    - Add an empty-label value to reject and require.
+    - Flag a failed reject or require to the parent as a failed attempt
+      to render a variable, so that it will take bare term siblings
+      with it on fail.
+
+
+
+=========================
 Changes in version 1.1.84
 =========================
 
