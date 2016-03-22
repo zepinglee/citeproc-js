@@ -1337,8 +1337,10 @@ Not the cleanest of tests.
       <if position="ibid-with-locator">
         <group delimiter=" ">
           <text term="ibid"/>
-          <group delimiter=" ">
-            <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+          <group delimiter=" " require="empty-label">
+            <text macro="juris-locator" label-form="symbol"/>
+          </group>
+          <group delimiter=" " reject="empty-label">
             <text macro="juris-locator" label-form="symbol"/>
           </group>
         </group>
@@ -1388,8 +1390,10 @@ Not the cleanest of tests.
                   <text term="note"/>
                   <text variable="first-reference-note-number"/>
                 </group>
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                <group delimiter=" " require="empty-label">
+                  <text macro="juris-locator" label-form="symbol"/>
+                </group>
+                <group delimiter=" " reject="empty-label">
                   <text macro="juris-locator" label-form="symbol"/>
                 </group>
               </group>
@@ -1416,10 +1420,14 @@ Not the cleanest of tests.
                       <text macro="juris-main-short"/>
                     </else>
                   </choose>
-                  <text macro="juris-comma-spotter-short" label-form="symbol"/>
+                  <group delimiter=" " require="comma-safe">
+                    <text macro="juris-locator" label-form="symbol"/>
+                  </group>
                 </group>
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                <group delimiter=" " require="empty-label">
+                  <text macro="juris-locator" label-form="symbol"/>
+                </group>
+                <group delimiter=" " reject="comma-safe">
                   <text macro="juris-locator" label-form="symbol"/>
                 </group>
                 <text macro="juris-tail-short"/>
@@ -1466,19 +1474,25 @@ Not the cleanest of tests.
                 </choose>
                 <choose>
                   <if match="all" variable="locator number" type="report">
-                    <group delimiter=" ">
-                      <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                    <group delimiter=" " require="empty-label">
+                      <text macro="juris-locator" label-form="symbol"/>
+                    </group>
+                    <group delimiter=" " reject="empty-label">
                       <text macro="juris-locator" label-form="symbol"/>
                     </group>
                   </if>
                   <else>
-                    <text macro="juris-comma-spotter" label-form="symbol"/>
+                    <group delimiter=" " require="comma-safe">
+                      <text macro="juris-locator" label-form="symbol"/>
+                    </group>
                   </else>
                 </choose>
               </group>
             </group>
           </group>
-          <text macro="juris-default-spotter" label-form="symbol"/>
+            <group delimiter=" " reject="comma-safe">
+              <text macro="juris-locator" label-form="symbol"/>
+            </group>
           <text macro="juris-tail"/>
         </group>
       </else>

@@ -1764,12 +1764,6 @@ citation
   <macro name="juris-main">
     <text value=""/>
   </macro>
-  <macro name="juris-comma-spotter">
-    <text value=""/>
-  </macro>
-  <macro name="juris-default-spotter">
-    <text value=""/>
-  </macro>
   <macro name="juris-tail">
     <text value=""/>
   </macro>
@@ -1779,31 +1773,23 @@ citation
   <macro name="juris-main-short">
     <text value=""/>
   </macro>
-  <macro name="juris-comma-spotter-short">
-    <text value=""/>
-  </macro>
-  <macro name="juris-default-spotter-short">
-    <text value=""/>
-  </macro>
   <macro name="juris-tail-short">
-    <text value=""/>
-  </macro>
-  <macro name="juris-locator-label">
     <text value=""/>
   </macro>
   <macro name="juris-locator">
     <text value=""/>
-  </macro>
-  <macro name="at-locator-label">
-    <text value="at"/>
   </macro>
   <macro name="jurism">
     <choose>
       <if position="ibid-with-locator">
         <group delimiter=" ">
           <text term="ibid"/>
-          <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
-          <text macro="juris-locator" label-form="symbol"/>
+          <group delimiter=" " require="empty-label">
+            <text macro="juris-locator" label-form="symbol"/>
+          </group>
+          <group delimiter=" " reject="empty-label">
+            <text macro="juris-locator" label-form="symbol"/>
+          </group>
         </group>
       </if>
       <else-if position="ibid">
@@ -1816,9 +1802,13 @@ citation
           <group delimiter=" ">
             <group delimiter=", ">
               <text macro="juris-main"/>
-              <text macro="juris-comma-spotter" label-form="symbol"/>
+              <group require="comma-safe">
+                <text macro="juris-locator"/>
+              </group>
             </group>
-            <text macro="juris-default-spotter" label-form="symbol"/>
+            <group reject="comma-safe">
+              <text macro="juris-locator"/>
+            </group>
             <text macro="juris-tail"/>
           </group>
         </group>
@@ -1837,19 +1827,16 @@ citation
           <group delimiter=" ">
             <group delimiter=", ">
               <text macro="juris-main-short"/>
-              <text macro="juris-comma-spotter-short" label-form="symbol"/>
+              <group delimiter=" " require="comma-safe">
+                <text macro="juris-locator" label-form="symbol"/>
+              </group>
             </group>
-            <choose>
-              <if variable="locator">
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label"/>
-                  <text macro="juris-locator"/>
-                </group>
-              </if>
-              <else>
-                <text macro="juris-default-spotter-short" label-form="symbol"/>
-              </else>
-            </choose>
+            <group delimiter=" " require="empty-label">
+              <text macro="juris-locator" label-form="symbol"/>
+            </group>
+            <group delimiter=" " reject="comma-safe">
+              <text macro="juris-locator" label-form="symbol"/>
+            </group>
             <text macro="juris-tail-short"/>
           </group>
         </group>

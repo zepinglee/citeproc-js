@@ -62,7 +62,7 @@ citation
     </choose>
   </macro>
   <macro name="xjuris-default-spotter">
-    <group delimiter=" " reject="label-empty-or-alpha">
+    <group delimiter=" " reject="comma-safe">
       <text macro="xjuris-locator-label"/>
       <number variable="locator"/>
     </group>

@@ -121,7 +121,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
             <group>
               <names variable="container-author reviewed-author">
                 <label form="verb-short" text-case="lowercase" suffix=" "/>
-                <name and="text" delimiter=", " name-as-sort-order="never"/>
+                <name and="text" delimiter=", "/>
                 <institution/>
               </names>
             </group>
@@ -130,7 +130,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
       </group>
       <names variable="editor translator" delimiter=", ">
         <label form="verb-short" text-case="lowercase" suffix=" "/>
-        <name and="text" delimiter=", " name-as-sort-order="never"/>
+        <name and="text" delimiter=", "/>
         <institution/>
       </names>
     </group>
@@ -154,7 +154,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
       <if type="chapter paper-conference" match="none">
         <names variable="editor translator" delimiter=". ">
           <label form="verb" text-case="capitalize-first" suffix=" "/>
-          <name and="text" delimiter=", " name-as-sort-order="never"/>
+          <name and="text" delimiter=", "/>
           <institution/>
         </names>
       </if>
@@ -170,7 +170,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
                 <if variable="container-author" match="any">
                   <names variable="container-author">
                     <label form="verb-short" text-case="lowercase" suffix=" "/>
-                    <name and="text" delimiter=", " name-as-sort-order="never"/>
+                    <name and="text" delimiter=", "/>
                     <institution/>
                   </names>
                 </if>
@@ -182,7 +182,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
                     <number variable="page"/>
                     <names variable="editor translator" delimiter=", ">
                       <label form="verb" suffix=" "/>
-                      <name and="text" delimiter=", " name-as-sort-order="never"/>
+                      <name and="text" delimiter=", "/>
                       <institution/>
                     </names>
                   </group>
@@ -190,7 +190,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
                 <else>
                   <names variable="editor translator" delimiter=", ">
                     <label form="verb" text-case="lowercase" suffix=" "/>
-                    <name and="text" delimiter=", " name-as-sort-order="never"/>
+                    <name and="text" delimiter=", "/>
                     <institution/>
                   </names>
                 </else>
@@ -204,14 +204,14 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
   <macro name="recipient-note">
     <names variable="recipient" delimiter=", ">
       <label form="verb" text-case="lowercase" suffix=" "/>
-      <name and="text" delimiter=", " name-as-sort-order="never"/>
+      <name and="text" delimiter=", "/>
       <institution/>
     </names>
   </macro>
   <macro name="contributors-note">
     <group delimiter=" ">
       <names variable="author">
-        <name and="text" sort-separator=", " delimiter=", " name-as-sort-order="never"/>
+        <name and="text" sort-separator=", " delimiter=", "/>
         <institution institution-parts="short">
           <institution-part name="short" strip-periods="true"/>
         </institution>
@@ -279,14 +279,14 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
   <macro name="recipient-short">
     <names variable="recipient">
       <label form="verb" text-case="lowercase" suffix=" "/>
-      <name form="short" and="text" delimiter=", " name-as-sort-order="never"/>
+      <name form="short" and="text" delimiter=", "/>
       <institution/>
     </names>
   </macro>
   <macro name="contributors-short">
     <group delimiter=" ">
       <names variable="author">
-        <name form="short" and="text" delimiter=", " name-as-sort-order="never"/>
+        <name form="short" and="text" delimiter=", "/>
         <institution institution-parts="short">
           <institution-part name="short" strip-periods="true"/>
         </institution>
@@ -302,7 +302,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
     <group delimiter=" in ">
       <names variable="interviewer" delimiter=", ">
         <label form="verb" text-case="lowercase" suffix=" "/>
-        <name and="text" delimiter=", " name-as-sort-order="never"/>
+        <name and="text" delimiter=", "/>
         <institution/>
       </names>
       <choose>
@@ -318,14 +318,14 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
         <if variable="medium">
           <names variable="interviewer" delimiter=", ">
             <label form="verb" suffix=" "/>
-            <name and="text" delimiter=", " name-as-sort-order="never"/>
+            <name and="text" delimiter=", "/>
             <institution/>
           </names>
         </if>
         <else>
           <names variable="interviewer" delimiter=", ">
             <label form="verb" text-case="capitalize-first" suffix=" "/>
-            <name and="text" delimiter=", " name-as-sort-order="never"/>
+            <name and="text" delimiter=", "/>
             <institution/>
           </names>
         </else>
@@ -386,7 +386,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
           <text variable="title" font-style="italic" prefix="Review of "/>
           <names variable="reviewed-author">
             <label form="verb-short" text-case="lowercase" suffix=" "/>
-            <name and="text" delimiter=", " name-as-sort-order="never"/>
+            <name and="text" delimiter=", "/>
             <institution/>
           </names>
         </group>
@@ -1301,12 +1301,6 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
   <macro name="juris-main">
     <text value=""/>
   </macro>
-  <macro name="juris-default-spotter">
-    <text value=""/>
-  </macro>
-  <macro name="juris-comma-spotter">
-    <text value=""/>
-  </macro>
   <macro name="juris-tail">
     <text value=""/>
   </macro>
@@ -1316,16 +1310,7 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
   <macro name="juris-main-short">
     <text value=""/>
   </macro>
-  <macro name="juris-default-spotter-short">
-    <text value=""/>
-  </macro>
-  <macro name="juris-comma-spotter-short">
-    <text value=""/>
-  </macro>
   <macro name="juris-tail-short">
-    <text value=""/>
-  </macro>
-  <macro name="juris-locator-label">
     <text value=""/>
   </macro>
   <macro name="juris-locator">
@@ -1337,8 +1322,11 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
       <if position="ibid-with-locator">
         <group delimiter=" ">
           <text term="ibid"/>
-          <group delimiter=" ">
-            <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+          <group delimiter=" " require="empty-label">
+            <text value="at"/>
+            <text macro="juris-locator" label-form="symbol"/>
+          </group>
+          <group reject="empty-label">
             <text macro="juris-locator" label-form="symbol"/>
           </group>
         </group>
@@ -1388,8 +1376,11 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
                   <text term="note"/>
                   <text variable="first-reference-note-number"/>
                 </group>
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                <group delimiter=" " require="empty-label">
+                  <text value="at"/>
+                  <text macro="juris-locator" label-form="symbol"/>
+                </group>
+                <group reject="empty-label">
                   <text macro="juris-locator" label-form="symbol"/>
                 </group>
               </group>
@@ -1416,10 +1407,15 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
                       <text macro="juris-main-short"/>
                     </else>
                   </choose>
-                  <text macro="juris-comma-spotter-short" label-form="symbol"/>
+                  <group require="comma-safe">
+                    <text macro="juris-locator" label-form="symbol"/>
+                  </group>
                 </group>
-                <group delimiter=" ">
-                  <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                <group delimiter=" " require="empty-label">
+                  <text value="at"/>
+                  <text macro="juris-locator" label-form="symbol"/>
+                </group>
+                <group delimiter=" " reject="comma-safe">
                   <text macro="juris-locator" label-form="symbol"/>
                 </group>
                 <text macro="juris-tail-short"/>
@@ -1466,19 +1462,26 @@ Fixed by commit https://github.com/Juris-M/citeproc-js/commit/98489396ab7b168767
                 </choose>
                 <choose>
                   <if match="all" variable="locator number" type="report">
-                    <group delimiter=" ">
-                      <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                    <group delimiter=" " require="empty-label">
+                      <text value="at"/>
+                      <text macro="juris-locator" label-form="symbol"/>
+                    </group>
+                    <group reject="empty-label">
                       <text macro="juris-locator" label-form="symbol"/>
                     </group>
                   </if>
                   <else>
-                    <text macro="juris-comma-spotter" label-form="symbol"/>
+                    <group delimiter=" " require="comma-safe">
+                      <text macro="juris-locator" label-form="symbol"/>
+                    </group>
                   </else>
                 </choose>
               </group>
             </group>
           </group>
-          <text macro="juris-default-spotter" label-form="symbol"/>
+          <group delimiter=" " reject="comma-safe">
+            <text macro="juris-locator" label-form="symbol"/>
+          </group>
           <text macro="juris-tail"/>
         </group>
       </else>

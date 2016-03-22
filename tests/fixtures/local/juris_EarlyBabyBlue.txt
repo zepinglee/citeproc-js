@@ -110,15 +110,15 @@ citation
   <macro name="jurism">
     <choose>
       <if position="ibid-with-locator">
-        <group delimiter=" ">
-          <text term="ibid"/>
-          <group delimiter=" " require="label-empty">
-            <group><text value="TXT"/></group>
-            <text value="at"/>
-            <text macro="juris-locator" label-form="symbol"/>
-          </group>
-          <group delimiter=" " reject="label-empty">
-            <text macro="juris-locator" label-form="symbol"/>
+        <group delimiter=", ">
+          <group delimiter=" ">
+            <text term="ibid"/>
+            <group delimiter=" ">
+              <text value="at"/>
+              <group require="empty-label">
+                <text macro="juris-locator" label-form="symbol"/>
+              </group>
+            </group>
           </group>
         </group>
       </if>
@@ -167,11 +167,11 @@ citation
                   <text term="note"/>
                   <text variable="first-reference-note-number"/>
                 </group>
-                <group delimiter=" " require="label-empty">
+                <group delimiter=" " require="comma-safe">
                   <text value="at"/>
                   <text macro="juris-locator"/>
                 </group>
-                <group delimiter=" " reject="label-empty">
+                <group delimiter=" " reject="comma-safe">
                   <text macro="juris-locator"/>
                 </group>
               </group>
@@ -198,11 +198,11 @@ citation
                       <text macro="juris-main-short"/>
                     </else>
                   </choose>
-                  <group delimiter=" " reject="label-empty">
+                  <group delimiter=" " require="comma-safe">
                     <text macro="juris-locator" label-form="symbol"/>
                   </group>
                 </group>
-                <group delimiter=" " require="label-empty">
+                <group delimiter=" " reject="comma-safe">
                   <text value="at"/>
                   <text macro="juris-locator"/>
                 </group>
@@ -250,16 +250,16 @@ citation
                 </choose>
                 <choose>
                   <if match="all" variable="locator number" type="report">
-                    <group delimiter=" " require="label-empty">
+                    <group delimiter=" " require="comma-safe">
                       <text value="at"/>
                       <text macro="juris-locator"/>
                     </group>
-                    <group delimiter=" " reject="label-empty">
+                    <group delimiter=" " reject="comma-safe">
                       <text macro="juris-locator"/>
                     </group>
                   </if>
                   <else>
-                    <group require="label-empty-or-alpha">
+                    <group require="comma-safe">
                       <text macro="juris-locator" label-form="symbol"/>
                     </group>
                   </else>

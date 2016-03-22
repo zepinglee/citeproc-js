@@ -107,25 +107,6 @@ citation-nojuris
     </choose>
   </macro>
 
-  <macro name="juris-default-spotter">
-    <!-- Pinpoint forms (with label) that are preceded by a space in a full-form cite -->
-    <choose>
-      <if locator="paragraph">
-        <label variable="locator" form="static"/>
-        <number variable="locator"/>
-      </if>
-    </choose>
-  </macro>
-
-  <macro name="juris-comma-spotter">
-    <!-- Pinpoint forms (with label) that are preceded by a comma in a full-form cite -->
-    <choose>
-      <if match="none" locator="paragraph">
-        <number variable="locator"/>
-      </if>
-    </choose>
-  </macro>
-
   <macro name="juris-tail">
     <!-- Full form of the portion of the citation that follows a pinpoint locator, if any (for all types) -->
     <text value=""/>
@@ -152,56 +133,40 @@ citation-nojuris
     <text value="[MAIN-SHORT]"/>
   </macro>
 
-  <macro name="juris-default-spotter-short">
-    <!-- Pinpoint forms (with label) that are preceded by a space in a short-form cite -->
-    <text value="[SPACE-LOCATOR]"/>
-  </macro>
-
-  <macro name="juris-comma-spotter-short">
-    <!-- Pinpoint forms (with label) that are preceded by a comma in a short-form cite -->
-    <text value="[COMMA-LOCATOR]"/>
-  </macro>
-
   <macro name="juris-tail-short">
     <!-- Short form of the portion of the citation that follows a pinpoint locator, if any (for all types) -->
     <text value="[TAIL-SHORT]"/>
   </macro>
 
-  <macro name="juris-locator-label">
-    <!-- The label applied to pinpoint locators -->
-    <text value="[LOCATOR-LABEL]"/>
-  </macro>
-
   <macro name="juris-locator">
     <!-- The bare locator without label (but including affixes, if required) -->
-    <text value="[LOCATOR]"/>
+    <group delimiter=" ">
+      <choose>
+        <if locator="page"/>
+        <else-if locator="paragraph">
+          <label variable="locator" form="static"/>
+        </else-if>
+        <else>
+          <label variable="locator"/>
+        </else>
+      </choose>
+      <number variable="locator"/>
+    </group>
   </macro>
 
-  <!-- 
-       Local macro called by the scaffolding below (this macro is not
-       part of the modular code, and will be ignored by the calling
-       style).
-  -->
-  <macro name="at-locator-label">
-    <text value="at"/>
-  </macro>
-
-  <!-- 
-       Punctuation scaffolding for Bluebook citations (you do not need
-       to change this - punctuation scaffolding is applied by the
-       style that calls the module)
-  -->
   <citation>
     <layout>
       <choose>
         <if position="ibid-with-locator">
           <group delimiter=" ">
             <text term="ibid" font-style="italic"/>
-            <group delimiter=" ">
-              <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+            <group delimiter=" " require="empty-label">
               <text macro="juris-locator" label-form="symbol"/>
             </group>
-          </group>
+            <group delimiter=" " reject="empty-label">
+              <text macro="juris-locator" label-form="symbol"/>
+            </group>
+        </group>
         </if>
         <else-if position="ibid">
           <text term="ibid" font-style="italic"/>
@@ -248,8 +213,10 @@ citation-nojuris
                     <text term="note"/>
                     <text variable="first-reference-note-number"/>
                   </group>
-                  <group delimiter=" ">
-                    <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                  <group delimiter=" " require="empty-label">
+                    <text macro="juris-locator" label-form="symbol"/>
+                  </group>
+                  <group delimiter=" " reject="empty-label">
                     <text macro="juris-locator" label-form="symbol"/>
                   </group>
                 </group>
@@ -276,10 +243,14 @@ citation-nojuris
                         <text macro="juris-main-short"/>
                       </else>
                     </choose>
-                    <text macro="juris-comma-spotter-short" label-form="symbol"/>
+                    <group delimiter=" " require="comma-safe">
+                      <text macro="juris-locator" label-form="symbol"/>
+                    </group>
                   </group>
-                  <group delimiter=" ">
-                    <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                  <group delimiter=" " require="empty-label">
+                    <text macro="juris-locator" label-form="symbol"/>
+                  </group>
+                  <group delimiter=" " reject="comma-safe">
                     <text macro="juris-locator" label-form="symbol"/>
                   </group>
                   <text macro="juris-tail-short"/>
@@ -326,19 +297,25 @@ citation-nojuris
                   </choose>
                   <choose>
                     <if match="all" variable="locator number" type="report">
-                      <group delimiter=" ">
-                        <text macro="juris-locator-label" alternative-macro="at-locator-label" label-form="symbol"/>
+                      <group delimiter=" " require="empty-label">
+                        <text macro="juris-locator" label-form="symbol"/>
+                      </group>
+                      <group delimiter=" " reject="empty-label">
                         <text macro="juris-locator" label-form="symbol"/>
                       </group>
                     </if>
                     <else>
-                      <text macro="juris-comma-spotter" label-form="symbol"/>
+                      <group delimiter=" " require="comma-safe">
+                        <text macro="juris-locator" label-form="symbol"/>
+                      </group>
                     </else>
                   </choose>
                 </group>
               </group>
             </group>
-            <text macro="juris-default-spotter" label-form="symbol"/>
+            <group delimiter=" " reject="comma-safe">
+              <text macro="juris-locator" label-form="symbol"/>
+            </group>
             <text macro="juris-tail"/>
           </group>
         </else>
