@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.86
+=========================
+
+- Fix failure to return variable_attempt=true when
+  require="empty-label" failed, and so fail to suppress
+  sibling term when no other variable renderings are
+  attempted.
+
+=========================
 Changes in version 1.1.85
 =========================
 
