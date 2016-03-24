@@ -30,7 +30,7 @@ citation
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.1mlz1" demote-non-dropping-particle="never" page-range-format="chicago" name-as-sort-order="first">
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.1mlz1" demote-non-dropping-particle="never" page-range-format="chicago">
   <info>
     <title>JM Chicago Manual of Style 16th edition (full note)</title>
     <id>http://juris-m.github.io/jm-styles/jm-chicago-fullnote-bibliography</id>
@@ -97,7 +97,7 @@ citation
             <group>
               <names variable="container-author reviewed-author">
                 <label form="verb-short" text-case="lowercase" suffix=" "/>
-                <name and="text" delimiter=", " name-as-sort-order="never"/>
+                <name and="text" delimiter=", "/>
                 <institution/>
               </names>
             </group>
@@ -106,7 +106,7 @@ citation
       </group>
       <names variable="editor translator" delimiter=", ">
         <label form="verb-short" text-case="lowercase" suffix=" "/>
-        <name and="text" delimiter=", " name-as-sort-order="never"/>
+        <name and="text" delimiter=", "/>
         <institution/>
       </names>
     </group>
@@ -130,7 +130,7 @@ citation
       <if type="chapter paper-conference" match="none">
         <names variable="editor translator" delimiter=". ">
           <label form="verb" text-case="capitalize-first" suffix=" "/>
-          <name and="text" delimiter=", " name-as-sort-order="never"/>
+          <name and="text" delimiter=", "/>
           <institution/>
         </names>
       </if>
@@ -146,7 +146,7 @@ citation
                 <if variable="container-author" match="any">
                   <names variable="container-author">
                     <label form="verb-short" text-case="lowercase" suffix=" "/>
-                    <name and="text" delimiter=", " name-as-sort-order="never"/>
+                    <name and="text" delimiter=", "/>
                     <institution/>
                   </names>
                 </if>
@@ -158,7 +158,7 @@ citation
                     <number variable="page"/>
                     <names variable="editor translator" delimiter=", ">
                       <label form="verb" suffix=" "/>
-                      <name and="text" delimiter=", " name-as-sort-order="never"/>
+                      <name and="text" delimiter=", "/>
                       <institution/>
                     </names>
                   </group>
@@ -166,7 +166,7 @@ citation
                 <else>
                   <names variable="editor translator" delimiter=", ">
                     <label form="verb" text-case="lowercase" suffix=" "/>
-                    <name and="text" delimiter=", " name-as-sort-order="never"/>
+                    <name and="text" delimiter=", "/>
                     <institution/>
                   </names>
                 </else>
@@ -180,14 +180,14 @@ citation
   <macro name="recipient-note">
     <names variable="recipient" delimiter=", ">
       <label form="verb" text-case="lowercase" suffix=" "/>
-      <name and="text" delimiter=", " name-as-sort-order="never"/>
+      <name and="text" delimiter=", "/>
       <institution/>
     </names>
   </macro>
   <macro name="contributors-note">
     <group delimiter=" ">
       <names variable="author">
-        <name and="text" sort-separator=", " delimiter=", " name-as-sort-order="never"/>
+        <name and="text" sort-separator=", " delimiter=", "/>
         <institution institution-parts="short">
           <institution-part name="short" strip-periods="true"/>
         </institution>
@@ -255,14 +255,14 @@ citation
   <macro name="recipient-short">
     <names variable="recipient">
       <label form="verb" text-case="lowercase" suffix=" "/>
-      <name form="short" and="text" delimiter=", " name-as-sort-order="never"/>
+      <name form="short" and="text" delimiter=", "/>
       <institution/>
     </names>
   </macro>
   <macro name="contributors-short">
     <group delimiter=" ">
       <names variable="author">
-        <name form="short" and="text" delimiter=", " name-as-sort-order="never"/>
+        <name form="short" and="text" delimiter=", "/>
         <institution institution-parts="short">
           <institution-part name="short" strip-periods="true"/>
         </institution>
@@ -278,7 +278,7 @@ citation
     <group delimiter=" in ">
       <names variable="interviewer" delimiter=", ">
         <label form="verb" text-case="lowercase" suffix=" "/>
-        <name and="text" delimiter=", " name-as-sort-order="never"/>
+        <name and="text" delimiter=", "/>
         <institution/>
       </names>
       <choose>
@@ -294,14 +294,14 @@ citation
         <if variable="medium">
           <names variable="interviewer" delimiter=", ">
             <label form="verb" suffix=" "/>
-            <name and="text" delimiter=", " name-as-sort-order="never"/>
+            <name and="text" delimiter=", "/>
             <institution/>
           </names>
         </if>
         <else>
           <names variable="interviewer" delimiter=", ">
             <label form="verb" text-case="capitalize-first" suffix=" "/>
-            <name and="text" delimiter=", " name-as-sort-order="never"/>
+            <name and="text" delimiter=", "/>
             <institution/>
           </names>
         </else>
@@ -362,7 +362,7 @@ citation
           <text variable="title" font-style="italic" prefix="Review of "/>
           <names variable="reviewed-author">
             <label form="verb-short" text-case="lowercase" suffix=" "/>
-            <name and="text" delimiter=", " name-as-sort-order="never"/>
+            <name and="text" delimiter=", "/>
             <institution/>
           </names>
         </group>
