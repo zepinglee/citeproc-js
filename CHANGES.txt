@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.87
+=========================
+
+Fix nesting mismatch triggered on RTL-language items. Reported by
+abdeali khurrum to the Juris-M Freshers list.
+
+=========================
 Changes in version 1.1.86
 =========================
 
