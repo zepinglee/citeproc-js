@@ -95,7 +95,7 @@ CSL.Node.layout = {
             this.execs.push(func);
 
             func = function (state, Item) {
-                var tok = "empty";
+                var tok = new CSL.Token();
                 if (state.opt.development_extensions.rtl_support) {
                     if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
                         // Force correct text direction of this cite if necessary.
@@ -278,8 +278,9 @@ CSL.Node.layout = {
                     target.push(suffix_token);
                 }
 
+                // Closes the RTL token
                 func = function (state, Item) {
-                    state.output.closeLevel("empty");
+                    state.output.closeLevel();
                 };
                 this.execs.push(func);
                 func = function (state, Item) {
