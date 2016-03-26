@@ -348,7 +348,8 @@ CSL.Node.text = {
                     // for the text value attribute.
                     func = function (state, Item) {
                         state.tmp.group_context.tip.term_intended = true;
-                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.value);
+                        // true flags that this is a literal-value term
+                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.value, true);
                         state.output.append(this.strings.value, this);
                     };
                     this.execs.push(func);
