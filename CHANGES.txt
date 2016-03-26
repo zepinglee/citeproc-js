@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.89
+=========================
+
+- Set just_did_number flag on cs:text with term or value attribute.
+
+=========================
 Changes in version 1.1.88
 =========================
 

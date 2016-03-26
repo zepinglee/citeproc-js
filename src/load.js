@@ -45,7 +45,7 @@ if (!Array.indexOf) {
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.88",
+    PROCESSOR_VERSION: "1.1.89",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -797,6 +797,14 @@ var CSL = {
             //if (!state.tmp.just_looking) {
             //    print("  condition seen");
             //}
+        } else {
+            // If not inside a conditional group, raise numeric flag
+            // if and only if the current term string ends in a number.
+            if (termtxt.slice(-1).match(/[0-9]/)) {
+                state.tmp.just_did_number = true;
+            } else {
+                state.tmp.just_did_number = false;
+            }
         }
     },
 
