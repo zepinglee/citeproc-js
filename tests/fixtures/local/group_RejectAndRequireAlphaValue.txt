@@ -13,8 +13,8 @@ rendering within a citation.
 
 >>===== RESULT =====>>
 ..[0] Some Book or Other (1), 123
-..[1] Some Book or Other (2), p. 123
-..[2] Some Book or Other (3), fol. 123
+..[1] Some Book or Other (2) p. 123
+..[2] Some Book or Other (3) fol. 123
 ..[3] Some Book or Other (4) [%s] 123
 >>[4] Some Book or Other (5) § 123
 <<===== RESULT =====<<

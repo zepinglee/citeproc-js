@@ -7,12 +7,12 @@ citation
 >>===== RESULT =====>>
 ..[0] Story..10 [99]
 ..[1] Story..10 § 99
-..[2] Story..10, at 99
+..[2] Story..10 at 99
 ..[3] Story..10, art. 99
 ..[4] Story..10, 99
 ..[5] 5..Act [99]
 ..[6] 5..Act § 99
-..[7] 5..Act, at 99
+..[7] 5..Act at 99
 ..[8] 5..Act, art. 99
 >>[9] 5..Act, 99
 <<===== RESULT =====<<
