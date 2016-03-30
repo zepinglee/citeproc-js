@@ -317,7 +317,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 
         //print("JSON "+JSON.stringify(this.output.queue[0].blobs, null, 2));
 
-        res = this.output.string(this, this.output.queue);
+        res = this.output.string(this, this.output.queue)[0];
         
         if (!res) {
             res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
