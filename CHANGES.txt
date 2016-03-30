@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.91
+=========================
+
+- Return bibliography strings as an array of strings,
+  not as a array of and array of strings. Restores behaviour
+  prior to 1.1.68. Fault reported by Carles Pina.
+
+=========================
 Changes in version 1.1.90
 =========================
 
