@@ -137,7 +137,9 @@ var CSL = {
         "vol": "volume"
     },
     MODULE_MACROS: {
+        "juris-pretitle": true,
         "juris-title": true,
+        "juris-pretitle-short": true,
         "juris-title-short": true,
         "juris-main": true,
         "juris-main-short": true,
