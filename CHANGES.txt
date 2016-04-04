@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.92
+=========================
+
+- Add pretitle macros to all style modules. Thank you OSCOLA,
+  thank you European Court of Justice.
+
+=========================
 Changes in version 1.1.91
 =========================
 
