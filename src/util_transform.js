@@ -209,7 +209,10 @@ CSL.Transform = function (state) {
             if (ret.name && !jurisdictionName) {
                 jurisdictionName = state.sys.getHumanForm(Item[field]);
             }
-            ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
+            // If jurisdictionName does not exist here, this will go boom.
+            if (jurisdictionName) {
+                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
+            }
         }
         return ret;
     }
