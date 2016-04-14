@@ -635,40 +635,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     // Optional development extensions
     if (this.opt.development_extensions.field_hack && Item.note) {
         //Zotero.debug("XXX   (1): "+Item.note);
-        m = Item.note.match(CSL.NOTE_FIELDS_REGEXP);
-        if (m) {
-            //Zotero.debug("XXX   (2)");
-            var names = {};
-            for (pos = 0, len = m.length; pos < len; pos += 1) {
-                mm = m[pos].match(CSL.NOTE_FIELD_REGEXP);
-                //Zotero.debug("XXX   (3)");
-                if (!Item[mm[1]] && CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
-                    Item[mm[1]] = {raw:mm[2]};
-                } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
-                    // Add creator(s) only if original data object had none
-                    // Unpack particles and articular from parsed-out fields
-                    // Bugfix applied to address this: https://github.com/zotero/zotero/issues/846#issuecomment-146794378
-                    if (!names[mm[1]]) {
-                        names[mm[1]] = [];
-                    }
-                    var lst = mm[2].split(/\s*\|\|\s*/);
-                    if (lst.length === 1) {
-                        names[mm[1]].push({family:lst[0],isInstitution:true});
-                    } else if (lst.length === 2) {
-                        var name = {family:lst[0],given:lst[1]};
-                        CSL.parseParticles(name);
-                        names[mm[1]].push(name);
-                    }
-                } else if (!Item[mm[1]] || mm[1] === "type") {
-                    //Zotero.debug("XXX   (4)");
-                    Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
-                }
-                Item.note.replace(CSL.NOTE_FIELD_REGEXP, "");
-            }
-            for (var key in names) {
-                Item[key] = names[key];
-            }
-        }
+        CSL.parseNoteFieldHacks(Item);
     }
     // not including locator-date
     for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
