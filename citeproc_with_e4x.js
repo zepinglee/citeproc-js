@@ -13232,6 +13232,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     var debug = false;
     var me = this;
     function normalizeFieldValue(str, defaultLabel) {
+        str = str.trim();
         var m = str.match(/^([^ ]+)/);
         if (m && !CSL.STATUTE_SUBDIV_STRINGS[m[1]]) {
             var embeddedLabel = null;
