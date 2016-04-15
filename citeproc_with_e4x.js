@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.93",
+    PROCESSOR_VERSION: "1.1.94",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -206,7 +206,7 @@ var CSL = {
         this["container-phrase"] = {};
         this["title-phrase"] = {};
     },
-    parseNoteFieldHacks: function(Item) {
+    parseNoteFieldHacks: function(Item, validFieldsForType) {
         if ("string" !== typeof Item.note) return;
         var elems = [];
         var m = Item.note.match(CSL.NOTE_FIELDS_REGEXP);
@@ -220,24 +220,33 @@ var CSL = {
             var names = {};
             for (var i=1,ilen=elems.length;i<ilen;i+=2) {
                 var mm = elems[i].match(CSL.NOTE_FIELD_REGEXP);
-                if (!Item[mm[1]] && CSL.DATE_VARIABLES.indexOf(mm[1]) > -1) {
-                    Item[mm[1]] = {raw:mm[2]};
-                    elems[i] = "";
-                } else if (!Item[mm[1]] && CSL.NAME_VARIABLES.indexOf(mm[1]) > -1) {
-                    if (!names[mm[1]]) {
-                        names[mm[1]] = [];
+                var key = mm[1];
+                var val = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+                if (!Item[key]) {
+                    if (!validFieldsForType || validFieldsForType[key]) {
+                        if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
+                            Item[key] = {raw: val};
+                            elems[i] = "";
+                        } else {
+                            Item[key] = val;
+                        }
+                    } else if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
+                        if (!names[key]) {
+                            names[key] = [];
+                        }
+                        var lst = val.split(/\s*\|\|\s*/);
+                        if (lst.length === 1) {
+                            names[key].push({family:lst[0],isInstitution:true});
+                        } else if (lst.length === 2) {
+                            var name = {family:lst[0],given:lst[1]};
+                            CSL.parseParticles(name);
+                            names[key].push(name);
+                        }
+                        elems[i] = "";
                     }
-                    var lst = mm[2].split(/\s*\|\|\s*/);
-                    if (lst.length === 1) {
-                        names[mm[1]].push({family:lst[0],isInstitution:true});
-                    } else if (lst.length === 2) {
-                        var name = {family:lst[0],given:lst[1]};
-                        CSL.parseParticles(name);
-                        names[mm[1]].push(name);
-                    }
-                    elems[i] = "";
-                } else if (!Item[mm[1]] || mm[1] === "type") {
-                    Item[mm[1]] = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+                }
+                if (name === "type") {
+                    Item.type = val;
                 }
                 Item.note = elems.join("");
             }
