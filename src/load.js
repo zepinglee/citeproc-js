@@ -260,7 +260,7 @@ var CSL = {
                         }
                         var lst = val.split(/\s*\|\|\s*/);
                         if (lst.length === 1) {
-                            names[key].push({family:lst[0],isInstitution:true});
+                            names[key].push({literal:lst[0]});
                         } else if (lst.length === 2) {
                             var name = {family:lst[0],given:lst[1]};
                             CSL.parseParticles(name);
