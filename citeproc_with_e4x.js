@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.95",
+    PROCESSOR_VERSION: "1.1.96",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1150,7 +1150,7 @@ CSL.parseXml = function(str) {
     var _obj = {children:[]};
     var _stack = [_obj.children];
     function _listifyString(str) {
-        str = str.split("\n").join(" ").replace(/>[	 ]+</g, "><").replace(/<\!--.*?-->/g, "");
+        str = str.split(/(?:\r\n|\n|\r)/).join(" ").replace(/>[	 ]+</g, "><").replace(/<\!--.*?-->/g, "");
         var lst = str.split("><");
         var stylePos = null;
         for (var i=0,ilen=lst.length;i<ilen;i++) {
