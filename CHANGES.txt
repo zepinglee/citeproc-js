@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.97
+=========================
+
+- Set single-field names from {:key:val} note field hacks as
+  literal, rather than as family + isInstitution.
+
+=========================
 Changes in version 1.1.96
 =========================
 
