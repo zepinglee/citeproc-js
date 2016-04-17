@@ -576,7 +576,7 @@ CSL.parseXml = function(str) {
     }
 
     function _getAttributes(elem) {
-        var m = elem.match(/([^\"=	 ]+)=\"[^\"]*\"/g);
+        var m = elem.match(/([^\'\"=	 ]+)=(?:\"[^\"]*\"|\'[^\']*\')/g);
         if (m) {
             for (var i=0,ilen=m.length;i<ilen;i++) {
                 m[i] = m[i].replace(/=.*/, "");
@@ -586,9 +586,13 @@ CSL.parseXml = function(str) {
     }
 
     function _getAttribute(elem, attr) {
-        var rex = RegExp('^.*[	 ]+' + attr + '=\"([^\"]*)\".*$');
+        var rex = RegExp('^.*[	 ]+' + attr + '=(?:\"([^\"]*)\"|\'([^\']*)\').*$');
         var m = elem.match(rex);
-        return m ? m[1] : null;
+        if (m) {
+            return m[1] ? m[1] : m[2];
+        } else {
+            return null;
+        }
     }
 
     function _getTagName(elem) {
