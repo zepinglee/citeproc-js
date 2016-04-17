@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.98
+=========================
+
+- Recognized balanced single- or balanced double-quotes
+  in XML markup.
+
+=========================
 Changes in version 1.1.97
 =========================
 

@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.97",
+    PROCESSOR_VERSION: "1.1.98",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1200,7 +1200,7 @@ CSL.parseXml = function(str) {
             });
     }
     function _getAttributes(elem) {
-        var m = elem.match(/([^\"=	 ]+)=\"[^\"]*\"/g);
+        var m = elem.match(/([^\'\"=	 ]+)=(?:\"[^\"]*\"|\'[^\']*\')/g);
         if (m) {
             for (var i=0,ilen=m.length;i<ilen;i++) {
                 m[i] = m[i].replace(/=.*/, "");
@@ -1209,9 +1209,9 @@ CSL.parseXml = function(str) {
         return m;
     }
     function _getAttribute(elem, attr) {
-        var rex = RegExp('^.*[	 ]+' + attr + '=\"([^\"]*)\".*$');
+        var rex = RegExp('^.*[	 ]+' + attr + '=(\"(?:[^\"]*)\"|\'(?:[^\']*)\').*$');
         var m = elem.match(rex);
-        return m ? m[1] : null;
+        return m ? m[1].slice(1, -1) : null;
     }
     function _getTagName(elem) {
         var rex = RegExp("^<([^	 />]+)");
