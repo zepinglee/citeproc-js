@@ -586,13 +586,9 @@ CSL.parseXml = function(str) {
     }
 
     function _getAttribute(elem, attr) {
-        var rex = RegExp('^.*[	 ]+' + attr + '=(?:\"([^\"]*)\"|\'([^\']*)\').*$');
+        var rex = RegExp('^.*[	 ]+' + attr + '=(\"(?:[^\"]*)\"|\'(?:[^\']*)\').*$');
         var m = elem.match(rex);
-        if (m) {
-            return m[1] ? m[1] : m[2];
-        } else {
-            return null;
-        }
+        return m ? m[1].slice(1, -1) : null;
     }
 
     function _getTagName(elem) {
