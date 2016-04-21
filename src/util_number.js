@@ -366,7 +366,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             isCollapsible = true;
         }
         for (var j=currentLabelInfo.pos,jlen=values.length; j<jlen; j++) {
-            if (currentLabelInfo.count > 1 && isCollapsible) {
+            if (currentLabelInfo.label === values[j].label && currentLabelInfo.count > 1 && isCollapsible) {
                 values[j].plural = 1;
             }
             values[j].numeric = currentLabelInfo.numeric;
