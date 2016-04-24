@@ -35,7 +35,7 @@ The character between "B." and "Smith" is a non-breaking space.
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      default-locale="fr"
+      default-locale="fr-FR"
       version="1.0">
   <info>
     <id />
