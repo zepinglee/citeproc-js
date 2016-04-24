@@ -495,11 +495,19 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             //    }
             //}
         }
+
+        var space = " ";
+        if (this.name.strings["initialize-with"]
+            && this.name.strings["initialize-with"].match(/[\u00a0\ufeff]/)
+            && ["fr", "ru"].indexOf(this.state.opt["default-locale"][0].slice(0, 2)) > -1) {
+            space = "\u00a0"
+        }
+
         if (has_hyphenated_non_dropping_particle) {
             second = this._join([non_dropping_particle, family], "");
-            second = this._join([dropping_particle, second], " ");
+            second = this._join([dropping_particle, second], space);
         } else {
-            second = this._join([dropping_particle, non_dropping_particle, family], " ");
+            second = this._join([dropping_particle, non_dropping_particle, family], space);
         }
         second = this._join([second, suffix], suffix_sep);
         if (second && this.family) {
@@ -513,7 +521,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         if (second.strings.prefix) {
             name["comma-dropping-particle"] = "";
         }
-        blob = this._join([given, second], (name["comma-dropping-particle"] + " "));
+        blob = this._join([given, second], (name["comma-dropping-particle"] + space));
     }
     // XXX Just generally assume for the present that personal names render something
     this.state.tmp.group_context.tip.variable_success = true;

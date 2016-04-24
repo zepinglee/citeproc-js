@@ -114,6 +114,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
 
 CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
     var i, ilen;
+    terminator = terminator ? terminator : "";
     //   (2) Step through the string, deleting periods and, if initalize="false", then
     //       (a) note abbreviations and initials (separately).
 
@@ -141,20 +142,25 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
                 // and this or partner is not an initial,
                 // add a space.
                 // Otherwise, just use terminator.
-                
+                // ... but always trim space-like things from the
+                // end of a cluster of initials.
                 if ((!terminator || terminator.slice(-1) && terminator.slice(-1) !== " ")
                     && namelist[i].length && namelist[i].match(CSL.ALL_ROMANESQUE_REGEXP)
                     && (namelist[i].length > 1 || namelist[i + 2].length > 1)) {
                     namelist[i + 1] = " ";
                 }
-                namelist[i] = namelist[i] + terminator;
+                if (namelist[i + 2].length > 1) {
+                    namelist[i] = namelist[i] + terminator.replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/, "");
+                } else {
+                    namelist[i] = namelist[i] + terminator;
+                }
             }
             if (i === namelist.length - 1) {
                 namelist[i] = namelist[i] + terminator;
             }
         }
     }
-    return namelist.join("").replace(/\s+$/,"");
+    return namelist.join("").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/,"").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
 };
 
 CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
@@ -208,7 +214,7 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
         }
     }
     var ret = namelist.join("");
-    ret = ret.replace(/\s+$/,"").replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
+    ret = ret.replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/,"").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
     return ret;
 };
 
