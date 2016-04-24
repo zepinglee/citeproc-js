@@ -451,6 +451,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     function setStyling(values) {
         var masterNode = CSL.Util.cloneToken(node);
         var masterStyling = new CSL.Token();
+        // These two are needed for year-suffix with collapsing
+        masterStyling.range_prefix = node.range_prefix;
+        masterStyling.successor_prefix = node.successor_prefix;
         if (!me.tmp.just_looking) {
             for (var j=masterNode.decorations.length-1;j>-1;j--) {
                 if (masterNode.decorations[j][0] === "@quotes") {
@@ -656,6 +659,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var localeType = this.opt["cite-lang-prefs"][languageRole][0];
         val = this.transform.getTextSubField(ItemObject, variable, "locale-"+localeType, true);
         val = val.name;
+    } else if (variable === "year-suffix" && this.registry.registry[ItemObject.id]) {
+        this.opt.has_year_suffix = true;
+        val = parseInt(this.registry.registry[ItemObject.id].disambig.year_suffix, 10);
+        if (!val && val !== 0) {
+            val = "";
+        }
     } else {
         val = ItemObject[variable];
     }
@@ -721,14 +730,15 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
 
         setVariableParams(this.tmp.shadow_numbers[variable], values);
         //print("OK "+JSON.stringify(values, ["label", "origLabel", "labelSuffix", "particle", "collapsible", "value", "numeric", "joiningSuffix", "labelVisibility", "plural"], 2));
+
     }
 };
 
 CSL.Util.outputNumericField = function(state, varname, itemID) {
-
     state.output.openLevel(state.tmp.shadow_numbers[varname].masterStyling);
     var nums = state.tmp.shadow_numbers[varname].values;
     var masterLabel = nums.length ? nums[0].label : null;
+    var masterStyling = state.tmp.shadow_numbers[varname].masterStyling;
     var labelForm = state.tmp.shadow_numbers[varname].labelForm;
     var embeddedLabelForm;
     if (labelForm) {
@@ -773,7 +783,24 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
             }
         }
         if (num.collapsible) {
+            if (varname === "year-suffix") {
+                numStyling.range_prefix = masterStyling.range_prefix;
+                numStyling.successor_prefix = masterStyling.successor_prefix;
+            }
             var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
+            if (varname === "year-suffix") {
+                state.tmp.has_done_year_suffix = true;
+                var formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
+                blob.setFormatter(formatter);
+                if (state[state.tmp.area].opt.cite_group_delimiter) {
+                    blob.successor_prefix = state[state.tmp.area].opt.cite_group_delimiter;
+                } else if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
+                    blob.successor_prefix = state[state.tmp.area].opt["year-suffix-delimiter"];
+                } else {
+                    blob.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
+                }
+                blob.UGLY_DELIMITER_SUPPRESS_HACK = true;
+            }
             if ("undefined" === typeof blob.gender) {
                 blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
             }
