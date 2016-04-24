@@ -219,6 +219,9 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget) {
         token.decorations = decorations;
     } else if (tokentype === CSL.END && attributes['@variable']) {
         token.hasVariable = true;
+        if (CSL.DATE_VARIABLES.indexOf(attributes['@variable']) > -1) {
+            token.variables = attributes['@variable'].split(/\s+/);
+        }
     }
     //
     // !!!!!: eliminate diversion of tokens to separate

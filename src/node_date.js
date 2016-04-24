@@ -26,7 +26,6 @@ CSL.Node.date = {
                         && !(state.tmp.just_looking
                              && this.variables[0] === "accessed")) {
                         
-                        state.parallel.StartVariable(this.variables[0]);
                         date_obj = Item[this.variables[0]];
                         if ("undefined" === typeof date_obj) {
                             date_obj = {"date-parts": [[0]] };
@@ -115,6 +114,8 @@ CSL.Node.date = {
 
             // newoutput
             func = function (state, Item) {
+                if (!Item[this.variables[0]]) return;
+                state.parallel.StartVariable(this.variables[0]);
                 state.output.startTag("date", this);
                 if (this.variables[0] === "issued"
                     && Item.type === "legal_case"
@@ -149,8 +150,9 @@ CSL.Node.date = {
         if (!state.build.extension && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
             // mergeoutput
             func = function (state, Item) {
+                if (!Item[this.variables[0]]) return;
                 state.output.endTag();
-                state.parallel.CloseVariable("date");
+                state.parallel.CloseVariable(this.variables[0]);
             };
             this.execs.push(func);
         }
