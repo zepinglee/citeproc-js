@@ -799,7 +799,6 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
                 } else {
                     blob.successor_prefix = state[state.tmp.area].opt.layout_delimiter;
                 }
-                blob.UGLY_DELIMITER_SUPPRESS_HACK = true;
             }
             if ("undefined" === typeof blob.gender) {
                 blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];

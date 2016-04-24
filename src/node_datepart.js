@@ -244,7 +244,7 @@ CSL.Node["date-part"] = {
                 }
             }
             state.tmp.value = [];
-            if ((value || state.tmp.have_collapsed) && !state.opt.has_year_suffix && "year" === this.strings.name && !state.tmp.just_looking) {
+            if (Item[date_variable] && (value || state.tmp.have_collapsed) && !state.opt.has_year_suffix && "year" === this.strings.name && !state.tmp.just_looking) {
                 if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.has_done_year_suffix) {
                     state.tmp.has_done_year_suffix = true;
                     num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
