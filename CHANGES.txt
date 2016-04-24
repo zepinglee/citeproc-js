@@ -1,8 +1,19 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
-=========================
+==========================
+Changes in version 1.1.101
+==========================
+
+- Fix missing-delimiter bug with explicit year-suffix.
+
+- Fix erroneous render of implicit year-suffix when date variable
+  has no content. Reported by Sebastian:
+
+    https://forums.zotero.org/discussion/58636/collapse-yearsuffix-in-chicago-manual-of-style/#Item_5
+
+==========================
 Changes in version 1.1.100
-=========================
+==========================
 
 - In @initialize-with attribute value, retain zero-width non-breaking
   space (\uFEFF) and non-breaking space (\u00A0) as inter-initials
