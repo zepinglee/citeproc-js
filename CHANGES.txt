@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 =========================
+Changes in version 1.1.100
+=========================
+
+- In @initialize-with attribute value, retain zero-width non-breaking
+  space (\uFEFF) and non-breaking space (\u00A0) as inter-initials
+  join, and in the RU and FR locales only, when either non-breaking
+  space is present in the attribute value, use non-breaking space
+  (\u00A0) as given-to-family join when building initialized names in
+  non-sort order. Otherwise, use space for given-to-family join.
+
+  Resolves issue discussed at:
+
+    https://forums.zotero.org/discussion/31693/nonbreaking-space-unavailable-between-initials-and-names
+
+- Fix bug in which styling of cs:date nodes with no variable content
+  (specifically affixes) affected styling in subsequent date nodes.
+
+- Fix bugs in explicit year-suffix when used with year- or year-suffix collapse.
+
+=========================
 Changes in version 1.1.99
 =========================
 
