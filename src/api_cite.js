@@ -698,6 +698,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             obj = [];
             obj.push(mycitation.properties.index);
             obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems, mycitation.citationID));
+            obj.push(mycitation.citationID);
             ret.push(obj);
         }
         this.tmp.taintedItemIDs = {};
