@@ -1756,9 +1756,9 @@ Amaya v. Home Ice, Fuel &#38; Supply Co., 379 P. 2d 513 (us:ca Supreme Court 196
         <group delimiter=", ">
           <group delimiter=" ">
             <number variable="page"/>
-            <group oops=", ">
+            <!-- group oops=", ">
               <text macro="oscola-court-hint"/>
-            </group>
+            </group -->
             <choose>
               <if variable="authority">
                 <number variable="locator"/>

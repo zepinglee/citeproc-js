@@ -2135,9 +2135,9 @@ bibliography
         <group delimiter=", ">
           <group delimiter=" ">
             <number variable="page"/>
-            <group oops=", ">
+            <!-- group oops=", ">
               <text macro="oscola-court-hint"/>
-            </group>
+            </group -->
             <choose>
               <if variable="authority">
                 <number variable="locator"/>
