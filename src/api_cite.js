@@ -711,6 +711,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         obj = [];
         obj.push(citationsPre.length);
         obj.push(this.process_CitationCluster.call(this, sortedItems, citation.citationID));
+        obj.push(citation.citationID);
         ret.push(obj);
         //
         // note for posterity: Rhino and Spidermonkey produce different
