@@ -33,22 +33,13 @@ CSL.Output.Queue.prototype.pop = function () {
 };
 
 CSL.Output.Queue.prototype.getToken = function (name) {
-    //SNIP-START
-    CSL.debug("XXX loc [1]");
-    //SNIP-END
     var ret = this.formats.value()[name];
     return ret;
 };
 
 CSL.Output.Queue.prototype.mergeTokenStrings = function (base, modifier) {
     var base_token, modifier_token, ret, key;
-    //SNIP-START
-    CSL.debug("XXX loc [2]");    
-    //SNIP-END
     base_token = this.formats.value()[base];
-    //SNIP-START
-    CSL.debug("XXX loc [3]");
-    //SNIP-END
     modifier_token = this.formats.value()[modifier];
     ret = base_token;
     if (modifier_token) {
@@ -78,9 +69,6 @@ CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
     var newtok, attr;
     newtok = new CSL.Token("output");
     if ("string" === typeof token) {
-    //SNIP-START
-    CSL.debug("XXX loc [4]");
-    //SNIP-END
         token = this.formats.value()[token];
     }
     if (token && token.strings) {
@@ -95,9 +83,6 @@ CSL.Output.Queue.prototype.addToken = function (name, modifier, token) {
     if ("string" === typeof modifier) {
         newtok.strings.delimiter = modifier;
     }
-    //SNIP-START
-    CSL.debug("XXX loc [5]");
-    //SNIP-END
     this.formats.value()[name] = newtok;
 };
 
@@ -150,21 +135,12 @@ CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
         // delimiter, prefix, suffix, decorations from token
         blob = new CSL.Blob(undefined, token);
     } else if ("undefined" === typeof token) {
-    //SNIP-START
-    CSL.debug("XXX loc [6]");
-    //SNIP-END
         blob = new CSL.Blob(undefined, this.formats.value().empty, "empty");
     } else {
-        //SNIP-START
-        CSL.debug("XXX loc [7]");
-        //SNIP-END
         if (!this.formats.value() || !this.formats.value()[token]) {
             throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
         }
         // delimiter, prefix, suffix, decorations from token
-    //SNIP-START
-    CSL.debug("XXX loc [8]");
-    //SNIP-END
         blob = new CSL.Blob(undefined, this.formats.value()[token], token);
     }
     curr = this.current.value();
@@ -230,17 +206,11 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     }
     blob = false;
     if (!tokname) {
-		//SNIP-START
-		CSL.debug("XXX loc [9]");
-		//SNIP-END
         token = this.formats.value().empty;
     } else if (tokname === "literal") {
         token = true;
         useblob = false;
     } else if ("string" === typeof tokname) {
-		//SNIP-START
-		CSL.debug("XXX loc [10]");
-		//SNIP-END
         token = this.formats.value()[tokname];
     } else {
         token = tokname;
