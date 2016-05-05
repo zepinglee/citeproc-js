@@ -32,7 +32,7 @@ CSL.tokenExec = function (token, Item, item) {
         }
     }
     //SNIP-START
-    if (true) {
+    if (debug) {
         CSL.debug(token.name + " (" + token.tokentype + ") ---> done");
     }
     //SNIP-END
