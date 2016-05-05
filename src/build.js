@@ -166,9 +166,11 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     // eventual cleanup.
     if (lang) {
         lang = lang.replace("_", "-");
+        lang = CSL.normalizeLocaleStr(lang);
     }
     if (this.opt["default-locale"][0]) {
         this.opt["default-locale"][0] = this.opt["default-locale"][0].replace("_", "-");
+        this.opt["default-locale"][0] = CSL.normalizeLocaleStr(this.opt["default-locale"][0]);
     }
     if (lang && forceLang) {
         this.opt["default-locale"] = [lang];

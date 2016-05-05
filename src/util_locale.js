@@ -34,11 +34,6 @@ CSL.localeResolve = function (langstr, defaultLocale) {
 // Use call to invoke this.
 CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     var localexml;
-    if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
-        langspec.best = langspec.best.toLowerCase();
-        langspec.bare = langspec.bare.toLowerCase();
-        langspec.base = langspec.base.toLowerCase();
-    }
     if (beShy && this.locale[langspec.best]) {
         return;
     }

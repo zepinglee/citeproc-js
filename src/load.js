@@ -230,6 +230,16 @@ var CSL = {
         this["title-phrase"] = {};
     },
 
+    normalizeLocaleStr: function(str) {
+        if (!str) return;
+        var lst = str.split('-');
+        lst[0] = lst[0].toLowerCase();
+        if (lst[1]) {
+            lst[1] = lst[1].toUpperCase();
+        }
+        return lst.join("-");
+    },
+    
     parseNoteFieldHacks: function(Item, validFieldsForType) {
         if ("string" !== typeof Item.note) return;
         var elems = [];
