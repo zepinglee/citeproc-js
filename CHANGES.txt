@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.102
+==========================
+
+- Append citationID to the citation arrays returned
+  by processCitationCluster(). Depending on document
+  addressing capabilities, this can greatly simplify
+  the matching of updates to document citations.
+
+==========================
 Changes in version 1.1.101
 ==========================
 
