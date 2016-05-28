@@ -173,7 +173,7 @@ CSL.Output.Formatters.title = function (state, string) {
         lst[lst.length-2] = capitalise(lst[lst.length-2]);
     }
     for (var i=0,ilen=lst.length;i<ilen;i+=2) {
-        var words = lst[i].split(/([:?!]*\s+|-)/);
+        var words = lst[i].split(/([:?!]*\s+|\/|-)/);
         // Inspect each word individually
         for (var k=0,klen=words.length;k<klen;k+=2) {
             // Word has length
