@@ -176,7 +176,12 @@ CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, sty
                 secondary_tok.strings.prefix = " ";
             }
         }
+        var secondary_outer = new CSL.Token();
+        secondary_outer.decorations.push(["@font-style", "normal"]);
+        secondary_outer.decorations.push(["@font-weight", "normal"]);
+        this.state.output.openLevel(secondary_outer);
         this.state.output.append(secondary, secondary_tok);
+        this.state.output.closeLevel();
 
         tertiary_tok = CSL.Util.cloneToken(style);
         if (slot.tertiary) {
@@ -187,7 +192,12 @@ CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, sty
                 tertiary_tok.strings.prefix = " ";
             }
         }
+        var tertiary_outer = new CSL.Token();
+        tertiary_outer.decorations.push(["@font-style", "normal"]);
+        tertiary_outer.decorations.push(["@font-weight", "normal"]);
+        this.state.output.openLevel(tertiary_outer);
         this.state.output.append(tertiary, tertiary_tok);
+        this.state.output.closeLevel();
 
         this.state.output.closeLevel();
 

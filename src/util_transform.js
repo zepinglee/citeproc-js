@@ -456,14 +456,19 @@ CSL.Transform = function (state) {
                     }
                     // Remove quotes
                     for (var i = secondary_tok.decorations.length - 1; i > -1; i += -1) {
-                        if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
+                        if (['@quotes/true', '@font-style/italic', '@font-style/oblique', '@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
                             secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
                         }
                     }
                     if (secondary_locale !== "en" && secondary_tok.strings["text-case"] === "title") {
                         secondary_tok.strings["text-case"] = "passthrough";
                     }
+                    var secondary_outer = new CSL.Token();
+                    secondary_outer.decorations.push(["@font-style", "normal"]);
+                    secondary_outer.decorations.push(["@font-weight", "normal"]);
+                    state.output.openLevel(secondary_outer);
                     state.output.append(secondary, secondary_tok);
+                    state.output.closeLevel();
 
                     var blob_obj = state.output.current.value();
                     var blobs_pos = state.output.current.value().blobs.length - 1;
@@ -487,14 +492,19 @@ CSL.Transform = function (state) {
                     }
                     // Remove quotes
                     for (var i = tertiary_tok.decorations.length - 1; i > -1; i += -1) {
-                        if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
+                        if (['@quotes/true', '@font-style/italic', '@font-style/oblique', '@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
                             tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
                         }
                     }
                     if (tertiary_locale !== "en" && tertiary_tok.strings["text-case"] === "title") {
                         tertiary_tok.strings["text-case"] = "passthrough";
                     }
+                    var tertiary_outer = new CSL.Token();
+                    tertiary_outer.decorations.push(["@font-style", "normal"]);
+                    tertiary_outer.decorations.push(["@font-weight", "normal"]);
+                    state.output.openLevel(tertiary_outer);
                     state.output.append(tertiary, tertiary_tok);
+                    state.output.openLevel(tertiary_outer);
 
                     var blob_obj = state.output.current.value();
                     var blobs_pos = state.output.current.value().blobs.length - 1;
