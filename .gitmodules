@@ -3,7 +3,7 @@
 	url = https://github.com/citation-style-language/test-suite
 [submodule "locale"]
 	path = locale
-	url = git@github.com:citation-style-language/locales.git
+	url = https://github.com/citation-style-language/locales.git
 [submodule "csl-schemata/csl"]
 	path = csl-schemata/csl
 	url = https://github.com/citation-style-language/schema.git
