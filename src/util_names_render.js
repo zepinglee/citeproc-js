@@ -509,7 +509,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         var space = " ";
         if (this.name.strings["initialize-with"]
             && this.name.strings["initialize-with"].match(/[\u00a0\ufeff]/)
-            && ["fr", "ru"].indexOf(this.state.opt["default-locale"][0].slice(0, 2)) > -1) {
+            && ["fr", "ru", "cs"].indexOf(this.state.opt["default-locale"][0].slice(0, 2)) > -1) {
             space = "\u00a0"
         }
 
