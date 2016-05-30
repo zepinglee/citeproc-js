@@ -684,33 +684,6 @@ citation
     </layout>
   </bibliography>
 </style>
-
-<style 
-      xmlns="http://purl.org/net/xbiblio/csl"
-      class="note"
-      version="1.0">
-  <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
-  </info>
-  <macro name="author">
-    <names variable="author">
-      <name form="short" />
-    </names>
-  </macro>
-  <citation>
-    <layout delimiter="; ">
-      <group delimiter=" ">
-        <group delimiter=", ">
-          <text macro="author"/>
-          <text variable="title"/>
-        </group>
-        <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
-      </group>
-    </layout>
-  </citation>
-</style>
 <<===== CSL =====<<
 
 
