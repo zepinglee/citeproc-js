@@ -1,6 +1,23 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.103
+==========================
+
+- In text-case="title" with English, capitalize a word that follows
+  a forward slash.
+
+- Properly escape <sup></sup> and <sub></sub> markup when applying
+  text transforms (fixes a bug unmasked by the change above).
+
+- When no authors are available for citation-label, use a fragment
+  of the title.
+
+- When adding multilingual variants in output, suppress italics,
+  oblique, and boldface in supplementary (secondary and tertiary)
+  text.
+
+==========================
 Changes in version 1.1.102
 ==========================
 

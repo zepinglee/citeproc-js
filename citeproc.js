@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.102",
+    PROCESSOR_VERSION: "1.1.103",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -407,11 +407,11 @@ var CSL = {
         };
         var stack = [];
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
-        var m1match = str.match(/((?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>))/g);
+        var m1match = str.match(/((?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
         if (!m1match) {
             return [str];
         }
-        var m1split = str.split(/(?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b)>)/g);
+        var m1split = str.split(/(?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
         outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
             if (pairs[m1match[i]]) {
                 stack.push({
@@ -3142,6 +3142,25 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
                 label += myname;
             }
             break;
+        }
+    }
+    if (!label) {
+        if (Item.title) {
+            var skipWords = this.locale[this.opt.lang].opts["skip-words"];
+            var lst = Item.title.split(/\s+/);
+            for (var i = lst.length - 1; i > -1; i--) {
+                if (skipWords.indexOf(lst[i]) > -1) {
+                    lst = lst.slice(0, i).concat(lst.slice(i + 1));
+                }
+            }
+            var str = lst.join('');
+            str = str.slice(0, params[0].authors[0]);
+            if (str.length > 1) {
+                str = str.slice(0, 1).toUpperCase() + str.slice(1).toLowerCase();
+            } else if (str.length === 1) {
+                str = str.toUpperCase();
+            }
+            label = str;
         }
     }
     var year = "0000";
@@ -8682,7 +8701,12 @@ CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, sty
                 secondary_tok.strings.prefix = " ";
             }
         }
+        var secondary_outer = new CSL.Token();
+        secondary_outer.decorations.push(["@font-style", "normal"]);
+        secondary_outer.decorations.push(["@font-weight", "normal"]);
+        this.state.output.openLevel(secondary_outer);
         this.state.output.append(secondary, secondary_tok);
+        this.state.output.closeLevel();
         tertiary_tok = CSL.Util.cloneToken(style);
         if (slot.tertiary) {
             tertiary_tok.strings.prefix = this.state.opt.citeAffixes.institutions[slot.tertiary].prefix;
@@ -8691,7 +8715,12 @@ CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, sty
                 tertiary_tok.strings.prefix = " ";
             }
         }
+        var tertiary_outer = new CSL.Token();
+        tertiary_outer.decorations.push(["@font-style", "normal"]);
+        tertiary_outer.decorations.push(["@font-weight", "normal"]);
+        this.state.output.openLevel(tertiary_outer);
         this.state.output.append(tertiary, tertiary_tok);
+        this.state.output.closeLevel();
         this.state.output.closeLevel();
         institutionblob = this.state.output.pop();
     } else {
@@ -8928,7 +8957,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         var space = " ";
         if (this.name.strings["initialize-with"]
             && this.name.strings["initialize-with"].match(/[\u00a0\ufeff]/)
-            && ["fr", "ru"].indexOf(this.state.opt["default-locale"][0].slice(0, 2)) > -1) {
+            && ["fr", "ru", "cs"].indexOf(this.state.opt["default-locale"][0].slice(0, 2)) > -1) {
             space = "\u00a0"
         }
         if (has_hyphenated_non_dropping_particle) {
@@ -12089,14 +12118,19 @@ CSL.Transform = function (state) {
                         secondary_tok.strings.prefix = " ";
                     }
                     for (var i = secondary_tok.decorations.length - 1; i > -1; i += -1) {
-                        if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
+                        if (['@quotes/true', '@font-style/italic', '@font-style/oblique', '@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
                             secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
                         }
                     }
                     if (secondary_locale !== "en" && secondary_tok.strings["text-case"] === "title") {
                         secondary_tok.strings["text-case"] = "passthrough";
                     }
+                    var secondary_outer = new CSL.Token();
+                    secondary_outer.decorations.push(["@font-style", "normal"]);
+                    secondary_outer.decorations.push(["@font-weight", "normal"]);
+                    state.output.openLevel(secondary_outer);
                     state.output.append(secondary, secondary_tok);
+                    state.output.closeLevel();
                     var blob_obj = state.output.current.value();
                     var blobs_pos = state.output.current.value().blobs.length - 1;
                     if (state.parallel.use_parallels) {
@@ -12112,14 +12146,19 @@ CSL.Transform = function (state) {
                         tertiary_tok.strings.prefix = " ";
                     }
                     for (var i = tertiary_tok.decorations.length - 1; i > -1; i += -1) {
-                        if (['@quotes/true','@font-style/italic','@font-style/oblique','@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
+                        if (['@quotes/true', '@font-style/italic', '@font-style/oblique', '@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
                             tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
                         }
                     }
                     if (tertiary_locale !== "en" && tertiary_tok.strings["text-case"] === "title") {
                         tertiary_tok.strings["text-case"] = "passthrough";
                     }
+                    var tertiary_outer = new CSL.Token();
+                    tertiary_outer.decorations.push(["@font-style", "normal"]);
+                    tertiary_outer.decorations.push(["@font-weight", "normal"]);
+                    state.output.openLevel(tertiary_outer);
                     state.output.append(tertiary, tertiary_tok);
+                    state.output.openLevel(tertiary_outer);
                     var blob_obj = state.output.current.value();
                     var blobs_pos = state.output.current.value().blobs.length - 1;
                     if (state.parallel.use_parallels) {
@@ -14324,7 +14363,7 @@ CSL.Output.Formatters.title = function (state, string) {
         lst[lst.length-2] = capitalise(lst[lst.length-2]);
     }
     for (var i=0,ilen=lst.length;i<ilen;i+=2) {
-        var words = lst[i].split(/([:?!]*\s+|-)/);
+        var words = lst[i].split(/([:?!]*\s+|\/|-)/);
         for (var k=0,klen=words.length;k<klen;k+=2) {
             if (words[k].length !== 0) {
                 upperCaseVariant = words[k].toUpperCase();
