@@ -1,0 +1,177 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+>>[0] Schreiber, Hans und Marc Bleistift, A German Title, In <i>Deutsches werk</i>, <b>Hrsg.</b> Herausgeber (2002); Writer, Pim and Judith Scriber, An English Title, In <i>English Work</i>, <b>ed.</b> Editor (2002); Schrijver, Hans en Jan Pen, A Dutch Title, In <i>Nederlands werk</i>, <b>red.</b> Redacteur (2002)
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1", 
+                    "locator": "132-230"
+                }, 
+                {
+                    "id": "ITEM-2", 
+                    "locator": "132-230"
+                }, 
+                {
+                    "id": "ITEM-3", 
+                    "locator": "132-230"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style xmlns="http://purl.org/net/xbiblio/csl" version="1.1mlz1" class="note" default-locale="en-GB">
+  <info>
+    <title>United States</title>
+    <id>http://juris-m.github.io/modules/juris-us</id>
+    <link href="http://juris-m.github.io/modules/juris-us" rel="self"/>
+    <link href="http://juris-m.github.io" rel="documentation"/>
+    <author>
+      <name>Frank Bennett</name>
+      <email>bennett@law.nagoya-u.ac.jp</email>
+    </author>
+    <category citation-format="note"/>
+    <category field="law"/>
+    <summary>Juris-M style module for the United States</summary>
+    <updated>2013-01-26T22:06:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+  <macro name="author">
+    <names variable="author">
+      <name and="text" name-as-sort-order="first"/>
+    </names>
+  </macro>
+  <macro name="editor">
+    <names variable="editor">
+      <label form="short" suffix=" " font-weight="bold"/>
+      <name form="short" and="text"/>
+    </names>
+  </macro>
+  <macro name="citation">
+      <group delimiter=" ">
+        <group delimiter=", ">
+          <text macro="author"/>
+          <text variable="title"/>
+          <text variable="container-title" prefix="In " font-style="italic"/>
+          <text macro="editor"/>
+        </group>
+        <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
+      </group>
+  </macro>
+  <citation>
+    <layout delimiter="; " locale="de">
+      <text macro="citation"/>
+    </layout>
+    <layout delimiter="; " locale="nl">
+      <text macro="citation"/>
+    </layout>
+    <layout delimiter="; ">
+      <text macro="citation"/>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "author": [
+            {
+                "family": "Schreiber", 
+                "given": "Hans"
+            },
+            {
+                "family": "Bleistift", 
+                "given": "Marc"
+            }
+        ], 
+        "editor": [
+            {
+                "family": "Herausgeber", 
+                "given": "Hubert"
+            }
+        ], 
+        "publisher-place": "Berlin",
+        "publisher": "Plopke",
+        "id": "ITEM-1", 
+        "title": "A German Title",
+        "container-title": "Deutsches werk",
+        "issued": { "date-parts": [[2002]]},
+        "type": "chapter",
+        "language": "de"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Writer", 
+                "given": "Pim"
+            },
+            {
+                "family": "Scriber", 
+                "given": "Judith"
+            }
+        ], 
+        "editor": [
+            {
+                "family": "Editor", 
+                "given": "Kees"
+            }
+        ], 
+        "publisher-place": "Londen",
+        "publisher": "Slopke",
+        "id": "ITEM-2", 
+        "title": "An English Title",
+        "container-title": "English Work",
+        "issued": { "date-parts": [[2002]]},
+        "type": "chapter",
+        "language": "en"
+    }, 
+    {
+        "author": [
+            {
+                "family": "Schrijver", 
+                "given": "Hans"
+            },
+            {
+                "family": "Pen", 
+                "given": "Jan"
+            }
+        ], 
+        "editor": [
+            {
+                "family": "Redacteur", 
+                "given": "Kees"
+            }
+        ], 
+        "publisher-place": "Amsterdam",
+        "publisher": "Klopke",
+        "id": "ITEM-3", 
+        "title": "A Dutch Title",
+        "container-title": "Nederlands werk",
+        "issued": { "date-parts": [[2002]]},
+        "type": "chapter",
+        "language": "nl"
+    }
+]
+<<===== INPUT =====<<
