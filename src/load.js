@@ -479,8 +479,7 @@ var CSL = {
         "number-of-pages",
         "number-of-volumes",
         "volume",
-        "citation-number",
-        "year-suffix"
+        "citation-number"
     ],
     //var x = new Array();
     //x = x.concat(["title","container-title","issued","page"]);

@@ -44,7 +44,7 @@ CSL.Node.text = {
             if (this.strings.plural) {
                 plural = this.strings.plural;
             }
-            if ("citation-number" === this.variables_real[0] || "citation-label" === this.variables_real[0]) {
+            if ("citation-number" === this.variables_real[0] || "year-suffix" === this.variables_real[0] || "citation-label" === this.variables_real[0]) {
                 //
                 // citation-number and year-suffix are super special,
                 // because they are rangeables, and require a completely
@@ -95,9 +95,45 @@ CSL.Node.text = {
                         }
                     };
                     this.execs.push(func);
-                } else if (this.variables_real[0] === "citation-label") {
+                } else if (this.variables_real[0] === "year-suffix") {
+
+                    state.opt.has_year_suffix = true;
+
+                    if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
+                        //this.range_prefix = "-";
+                        this.range_prefix = state.getTerm("citation-range-delimiter");
+                    }
+                    this.successor_prefix = state[state.build.area].opt.layout_delimiter;
+                    if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
+                        this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
+                    }
                     func = function (state, Item) {
-                       state.tmp.has_done_year_suffix = true;
+                        if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.just_looking) {
+                            //state.output.append(state.registry.registry[Item.id].disambig[2],this);
+                            num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
+                            number = new CSL.NumericBlob(false, num, this, Item.id);
+                            formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
+                            number.setFormatter(formatter);
+                            state.output.append(number, "literal");
+                            firstoutput = false;
+                            // XXX Can we do something better for length here?
+                            for (var i=0,ilen=state.tmp.group_context.mystack.length; i<ilen; i++) {
+                                flags = state.tmp.group_context.mystack[i];
+                                if (!flags.variable_success && (flags.variable_attempt || (!flags.variable_attempt && !flags.term_intended))) {
+                                    firstoutput = true;
+                                    break;
+                                }
+                            }
+                            specialdelimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
+                            if (firstoutput && specialdelimiter && !state.tmp.sort_key_flag) {
+                                state.tmp.splice_delimiter = state[state.tmp.area].opt["year-suffix-delimiter"];
+                            }
+                        }
+                    };
+                    this.execs.push(func);
+                } else if (this.variables_real[0] === "citation-label") {
+                    state.opt.has_year_suffix = true;
+                    func = function (state, Item) {
                         label = Item["citation-label"];
                         if (!label) {
                             label = state.getCitationLabel(Item);
@@ -242,21 +278,9 @@ CSL.Node.text = {
                                     }
                                 }
                             };
-                        } else  if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume", "year-suffix"].indexOf(this.variables_real[0]) > -1) {
+                        } else  if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume"].indexOf(this.variables_real[0]) > -1) {
                             // page gets mangled with the correct collapsing
                             // algorithm
-                            if (this.variables_real[0] === "year-suffix") {
-                                state.opt.has_year_suffix = true;
-                                
-                                if (state[state.tmp.area].opt.collapse === "year-suffix-ranged") {
-                                    //this.range_prefix = "-";
-                                    this.range_prefix = state.getTerm("citation-range-delimiter");
-                                }
-                                this.successor_prefix = state[state.build.area].opt.layout_delimiter;
-                                if (state[state.tmp.area].opt["year-suffix-delimiter"]) {
-                                    this.successor_prefix = state[state.build.area].opt["year-suffix-delimiter"];
-                                }
-                            }
                             func = function(state, Item) {
                                 state.processNumber(this, Item, this.variables[0], Item.type);
                                 CSL.Util.outputNumericField(state, this.variables[0], Item.id);
