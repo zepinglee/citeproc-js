@@ -236,22 +236,45 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 if (["authority", "committee"].indexOf(variable) > -1
                     && "string" === typeof Item[variable]
                     && "names" === this.name) {
+
+                    // Great! So for each of these, we split.
+                    // And we only recombine everything if the length
+                    // of all the splits matches.
                     
-                    var creatorParent = {
-                        literal:Item[variable],
-                        multi:{
-                            _key:{}
-                        }
-                    };
-                    if (Item.multi && Item.multi._keys && Item.multi._keys[variable]) {
+                    var creatorParents = [];
+                    // Preflight
+                    var isValid = true;
+                    var rawNames = Item[variable].split(/\s*;\s*/);
+                    var rawMultiNames = {};
+                    if (Item.multi && Item.multi._keys[variable]) {
                         for (var langTag in Item.multi._keys[variable]) {
+                            rawMultiNames[langTag] = Item.multi._keys[variable][langTag].split(/\s*;\s*/);
+                            if (rawMultiNames[langTag].length !== rawNames.length) {
+                                isValid = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (!isValid) {
+                        rawNames = [Item[variable]];
+                        rawMultiNames = Item.multi._keys[variable];
+                    }
+                    for (var j = 0, jlen = rawNames.length; j < jlen; j++) {
+                        var creatorParent = {
+                            literal:rawNames[j],
+                            multi:{
+                                _key:{}
+                            }
+                        };
+                        for (var langTag in rawMultiNames) {
                             var creatorChild = {
-                                literal:Item.multi._keys[variable][langTag]
+                                literal:rawMultiNames[langTag][j]
                             }
                             creatorParent.multi._key[langTag] = creatorChild;
                         }
+                        rawNames[j] = creatorParent;
                     }
-                    Item[variable] = [creatorParent];
+                    Item[variable] = rawNames;
                 }
                 if (this.strings.form === "short" && !Item[variable]) {
                     if (variable === "title") {
