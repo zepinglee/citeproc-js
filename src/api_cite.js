@@ -120,27 +120,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         if (Item.id) {
             this.transform.loadAbbreviation("default", "hereinafter", Item.id);
         }
-        if (this.opt.development_extensions.locator_date_and_revision) {
-            // Break out locator elements if necessary
-            if (item.locator) {
-                item.locator = "" + item.locator;
-                var idx = item.locator.indexOf("|");
-                if (idx > -1) {
-                    var raw_locator = item.locator;
-                    item.locator = raw_locator.slice(0, idx);
-                    raw_locator = raw_locator.slice(idx + 1);
-                    m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
-                    if (m) {
-                        item["locator-date"] = this.fun.dateparser.parseDateToObject(m[1]);
-                        raw_locator = raw_locator.slice(m[1].length);
-                    }
-                    item["locator-extra"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");
-                }
-            }
-        }
-        if (item.locator) {
-            item.locator = ("" + item.locator).replace(/\s+$/, '');
-        }
+        item = CSL.parseLocator.call(this, item);
         this.remapSectionVariable([[Item,item]]);
         if (this.opt.development_extensions.locator_label_parse) {
             if (item.locator && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) === -1 && (!item.label || item.label === 'page')) {
@@ -990,6 +970,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
     for (pos = 0; pos < len; pos += 1) {
         Item = inputList[pos][0];
         item = inputList[pos][1];
+        item = CSL.parseLocator.call(this, item);
         last_collapsed = this.tmp.have_collapsed;
         params = {};
         

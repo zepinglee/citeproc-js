@@ -229,6 +229,31 @@ var CSL = {
         this["container-phrase"] = {};
         this["title-phrase"] = {};
     },
+    
+    parseLocator: function(item) {
+        if (this.opt.development_extensions.locator_date_and_revision) {
+            // Break out locator elements if necessary
+            if (item.locator) {
+                item.locator = "" + item.locator;
+                var idx = item.locator.indexOf("|");
+                if (idx > -1) {
+                    var raw_locator = item.locator;
+                    item.locator = raw_locator.slice(0, idx);
+                    raw_locator = raw_locator.slice(idx + 1);
+                    m = raw_locator.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2}).*/);
+                    if (m) {
+                        item["locator-date"] = this.fun.dateparser.parseDateToObject(m[1]);
+                        raw_locator = raw_locator.slice(m[1].length);
+                    }
+                    item["locator-extra"] = raw_locator.replace(/^\s+/, "").replace(/\s+$/, "");
+                }
+            }
+        }
+        if (item.locator) {
+            item.locator = ("" + item.locator).replace(/\s+$/, '');
+        }
+        return item;
+    },
 
     normalizeLocaleStr: function(str) {
         if (!str) return;
