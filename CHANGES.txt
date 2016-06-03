@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.105
+==========================
+
+- Fix over-restrictiveness in the application of en-dash, uncovered
+  while working through a style issue reported here:
+
+    https://forums.zotero.org/discussion/59568/style-error-australian-guide-to-legal-citation/
+
+==========================
 Changes in version 1.1.104
 ==========================
 
