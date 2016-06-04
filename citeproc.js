@@ -34,7 +34,7 @@ if (!Array.indexOf) {
     };
 }
 var CSL = {
-    PROCESSOR_VERSION: "1.1.105",
+    PROCESSOR_VERSION: "1.1.106",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -9552,7 +9552,7 @@ CSL.castLabel = function (state, node, term, plural, mode) {
     if (state.tmp.group_context.tip.label_form && label_form !== "static") {
         label_form = state.tmp.group_context.tip.label_form;
     }
-    var ret = state.getTerm(term, label_form, plural, false, mode);
+    var ret = state.getTerm(term, label_form, plural, false, mode, node.default_locale);
     if (state.tmp.strip_periods) {
         ret = ret.replace(/\./g, "");
     } else {
@@ -10093,7 +10093,7 @@ CSL.Node.text = {
                     func = function (state, Item, item) {
                         var gender = state.opt.gender[Item.type];
                         var term = this.strings.term;
-                        term = state.getTerm(term, form, plural, gender, false, ("accessed" === term));
+                        term = state.getTerm(term, form, plural, gender, false, this.default_locale);
                         var myterm;
                         if (term !== "") {
                             state.tmp.group_context.tip.term_intended = true;
@@ -11223,28 +11223,32 @@ CSL.Attributes["@year-range-format"] = function (state, arg) {
     state.opt["year-range-format"] = arg;
 };
 CSL.Attributes["@default-locale"] = function (state, arg) {
-    var lst, len, pos, m, ret;
-    m = arg.match(/-x-(sort|translit|translat)-/g);
-    if (m) {
-        for (pos = 0, len = m.length; pos < len; pos += 1) {
-            m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/, "");
+    if (this.name === 'style') {
+        var lst, len, pos, m, ret;
+        m = arg.match(/-x-(sort|translit|translat)-/g);
+        if (m) {
+            for (pos = 0, len = m.length; pos < len; pos += 1) {
+                m[pos] = m[pos].replace(/^-x-/, "").replace(/-$/, "");
+            }
         }
-    }
-    lst = arg.split(/-x-(?:sort|translit|translat)-/);
-    ret = [lst[0]];
-    for (pos = 1, len = lst.length; pos < len; pos += 1) {
-        ret.push(m[pos - 1]);
-        ret.push(lst[pos]);
-    }
-    lst = ret.slice();
-    len = lst.length;
-    for (pos = 1; pos < len; pos += 2) {
-        state.opt[("locale-" + lst[pos])].push(lst[(pos + 1)].replace(/^\s*/g, "").replace(/\s*$/g, ""));
-    }
-    if (lst.length) {
-        state.opt["default-locale"] = lst.slice(0, 1);
-    } else {
-        state.opt["default-locale"] = ["en"];
+        lst = arg.split(/-x-(?:sort|translit|translat)-/);
+        ret = [lst[0]];
+        for (pos = 1, len = lst.length; pos < len; pos += 1) {
+            ret.push(m[pos - 1]);
+            ret.push(lst[pos]);
+        }
+        lst = ret.slice();
+        len = lst.length;
+        for (pos = 1; pos < len; pos += 2) {
+            state.opt[("locale-" + lst[pos])].push(lst[(pos + 1)].replace(/^\s*/g, "").replace(/\s*$/g, ""));
+        }
+        if (lst.length) {
+            state.opt["default-locale"] = lst.slice(0, 1);
+        } else {
+            state.opt["default-locale"] = ["en"];
+        }
+    } else if (arg === "true") {
+        this.default_locale = true;
     }
 };
 CSL.Attributes["@default-locale-sort"] = function (state, arg) {
@@ -14365,12 +14369,12 @@ CSL.Output.Formatters.title = function (state, string) {
         return word;
     }
     function splitme (str, rex) {
-        var res, seps = str.match(rex);
-        if (seps) {
+        var m = str.match(rex);
+        if (m) {
             var splits = str.split(rex);
             res = [splits[0]];
-            for (var i=0; i<seps.length; i++) {
-                res.push(seps[i]);
+            for (var i=0; i<m.length; i++) {
+                res.push(m[i]);
                 res.push(splits[i+1]);
             }
         } else {

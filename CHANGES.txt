@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.106
+==========================
+
+- Recognize a default-locale attribute on cs:label and cs:text when used to
+  render a term.
+
+- Avoid use of array comprehension in variable assignment.
+
+==========================
 Changes in version 1.1.105
 ==========================
 
