@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.108
+==========================
+
+- Show language variants of institutions even when external abbreviation
+  is applied.
+
+==========================
 Changes in version 1.1.107
 ==========================
 

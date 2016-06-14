@@ -22,19 +22,8 @@
  *     this program.  If not, see <https://opensource.org/licenses/> or
  *     <http://www.gnu.org/licenses/> respectively.
  */
-if (!Array.indexOf) {
-    Array.prototype.indexOf = function (obj) {
-        var i, len;
-        for (i = 0, len = this.length; i < len; i += 1) {
-            if (this[i] === obj) {
-                return i;
-            }
-        }
-        return -1;
-    };
-}
 var CSL = {
-    PROCESSOR_VERSION: "1.1.107",
+    PROCESSOR_VERSION: "1.1.108",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -8651,34 +8640,57 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
 			tertiary = this.fixupInstitution(tertiary, v, j);
         }
 	}
+    var n = {
+        l: {
+            pri: false,
+            sec: false,
+            ter: false
+        },
+        s: {
+            pri: false,
+            sec: false,
+            ter: false
+        }
+    };
+    if (primary) {
+        n.l.pri = primary["long"];
+        n.s.pri = primary["short"].length ? primary["short"] : primary["long"];
+    }
+    if (secondary) {
+        n.l.sec = secondary["long"];
+        n.s.sec = secondary["short"].length ? secondary["short"] : secondary["long"];
+    }
+    if (tertiary) {
+        n.l.ter = tertiary["long"];
+        n.s.ter = tertiary["short"].length ? tertiary["short"] : tertiary["long"];
+    }
     switch (this.institution.strings["institution-parts"]) {
     case "short":
         if (primary["short"].length) {
             short_style = this._getShortStyle();
-            institution = [this._renderOneInstitutionPart(primary["short"], short_style)];
+            institution = [this._composeOneInstitutionPart([n.s.pri, n.s.sec, n.s.ter], slot, short_style)];
         } else {
             long_style = this._getLongStyle(primary, v, j);
-            institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
-            institution = [institution_long];
+            institution = [this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style)];
         }
         break;
     case "short-long":
         long_style = this._getLongStyle(primary, v, j);
         short_style = this._getShortStyle();
         institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
-        institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style);
+        institution_long = this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style);
         institution = [institution_short, institution_long];
         break;
     case "long-short":
         long_style = this._getLongStyle(primary, v, j);
         short_style = this._getShortStyle();
         institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
-        institution_long = this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style, true);
+        institution_long = this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style, true);
         institution = [institution_long, institution_short];
         break;
     default:
         long_style = this._getLongStyle(primary, v, j);
-        institution = [this._composeOneInstitutionPart([primary, secondary, tertiary], slot, long_style)];
+        institution = [this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style)];
         break;
     }
     return this._join(institution, " ");
@@ -8686,13 +8698,13 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
 CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, style) {
     var primary = false, secondary = false, tertiary = false;
     if (names[0]) {
-        primary = this._renderOneInstitutionPart(names[0]["long"], style);
+        primary = this._renderOneInstitutionPart(names[0], style);
     }
     if (names[1]) {
-        secondary = this._renderOneInstitutionPart(names[1]["long"], style);
+        secondary = this._renderOneInstitutionPart(names[1], style);
     }
     if (names[2]) {
-        tertiary = this._renderOneInstitutionPart(names[2]["long"], style);
+        tertiary = this._renderOneInstitutionPart(names[2], style);
     }
     var institutionblob;
     if (secondary || tertiary) {

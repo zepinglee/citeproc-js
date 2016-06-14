@@ -33,7 +33,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.107",
+    PROCESSOR_VERSION: "1.1.108",
 
     CONDITION_LEVEL_TOP: 1,
 
