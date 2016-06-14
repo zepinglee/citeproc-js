@@ -31,18 +31,6 @@
 // See https://forums.zotero.org/discussion/30484/?Focus=159613#Comment_159613
 
 
-if (!Array.indexOf) {
-    Array.prototype.indexOf = function (obj) {
-        var i, len;
-        for (i = 0, len = this.length; i < len; i += 1) {
-            if (this[i] === obj) {
-                return i;
-            }
-        }
-        return -1;
-    };
-}
-
 var CSL = {
 
     PROCESSOR_VERSION: "1.1.107",
