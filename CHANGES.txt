@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.109
+==========================
+
+- Fix sort errors in Scandinavian locales that erupted here:
+
+    https://forums.zotero.org/discussion/59907/odd-behaviour-when-sorting-in-danish/
+
+==========================
 Changes in version 1.1.108
 ==========================
 
