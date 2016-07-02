@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.110
+==========================
+
+- Fix erroneous remap of CSL section field to locator in vanilla
+  CSL.
+
+    https://forums.zotero.org/discussion/59427/citation-of-a-law/
+
+==========================
 Changes in version 1.1.109
 ==========================
 
