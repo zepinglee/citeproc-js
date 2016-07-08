@@ -1,7 +1,7 @@
 /*global CSL: true */
 
 if ("undefined" === typeof console) {
-    CSL.debug = function () {
+    CSL.debug = function (str) {
         dump("CSL: " + str + "\n");
     };
     CSL.error = function (str) {
