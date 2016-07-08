@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.112",
+    PROCESSOR_VERSION: "1.1.113",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -782,7 +782,7 @@ if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports"
 CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
 CSL.CLOSURES = new RegExp(".*[\\]\\)]");
 if ("undefined" === typeof console) {
-    CSL.debug = function () {
+    CSL.debug = function (str) {
         dump("CSL: " + str + "\n");
     };
     CSL.error = function (str) {

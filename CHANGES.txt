@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.113
+==========================
+
+- Fix missing argument in log function.
+
+==========================
 Changes in version 1.1.112
 ==========================
 
