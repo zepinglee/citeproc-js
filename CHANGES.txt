@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.114
+==========================
+
+- Fix failure to resort tainted citations on up-registry reinsert.
+
+  Reported by Derek Sifford:
+
+    https://github.com/Juris-M/citeproc-js/issues/13
+
+==========================
 Changes in version 1.1.113
 ==========================
 
