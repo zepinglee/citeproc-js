@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.115
+==========================
+
+- Apply Institution variant conditions and styling to Institution
+  fields (was using Person parameters)
+
+==========================
 Changes in version 1.1.114
 ==========================
 
