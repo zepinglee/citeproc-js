@@ -41,7 +41,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
             var j, ret, optLangTag, jlen, key, localesets;
             if (this.state.tmp.extension) {
                 localesets = ["sort"];
-            } else if (name.isInstitution) {
+            } else if (name.isInstitution || name.literal) {
                 // Will never hit this in this function, but preserving
                 // in case we factor this out.
                 localesets = this.state.opt['cite-lang-prefs'].institutions;
@@ -140,11 +140,11 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
         // No multilingual for pure short form institution names.
         if (primary["short"].length) {
             short_style = this._getShortStyle();
-            institution = [this._composeOneInstitutionPart([n.s.pri, n.s.sec, n.s.ter], slot, short_style)];
+            institution = [this._composeOneInstitutionPart([n.s.pri, n.s.sec, n.s.ter], slot, short_style, v)];
         } else {
             // Fail over to long.
             long_style = this._getLongStyle(primary, v, j);
-            institution = [this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style)];
+            institution = [this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style, v)];
         }
         break;
     case "short-long":
@@ -152,7 +152,7 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
         short_style = this._getShortStyle();
         institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
         // true is to include multilingual supplement
-        institution_long = this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style);
+        institution_long = this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style, v);
         institution = [institution_short, institution_long];
         break;
     case "long-short":
@@ -160,23 +160,38 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
         short_style = this._getShortStyle();
         institution_short = this._renderOneInstitutionPart(primary["short"], short_style);
         // true is to include multilingual supplement
-        institution_long = this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style, true);
+        institution_long = this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style, v);
         institution = [institution_long, institution_short];
         break;
     default:
         long_style = this._getLongStyle(primary, v, j);
         // true is to include multilingual supplement
-        institution = [this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style)];
+        institution = [this._composeOneInstitutionPart([n.l.pri, n.l.sec, n.l.ter], slot, long_style, v)];
         break;
     }
     return this._join(institution, " ");
 };
 
-CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, style) {
-    var primary = false, secondary = false, tertiary = false;
+CSL.NameOutput.prototype._composeOneInstitutionPart = function (names, slot, style, v) {
+    var primary = false, secondary = false, tertiary = false, primary_tok, secondary_tok, tertiary_tok;
     if (names[0]) {
-        primary = this._renderOneInstitutionPart(names[0], style);
-    }
+        primary_tok = CSL.Util.cloneToken(style);
+        if (this.state.opt.citeAffixes[slot.primary]){
+            if ("<i>" === this.state.opt.citeAffixes.institutions[slot.primary].prefix) {
+                var hasItalic = false;
+                for (var i = 0, ilen = primary_tok.decorations.length; i < ilen; i += 1) {
+                    if (style.decorations[i][0] === "@font-style"
+                        && primary_tok.decorations[i][1] === "italic") {
+                        hasItalic = true;
+                    }
+                }
+                if (!hasItalic) {
+                    primary_tok.decorations.push(["@font-style", "italic"])
+                }
+            }
+        }
+        primary = this._renderOneInstitutionPart(names[0], primary_tok);
+     }
     if (names[1]) {
         secondary = this._renderOneInstitutionPart(names[1], style);
     }
@@ -279,7 +294,7 @@ CSL.NameOutput.prototype._renderNames = function (v, values, pos, j) {
             
             if (this.state.tmp.extension) {
                 localesets = ["sort"];
-            } else if (name.isInstitution) {
+            } else if (name.isInstitution || name.literal) {
                 // Will never hit this in this function, but preserving
                 // in case we factor this out.
                 localesets = this.state.opt['cite-lang-prefs'].institutions;
