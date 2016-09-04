@@ -275,7 +275,7 @@ CSL.NameOutput.prototype._renderOneInstitutionPart = function (blobs, style) {
         }
     }
     if ("undefined" === typeof this.institution.strings["part-separator"]) {
-        this.institution.strings["part-separator"] = this.name.strings.delimiter;
+        this.institution.strings["part-separator"] = this.state.tmp.name_delimiter;
     }
     return this._join(blobs, this.institution.strings["part-separator"]);
 };
@@ -328,7 +328,8 @@ CSL.NameOutput.prototype._renderNames = function (v, values, pos, j) {
 
             if (!name.literal && !name.isInstitution) {
                 var nameBlob = this._renderPersonalName(v, name, slot, pos, i, j);
-                this.state.output.append(nameBlob, this.name, true);
+                var nameToken = CSL.Util.cloneToken(this.name);
+                this.state.output.append(nameBlob, nameToken, true);
                 names.push(this.state.output.pop());
             } else {
                 names.push(this._renderInstitutionName(v, name, slot, j));
@@ -436,7 +437,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         given = false;
         suffix = false;
     }
-    var sort_sep = this.name.strings["sort-separator"];
+    var sort_sep = this.state.inheritOpt(this.name, "sort-separator");
     if (!sort_sep) {
         sort_sep = "";
     }
@@ -467,7 +468,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             merged = this._join([family, second], this.state.opt.sort_sep);
             blob = this._join([merged, suffix], " ");
         }
-    } else if (this.name.strings["name-as-sort-order"] === "all" || (this.name.strings["name-as-sort-order"] === "first" && i === 0 && (j === 0 || "undefined" === typeof j))) {
+    } else if (this.state.inheritOpt(this.name, "name-as-sort-order") === "all" || (this.state.inheritOpt(this.name, "name-as-sort-order") === "first" && i === 0 && (j === 0 || "undefined" === typeof j))) {
         //
         // Discretionary sort ordering and inversions
         //
@@ -545,8 +546,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         }
 
         var space = " ";
-        if (this.name.strings["initialize-with"]
-            && this.name.strings["initialize-with"].match(/[\u00a0\ufeff]/)
+        if (this.state.inheritOpt(this.name, "initialize-with")
+            && this.state.inheritOpt(this.name, "initialize-with").match(/[\u00a0\ufeff]/)
             && ["fr", "ru", "cs"].indexOf(this.state.opt["default-locale"][0].slice(0, 2)) > -1) {
             space = "\u00a0"
         }
@@ -659,7 +660,7 @@ CSL.NameOutput.prototype._droppingParticle = function (name, pos, j) {
     }
     var str = this._stripPeriods("given", dp);
     if (name["dropping-particle"] && name["dropping-particle"].match(/^et.?al[^a-z]$/)) {
-        if (this.name.strings["et-al-use-last"]) {
+        if (this.state.inheritOpt(this.name, "et-al-use-last")) {
             if ("undefined" === typeof j) { 
                 this.etal_spec[pos].freeters = 2;
             } else {
@@ -689,14 +690,14 @@ CSL.NameOutput.prototype._familyName = function (name) {
 
 CSL.NameOutput.prototype._givenName = function (name, pos, i) {
 
-    if (this.name.strings.initialize === false) {
-        if (name.family && name.given && this.name.strings.initialize === false) {
-            name.given = CSL.Util.Names.initializeWith(this.state, name.given, this.name.strings["initialize-with"], true);
+    if (this.state.inheritOpt(this.name, "initialize") === false) {
+        if (name.family && name.given && this.state.inheritOpt(this.name, "initialize") === false) {
+            name.given = CSL.Util.Names.initializeWith(this.state, name.given, this.state.inheritOpt(this.name, "initialize-with"), true);
         }
         name.given = CSL.Util.Names.unInitialize(this.state, name.given);
     } else {
         if (name.family && 1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
-            var initialize_with = this.name.strings["initialize-with"];
+            var initialize_with = this.state.inheritOpt(this.name, "initialize-with");
             name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with);
         } else {
             name.given = CSL.Util.Names.unInitialize(this.state, name.given);
@@ -716,8 +717,8 @@ CSL.NameOutput.prototype._nameSuffix = function (name) {
 
     var str = name.suffix;
 
-    if ("string" === typeof this.name.strings["initialize-with"]) {
-        str = CSL.Util.Names.initializeWith(this.state, name.suffix, this.name.strings["initialize-with"], true);
+    if ("string" === typeof this.state.inheritOpt(this.name, "initialize-with")) {
+        str = CSL.Util.Names.initializeWith(this.state, name.suffix, this.state.inheritOpt(this.name, "initialize-with"), true);
     }
 
     str = this._stripPeriods("family", str);
