@@ -1,6 +1,31 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.116
+==========================
+
+- Fix an issue in inheritable name attributes that has been
+  outstanding since the introduction of separate storage of compiled
+  macro function bundles in version 1.1.0. Previously, macros
+  were built in separate copies for each call. This created a
+  lot of bloat, but it allowed inherited parameters to be burned
+  into each compiled copy of the macro, without side effects.
+
+  Since the move to single-instance storage of compiled macros, the
+  (largely unrevised) code for inherited attributes has been burning
+  one set of parameters into the macro, with no runtime
+  adjustments. This could easily break things when a macro was used in
+  both cs:citation and cs:bibliography. And it did.
+
+  The code has now been refactored to burn in only attributes
+  explictly set in macro code, and to call out for inherited options
+  at runtime. This allows macros to be shared between cs:citation and
+  cs:bibliography without side effects. It also allows the formatting
+  of names in modular legal styles ("juris" bundles) to be controlled
+  by the parent style.
+  
+
+==========================
 Changes in version 1.1.115
 ==========================
 
