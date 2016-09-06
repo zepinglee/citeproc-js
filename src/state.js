@@ -245,6 +245,11 @@ CSL.Engine.Tmp = function () {
     // false.
     this.term_predecessor = false;
     //
+    // boolean flag to control use of layout delimiter
+    // immediately before numbers. This hack is needed for
+    // some numeric styles.
+    this.in_cite_predecessor = false;
+    //
     // stack flag used to control jumps in the closing
     // token of a conditional.
     this.jump = new CSL.Stack(0, CSL.LITERAL);

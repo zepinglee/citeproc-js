@@ -242,6 +242,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         // signal whether we end with terminal punctuation?
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
+            this.state.tmp.in_cite_predecessor = true;
         } else if (notSerious) {
             this.state.tmp.term_predecessor_name = true;
         }
@@ -257,6 +258,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     if ("string" === typeof blob.blobs) {
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
+            this.state.tmp.in_cite_predecessor = true;
         } else if (notSerious) {
             this.state.tmp.term_predecessor_name = true;
         }
@@ -648,7 +650,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
                 addme = txt_esc(blob.successor_prefix);
             } else if (blob.status === CSL.START) {
                 //print("  CSL.START");
-                if (pos > 0) {
+                if (pos > 0 && !blob.suppress_splice_prefix) {
                     addme = txt_esc(blob.splice_prefix);
                 } else {
                     addme = "";

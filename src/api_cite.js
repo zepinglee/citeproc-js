@@ -996,6 +996,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             this.output = output;
         }
 
+        this.tmp.in_cite_predecessor = false;
         // true is to block reset of shadow numbers
         if (pos > 0) {
             CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][0].id, true);
