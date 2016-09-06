@@ -343,10 +343,11 @@ CSL.Transform = function (state) {
                 }
             }
             
-            if ((state.tmp.area !== "bibliography"
-                 && !(state.tmp.area === "citation"
-                      && state.opt.xclass === "note"
-                      && item && !item.position))) {
+            if (variables[0] === "title-short" 
+                || (state.tmp.area !== "bibliography"
+                    && !(state.tmp.area === "citation"
+                         && state.opt.xclass === "note"
+                         && item && !item.position))) {
                 
                 slot.secondary = false;
                 slot.tertiary = false;
