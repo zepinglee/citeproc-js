@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.118",
+    PROCESSOR_VERSION: "1.1.119",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3539,6 +3539,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         }
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
+            this.state.tmp.in_cite_predecessor = true;
         } else if (notSerious) {
             this.state.tmp.term_predecessor_name = true;
         }
@@ -3552,6 +3553,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     if ("string" === typeof blob.blobs) {
         if (!ignorePredecessor) {
             this.state.tmp.term_predecessor = true;
+            this.state.tmp.in_cite_predecessor = true;
         } else if (notSerious) {
             this.state.tmp.term_predecessor_name = true;
         }
@@ -3854,7 +3856,7 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
             } else if (blob.status === CSL.SUCCESSOR) {
                 addme = txt_esc(blob.successor_prefix);
             } else if (blob.status === CSL.START) {
-                if (pos > 0) {
+                if (pos > 0 && !blob.suppress_splice_prefix) {
                     addme = txt_esc(blob.splice_prefix);
                 } else {
                     addme = "";
@@ -4507,6 +4509,7 @@ CSL.Engine.Tmp = function () {
         done_vars: []
     });
     this.term_predecessor = false;
+    this.in_cite_predecessor = false;
     this.jump = new CSL.Stack(0, CSL.LITERAL);
     this.decorations = new CSL.Stack();
     this.tokenstore_stack = new CSL.Stack();
@@ -5302,6 +5305,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             CSL.getAmbiguousCite.call(this, Item, null, false, item);
             this.output = output;
         }
+        this.tmp.in_cite_predecessor = false;
         if (pos > 0) {
             CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][0].id, true);
         } else {
@@ -10093,6 +10097,11 @@ CSL.Node.text = {
                                 state.output.append(state.opt.citation_number_slug, this);
                             } else {
                                 number = new CSL.NumericBlob(false, num, this, Item.id);
+                                if (state.tmp.in_cite_predecessor) {
+                                    if (!state.tmp.just_looking) {
+                                    }
+                                    number.suppress_splice_prefix = true;
+                                }
                                 state.output.append(number, "literal");
                             }
                         }
