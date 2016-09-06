@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.118
+==========================
+
+- Never render secondary or tertiary variants of title-short variable,
+  even when requested.
+
+==========================
 Changes in version 1.1.117
 ==========================
 

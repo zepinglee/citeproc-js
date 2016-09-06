@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.117",
+    PROCESSOR_VERSION: "1.1.118",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -12148,10 +12148,11 @@ CSL.Transform = function (state) {
                     slot.primary = 'locale-orig';
                 }
             }
-            if ((state.tmp.area !== "bibliography"
-                 && !(state.tmp.area === "citation"
-                      && state.opt.xclass === "note"
-                      && item && !item.position))) {
+            if (variables[0] === "title-short" 
+                || (state.tmp.area !== "bibliography"
+                    && !(state.tmp.area === "citation"
+                         && state.opt.xclass === "note"
+                         && item && !item.position))) {
                 slot.secondary = false;
                 slot.tertiary = false;
             }
