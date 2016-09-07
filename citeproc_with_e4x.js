@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.120",
+    PROCESSOR_VERSION: "1.1.121",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -15800,14 +15800,16 @@ CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
     var ret = {};
     var preferences = this.locale[this.opt.lang].opts["jurisdiction-preference"];
     preferences = preferences ? preferences : [];
-    preferences = [null].concat(preferences);
+    preferences = [""].concat(preferences);
     for (var i=preferences.length-1;i>-1;i--) {
         var preference = preferences[i];
         for (var j=0,jlen=jurisdictionList.length;j<jlen;j++) {
             var jurisdiction = jurisdictionList[j];
             if (this.opt.jurisdictions_seen[jurisdiction]) continue;
             var res = this.sys.retrieveStyleModule(jurisdiction, preference);
-            this.opt.jurisdictions_seen[jurisdiction] = true;
+            if ((!res && !preference) || res) {
+                this.opt.jurisdictions_seen[jurisdiction] = true;
+            }
             if (!res) continue;
             ret[jurisdiction] = res;
         }
