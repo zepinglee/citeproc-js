@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.120
+==========================
+
+- Fix subsequent-author-substitute. Bug reported here:
+
+  https://forums.zotero.org/discussion/comment/260518
+
+==========================
 Changes in version 1.1.119
 ==========================
 
