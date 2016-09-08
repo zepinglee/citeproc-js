@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.121",
+    PROCESSOR_VERSION: "1.1.122",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -11953,6 +11953,11 @@ CSL.Transform = function (state) {
         }
         if (CSL.NUMERIC_VARIABLES.indexOf(myabbrev_family) > -1) {
             myabbrev_family = "number";
+        }
+        if (myabbrev_family === "jurisdiction") {
+            if (state.opt.suppressedJurisdictions[Item.jurisdiction]) {
+                return "";
+            }
         }
         if (["publisher-place", "event-place", "jurisdiction", "archive-place", "language-name", "language-name-original"].indexOf(myabbrev_family) > -1) {
             myabbrev_family = "place";
