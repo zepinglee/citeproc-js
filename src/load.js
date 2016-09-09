@@ -892,7 +892,6 @@ var CSL = {
 // For citeproc-node
 if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports" in module) {
     var CSL_IS_NODEJS = true;
-    var CSL_NODEJS = require("./csl_nodejs_jsdom").CSL_NODEJS_JSDOM;
     exports.CSL = CSL;
 }
 
