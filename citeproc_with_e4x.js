@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.122",
+    PROCESSOR_VERSION: "1.1.123",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -12560,6 +12560,15 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
         this.cslXml.deleteNodeByNameAttribute(datexml, 'day');
     } else if ("year-month" === this.cslXml.getAttributeValue(node, "date-parts")) {
         this.cslXml.deleteNodeByNameAttribute(datexml, 'day');
+    } else if ("month-day" === this.cslXml.getAttributeValue(node, "date-parts")) {
+        var childNodes = this.cslXml.children(datexml);
+        for (var i=1,ilen=childNodes.length;i<ilen;i++) {
+            if (this.cslXml.getAttributeValue(childNodes[i], 'name') === "year") {
+                this.cslXml.setAttribute(childNodes[i-1], "suffix", "");
+                break;
+            }
+        }
+        this.cslXml.deleteNodeByNameAttribute(datexml, 'year');
     }
     return this.cslXml.insertChildNodeAfter(parent, node, pos, datexml);
 };
