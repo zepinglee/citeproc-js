@@ -1,0 +1,89 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+From report by dsifford:
+
+    https://github.com/Juris-M/citeproc-js/issues/17
+
+
+>>===== RESULT =====>>
+>>[0] 2016
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "259rb7a0"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout delimiter="; ">
+      <group delimiter=" ">
+        <names variable="author">
+          <name/>
+        </names>
+        <date variable="issued" form="text" date-parts="year"/>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "259rb7a0",
+        "type": "book",
+        "URL": "https://www.aliem.com/2016/air-series-procedures-module-2016/",
+        "accessed": {
+            "date-parts": [
+              [
+                "2016",
+                "09",
+                "12"
+              ]
+            ]
+        },
+        "container-title": "ALiEM",
+        "issued": {
+            "date-parts": [
+              [
+                "2016",
+                "09",
+                "12"
+              ]
+            ]
+        },
+        "title": "AIR Series Procedures Module (2016)", 
+        "type": "webpage"
+    }
+]
+<<===== INPUT =====<<
