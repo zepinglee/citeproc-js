@@ -28,10 +28,8 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
     var c, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations, m, citationsInNote;
     this.debug = false;
+
     //print("################### processCitationCluster() #################");
-    //SNIP-START
-    // this.dumpCslCitation(citation, flag);
-    //SNIP-END
     this.tmp.citation_errors = [];
     var return_data = {"bibchange": false};
 
@@ -1265,6 +1263,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     this.parallel.StartCite(Item, item, prevItemID);
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
+    this.tmp.name_node = {};
     this.nameOutput = new CSL.NameOutput(this, Item, item);
 
     // rerun?
