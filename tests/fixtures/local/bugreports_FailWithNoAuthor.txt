@@ -1,5 +1,5 @@
 >>===== MODE =====>>
-citation
+bibliography
 <<===== MODE =====<<
 
 From report by dsifford:
@@ -8,7 +8,10 @@ From report by dsifford:
 
 
 >>===== RESULT =====>>
->>[0] 2016
+<div class="csl-bib-body">
+  <div class="csl-entry">AIR Series Procedures Module (2016) 2016</div>
+  <div class="csl-entry">--- 2016</div>
+</div>
 <<===== RESULT =====<<
 
 
@@ -19,11 +22,14 @@ From report by dsifford:
             "citationID": "CITATION-1", 
             "citationItems": [
                 {
+                    "id": "ITEM-1"
+                }, 
+                {
                     "id": "259rb7a0"
                 }
             ], 
             "properties": {
-                "noteIndex": 1
+                "noteIndex": 0
             }
         }, 
         [], 
@@ -53,12 +59,49 @@ From report by dsifford:
       </group>
     </layout>
   </citation>
+  <bibliography subsequent-author-substitute="---">
+    <layout>
+      <names variable="author">
+        <name/>
+        <substitute>
+          <text variable="title"/>
+        </substitute>
+      </names>
+      <date variable="issued" form="text" date-parts="year" prefix=" "/>
+    </layout>
+  </bibliography>
 </style>
 <<===== CSL =====<<
 
 
 >>===== INPUT =====>>
 [
+    {
+        "id": "ITEM-1",
+        "type": "book",
+        "URL": "https://www.aliem.com/2016/air-series-procedures-module-2016/",
+        "accessed": {
+            "date-parts": [
+              [
+                "2016",
+                "09",
+                "12"
+              ]
+            ]
+        },
+        "container-title": "ALiEM",
+        "issued": {
+            "date-parts": [
+              [
+                "2016",
+                "09",
+                "12"
+              ]
+            ]
+        },
+        "title": "AIR Series Procedures Module (2016)", 
+        "type": "webpage"
+    },
     {
         "id": "259rb7a0",
         "type": "book",
