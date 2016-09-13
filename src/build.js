@@ -540,6 +540,12 @@ CSL.ITERATION = 0;
 CSL.Engine.prototype.retrieveItem = function (id) {
     var Item, m, pos, len, mm;
 
+    if (!this.tmp.loadedItemIDs[id]) {
+        this.tmp.loadedItemIDs[id] = true;
+    } else {
+        return this.registry.refhash[id];
+    }
+
     if (this.opt.development_extensions.normalize_lang_keys_to_lowercase &&
         "boolean" === typeof this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
         // This is a hack. Should properly be configured by a processor method after build.
@@ -558,7 +564,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     //Zotero.debug("XXX === ITERATION " + CSL.ITERATION + " "+ id +" ===");
     CSL.ITERATION += 1;
 
-    Item = this.sys.retrieveItem("" + id);
+    Item = JSON.parse(JSON.stringify(this.sys.retrieveItem("" + id)));
 
     // Optionally normalize keys to lowercase()
     if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
@@ -743,6 +749,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
+    this.registry.refhash[id] = Item;
     return Item;
 };
 
