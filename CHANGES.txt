@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.127
+==========================
+
+- Dereference citation and Item when first encountered during
+  a processor run. Avoids side effects in code of the calling
+  application, particularly in async environments.
+
+==========================
 Changes in version 1.1.126
 ==========================
 
