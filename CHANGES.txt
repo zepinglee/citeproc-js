@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.128
+==========================
+
+- Fix delimiter bug reported here:
+
+  https://forums.zotero.org/discussion/62352/style-error-american-fisheries-society
+
+==========================
 Changes in version 1.1.127
 ==========================
 
