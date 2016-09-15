@@ -397,13 +397,17 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             }
         } else if (blobjr.blobs.length) {
             var addtoret = state.output.string(state, blobjr.blobs, blobjr);
-            // Hack in the delimiter string on strings that follow numeric objects within a group.
             if (blob) {
-                if (addtoret.length > 1
-                    && "string" === typeof addtoret.slice(-1)[0]
-                    && "string" !== typeof addtoret.slice(-2)[0]) {
-                    
-                    addtoret[addtoret.length-1] = (blobjr.strings.delimiter + addtoret.slice(-1)[0]);
+                // Patch up world-class weird bug in the ill-constructed code of mine.
+                if ("string" !== addtoret && addtoret.length > 1 && blobjr.strings.delimiter) {
+                    var numberSeen = false;
+                    for (var j=0,jlen=addtoret.length;j<jlen;j++) {
+                        if ("string" !== typeof addtoret[j]) {
+                            numberSeen = true;
+                        } else if (numberSeen) {
+                            addtoret[j] = (blobjr.strings.delimiter + addtoret[j]);
+                        }
+                    }
                 }
             }
             ret = ret.concat(addtoret);
