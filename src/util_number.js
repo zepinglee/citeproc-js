@@ -299,8 +299,25 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/g);
             if (m) {
                 var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/);
+                // ZZZ
+                //print("m="+JSON.stringify(m));
+                //print("lst="+JSON.stringify(lst));
+                // Head off disaster by merging parsed labels on non-numeric values into content
+                for (var j=lst.length-1;j>0;j--) {
+                    // ZZZ
+                    //print(j);
+                    if (lst[j-1] && !lst[j].match(/^[0-9]+([-,:a-zA-Z]*)$/)) {
+                        lst[j-1] = lst[j-1] + m[j-1] + lst[j];
+                        lst = lst.slice(0,j).concat(lst.slice(j+1))
+                        m = m.slice(0,j-1).concat(m.slice(j))
+                        // ZZZ
+                        //print("  MERGE");
+                        //print("  m="+JSON.stringify(m));
+                        //print("  lst="+JSON.stringify(lst));
+                    }
+                }
                 // merge bad leading label into content
-                if (i === 0) {
+                if (m.length > 0 && i === 0) {
                     var slug = m[0].trim();
                     if (!CSL.STATUTE_SUBDIV_STRINGS[slug]
                         || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
