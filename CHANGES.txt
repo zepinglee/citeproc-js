@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.129
+==========================
+
+- Fix dropped-labels bug reported here:
+
+  https://forums.zotero.org/discussion/62437/citation-style-bug-with-report-number
+
+==========================
 Changes in version 1.1.128
 ==========================
 
