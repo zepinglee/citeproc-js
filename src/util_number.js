@@ -306,7 +306,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 for (var j=lst.length-1;j>0;j--) {
                     // ZZZ
                     //print(j);
-                    if (lst[j-1] && !lst[j].match(/^[0-9]+([-,:a-zA-Z]*)$/)) {
+                    if (lst[j-1] && (!lst[j].match(/^[0-9]+([-,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-,:a-zA-Z]*)$/))) {
                         lst[j-1] = lst[j-1] + m[j-1] + lst[j];
                         lst = lst.slice(0,j).concat(lst.slice(j+1))
                         m = m.slice(0,j-1).concat(m.slice(j))
@@ -636,12 +636,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
     }
 
-    function setVariableParams(obj, values) {
+    function setVariableParams(shadow_numbers, variable, values) {
+        var obj = shadow_numbers[variable];
         if (values.length) {
             obj.numeric = values[0].numeric;
             obj.collapsible = values[0].collapsible;
             obj.plural = values[0].plural;
             obj.label = CSL.STATUTE_SUBDIV_STRINGS[values[0].label];
+            if (variable === "number" && obj.label === "issue" && me.getTerm("number")) {
+                obj.label = "number";
+            }
         }
     }
 
@@ -745,7 +749,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             //print("setStyling(): "+JSON.stringify(values, null, 2));
         }
 
-        setVariableParams(this.tmp.shadow_numbers[variable], values);
+        setVariableParams(this.tmp.shadow_numbers, variable, values);
         //print("OK "+JSON.stringify(values, ["label", "origLabel", "labelSuffix", "particle", "collapsible", "value", "numeric", "joiningSuffix", "labelVisibility", "plural"], 2));
     }
 };
