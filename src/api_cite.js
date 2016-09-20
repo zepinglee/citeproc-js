@@ -30,7 +30,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     this.debug = false;
     this.tmp.loadedItemIDs = {};
     
-    citation = JSON.parse(JSON.stringify(citation));
+    // Revert citation dereference from 2ffc4664ae
+    //citation = JSON.parse(JSON.stringify(citation));
     
     //print("################### processCitationCluster() #################");
     this.tmp.citation_errors = [];
