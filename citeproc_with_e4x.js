@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.132",
+    PROCESSOR_VERSION: "1.1.133",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -242,42 +242,43 @@ var CSL = {
                 elems[i] = '\n' + elems[i].slice(2,-1).trim() + '\n';
             }
             elems = elems.join('').split('\n');
-            var names = {};
-            for (var i=0,ilen=elems.length;i<ilen;i++) {
-                var line = elems[i];
-                var mm = line.match(CSL.NOTE_FIELD_REGEXP);
-                if (!mm) continue;
-                var key = mm[1];
-                var val = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
-                if (!Item[key]) {
-                    if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
-                        Item[key] = {raw: val};
-                        elems[i] = "";
-                    } else if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
-                        if (!names[key]) {
-                            names[key] = [];
-                        }
-                        var lst = val.split(/\s*\|\|\s*/);
-                        if (lst.length === 1) {
-                            names[key].push({literal:lst[0]});
-                        } else if (lst.length === 2) {
-                            var name = {family:lst[0],given:lst[1]};
-                            CSL.parseParticles(name);
-                            names[key].push(name);
-                        }
-                        elems[i] = "";
-                    } else {
-                        Item[key] = val;
+        } else {
+            elems = Item.note.split('\n');
+        }
+        var names = {};
+        for (var i=0,ilen=elems.length;i<ilen;i++) {
+            var line = elems[i];
+            var mm = line.match(CSL.NOTE_FIELD_REGEXP);
+            if (!mm) continue;
+            var key = mm[1];
+            var val = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
+            if (!Item[key]) {
+                if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
+                    Item[key] = {raw: val};
+                } else if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
+                    if (!names[key]) {
+                        names[key] = [];
                     }
+                    var lst = val.split(/\s*\|\|\s*/);
+                    if (lst.length === 1) {
+                        names[key].push({literal:lst[0]});
+                    } else if (lst.length === 2) {
+                        var name = {family:lst[0],given:lst[1]};
+                        CSL.parseParticles(name);
+                        names[key].push(name);
+                    }
+                } else {
+                    Item[key] = val;
                 }
-                if (name === "type") {
-                    Item.type = val;
-                }
-                Item.note = elems.join("");
+                elems[i] = "";
             }
-            for (var key in names) {
-                Item[key] = names[key];
+            if (name === "type") {
+                Item.type = val;
             }
+            Item.note = elems.join("");
+        }
+        for (var key in names) {
+            Item[key] = names[key];
         }
     },
     GENDERS: ["masculine", "feminine"],
