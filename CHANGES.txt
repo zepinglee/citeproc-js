@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.132
+==========================
+
+- Fix breakage in note-field "cheater syntax," and recognize simpler
+  line-entry syntax in addition to existing braced-entry syntax.
+  Breakage is described here:
+
+  https://github.com/Juris-M/citeproc-js/issues/6
+
+  Details of "cheater syntax" are documented here:
+
+  http://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html#cheater-syntax-for-odd-fields
+
+==========================
 Changes in version 1.1.131
 ==========================
 
