@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.135
+==========================
+
+- Fix further bugs and infelicities in "cheater syntax" code. Main issues
+  are here:
+
+    https://github.com/Juris-M/citeproc-js/issues/6
+    https://github.com/zotero/zotero/issues/846
+
+- Update documentation on "cheater syntax" and related options:
+
+    http://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html#cheater-syntax-for-odd-fields
+
+==========================
 Changes in version 1.1.134
 ==========================
 
