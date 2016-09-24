@@ -140,6 +140,7 @@ CSL.Engine.Opt = function () {
 
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
+    this.development_extensions.allow_field_hack_date_override = true;
     this.development_extensions.locator_date_and_revision = true;
     this.development_extensions.locator_parsing_for_plurals = true;
     this.development_extensions.locator_label_parse = true;
