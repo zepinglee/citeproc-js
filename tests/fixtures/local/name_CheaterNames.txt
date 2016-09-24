@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] Quiggly, Smith, Brown (eds. &#38; trans.)
+>>[0] Quiggly, Smith, Brown (eds. &#38; trans.) [And then there were none.]
 <<===== RESULT =====<<
 
 
@@ -42,10 +42,13 @@ citation
   </info>
   <citation>
     <layout delimiter="; ">
-      <names variable="editor translator" delimiter="; ">
-        <name form="short"/>
-        <label prefix=" (" suffix=")" form="short"/>
-      </names>
+      <group delimiter=" ">
+        <names variable="editor translator" delimiter="; ">
+          <name form="short"/>
+          <label prefix=" (" suffix=")" form="short"/>
+        </names>
+        <text variable="note" prefix="[" suffix="]"/>
+      </group>
     </layout>
   </citation>
 </style>
@@ -71,7 +74,7 @@ citation
         ],
         "id": "ITEM-1", 
         "type": "book",
-        "note": "{:translator:Quiggly || Bustamonte}\ntranslator:Smith||Jake\n{:translator: Brown || Biff }"
+        "note": "{:translator:Quiggly || Bustamonte}\ntranslator:Smith||Jake{:translator: Brown || Biff }And then there were none."
     }
 ]
 <<===== INPUT =====<<
