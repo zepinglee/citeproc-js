@@ -253,35 +253,57 @@ var CSL = {
         return lst.join("-");
     },
     
-    parseNoteFieldHacks: function(Item, validFieldsForType) {
+    parseNoteFieldHacks: function(Item, allowDateOverride) {
         if ("string" !== typeof Item.note) return;
         var elems = [];
-        var m = Item.note.match(CSL.NOTE_FIELDS_REGEXP);
-        if (m) {
-            var splt = Item.note.split(CSL.NOTE_FIELDS_REGEXP);
-            for (var i=0,ilen=(splt.length-1);i<ilen;i++) {
-                elems.push(splt[i]);
-                elems.push(m[i]);
+        var lines = Item.note.split('\n');
+        var lastline = "";
+        // Normalize entries
+        for (var i=0, ilen=lines.length; i<ilen; i++) {
+            var line = lines[i];
+            var elems = [];
+            var m = line.match(CSL.NOTE_FIELDS_REGEXP);
+            if (m) {
+                var splt = line.split(CSL.NOTE_FIELDS_REGEXP);
+                for (var j=0,jlen=(splt.length-1);j<jlen;j++) {
+                    elems.push(splt[j]);
+                    elems.push(m[j]);
+                }
+                elems.push(splt[splt.length-1])
+                for (var j=1,jlen=elems.length;j<jlen;j += 2) {
+                    // Abort conversions if preceded by unparseable text
+                    if (elems[j-1].trim() && !elems[j-1].match(CSL.NOTE_FIELD_REGEXP)) {
+                        break
+                    } else {
+                        elems[j] = '\n' + elems[j].slice(2,-1).trim() + '\n';
+                    }
+                }
+                lines[i] = elems.join('');
             }
-            elems.push(splt[splt.length-1])
-            for (var i=1,ilen=elems.length;i<ilen;i += 2) {
-                elems[i] = '\n' + elems[i].slice(2,-1).trim() + '\n';
-            }
-            elems = elems.join('').split('\n');
-        } else {
-            elems = Item.note.split('\n');
         }
+        // Resplit
+        lines = lines.join('\n').split('\n');
         var names = {};
-        for (var i=0,ilen=elems.length;i<ilen;i++) {
-            var line = elems[i];
+        for (var i=0,ilen=lines.length;i<ilen;i++) {
+            var line = lines[i];
             var mm = line.match(CSL.NOTE_FIELD_REGEXP);
-            if (!mm) continue;
+            if (!line.trim()) {
+                continue;
+            } else if (!mm) {
+                break;
+            }
             var key = mm[1];
             var val = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
-            if (!Item[key]) {
-                if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
+            if (key === "type") {
+                Item.type = val;
+                lines[i] = "";
+            } else if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
+                if (allowDateOverride) {
                     Item[key] = {raw: val};
-                } else if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
+                    lines[i] = "";
+                }
+            } else if (!Item[key]) {
+                if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
                     if (!names[key]) {
                         names[key] = [];
                     }
@@ -296,16 +318,13 @@ var CSL = {
                 } else {
                     Item[key] = val;
                 }
-                elems[i] = "";
+                lines[i] = "";
             }
-            if (name === "type") {
-                Item.type = val;
-            }
-            Item.note = elems.join("");
         }
         for (var key in names) {
             Item[key] = names[key];
         }
+        Item.note = lines.join("").trim();
     },
 
     GENDERS: ["masculine", "feminine"],
