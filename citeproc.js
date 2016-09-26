@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.135",
+    PROCESSOR_VERSION: "1.1.136",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -244,7 +244,7 @@ var CSL = {
                 }
                 elems.push(splt[splt.length-1])
                 for (var j=1,jlen=elems.length;j<jlen;j += 2) {
-                    if (elems[j-1].trim() && !elems[j-1].match(CSL.NOTE_FIELD_REGEXP)) {
+                    if (elems[j-1].trim() && (i>0 || j>1) && !elems[j-1].match(CSL.NOTE_FIELD_REGEXP)) {
                         break
                     } else {
                         elems[j] = '\n' + elems[j].slice(2,-1).trim() + '\n';
@@ -261,7 +261,11 @@ var CSL = {
             if (!line.trim()) {
                 continue;
             } else if (!mm) {
-                break;
+                if (i === 0) {
+                    continue;
+                } else {
+                    break;
+                }
             }
             var key = mm[1];
             var val = mm[2].replace(/^\s+/, "").replace(/\s+$/, "");
