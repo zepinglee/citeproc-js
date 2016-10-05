@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.137
+==========================
+
+- Restore validFieldsForType in parseNoteFieldHacks()
+
+- Recognize "standard" as a jurism module type.
+
+- Disable style module completeness check.
+
+==========================
 Changes in version 1.1.136
 ==========================
 
