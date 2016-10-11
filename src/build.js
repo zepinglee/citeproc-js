@@ -144,7 +144,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.setStyleAttributes();
 
     this.opt.xclass = this.cslXml.getAttributeValue(this.cslXml.dataObj, "class");
-    this.opt.class = this.opt.xclass;
+    this.opt["class"] = this.opt.xclass;
     this.opt.styleID = this.cslXml.getStyleId(this.cslXml.dataObj);
     if (CSL.setSuppressedJurisdictions) {
         CSL.setSuppressedJurisdictions(this.opt.styleID, this.opt.suppressedJurisdictions);
