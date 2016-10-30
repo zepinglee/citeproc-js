@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.138",
+    PROCESSOR_VERSION: "1.1.139",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5922,7 +5922,7 @@ CSL.Engine.prototype.setCitationId = function (citation, force) {
         while (true) {
             direction = 0;
             if (!this.registry.citationreg.citationById[id]) {
-                citation.citationID = id.toString(32);
+                citation.citationID = "a" + id.toString(32);
                 break;
             } else if (!direction && id < 50000000000000) {
                 direction = 1;
@@ -13992,7 +13992,11 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
             }
         }
         if (num.collapsible) {
-            var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
+            if (num.value.match(/^[0-9]+$/)) {
+                var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
+            } else {
+                var blob = new CSL.NumericBlob(num.particle, num.value, numStyling, itemID);
+            }
             if ("undefined" === typeof blob.gender) {
                 blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
             }
