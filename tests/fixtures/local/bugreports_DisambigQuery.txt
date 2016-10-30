@@ -1,11 +1,11 @@
 >>===== MODE =====>>
-bibliography
+citation
 <<===== MODE =====<<
 
 
 
 >>===== RESULT =====>>
->>[0] Aalto; Álvarez
+>>[0] (John Smith, Jane Smith)
 <<===== RESULT =====<<
 
 
