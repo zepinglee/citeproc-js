@@ -2968,21 +2968,13 @@ CSL.Engine.prototype.setOpt = function (token, name, value) {
     }
 };
 CSL.Engine.prototype.inheritOpt = function (token, attrname, parentname, defaultValue) {
-    if (parentname === "name-form") {
-    }
     if ("undefined" !== typeof token.strings[attrname]) {
-        if (parentname === "name-form") {
-        }
         return token.strings[attrname];
     } else {
         var parentValue = this[this.tmp.root].opt.inheritedAttributes[parentname ? parentname : attrname];
         if ("undefined" !== typeof parentValue) {
-            if (parentname === "name-form") {
-            }
             return parentValue;
         } else {
-            if (parentname === "name-form") {
-            }
             return defaultValue;
         }
     }
@@ -8565,11 +8557,11 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         }
         chk = this.state.tmp.disambig_settings.givens[pos][i];
         if ("undefined" === typeof chk) {
-            myform = this.state.inheritOpt(this.name, "form", "name-form");
+            myform = this.state.inheritOpt(this.name, "form", "name-form", "long");
             param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, 0, myform, myinitials);
             this.state.tmp.disambig_settings.givens[pos].push(param);
         }
-        myform = this.state.inheritOpt(this.name, "form", "name-form");
+        myform = this.state.inheritOpt(this.name, "form", "name-form", "long");
         paramx = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, 0, myform, myinitials);
         if (this.state.tmp.disambig_request) {
             var val = this.state.tmp.disambig_settings.givens[pos][i];
@@ -8581,7 +8573,7 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             }
             param = val;
             if (this.state.opt["disambiguate-add-givenname"] && lst[i].given) {
-                param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.state.inheritOpt(this.name, "form", "name-form"), this.state.inheritOpt(this.name, "initialize-with"));
+                param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.state.inheritOpt(this.name, "form", "name-form", "long"), this.state.inheritOpt(this.name, "initialize-with"));
             }
         } else {
             param = paramx;
