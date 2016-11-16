@@ -221,6 +221,10 @@ CSL.Node.key = {
         // reset key params
         func = function (state, Item) {
             // state.tmp.name_quash = new Object();
+
+            // XXX This should work, should be necessary, but doesn't and isn't.
+            //state.output.closeLevel("empty");
+
             state.tmp["et-al-min"] = undefined;
             state.tmp["et-al-use-first"] = undefined;
             state.tmp["et-al-use-last"] = undefined;
