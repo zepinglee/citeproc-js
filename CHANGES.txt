@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.141
+==========================
+
+- Fix failure of suffix when @display attribute is used, but
+  not present as top-level node within cs:layout.
+
+==========================
 Changes in version 1.1.140
 ==========================
 

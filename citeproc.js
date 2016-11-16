@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.140",
+    PROCESSOR_VERSION: "1.1.141",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -11442,7 +11442,9 @@ CSL.Attributes["@reverse-order"] = function (state, arg) {
     }
 };
 CSL.Attributes["@display"] = function (state, arg) {
-    state.opt.using_display = true;
+    if (state.bibliography.tokens.length === 2) {
+        state.opt.using_display = true;
+    }
     this.strings.cls = arg;
 };
 CSL.Stack = function (val, literal) {
