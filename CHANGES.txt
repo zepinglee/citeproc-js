@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.142
+==========================
+
+- Fix obscure bug in the inheritance of name labels, tested
+  by new standard fixture name_LabelFormatBug.
+
+==========================
 Changes in version 1.1.141
 ==========================
 
