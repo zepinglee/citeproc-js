@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.143
+==========================
+
+- Fix bug in E4X legacy parsing module.
+
+- Consolidate abbreviation category mappings in
+  a mapping object, and use it (in CSL.Transform).
+
+==========================
 Changes in version 1.1.142
 ==========================
 
