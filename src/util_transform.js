@@ -62,48 +62,22 @@ CSL.Transform = function (state) {
     // Internal function
     function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
         var value;
-
-        if (!myabbrev_family) {
-            return basevalue;
-        }
-
-        var variable = myabbrev_family;
-
-        var noHints = false;
-        if (["title", "title-short"].indexOf(variable) > -1 && !Item.jurisdiction) {
-            noHints = true;
-        }
-
-        if (CSL.NUMERIC_VARIABLES.indexOf(myabbrev_family) > -1) {
-            myabbrev_family = "number";
-        }
-
         if (myabbrev_family === "jurisdiction") {
             if (state.opt.suppressedJurisdictions[Item.jurisdiction]) {
                 return "";
             }
         }
-
-        if (["publisher-place", "event-place", "jurisdiction", "archive-place", "language-name", "language-name-original"].indexOf(myabbrev_family) > -1) {
-            myabbrev_family = "place";
+        myabbrev_family = CSL.FIELD_CATEGORY_REMAP[myabbrev_family];
+        if (!myabbrev_family) {
+            return basevalue;
         }
 
-        if (["publisher", "authority"].indexOf(myabbrev_family) > -1) {
-            myabbrev_family = "institution-part";
-        }
-
-        if (["genre", "event", "medium", "title-short"].indexOf(myabbrev_family) > -1) {
-            myabbrev_family = "title";
-        }
-
-        if (["archive"].indexOf(myabbrev_family) > -1) {
-            myabbrev_family = "collection-title";
-        }
-
+        var variable = myabbrev_family;
         // Lazy retrieval of abbreviations.
         value = "";
         if (state.sys.getAbbreviation) {
-            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue, Item.type, noHints);
+            // True is for (deprecated) noHints flag
+            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, basevalue, Item.type, true);
 
             // XXX Need a fallback mechanism here. Other to default.
             if (state.transform.abbrevs[jurisdiction][myabbrev_family] && basevalue && state.sys.getAbbreviation) {
@@ -226,7 +200,7 @@ CSL.Transform = function (state) {
     // Setter for abbreviation lists
     // This initializes a single abbreviation based on known
     // data.
-    function loadAbbreviation(jurisdiction, category, orig, itemType, noHints) {
+    function loadAbbreviation(jurisdiction, category, orig, itemType) {
         var pos, len;
         if (!jurisdiction) {
             jurisdiction = "default";
@@ -265,7 +239,8 @@ CSL.Transform = function (state) {
                 }
                 // Refresh from DB if no entry is found in memory.
                 if (!state.transform.abbrevs[tryList[i]][category][orig]) {
-                    state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, noHints);
+                    // True is for (deprecated) noHints flag.
+                    state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, true);
                 }
                 // Did we find something?
                 if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
