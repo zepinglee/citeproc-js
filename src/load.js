@@ -218,6 +218,38 @@ var CSL = {
         this["container-phrase"] = {};
         this["title-phrase"] = {};
     },
+
+    FIELD_CATEGORY_REMAP: {
+        "title": "title",
+        "container-title": "container-title",
+        "collection-title": "collection-title",
+        "number": "number",
+        "place": "place",
+        "archive": "collection-title",
+        "title-short": "title",
+        "genre": "title",
+        "event": "title",
+        "medium": "title",
+		"archive-place": "place",
+		"publisher-place": "place",
+		"event-place": "place",
+		"jurisdiction": "place",
+		"language-name": "place",
+		"language-name-original": "place",
+        "call-number": "number",
+        "chapter-number": "number",
+        "collection-number": "number",
+        "edition": "number",
+        "page": "number",
+        "issue": "number",
+        "locator": "number",
+        "number-of-pages": "number",
+        "number-of-volumes": "number",
+        "volume": "number",
+        "citation-number": "number",
+        "publisher": "institution-part",
+        "authority": "institution-part"
+    },
     
     parseLocator: function(item) {
         if (this.opt.development_extensions.locator_date_and_revision) {
