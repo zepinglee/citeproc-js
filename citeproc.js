@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.143",
+    PROCESSOR_VERSION: "1.1.144",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1784,10 +1784,10 @@ CSL.setupXml = function(xmlObject) {
             parser = new CSL.XmlJSON(xmlObject);
         }
     } else {
-        print("OUCH!");
+        CSL.error("unable to parse XML input");
     }
     if (!parser) {
-        throw "citeproc-js error: unable to parse style or locale object";
+        throw "citeproc-js error: unable to parse CSL style or locale object";
     }
     return parser;
 }
