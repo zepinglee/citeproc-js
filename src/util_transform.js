@@ -238,18 +238,20 @@ CSL.Transform = function (state) {
                     state.transform.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
                 }
                 // Refresh from DB if no entry is found in memory.
-                if (!state.transform.abbrevs[tryList[i]][category][orig]) {
-                    // True is for (deprecated) noHints flag.
-                    state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, true);
-                }
-                // Did we find something?
-                if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
-                    // If we found a match, but in a less-specific list, add the entry to the most
-                    // specific list before breaking.
-                    if (i < tryList.length) {
-                        state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
+                if (state.transform.abbrevs[tryList[i]][category]) {
+                    if (!state.transform.abbrevs[tryList[i]][category][orig]) {
+                        // True is for (deprecated) noHints flag.
+                        state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, true);
                     }
-                    found = true;
+                    // Did we find something?
+                    if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
+                        // If we found a match, but in a less-specific list, add the entry to the most
+                        // specific list before breaking.
+                        if (i < tryList.length) {
+                            state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
+                        }
+                        found = true;
+                    }
                 }
             }
         }
