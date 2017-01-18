@@ -172,7 +172,7 @@ CSL.Node.text = {
                     func = function (state, Item, item) {
                         var gender = state.opt.gender[Item.type];
                         var term = this.strings.term;
-                        term = state.getTerm(term, form, plural, gender, false, this.default_locale);
+                        term = state.getTerm(term, form, plural, gender, CSL.TOLERANT, this.default_locale);
                         var myterm;
                         // if the term is not an empty string, say
                         // that we rendered a term
