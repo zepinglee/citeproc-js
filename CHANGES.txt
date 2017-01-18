@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.145
+==========================
+
+- Allow missing field category segments in citeproc.transform.abbrevs.
+
+- Return empty string from cs:text where term="<termname>" not present
+  in style or locale.
+
+==========================
 Changes in version 1.1.144
 ==========================
 
