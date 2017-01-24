@@ -213,6 +213,7 @@ CSL.Node.text = {
                     state.build.plural = false;
                 } else if (this.variables_real.length) {
                     func = function (state, Item, item) {
+
                         var parallel_variable = this.variables[0];
                         
                         if (parallel_variable === "title" 

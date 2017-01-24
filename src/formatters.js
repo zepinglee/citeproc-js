@@ -72,13 +72,15 @@ CSL.Output.Formatters.uppercase = function (state, string) {
  * the rest of the characters untouched.
  */
 CSL.Output.Formatters["capitalize-first"] = function (state, string) {
-    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-    if (str.string.length) {
-        str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1);
-        return CSL.Output.Formatters.undoppelString(str);
-    } else {
-        return "";
+    var obj = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    var str = obj.string;
+    for (var j=0,jlen=str.length;j<jlen;j++) {
+        if (str.charAt(j).toLowerCase() !== str.charAt(j).toUpperCase()) {
+            obj.string = str.slice(0,j) + str.charAt(j).toUpperCase() + str.slice(j+1);
+            break
+        }
     }
+    return CSL.Output.Formatters.undoppelString(obj);
 };
 
 
@@ -133,7 +135,7 @@ CSL.Output.Formatters.title = function (state, string) {
     function capitalise (word, force) {
         // Weird stuff is (.) transpiled with regexpu
         //   https://github.com/mathiasbynens/regexpu
-        var m = word.match(/([:?!]+\s+|-|^)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
+        var m = word.match(/([:?!]+\s+|-|^\s*)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
         // Do not uppercase lone Greek letters
         // (This may not be a good thing when setting Greek-language citations)
         if (m && !(m[2].match(/^[\u0370-\u03FF]$/) && !m[3])) {
@@ -158,7 +160,7 @@ CSL.Output.Formatters.title = function (state, string) {
     // Split on skip words
     var str = doppel.string;
     var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
-    
+
     // Capitalise stop-words that occur after a colon
     for (i=1,ilen=lst.length;i<ilen;i+=2) {
         if (lst[i].match(/^[:?!]/)) {
@@ -195,6 +197,11 @@ CSL.Output.Formatters.title = function (state, string) {
         lst[i] = words.join("");
     }
     doppel.string = lst.join("");
+
+// Step through the non-string elements of the array here on undoppel,
+// noting open- and close-quotes, and restoring case of characters following
+// any non-opening "open-quote."
+    
     var ret = CSL.Output.Formatters.undoppelString(doppel);
     return ret;
 };
@@ -214,31 +221,98 @@ CSL.Output.Formatters.doppelString = function (string, rex, stopWords) {
     // ret.array = string.split(rex);
     ret.string = "";
     for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
-        if (ret.array[i-1] === "-" && false) {
-            ret.string += " " + ret.array[i];
-        } else {
-            ret.string += ret.array[i];
-        }
+        ret.string += ret.array[i];
     }
     return ret;
 };
 
 
-CSL.Output.Formatters.undoppelString = function (str) {
+CSL.Output.Formatters.undoppelString = function (obj) {
     var ret, len, pos;
     ret = "";
-    for (var i=0,ilen=str.array.length; i<ilen; i+=1) {
-        if ((i % 2)) {
-            ret += str.array[i];
+    var stack = [];
+    // For each push ...
+    //   Check quote against closer of last. If match, pop.
+    //   Check quote against opener of last. If match, push.
+    //   If quote is opener and fails tests above, restore case at backtrack pos
+    var params = {
+        " \"": {
+            opener: " \'",
+            closer: "\""
+        },
+        " \'": {
+            opener: " \"",
+            closer: "\'"
+        }
+    }
+    function tryOpen(quot, positions) {
+        if (stack.length === 0 || quot === stack[stack.length - 1].opener) {
+            stack.push({
+                opener: params[quot].opener,
+                closer: params[quot].closer,
+                positions: positions
+            });
+            return false;
         } else {
-            if (str.array[i-1] === "-" && false) {
-                ret += str.string.slice(0, str.array[i].length+1).slice(1);
-                str.string = str.string.slice(str.array[i].length+1);
+            var ret = stack[stack.length-1].positions;
+            stack.pop()
+            stack.push({
+                opener: params[quot].opener,
+                closer: params[quot].closer,
+                positions: positions
+            });
+            return ret;
+        }
+    }
+    function tryClose(quot, positions) {
+        if (quot === stack[stack.length - 1].closer) {
+            stack.pop()
+        } else {
+            // Bad closer will have no space in string, so no casing anomaly.
+            // print("  Fix bad closer at this pos");
+        }
+    }
+    function maybePush(quot, positions) {
+        var isOpener = [" \"", " \'"].indexOf(quot) > -1 ? true : false;
+        if ((stack.length === 0 && isOpener) || stack.length > 0) {
+            if (isOpener) {
+                return tryOpen(quot, positions);
             } else {
-                ret += str.string.slice(0, str.array[i].length);
-                str.string = str.string.slice(str.array[i].length);
+                return tryClose(quot, positions);
             }
         }
+    }
+    function fix (quot, positions) {
+        var m = quot.match(/(^(?:\"|\')|(?: \"| \')$)/);
+        if (m) {
+            return maybePush(m[1], positions);
+        }
+    }
+    // Open a stack object here
+    for (var i=0,ilen=obj.array.length; i<ilen; i+=1) {
+        if ((i % 2)) {
+            ret += obj.array[i];
+        } else {
+            // check here for open-quotes with no matching closer.
+            // somehow.
+            if (i > 0) {
+                var positions = fix(obj.array[i-1], {array:i, string:ret.length})
+                if (positions) {
+                    //print(JSON.stringify(positions))
+                    //print("  Reset opener, fix capitalization after previous bad opener");
+                    //print(ret)
+                    //print("  curchar=" + ret.slice(positions.string, positions.string+1));
+                    //print("  oldchar=" + obj.array[positions.array, positions.array].slice(0,1));
+                    var origChar = obj.array[positions.array, positions.array].slice(0,1);
+                    ret = ret.slice(0, positions.string) + origChar + ret.slice(positions.string+1);
+                }
+            }
+            ret += obj.string.slice(0, obj.array[i].length);
+            obj.string = obj.string.slice(obj.array[i].length);
+        }
+    }
+    if (stack.length) {
+        
     }
     return ret;
 };
@@ -278,3 +352,93 @@ CSL.demoteNoiseWords = function (state, fld, drop_or_demote) {
     }
     return fld;
 };
+
+// Nearly there!
+// Need to iterate over all multi keys somehow, here or in a calling loop ...
+CSL.extractTitleAndSubtitle = function (Item) {
+    var segments = ["", "container-"];
+    for (var i=0,ilen=segments.length;i<ilen;i++) {
+        var seg = segments[i];
+        var title = CSL.TITLE_FIELD_SPLITS(seg);
+        var langs = [false];
+        if (Item.multi) {
+            for (var lang in Item.multi._keys[title.short]) {
+                langs.push(lang);
+            }
+        }
+        for (var j=0,jlen=langs.length;j<ilen;j++) {
+            var lang = langs[j];
+            var vals = {};
+            if (lang) {
+                if (Item.multi._keys[title.title]) {
+                    vals[title.title] = Item.multi._keys[title.title][lang];
+                }
+                if (Item.multi._keys[title["short"]]) {
+                    vals[title["short"]] = Item.multi._keys[title["short"]][lang];
+                }
+            } else {
+                vals[title.title] = Item[title.title];
+                vals[title["short"]] = Item[title["short"]];
+            }
+            vals[title.main] = vals[title.title];
+            vals[title.sub] = false;
+            if (vals[title.title] && vals[title["short"]]) {
+                var shortTitle = vals[title["short"]];
+                offset = shortTitle.length;
+                if (vals[title.title].slice(0,offset) === shortTitle && vals[title.title].slice(offset).match(/^\s*:/)) {
+                    vals[title.main] = vals[title.title].slice(0,offset).replace(/\s+$/,"");
+                    vals[title.sub] = vals[title.title].slice(offset).replace(/^\s*:\s*/,"");
+                }
+            }
+            if (lang) {
+                for (var key in vals) {
+                    if (!Item.multi._keys[key]) {
+                        Item.multi._keys[key] = {};
+                    }
+                    Item.multi._keys[key][lang] = vals[key];
+                }
+            } else {
+                for (var key in vals) {
+                    Item[key] = vals[key];
+                }
+            }
+        }
+    }
+}
+
+CSL.titlecaseSentenceOrNormal = function(state, Item, seg, lang, sentenceCase) {
+    var title = CSL.TITLE_FIELD_SPLITS(seg);
+    var vals = {};
+    if (lang && Item.multi) {
+        if (Item.multi._keys[title.title]) {
+            vals[title.title] = Item.multi._keys[title.title][lang];
+        }
+        if (Item.multi._keys[title.main]) {
+            vals[title.main] = Item.multi._keys[title.main][lang];
+        }
+        if (Item.multi._keys[title.sub]) {
+            vals[title.sub] = Item.multi._keys[title.sub][lang];
+        }
+    } else {
+        vals[title.title] = Item[title.title];
+        vals[title.main] = Item[title.main];
+        vals[title.sub] = Item[title.sub];
+    }
+    if (vals[title.main] && vals[title.sub]) {
+        var mainTitle = vals[title.main];
+        var subTitle = vals[title.sub];
+        if (sentenceCase) {
+            mainTitle = CSL.Output.Formatters.sentence(state, mainTitle);
+            subTitle = CSL.Output.Formatters.sentence(state, subTitle);
+        } else {
+            subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
+        }
+        return [mainTitle, subTitle].join(vals[title.title].slice(mainTitle.length, -1 * subTitle.length));
+    } else {
+        if (sentenceCase) {
+            return CSL.Output.Formatters.sentence(state, vals[title.title]);
+        } else {
+            return vals[title.title];
+        }
+    }
+}

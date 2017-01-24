@@ -695,31 +695,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     // Add support for main_title_from_short_title
     if (this.opt.development_extensions.main_title_from_short_title) {
-        var segments = ["", "container-"];
-        for (var i=0,ilen=segments.length;i<ilen;i++) {
-            var seg = segments[i];
-            Item[seg + "title-main"] = Item[seg + "title"];
-            Item[seg + "title-sub"] = false;
-            if (Item[seg + "title"] && Item[seg + "title-short"]) {
-                var shortTitle = Item[seg + "title-short"];
-                offset = shortTitle.length;
-                if (Item[seg + "title"].slice(0,offset) === shortTitle && Item[seg + "title"].slice(offset).match(/^\s*:/)) {
-                    Item[seg + "title-main"] = Item[seg + "title"].slice(0,offset).replace(/\s+$/,"");
-                    Item[seg + "title-sub"] = Item[seg + "title"].slice(offset).replace(/^\s*:\s*/,"");
-                    if (this.opt.development_extensions.uppercase_subtitles && Item[seg + "title-sub"]) {
-                        var subtitle = Item[seg + "title-sub"]
-                        for (var j=0,jlen=subtitle.length;j<jlen;j++) {
-                            if (subtitle.charAt(j).toLowerCase() !== subtitle.charAt(j).toUpperCase()) {
-                                Item[seg + "title-sub"] = subtitle.slice(0,j) + subtitle.charAt(j).toUpperCase() + subtitle.slice(j+1);
-                                break
-                            }
-                        }
-                    }
-                    var mainPlusJoinOffset = offset + Item[seg + "title"].length - Item[seg + "title-main"].length - Item[seg + "title-sub"].length;
-                    Item[seg + "title"] = Item[seg + "title"].slice(0,mainPlusJoinOffset) + Item[seg + "title-sub"];
-                }
-            }
-        }
+        CSL.extractTitleAndSubtitle(Item);
     }
     var isLegalType = ["bill","legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (this.opt.development_extensions.force_jurisdiction && isLegalType) {

@@ -139,12 +139,17 @@ CSL.Transform = function (state) {
     };
 
     // Internal functions
-    function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
+    function getTextSubField (Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
         var usedOrig = stopOrig;
+        var usingOrig = false;
 
         if (!Item[field]) {
-            return {name:"", usedOrig:stopOrig};
+            return {
+                name:"",
+                usedOrig:stopOrig,
+                token: CSL.Util.cloneToken(this)
+            };
         }
         ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
 
@@ -158,11 +163,13 @@ CSL.Transform = function (state) {
                 ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
             }
             hasVal = true;
+            usingOrig = true;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
             // If we want the original, or if we don't have any specific guidance and we 
             // definitely want output, just return the original value.
             var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             hasVal = true;
+            usingOrig = true;
         }
 
         if (!hasVal) {
@@ -171,7 +178,7 @@ CSL.Transform = function (state) {
                 o = opt.split(/[\-_]/)[0];
                 if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
                     ret.name = Item.multi._keys[field][opt];
-                    ret.locale = o;
+                    ret.locale = opt;
                     if (field === 'jurisdiction') jurisdictionName = ret.name;
                     break;
                 } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
@@ -183,8 +190,10 @@ CSL.Transform = function (state) {
             }
             if (!ret.name && use_default) {
                 ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                usingOrig = true;
             }
         }
+        ret.token = CSL.Util.cloneToken(this);
         if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
             if (ret.name && !jurisdictionName) {
                 jurisdictionName = state.sys.getHumanForm(Item[field]);
@@ -192,6 +201,18 @@ CSL.Transform = function (state) {
             // If jurisdictionName does not exist here, this will go boom.
             if (jurisdictionName) {
                 ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
+            }
+        } else if (["title", "container-title"].indexOf(field) > -1) {
+            if (!usedOrig
+                && (!ret.token.strings["text-case"]
+                    || ret.token.strings["text-case"] === "sentence"
+                    || ret.token.strings["text-case"] === "normal")) {
+                
+                var locale = usingOrig ? false : ret.locale;
+                var seg = field.slice(0,-5);
+                var sentenceCase = ret.token.strings["text-case"] === "sentence" ? true : false;
+                ret.name = CSL.titlecaseSentenceOrNormal(state, Item, seg, locale, sentenceCase);
+                delete ret.token.strings["text-case"];
             }
         }
         return ret;
@@ -349,9 +370,10 @@ CSL.Transform = function (state) {
             }
 
             // True is for transform fallback
-            var res = getTextSubField(Item, variables[0], slot.primary, true);
+            var res = getTextSubField.call(this, Item, variables[0], slot.primary, true);
             primary = res.name;
             primary_locale = res.locale;
+            var primary_tok = res.token;
             var primaryUsedOrig = res.usedOrig;
 
             if (publisherCheck(this, Item, primary, myabbrev_family)) {
@@ -362,15 +384,17 @@ CSL.Transform = function (state) {
             secondary = false;
             tertiary = false;
             if (slot.secondary) {
-                res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
                 secondary_locale = res.locale;
+                var secondary_tok = res.token;
                 //print("XXX secondary_locale: "+secondary_locale);
             }
             if (slot.tertiary) {
-                res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
                 tertiary_locale = res.locale;
+                var tertiary_tok = res.token;
                 //print("XXX tertiary_locale: "+tertiary_locale);
             }
         
@@ -390,8 +414,6 @@ CSL.Transform = function (state) {
             }
             
             // Decoration of primary (currently translit only) goes here
-            var template_tok = CSL.Util.cloneToken(this);
-            var primary_tok = CSL.Util.cloneToken(this);
             var primaryPrefix;
             if (slot.primary === "locale-translit") {
                 primaryPrefix = state.opt.citeAffixes[langPrefs][slot.primary].prefix;
@@ -431,7 +453,6 @@ CSL.Transform = function (state) {
                 state.output.append(primary, primary_tok);
 
                 if (secondary) {
-                    secondary_tok = CSL.Util.cloneToken(template_tok);
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
                     // Add a space if empty
@@ -467,7 +488,6 @@ CSL.Transform = function (state) {
                     }
                 }
                 if (tertiary) {
-                    tertiary_tok = CSL.Util.cloneToken(template_tok);
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
                     // Add a space if empty
