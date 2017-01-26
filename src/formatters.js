@@ -125,13 +125,18 @@ CSL.Output.Formatters["capitalize-all"] = function (state, string) {
  * Will not touch words that have some capitalization
  * already.
  */
+
+// ZZZ Right. So let's restore the treatment of the string as an array.
+// ZZZ It will need to be a *copy* of the array, to restore the original
+// ZZZ casing when interpreting quotation marks.
+
 CSL.Output.Formatters.title = function (state, string) {
     var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
     var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
     if (!string) {
         return "";
     }
-    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE, SKIP_WORDS);
+
     function capitalise (word, force) {
         // Weird stuff is (.) transpiled with regexpu
         //   https://github.com/mathiasbynens/regexpu
@@ -143,37 +148,147 @@ CSL.Output.Formatters.title = function (state, string) {
         }
         return word;
     }
-    function splitme (str, rex) {
-        var m = str.match(rex);
+    // So ... right. Rethink.
+    // First separate tags from strings (as doppel.tags and doppel.strings)
+    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
+    
+    print(JSON.stringify(doppel, null, 2))
+
+
+    // Set up initial state params
+    var tagParams = {
+        "<span class=\"nocase\">": "</span>",
+        "<span class=\"nodecor\">": "</span>"
+    }
+    var tagState = [];
+    var quoteParams = {
+        " \"": {
+            opener: " \'",
+            closer: "\""
+        },
+        " \'": {
+            opener: " \"",
+            closer: "\'"
+        }
+    }
+    var quoteState = [];
+    function quoteFix (tag, positions) {
+        var m = tag.match(/(^(?:\"|\')|(?: \"| \')$)/);
         if (m) {
-            var splits = str.split(rex);
-            res = [splits[0]];
-            for (var i=0; i<m.length; i++) {
-                res.push(m[i]);
-                res.push(splits[i+1]);
+            return pushQuoteState(m[1], positions);
+        }
+    }
+    function pushQuoteState(tag, pos) {
+        var isOpener = [" \"", " \'"].indexOf(tag) > -1 ? true : false;
+        if ((quoteState.length === 0 && isOpener) || quoteState.length > 0) {
+            if (isOpener) {
+                return tryOpen(tag, pos);
+            } else {
+                return tryClose(tag, pos);
+            }
+        }
+    }
+    function tryOpen(tag, pos) {
+        if (quoteState.length === 0 || tag === quoteState[quoteState.length - 1].opener) {
+            quoteState.push({
+                opener: quoteParams[tag].opener,
+                closer: quoteParams[tag].closer,
+                pos: pos
+            });
+            return false;
+        } else {
+            var prevPos = quoteState[quoteState.length-1].pos;
+            quoteState.pop()
+            quoteState.push({
+                opener: quoteParams[tag].opener,
+                closer: quoteParams[tag].closer,
+                positions: pos
+            });
+            return prevPos;
+        }
+    }
+    function tryClose(tag, pos) {
+        if (tag === quoteState[quoteState.length - 1].closer) {
+            quoteState.pop()
+            //return false;
+        } else {
+            print("BAD CLOSER! " + pos);
+            return pos;
+            // Bad closer will have no space in string, so no casing anomaly.
+            // print("  Fix bad closer at this pos");
+        }
+    }
+    var quoteState = [];
+    var isFirst = true;
+    var afterPunct = false;
+    var skipWordsRex = state.locale[state.opt.lang].opts["skip-words-regexp"];
+    // Run state machine
+    for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
+        var tag = doppel.tags[i];
+        var str = doppel.strings[i+1];
+
+        // Evaluate tag state for current string
+        if (tagParams[tag]) {
+            tagState.push(tagParams[tag]);
+        } else if (tagState.length && tag === tagState[tagState.length - 1]) {
+            tagState.pop();
+        }
+
+        // Evaluate punctuation state of current string
+        if (tag.match(/[\!\?\:]$/)) {
+            afterPunct = true;
+        }
+
+        // Process if outside tag scope, else noop for upper-casing
+        if (tagState.length === 0) {
+            print("OUTSIDE: " + str);
+            // Capitalize every word that is not a stop-word
+            var words = str.split(" ");
+            for (var j=0,jlen=words.length;j<jlen;j++) {
+                var word = words[j];
+                print("*** word=("+word+") "+ word.toLowerCase().match(skipWordsRex));
+                if (word && !word.toLowerCase().match(skipWordsRex)) {
+                    words[j] = capitalise(words[j]);
+                }
+            }
+            doppel.strings[i+1] = words.join(" ");
+            if (isFirst && str.trim()) {
+                print("  First-word cap");
+                // Capitalize the word
+            }
+            if (afterPunct && str.trim()) {
+                print("  After-punct cap");
+                // Capitalize the word
             }
         } else {
-            res = [str];
+            print("INSIDE: " + str);
         }
-        return res;
-    }
-    // Split on skip words
-    var str = doppel.string;
-    var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
 
-    // Capitalise stop-words that occur after a colon
-    for (i=1,ilen=lst.length;i<ilen;i+=2) {
-        if (lst[i].match(/^[:?!]/)) {
-            lst[i] = capitalise(lst[i]);
+        // Evaluate quote state of current string and fix chars that have flown
+        var quotePos = quoteFix(tag, i);
+        if (quotePos) {
+            var origChar = doppel.origStrings[quotePos+1].slice(0, 1);
+            doppel.strings[quotePos+1] = origChar + doppel.origStrings[quotePos+1].slice(1);
+            print("*** FIXED WITH (" + origChar + ")");
+        }
+
+        // If there was a printable string, unset first-word and after-punctuation
+        if (str.trim()) {
+            if (isFirst) {
+                isFirst = false;
+            }
+            if (afterPunct) {
+                afterPunct = false;
+            }
         }
     }
-    // Capitalise stop-words if they are the first or last words
-    if (!lst[0] && lst[1]) {
-        lst[1] = capitalise(lst[1]);
-    }
-    if (lst.length > 2 && !lst[lst.length-1]) {
-        lst[lst.length-2] = capitalise(lst[lst.length-2]);
-    }
+    // Capitalize the last word
+    // Recombine the string
+    print(string);
+
+    //var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
+/*
+    // Move this to a function after review
     for (var i=0,ilen=lst.length;i<ilen;i+=2) {
         var words = lst[i].split(/([:?!]*\s+|\/|-)/);
         // Inspect each word individually
@@ -189,7 +304,6 @@ CSL.Output.Formatters.title = function (state, string) {
                 }
                 // Transform word only if all lowercase
                 if (words[k] === lowerCaseVariant) {
-                    //print("   do: "+capitalise(words[k]));
                     words[k] = capitalise(words[k]);
                 }
             }
@@ -197,124 +311,53 @@ CSL.Output.Formatters.title = function (state, string) {
         lst[i] = words.join("");
     }
     doppel.string = lst.join("");
+*/
 
 // Step through the non-string elements of the array here on undoppel,
 // noting open- and close-quotes, and restoring case of characters following
 // any non-opening "open-quote."
-    
+
+//print(JSON.stringify(doppel.array, null, 2));
+
     var ret = CSL.Output.Formatters.undoppelString(doppel);
+print("OK " + ret);
     return ret;
 };
 
 /*
 * Based on a suggestion by Shoji Kajita.
 */
-CSL.Output.Formatters.doppelString = function (string, rex, stopWords) {
-    var ret, pos, len;
-    ret = {};
-    // rex is a function that returns an appropriate array.
-    //
-    // XXXXX: Does this work in Internet Explorer?
-    //
-    ret.array = rex(string, stopWords);
-    //print("ret.array: "+ret.array);
-    // ret.array = string.split(rex);
-    ret.string = "";
-    for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
-        ret.string += ret.array[i];
+CSL.Output.Formatters.doppelString = function (str) {
+    var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+    // Normalize markup
+    str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
+    // Split and match
+    var m1match = str.match(/((?: \"| \'|\"|\'|[-.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
+    if (!m1match) {
+        return {
+            tags: [],
+            strings: [str]
+        };
     }
-    return ret;
-};
-
+    var m1split = str.split(/(?: \"| \'|\"|\'|[-.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
+    
+    return {
+        tags: m1match,
+        strings: m1split,
+        origStrings: m1split.slice()
+    }
+}
 
 CSL.Output.Formatters.undoppelString = function (obj) {
     var ret, len, pos;
-    ret = "";
-    var stack = [];
-    // For each push ...
-    //   Check quote against closer of last. If match, pop.
-    //   Check quote against opener of last. If match, push.
-    //   If quote is opener and fails tests above, restore case at backtrack pos
-    var params = {
-        " \"": {
-            opener: " \'",
-            closer: "\""
-        },
-        " \'": {
-            opener: " \"",
-            closer: "\'"
-        }
+    lst = [];
+    var lst = obj.strings.slice(-1);
+    for (var i=obj.tags.length-1; i>-1; i+=-1) {
+        lst.push(obj.tags[i]);
+        lst.push(obj.strings[i]);
     }
-    function tryOpen(quot, positions) {
-        if (stack.length === 0 || quot === stack[stack.length - 1].opener) {
-            stack.push({
-                opener: params[quot].opener,
-                closer: params[quot].closer,
-                positions: positions
-            });
-            return false;
-        } else {
-            var ret = stack[stack.length-1].positions;
-            stack.pop()
-            stack.push({
-                opener: params[quot].opener,
-                closer: params[quot].closer,
-                positions: positions
-            });
-            return ret;
-        }
-    }
-    function tryClose(quot, positions) {
-        if (quot === stack[stack.length - 1].closer) {
-            stack.pop()
-        } else {
-            // Bad closer will have no space in string, so no casing anomaly.
-            // print("  Fix bad closer at this pos");
-        }
-    }
-    function maybePush(quot, positions) {
-        var isOpener = [" \"", " \'"].indexOf(quot) > -1 ? true : false;
-        if ((stack.length === 0 && isOpener) || stack.length > 0) {
-            if (isOpener) {
-                return tryOpen(quot, positions);
-            } else {
-                return tryClose(quot, positions);
-            }
-        }
-    }
-    function fix (quot, positions) {
-        var m = quot.match(/(^(?:\"|\')|(?: \"| \')$)/);
-        if (m) {
-            return maybePush(m[1], positions);
-        }
-    }
-    // Open a stack object here
-    for (var i=0,ilen=obj.array.length; i<ilen; i+=1) {
-        if ((i % 2)) {
-            ret += obj.array[i];
-        } else {
-            // check here for open-quotes with no matching closer.
-            // somehow.
-            if (i > 0) {
-                var positions = fix(obj.array[i-1], {array:i, string:ret.length})
-                if (positions) {
-                    //print(JSON.stringify(positions))
-                    //print("  Reset opener, fix capitalization after previous bad opener");
-                    //print(ret)
-                    //print("  curchar=" + ret.slice(positions.string, positions.string+1));
-                    //print("  oldchar=" + obj.array[positions.array, positions.array].slice(0,1));
-                    var origChar = obj.array[positions.array, positions.array].slice(0,1);
-                    ret = ret.slice(0, positions.string) + origChar + ret.slice(positions.string+1);
-                }
-            }
-            ret += obj.string.slice(0, obj.array[i].length);
-            obj.string = obj.string.slice(obj.array[i].length);
-        }
-    }
-    if (stack.length) {
-        
-    }
-    return ret;
+    lst.reverse();
+    return lst.join("");
 };
 
 
