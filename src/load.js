@@ -603,6 +603,119 @@ var CSL = {
         return ret;
     },
 
+    demoteNoiseWords: function (state, fld, drop_or_demote) {
+        var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
+        if (fld && drop_or_demote) {
+            fld = fld.split(/\s+/);
+            fld.reverse();
+            var toEnd = [];
+            for (var j  = fld.length - 1; j > -1; j += -1) {
+                if (SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
+                    toEnd.push(fld.pop());
+                } else {
+                    break;
+                }
+            }
+            fld.reverse();
+            var start = fld.join(" ");
+            var end = toEnd.join(" ");
+            if ("drop" === drop_or_demote || !end) {
+                fld = start;
+            } else if ("demote" === drop_or_demote) {
+                fld = [start, end].join(", ");
+            }
+        }
+        return fld;
+    },
+
+    extractTitleAndSubtitle: function (Item) {
+        var segments = ["", "container-"];
+        for (var i=0,ilen=segments.length;i<ilen;i++) {
+            var seg = segments[i];
+            var title = CSL.TITLE_FIELD_SPLITS(seg);
+            var langs = [false];
+            if (Item.multi) {
+                for (var lang in Item.multi._keys[title.short]) {
+                    langs.push(lang);
+                }
+            }
+            for (var j=0,jlen=langs.length;j<ilen;j++) {
+                var lang = langs[j];
+                var vals = {};
+                if (lang) {
+                    if (Item.multi._keys[title.title]) {
+                        vals[title.title] = Item.multi._keys[title.title][lang];
+                    }
+                    if (Item.multi._keys[title["short"]]) {
+                        vals[title["short"]] = Item.multi._keys[title["short"]][lang];
+                    }
+                } else {
+                    vals[title.title] = Item[title.title];
+                    vals[title["short"]] = Item[title["short"]];
+                }
+                vals[title.main] = vals[title.title];
+                vals[title.sub] = false;
+                if (vals[title.title] && vals[title["short"]]) {
+                    var shortTitle = vals[title["short"]];
+                    offset = shortTitle.length;
+                    if (vals[title.title].slice(0,offset) === shortTitle && vals[title.title].slice(offset).match(/^\s*:/)) {
+                        vals[title.main] = vals[title.title].slice(0,offset).replace(/\s+$/,"");
+                        vals[title.sub] = vals[title.title].slice(offset).replace(/^\s*:\s*/,"");
+                    }
+                }
+                if (lang) {
+                    for (var key in vals) {
+                        if (!Item.multi._keys[key]) {
+                            Item.multi._keys[key] = {};
+                        }
+                        Item.multi._keys[key][lang] = vals[key];
+                    }
+                } else {
+                    for (var key in vals) {
+                        Item[key] = vals[key];
+                    }
+                }
+            }
+        }
+    },
+
+    titlecaseSentenceOrNormal: function(state, Item, seg, lang, sentenceCase) {
+        var title = CSL.TITLE_FIELD_SPLITS(seg);
+        var vals = {};
+        if (lang && Item.multi) {
+            if (Item.multi._keys[title.title]) {
+                vals[title.title] = Item.multi._keys[title.title][lang];
+            }
+            if (Item.multi._keys[title.main]) {
+                vals[title.main] = Item.multi._keys[title.main][lang];
+            }
+            if (Item.multi._keys[title.sub]) {
+                vals[title.sub] = Item.multi._keys[title.sub][lang];
+            }
+        } else {
+            vals[title.title] = Item[title.title];
+            vals[title.main] = Item[title.main];
+            vals[title.sub] = Item[title.sub];
+        }
+        if (vals[title.main] && vals[title.sub]) {
+            var mainTitle = vals[title.main];
+            var subTitle = vals[title.sub];
+            if (sentenceCase) {
+                mainTitle = CSL.Output.Formatters.sentence(state, mainTitle);
+                subTitle = CSL.Output.Formatters.sentence(state, subTitle);
+            } else {
+                subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
+            }
+            return [mainTitle, subTitle].join(vals[title.title].slice(mainTitle.length, -1 * subTitle.length));
+        } else {
+            if (sentenceCase) {
+                return CSL.Output.Formatters.sentence(state, vals[title.title]);
+            } else {
+                return vals[title.title];
+            }
+        }
+    },
+
     SKIP_WORDS: ["about","above","across","afore","after","against","along","alongside","amid","amidst","among","amongst","anenst","apropos","apud","around","as","aside","astride","at","athwart","atop","barring","before","behind","below","beneath","beside","besides","between","beyond","but","by","circa","despite","down","during","except","for","forenenst","from","given","in","inside","into","lest","like","modulo","near","next","notwithstanding","of","off","on","onto","out","over","per","plus","pro","qua","sans","since","than","through"," thru","throughout","thruout","till","to","toward","towards","under","underneath","until","unto","up","upon","versus","vs.","v.","vs","v","via","vis-à-vis","with","within","without","according to","ahead of","apart from","as for","as of","as per","as regards","aside from","back to","because of","close to","due to","except for","far from","inside of","instead of","near to","next to","on to","out from","out of","outside of","prior to","pursuant to","rather than","regardless of","such as","that of","up to","where as","or", "yet", "so", "for", "and", "nor", "a", "an", "the", "de", "d'", "von", "van", "c", "et", "ca"],
 
     FORMAT_KEY_SEQUENCE: [
