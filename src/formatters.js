@@ -51,14 +51,14 @@ CSL.Output.Formatters = new function () {
         // Normalize markup
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
         // Split and match
-        var m1match = str.match(/((?: \"| \'|\"|\'|[-/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
+        var m1match = str.match(/((?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
         if (!m1match) {
             return {
                 tags: [],
                 strings: [str]
             };
         }
-        var m1split = str.split(/(?: \"| \'|\"|\'|[-/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
+        var m1split = str.split(/(?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
         
         return {
             tags: m1match,
@@ -91,78 +91,48 @@ CSL.Output.Formatters = new function () {
      * Force all letters in the string to lowercase, skipping nocase spans
      */
     function lowercase(state, string) {
-        var doppel = _doppelString(string);
-        var tagState = [];
-
-        function _lowercaseWords(str) {
-            var words = str.split(" ");
-            for (var i=0,ilen=words.length;i<ilen;i++) {
-                var word = words[i];
-                if (word) {
-                    words[i] = word.toLowerCase();
+        var config = {
+            quoteState: null,
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = word.toLowerCase();
+                    }
                 }
-            }
-            return words.join(" ");
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
         }
-
-        if (doppel.strings.length && doppel.strings[0].trim()) {
-            doppel.strings[0] = _lowercaseWords(doppel.strings[0]);
-        }
-        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
-            var tag = doppel.tags[i];
-            var str = doppel.strings[i+1];
-            if (!str.trim()) continue;
-            // Evaluate tag state for current string
-            if (tagParams[tag]) {
-                tagState.push(tagParams[tag]);
-            } else if (tagState.length && tag === tagState[tagState.length - 1]) {
-                tagState.pop();
-            }
-            // Process if outside tag scope, else noop for lower-casing
-            if (tagState.length === 0) {
-                doppel.strings[i+1] = _lowercaseWords(str);
-            }
-        }
-        return _undoppelString(doppel);
+        return textcaseEngine(config, string);
     }
 
     /**
      * Force all letters in the string to uppercase.
      */
     function uppercase(state, string) {
-        var doppel = _doppelString(string);
-        var tagState = [];
-
-        function _uppercaseWords(str) {
-            var words = str.split(" ");
-            for (var i=0,ilen=words.length;i<ilen;i++) {
-                var word = words[i];
-                if (word) {
-                    words[i] = word.toUpperCase();
+        var config = {
+            quoteState: null,
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = word.toUpperCase();
+                    }
                 }
-            }
-            return words.join(" ");
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
         }
-
-        if (doppel.strings.length && doppel.strings[0].trim()) {
-            doppel.strings[0] = _uppercaseWords(doppel.strings[0]);
-        }
-        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
-            var tag = doppel.tags[i];
-            var str = doppel.strings[i+1];
-            if (!str.trim()) continue;
-            // Evaluate tag state for current string
-            if (tagParams[tag]) {
-                tagState.push(tagParams[tag]);
-            } else if (tagState.length && tag === tagState[tagState.length - 1]) {
-                tagState.pop();
-            }
-            // Process if outside tag scope, else noop for lower-casing
-            if (tagState.length === 0) {
-                doppel.strings[i+1] = _uppercaseWords(str);
-            }
-        }
-        return _undoppelString(doppel);
+        return textcaseEngine(config, string);
     }
 
     /**
@@ -170,45 +140,29 @@ CSL.Output.Formatters = new function () {
      * subsequent characters to lowercase.
      */
     function sentence(state, string) {
-        var doppel = _doppelString(string);
-        var tagState = [];
-        var isFirst = true;
-
-        function _capitaliseOrLowercase(str) {
-            var words = str.split(" ");
-            for (var i=0,ilen=words.length;i<ilen;i++) {
-                var word = words[i];
-                if (word) {
-                    if (isFirst) {
-                        words[i] = _capitalise(word);
-                        isFirst = false;
-                    } else {
-                        words[i] = word.toLowerCase();
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        if (config.isFirst) {
+                            words[i] = _capitalise(word);
+                            config.isFirst = false;
+                        } else {
+                            words[i] = word.toLowerCase();
+                        }
                     }
                 }
-            }
-            return words.join(" ");
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: true
         }
-
-        if (doppel.strings.length && doppel.strings[0].trim()) {
-            doppel.strings[0] = _capitaliseOrLowercase(doppel.strings[0]);
-        }
-        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
-            var tag = doppel.tags[i];
-            var str = doppel.strings[i+1];
-            if (!str.trim()) continue;
-            // Evaluate tag state for current string
-            if (tagParams[tag]) {
-                tagState.push(tagParams[tag]);
-            } else if (tagState.length && tag === tagState[tagState.length - 1]) {
-                tagState.pop();
-            }
-            // Process if outside tag scope, else noop for lower-casing
-            if (tagState.length === 0) {
-                doppel.strings[i+1] = _capitaliseOrLowercase(str);
-            }
-        }
-        return _undoppelString(doppel);
+        return textcaseEngine(config, string);
     }
 
     /**
@@ -216,51 +170,28 @@ CSL.Output.Formatters = new function () {
      * the rest of the characters untouched.
      */
     function capitalizeFirst(state, string) {
-        var doppel = _doppelString(string);
-        var tagState = [];
-        var isFirst = true;
-
-        function _capitaliseFirst(str) {
-            var words = str.split(" ");
-            for (var i=0,ilen=words.length;i<ilen;i++) {
-                var word = words[i];
-                if (word) {
-                    if (isFirst) {
-                        words[i] = _capitalise(word);
-                        isFirst = false;
-                        break;
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        if (config.isFirst) {
+                            words[i] = _capitalise(word);
+                            config.isFirst = false;
+                            break;
+                        }
                     }
                 }
-            }
-            return words.join(" ");
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: true
         }
-        
-        if (doppel.strings.length && doppel.strings[0].trim()) {
-            doppel.strings[0] = _capitaliseFirst(doppel.strings[0]);
-        }
-        if (isFirst) {
-            for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
-                var tag = doppel.tags[i];
-                var str = doppel.strings[i+1];
-                if (!str.trim()) continue;
-                // Evaluate tag state for current string
-                if (tagParams[tag]) {
-                    tagState.push(tagParams[tag]);
-                } else if (tagState.length && tag === tagState[tagState.length - 1]) {
-                    tagState.pop();
-                }
-                // Process if outside tag scope, else noop for lower-casing
-                if (tagState.length === 0) {
-                    doppel.strings[i+1] = _capitaliseFirst(str);
-                } else if (tagParams[tag]) {
-                    isFirst = false;
-                }
-                if (!isFirst) {
-                    break;
-                }
-            }
-        }
-        return _undoppelString(doppel);
+        return textcaseEngine(config, string);
     }
 
     /**
@@ -270,62 +201,70 @@ CSL.Output.Formatters = new function () {
      * to uppercase.
      */
     function capitalizeAll (state, string) {
-        var doppel = _doppelString(string);
-        var tagState = [];
-        var isFirst = true;
-
-        function _capitaliseEach(str) {
-            var words = str.split(" ");
-            for (var i=0,ilen=words.length;i<ilen;i++) {
-                var word = words[i];
-                if (word) {
-                    words[i] = _capitalise(word);
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = _capitalise(word);
+                    }
                 }
-            }
-            return words.join(" ");
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
         }
-        
-        if (doppel.strings.length && doppel.strings[0].trim()) {
-            doppel.strings[0] = _capitaliseEach(doppel.strings[0]);
-        }
-        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
-            var tag = doppel.tags[i];
-            var str = doppel.strings[i+1];
-            if (!str.trim()) continue;
-            // Evaluate tag state for current string
-            if (tagParams[tag]) {
-                tagState.push(tagParams[tag]);
-            } else if (tagState.length && tag === tagState[tagState.length - 1]) {
-                tagState.pop();
-            }
-            // Process if outside tag scope, else noop for lower-casing
-            if (tagState.length === 0) {
-                doppel.strings[i+1] = _capitaliseEach(str);
-            }
-        }
-        return _undoppelString(doppel);
+        return textcaseEngine(config, string);
     }
 
-    /**
-     * Capitalization appropriate for use in a title.
-     * Will not touch words that have some capitalization already.
-     */
+
     function title(state, string) {
-        var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
-        var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str, i) {
+                if (str.trim()) {
+                    var words = str.split(" ");
+                    for (var j=0,jlen=words.length;j<jlen;j++) {
+                        var word = words[j];
+                        if (!word) continue;
+                        if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
+                            // Capitalize every word that is not a stop-word
+                            words[j] = _capitalise(words[j]);
+                        } else if (config.isFirst) {
+                            // Capitalize first word, even if a stop-word
+                            words[j] = _capitalise(words[j]);
+                        } else if (config.afterPunct) {
+                            // Capitalize after punctuation
+                            words[j] = _capitalise(words[j]);
+                        }
+                        config.afterPunct = false;
+                        config.isFirst = false;
+                        config.lastWordPos = {
+                            strings: i,
+                            words: j
+                        }
+                    }
+                    str = words.join(" ");
+                }
+                return str;
+            },
+            skipWordsRex: state.locale[state.opt.lang].opts["skip-words-regexp"],
+            tagState: [],
+            afterPunct: false,
+            isFirst: true
+        }
+        return textcaseEngine(config, string);
+    }
+    
+    function textcaseEngine(config, string) {
+        config.doppel = _doppelString(string);
         if (!string) {
             return "";
         }
-
-        // Separate tags from strings (as doppel.tags and doppel.strings)
-        var doppel = _doppelString(string);
-
-        //print("tags: " + JSON.stringify(doppel.tags, null, 2));
-        //print("strings: " + JSON.stringify(doppel.strings, null, 2));
-        
-        // Set up initial state params
-
-        var tagState = [];
         var quoteParams = {
             " \"": {
                 opener: " \'",
@@ -336,7 +275,6 @@ CSL.Output.Formatters = new function () {
                 closer: "\'"
             }
         }
-        var quoteState = [];
         function quoteFix (tag, positions) {
             var m = tag.match(/(^(?:\"|\')|(?: \"| \')$)/);
             if (m) {
@@ -352,17 +290,17 @@ CSL.Output.Formatters = new function () {
             }
         }
         function tryOpen(tag, pos) {
-            if (quoteState.length === 0 || tag === quoteState[quoteState.length - 1].opener) {
-                quoteState.push({
+            if (config.quoteState.length === 0 || tag === config.quoteState[config.quoteState.length - 1].opener) {
+                config.quoteState.push({
                     opener: quoteParams[tag].opener,
                     closer: quoteParams[tag].closer,
                     pos: pos
                 });
                 return false;
             } else {
-                var prevPos = quoteState[quoteState.length-1].pos;
-                quoteState.pop()
-                quoteState.push({
+                var prevPos = config.quoteState[config.quoteState.length-1].pos;
+                config.quoteState.pop()
+                config.quoteState.push({
                     opener: quoteParams[tag].opener,
                     closer: quoteParams[tag].closer,
                     positions: pos
@@ -371,99 +309,74 @@ CSL.Output.Formatters = new function () {
             }
         }
         function tryClose(tag, pos) {
-            if (quoteState.length > 0 && tag === quoteState[quoteState.length - 1].closer) {
-                quoteState.pop()
+            if (config.quoteState.length > 0 && tag === config.quoteState[config.quoteState.length - 1].closer) {
+                config.quoteState.pop()
             } else {
                 return pos;
             }
         }
-        
-        function _capitaliseWords(str, i) {
-            if (str.trim()) {
-                var words = str.split(" ");
-                for (var j=0,jlen=words.length;j<jlen;j++) {
-                    var word = words[j];
-                    if (!word) continue;
-                    if (word.length > 1 && !word.toLowerCase().match(skipWordsRex)) {
-                        // Capitalize every word that is not a stop-word
-                        words[j] = _capitalise(words[j]);
-                    } else if (isFirst) {
-                        // Capitalize first word, even if a stop-word
-                        words[j] = _capitalise(words[j]);
-                    } else if (afterPunct) {
-                        // Capitalize after punctuation
-                        words[j] = _capitalise(words[j]);
-                    }
-                    afterPunct = false;
-                    isFirst = false;
-                    lastWordPos = {
-                        strings: (i),
-                        words: j
-                    }
-                }
-                doppel.strings[i] = words.join(" ");
-            }
-        }
-
-        var quoteState = [];
-        var isFirst = true;
-        var lastWordPos = null;
-        var afterPunct = false;
-        var skipWordsRex = state.locale[state.opt.lang].opts["skip-words-regexp"];
-        
+    
         // Run state machine
-        if (doppel.strings.length && doppel.strings[0].trim()) {
-            _capitaliseWords(doppel.strings[0], 0)
+        if (config.doppel.strings.length && config.doppel.strings[0].trim()) {
+            config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0)
         }
-        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
-            var tag = doppel.tags[i];
-            var str = doppel.strings[i+1];
 
-            // Evaluate tag state for current string
-            if (tagParams[tag]) {
-                tagState.push(tagParams[tag]);
-            } else if (tagState.length && tag === tagState[tagState.length - 1]) {
-                tagState.pop();
+    	for (var i=0,ilen=config.doppel.tags.length;i<ilen;i++) {
+            var tag = config.doppel.tags[i];
+            var str = config.doppel.strings[i+1];
+
+            if (config.tagState !== null) {
+                // Evaluate tag state for current string
+                if (tagParams[tag]) {
+                    config.tagState.push(tagParams[tag]);
+                } else if (config.tagState.length && tag === config.tagState[config.tagState.length - 1]) {
+                    config.tagState.pop();
+                }
             }
 
-            // Evaluate punctuation state of current string
-            if (tag.match(/[\!\?\:]$/)) {
-                afterPunct = true;
+            if (config.afterPunct !== null) {
+                // Evaluate punctuation state of current string
+                if (tag.match(/[\!\?\:]$/)) {
+                    config.afterPunct = true;
+                }
             }
 
             // Process if outside tag scope, else noop for upper-casing
-            if (tagState.length === 0) {
-                _capitaliseWords(str, i+1);
+            if (config.tagState.length === 0) {
+                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1);
             }
             
-            // Evaluate quote state of current string and fix chars that have flown
-            var quotePos = quoteFix(tag, i);
-            if (quotePos || quotePos === 0) {
-                var origChar = doppel.origStrings[quotePos+1].slice(0, 1);
-                doppel.strings[quotePos+1] = origChar + doppel.strings[quotePos+1].slice(1);
-                lastWordPos = null;
+            if (config.quoteState !== null) {
+                // Evaluate quote state of current string and fix chars that have flown
+                var quotePos = quoteFix(tag, i);
+                if (quotePos || quotePos === 0) {
+                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
+                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                    config.lastWordPos = null;
+                }
             }
 
             // If there was a printable string, unset first-word and after-punctuation
-            if (str.trim()) {
-                if (isFirst) {
-                    isFirst = false;
+            if (config.isFirst) {
+                if (str.trim()) {
+                    config.isFirst = false;
                 }
-                if (afterPunct) {
-                    afterPunct = false;
+            }
+            if (config.afterPunct) {
+                if (str.trim()) {
+                    config.afterPunct = false;
                 }
             }
         }
-        // Capitalize the last word if necessary (bypasses stop-word list)
-        if (lastWordPos) {
-            var lastWords = doppel.strings[lastWordPos.strings].split(" ");
-            var lastWord = _capitalise(lastWords[lastWordPos.words]);
-            lastWords[lastWordPos.words] = lastWord;
-            doppel.strings[lastWordPos.strings] = lastWords.join(" ");
+    // Capitalize the last word if necessary (bypasses stop-word list)
+        if (config.lastWordPos) {
+            var lastWords = config.doppel.strings[config.lastWordPos.strings].split(" ");
+            var lastWord = _capitalise(lastWords[config.lastWordPos.words]);
+            lastWords[config.lastWordPos.words] = lastWord;
+            config.doppel.strings[config.lastWordPos.strings] = lastWords.join(" ");
         }
         // Recombine the string
-        var ret = _undoppelString(doppel);
-        return ret;
+        return _undoppelString(config.doppel);
     }
 }
 
