@@ -23,10 +23,10 @@ CSL.Output.Formatters = new function () {
     this["capitalize-all"] = capitalizeAll;
 
     /*
-     * Internal utilities
+     * Internal
      */
 
-    var tagParams = {
+    var _tagParams = {
         "<span class=\"nocase\">": "</span>",
         "<span class=\"nodecor\">": "</span>"
     }
@@ -78,189 +78,8 @@ CSL.Output.Formatters = new function () {
         lst.reverse();
         return lst.join("");
     }
-
-
-    /**
-     * A noop that just delivers the string.
-     */
-    function passthrough (state, str) {
-        return str;
-    }
-
-    /**
-     * Force all letters in the string to lowercase, skipping nocase spans
-     */
-    function lowercase(state, string) {
-        var config = {
-            quoteState: null,
-            capitaliseWords: function(str) {
-                var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
-                    var word = words[i];
-                    if (word) {
-                        words[i] = word.toLowerCase();
-                    }
-                }
-                return words.join(" ");
-            },
-            skipWordsRex: null,
-            tagState: [],
-            afterPunct: null,
-            isFirst: null
-        }
-        return textcaseEngine(config, string);
-    }
-
-    /**
-     * Force all letters in the string to uppercase.
-     */
-    function uppercase(state, string) {
-        var config = {
-            quoteState: null,
-            capitaliseWords: function(str) {
-                var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
-                    var word = words[i];
-                    if (word) {
-                        words[i] = word.toUpperCase();
-                    }
-                }
-                return words.join(" ");
-            },
-            skipWordsRex: null,
-            tagState: [],
-            afterPunct: null,
-            isFirst: null
-        }
-        return textcaseEngine(config, string);
-    }
-
-    /**
-     * Similar to <b>capitalize_first</b>, but force the
-     * subsequent characters to lowercase.
-     */
-    function sentence(state, string) {
-        var config = {
-            quoteState: [],
-            capitaliseWords: function(str) {
-                var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
-                    var word = words[i];
-                    if (word) {
-                        if (config.isFirst) {
-                            words[i] = _capitalise(word);
-                            config.isFirst = false;
-                        } else {
-                            words[i] = word.toLowerCase();
-                        }
-                    }
-                }
-                return words.join(" ");
-            },
-            skipWordsRex: null,
-            tagState: [],
-            afterPunct: null,
-            isFirst: true
-        }
-        return textcaseEngine(config, string);
-    }
-
-    /**
-     * Force capitalization of the first letter in the string, leave
-     * the rest of the characters untouched.
-     */
-    function capitalizeFirst(state, string) {
-        var config = {
-            quoteState: [],
-            capitaliseWords: function(str) {
-                var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
-                    var word = words[i];
-                    if (word) {
-                        if (config.isFirst) {
-                            words[i] = _capitalise(word);
-                            config.isFirst = false;
-                            break;
-                        }
-                    }
-                }
-                return words.join(" ");
-            },
-            skipWordsRex: null,
-            tagState: [],
-            afterPunct: null,
-            isFirst: true
-        }
-        return textcaseEngine(config, string);
-    }
-
-    /**
-     * Force the first letter of each space-delimited
-     * word in the string to uppercase, and leave the remainder
-     * of the string untouched.  Single characters are forced
-     * to uppercase.
-     */
-    function capitalizeAll (state, string) {
-        var config = {
-            quoteState: [],
-            capitaliseWords: function(str) {
-                var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
-                    var word = words[i];
-                    if (word) {
-                        words[i] = _capitalise(word);
-                    }
-                }
-                return words.join(" ");
-            },
-            skipWordsRex: null,
-            tagState: [],
-            afterPunct: null,
-            isFirst: null
-        }
-        return textcaseEngine(config, string);
-    }
-
-
-    function title(state, string) {
-        var config = {
-            quoteState: [],
-            capitaliseWords: function(str, i) {
-                if (str.trim()) {
-                    var words = str.split(" ");
-                    for (var j=0,jlen=words.length;j<jlen;j++) {
-                        var word = words[j];
-                        if (!word) continue;
-                        if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
-                            // Capitalize every word that is not a stop-word
-                            words[j] = _capitalise(words[j]);
-                        } else if (config.isFirst) {
-                            // Capitalize first word, even if a stop-word
-                            words[j] = _capitalise(words[j]);
-                        } else if (config.afterPunct) {
-                            // Capitalize after punctuation
-                            words[j] = _capitalise(words[j]);
-                        }
-                        config.afterPunct = false;
-                        config.isFirst = false;
-                        config.lastWordPos = {
-                            strings: i,
-                            words: j
-                        }
-                    }
-                    str = words.join(" ");
-                }
-                return str;
-            },
-            skipWordsRex: state.locale[state.opt.lang].opts["skip-words-regexp"],
-            tagState: [],
-            afterPunct: false,
-            isFirst: true
-        }
-        return textcaseEngine(config, string);
-    }
     
-    function textcaseEngine(config, string) {
+    function _textcaseEngine(config, string) {
         config.doppel = _doppelString(string);
         if (!string) {
             return "";
@@ -315,7 +134,7 @@ CSL.Output.Formatters = new function () {
                 return pos;
             }
         }
-    
+        
         // Run state machine
         if (config.doppel.strings.length && config.doppel.strings[0].trim()) {
             config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0)
@@ -327,8 +146,8 @@ CSL.Output.Formatters = new function () {
 
             if (config.tagState !== null) {
                 // Evaluate tag state for current string
-                if (tagParams[tag]) {
-                    config.tagState.push(tagParams[tag]);
+                if (_tagParams[tag]) {
+                    config.tagState.push(_tagParams[tag]);
                 } else if (config.tagState.length && tag === config.tagState[config.tagState.length - 1]) {
                     config.tagState.pop();
                 }
@@ -368,7 +187,7 @@ CSL.Output.Formatters = new function () {
                 }
             }
         }
-    // Capitalize the last word if necessary (bypasses stop-word list)
+        // Capitalize the last word if necessary (bypasses stop-word list)
         if (config.lastWordPos) {
             var lastWords = config.doppel.strings[config.lastWordPos.strings].split(" ");
             var lastWord = _capitalise(lastWords[config.lastWordPos.words]);
@@ -378,40 +197,188 @@ CSL.Output.Formatters = new function () {
         // Recombine the string
         return _undoppelString(config.doppel);
     }
-}
 
+    /**
+     * Public
+     */
 
-CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
-    return "";
-};
-
-
-CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
-    return "";
-};
-
-
-CSL.getSafeEscape = function(state) {
-    if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
-        // Callback to apply thin space hack
-        // Callback to force LTR/RTL on parens and braces
-        var callbacks = [];
-        if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
-            callbacks.push(function (txt) {
-                return txt.replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
-            });
-        }
-        if (callbacks.length) {
-            return function (txt) {
-                for (var i = 0, ilen = callbacks.length; i < ilen; i += 1) {
-                    txt = callbacks[i](txt);
-                }
-                return CSL.Output.Formats[state.opt.mode].text_escape(txt);
-            }
-        } else {
-            return CSL.Output.Formats[state.opt.mode].text_escape;
-        }
-    } else {
-        return function (txt) { return txt; };
+    /**
+     * A noop that just delivers the string.
+     */
+    function passthrough (state, str) {
+        return str;
     }
-};
+
+    /**
+     * Force all letters in the string to lowercase, skipping nocase spans
+     */
+    function lowercase(state, string) {
+        var config = {
+            quoteState: null,
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = word.toLowerCase();
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
+        }
+        return _textcaseEngine(config, string);
+    }
+
+    /**
+     * Force all letters in the string to uppercase.
+     */
+    function uppercase(state, string) {
+        var config = {
+            quoteState: null,
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = word.toUpperCase();
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
+        }
+        return _textcaseEngine(config, string);
+    }
+
+    /**
+     * Similar to <b>capitalize_first</b>, but force the
+     * subsequent characters to lowercase.
+     */
+    function sentence(state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        if (config.isFirst) {
+                            words[i] = _capitalise(word);
+                            config.isFirst = false;
+                        } else {
+                            words[i] = word.toLowerCase();
+                        }
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: true
+        }
+        return _textcaseEngine(config, string);
+    }
+
+    function title(state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str, i) {
+                if (str.trim()) {
+                    var words = str.split(" ");
+                    for (var j=0,jlen=words.length;j<jlen;j++) {
+                        var word = words[j];
+                        if (!word) continue;
+                        if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
+                            // Capitalize every word that is not a stop-word
+                            words[j] = _capitalise(words[j]);
+                        } else if (config.isFirst) {
+                            // Capitalize first word, even if a stop-word
+                            words[j] = _capitalise(words[j]);
+                        } else if (config.afterPunct) {
+                            // Capitalize after punctuation
+                            words[j] = _capitalise(words[j]);
+                        }
+                        config.afterPunct = false;
+                        config.isFirst = false;
+                        config.lastWordPos = {
+                            strings: i,
+                            words: j
+                        }
+                    }
+                    str = words.join(" ");
+                }
+                return str;
+            },
+            skipWordsRex: state.locale[state.opt.lang].opts["skip-words-regexp"],
+            tagState: [],
+            afterPunct: false,
+            isFirst: true
+        }
+        return _textcaseEngine(config, string);
+    }
+    
+    
+    /**
+     * Force capitalization of the first letter in the string, leave
+     * the rest of the characters untouched.
+     */
+    function capitalizeFirst(state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        if (config.isFirst) {
+                            words[i] = _capitalise(word);
+                            config.isFirst = false;
+                            break;
+                        }
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: true
+        }
+        return _textcaseEngine(config, string);
+    }
+
+    /**
+     * Force the first letter of each space-delimited
+     * word in the string to uppercase, and leave the remainder
+     * of the string untouched.  Single characters are forced
+     * to uppercase.
+     */
+    function capitalizeAll (state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = _capitalise(word);
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
+        }
+        return _textcaseEngine(config, string);
+    }
+}

@@ -716,6 +716,31 @@ var CSL = {
         }
     },
 
+    getSafeEscape: function(state) {
+        if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
+            // Callback to apply thin space hack
+            // Callback to force LTR/RTL on parens and braces
+            var callbacks = [];
+            if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
+                callbacks.push(function (txt) {
+                    return txt.replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
+                });
+            }
+            if (callbacks.length) {
+                return function (txt) {
+                    for (var i = 0, ilen = callbacks.length; i < ilen; i += 1) {
+                        txt = callbacks[i](txt);
+                    }
+                    return CSL.Output.Formats[state.opt.mode].text_escape(txt);
+                }
+            } else {
+                return CSL.Output.Formats[state.opt.mode].text_escape;
+            }
+        } else {
+            return function (txt) { return txt; };
+        }
+    },
+
     SKIP_WORDS: ["about","above","across","afore","after","against","along","alongside","amid","amidst","among","amongst","anenst","apropos","apud","around","as","aside","astride","at","athwart","atop","barring","before","behind","below","beneath","beside","besides","between","beyond","but","by","circa","despite","down","during","except","for","forenenst","from","given","in","inside","into","lest","like","modulo","near","next","notwithstanding","of","off","on","onto","out","over","per","plus","pro","qua","sans","since","than","through"," thru","throughout","thruout","till","to","toward","towards","under","underneath","until","unto","up","upon","versus","vs.","v.","vs","v","via","vis-à-vis","with","within","without","according to","ahead of","apart from","as for","as of","as per","as regards","aside from","back to","because of","close to","due to","except for","far from","inside of","instead of","near to","next to","on to","out from","out of","outside of","prior to","pursuant to","rather than","regardless of","such as","that of","up to","where as","or", "yet", "so", "for", "and", "nor", "a", "an", "the", "de", "d'", "von", "van", "c", "et", "ca"],
 
     FORMAT_KEY_SEQUENCE: [
