@@ -450,7 +450,21 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         suffix_sep = " ";
     }
     var romanesque = this._isRomanesque(name);
-    var has_hyphenated_non_dropping_particle = (non_dropping_particle && ["\u2019", "\'", "-", " "].indexOf(non_dropping_particle.blobs.slice(-1)) > -1);
+    function hasJoiningPunctuation(blob) {
+        if (!blob) {
+            return false;
+        } else if ("string" === typeof blob.blobs) {
+            if (["\u2019", "\'", "-", " "].indexOf(blob.blobs.slice(-1)) > -1) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return hasJoiningPunctuation(blob.blobs[blob.blobs.length-1]);
+        }
+    }
+    var has_hyphenated_non_dropping_particle = hasJoiningPunctuation(non_dropping_particle);
+
     var blob, merged, first, second;
     if (romanesque === 0) {
         // XXX handle affixes for given and family

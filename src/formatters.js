@@ -1,18 +1,5 @@
 /*global CSL: true */
 
-/**
- * A bundle of handy functions for text processing.
- * <p>Several of these are ripped off from various
- * locations in the Zotero source code.</p>
- * @namespace Toolkit of string functions
- */
-
-// See util_substitute.js and queue.js (append) for code supporting
-// strip-periods.
-//CSL.Output.Formatters.strip_periods = function (state, string) {
-//    return string.replace(/\./g, "");
-//};
-
 CSL.Output.Formatters = new function () {
     this.passthrough = passthrough;
     this.lowercase = lowercase;
@@ -22,8 +9,8 @@ CSL.Output.Formatters = new function () {
     this["capitalize-first"] = capitalizeFirst;
     this["capitalize-all"] = capitalizeAll;
 
-    /*
-     * Internal
+    /**
+     * INTERNAL
      */
 
     var _tagParams = {
@@ -36,23 +23,19 @@ CSL.Output.Formatters = new function () {
         //   https://github.com/mathiasbynens/regexpu
         var m = word.match(/(^\s*)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
         // Do not uppercase lone Greek letters
-        // (This may not be a good thing when setting Greek-language citations)
+        // (No case transforms in Greek citations, but chars used in titles to science papers)
         if (m && !(m[2].match(/^[\u0370-\u03FF]$/) && !m[3])) {
             return m[1] + m[2].toUpperCase() + m[3];
         }
         return word;
     }
 
-    /*
-     * Based on a commute-train suggestion by Shoji Kajita.
-     */
     function _doppelString(str) {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
         // Normalize markup
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
-        // Split and match
         var m1match = str.match(/((?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
-        if (!m1match) {
+       if (!m1match) {
             return {
                 tags: [],
                 strings: [str]
@@ -187,6 +170,13 @@ CSL.Output.Formatters = new function () {
                 }
             }
         }
+        if (config.quoteState) {
+            for (var i=0,ilen=config.quoteState.length;i<ilen;i++) {
+                var quotePos = config.quoteState[i].pos;
+                var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
+                config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+            }
+        }
         // Capitalize the last word if necessary (bypasses stop-word list)
         if (config.lastWordPos) {
             var lastWords = config.doppel.strings[config.lastWordPos.strings].split(" ");
@@ -194,12 +184,13 @@ CSL.Output.Formatters = new function () {
             lastWords[config.lastWordPos.words] = lastWord;
             config.doppel.strings[config.lastWordPos.strings] = lastWords.join(" ");
         }
+
         // Recombine the string
         return _undoppelString(config.doppel);
     }
 
     /**
-     * Public
+     * PUBLIC
      */
 
     /**

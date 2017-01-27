@@ -2662,7 +2662,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.disambiguate = new CSL.Disambiguation(this);
     this.splice_delimiter = false;
     this.fun.dateparser = CSL.DateParser;
-    this.fun.flipflopper = new CSL.Util.FlipFlopper(this);
     this.setCloseQuotesArray();
     this.fun.ordinalizer.init(this);
     this.fun.long_ordinalizer.init(this);
@@ -3662,7 +3661,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     if ("string" === typeof str && str.length) {
         str = str.replace(/ ([:;?!\u00bb])/g, "\u202f$1").replace(/\u00ab /g, "\u00ab\u202f");
         this.last_char_rendered = str.slice(-1);
-        str = str.replace(/\s+'/g, "  \'");
+        str = str.replace(/\s+'/g, " \'");
         if (!notSerious) {
             str = str.replace(/^'/g, " \'");
         }
@@ -3691,7 +3690,6 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.parallel.AppendBlobPointer(curr);
     }
     if ("string" === typeof str) {
-        curr.push(blob);
         if (blob.strings["text-case"]) {
             blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
         }
@@ -3708,8 +3706,8 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
                 }
             }
         }
-        this.state.fun.flipflopper.init(str, blob);
-        this.state.fun.flipflopper.processTags();
+        curr.push(blob);
+        CSL.Util.FlipFlopper.processTags(this.state, blob);
     } else if (useblob) {
         curr.push(blob);
     } else {
@@ -14253,349 +14251,421 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     }
     return ret_func;
 };
-CSL.Util.FlipFlopper = function (state) {
-    var tagdefs, pos, len, p, entry, allTags, ret, def, esc, makeHashes, closeTags, flipTags, openToClose, openToDecorations, okReverse, hashes, allTagsLst, lst;
-    this.state = state;
-    this.blob = false;
-    this.quotechars = ['"', "'"];
-    tagdefs = [
-        ["<i>", "</i>", "italics", "@font-style", ["italic", "normal","normal"], true],
-        ["<b>", "</b>", "bold", "@font-weight", ["bold", "normal","normal"], true],
-        ["<sup>", "</sup>", "superscript", "@vertical-align", ["sup", "sup","baseline"], true],
-        ["<sub>", "</sub>", "subscript", "@vertical-align", ["sub", "sub","baseline"], true],
-        ["<sc>", "</sc>", "smallcaps", "@font-variant", ["small-caps", "small-caps","normal"], true],
-        ["<span style=\"font-variant:small-caps;\">", "</span>", "smallcaps", "@font-variant", ["small-caps", "normal","normal"], true],
-        ["<span class=\"nocase\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
-        ["<span class=\"nodecor\">", "</span>", "passthrough", "@passthrough", ["true", "true","true"], true],
-        ['"',  '"',  "quotes",  "@quotes",  ["true",  "inner","true"],  "'"],
-        [" '",  "'",  "quotes",  "@quotes",  ["inner",  "true","true"],  '"']
-    ];
-    for (pos = 0; pos < 2; pos += 1) {
-        p = ["-", "-inner-"][pos];
-        entry = [];
-        var openq = state.getTerm(("open" + p + "quote"));
-        entry.push(openq);
-        this.quotechars.push(openq);
-        var closeq = state.getTerm(("close" + p + "quote"));
-        entry.push(closeq);
-        this.quotechars.push(closeq);
-        entry.push(("quote" + "s"));
-        entry.push(("@" + "quote" + "s"));
-        if ("-" === p) {
-            entry.push(["true", "inner"]);
-        } else {
-            entry.push(["inner", "true"]);
+CSL.Util.FlipFlopper = new function() {
+    this.processTags = processTags;
+    var _nestingState = [];
+    var _nestingData = {
+        "<span class=\"nocase\">": {
+            type: "nocase",
+            opener: "<span class=\"nocase\">",
+            closer: "</span>",
+            attr: null,
+            outer: null,
+            flipflop: null
+        },
+        "<span class=\"nodecor\">": {
+            type: "nocase",
+            opener: "<span class=\"nodecor\">",
+            closer: "</span>",
+            attr: null,
+            outer: null,
+            flipflop: null
+        },
+        "<span style=\"font-variant:small-caps;\">": {
+            type: "tag",
+            opener: "<span style=\"font-variant:small-caps;\">",
+            closer: "</span>",
+            attr: "@font-variant",
+            outer: "small-caps",
+            flipflop: {
+                "small-caps": "normal",
+                "normal": "small-caps"
+            }
+        },
+        "<sc>": {
+            type: "tag",
+            opener: "<sc>",
+            closer: "</sc>",
+            attr: "@font-variant",
+            outer: "small-caps",
+            flipflop: {
+                "small-caps": "normal",
+                "normal": "small-caps"
+            }
+        },
+        "<i>": {
+            type: "tag",
+            opener: "<i>",
+            closer: "</i>",
+            attr: "@font-style",
+            outer: "italic",
+            flipflop: {
+                "italic": "normal",
+                "normal": "italic"
+            }
+        },
+        "<b>": {
+            type: "tag",
+            opener: "<b>",
+            closer: "</b>",
+            attr: "@font-weight",
+            outer: "bold",
+            flipflop: {
+                "bold": "normal",
+                "normal": "bold"
+            }
+        },
+        "<sup>": {
+            type: "tag",
+            opener: "<sup>",
+            closer: "</sup>",
+            attr: "@vertical-align",
+            outer: "sup",
+            flipflop: {
+                "sub": "sup",
+                "sup": "sup"
+            }
+        },
+        "<sub>": {
+            type: "tag",
+            opener: "<sub>",
+            closer: "</sub>",
+            attr: "@vertical-align",
+            outer: "sub",
+            flipflop: {
+                "sup": "sub",
+                "sub": "sub"
+            }
+        },
+        " \"": {
+            type: "quote",
+            opener: " \"",
+            closer: "\"",
+            attr: "@quotes",
+            outer: "true",
+            flipflop: {
+                "true": "inner",
+                "inner": "true"
+            }
+        },
+        " \'": {
+            type: "quote",
+            opener: " \'",
+            closer: "\'",
+            attr: "@quotes",
+            outer: "inner",
+            flipflop: {
+                "true": "inner",
+                "inner": "true"
+            },
+            apostrophe: true
         }
-        entry.push(true);
-        if ("-" === p) {
-            entry.push(state.getTerm(("close-inner-quote")));
-        } else {
-            entry.push(state.getTerm(("close-quote")));
-        }
-        tagdefs.push(entry);
     }
-    allTags = function (tagdefs) {
-        ret = [];
-        len = tagdefs.length;
-        for (pos = 0; pos < len; pos += 1) {
-            def = tagdefs[pos];
-            if (ret.indexOf(def[0]) === -1) {
-                esc = "";
-                if (["(", ")", "[", "]"].indexOf(def[0]) > -1) {
-                    esc = "\\";
-                }
-                ret.push(esc + def[0]);
-            }
-            if (ret.indexOf(def[1]) === -1) {
-                esc = "";
-                if (["(", ")", "[", "]"].indexOf(def[1]) > -1) {
-                    esc = "\\";
-                }
-                ret.push(esc + def[1]);
-            }
+    var _nestingDataReverse = function() {
+        var ret = {};
+        for (var key of Object.keys(_nestingData)) {
+            ret[_nestingData[key].closer] = _nestingData[key];
         }
         return ret;
-    };
-    allTagsLst = allTags(tagdefs);
-    lst = [];
-    for (pos = 0, len = allTagsLst.length; pos < len; pos += 1) {
-        if (allTagsLst[pos]) {
-            lst.push(allTagsLst[pos]);
+    }();
+    function _setOuterQuoteForm(quot) {
+        var flip = {
+            " \'": " \"",
+            " \"": " \'"
         }
+        _nestingData[quot].outer = "true";
+        _nestingData[flip[quot]].outer = "inner";
     }
-    allTagsLst = lst.slice();
-    this.allTagsRexMatch = new RegExp("(" + allTagsLst.join("|") + ")", "g");
-    this.allTagsRexSplit = new RegExp("(?:" + allTagsLst.join("|") + ")");
-    makeHashes = function (tagdefs) {
-        closeTags = {};
-        flipTags = {};
-        openToClose = {};
-        openToDecorations = {};
-        okReverse = {};
-        len = tagdefs.length;
-        for (pos = 0; pos < len; pos += 1) {
-            closeTags[tagdefs[pos][1]] = true;
-            flipTags[tagdefs[pos][1]] = tagdefs[pos][5];
-            openToClose[tagdefs[pos][0]] = tagdefs[pos][1];
-            openToDecorations[tagdefs[pos][0]] = [tagdefs[pos][3], tagdefs[pos][4]];
-            okReverse[tagdefs[pos][3]] = [tagdefs[pos][3], [tagdefs[pos][4][2], tagdefs[pos][1]]];
-        }
-        return [closeTags, flipTags, openToClose, openToDecorations, okReverse];
-    };
-    hashes = makeHashes(tagdefs);
-    this.closeTagsHash = hashes[0];
-    this.flipTagsHash = hashes[1];
-    this.openToCloseHash = hashes[2];
-    this.openToDecorations = hashes[3];
-    this.okReverseHash = hashes[4];
-};
-CSL.Util.FlipFlopper.prototype.init = function (str, blob) {
-    this.txt_esc = CSL.getSafeEscape(this.state);
-    if (!blob) {
-        this.strs = this.getSplitStrings(str);
-        this.blob = new CSL.Blob();
-    } else {
-        this.blob = blob;
-        this.strs = this.getSplitStrings(this.blob.blobs);
-        this.blob.blobs = [];
-    }
-    this.blobstack = new CSL.Stack(this.blob);
-};
-CSL.Util.FlipFlopper.prototype._normalizeString = function (str) {
-    var i, ilen;
-    str = str.replace(/\s+'\s+/g," ’ ");
-    if (str.indexOf(this.quotechars[0]) > -1) {
-        var oldStr = null;
-        while (str !== oldStr) {
-            oldStr = str;
-            for (i = 0, ilen = 2; i < ilen; i += 1) {
-                if (this.quotechars[i + 2]) {
-                    str = str.split(this.quotechars[i + 2]).join(this.quotechars[0]);
-                }
+    function _getNestingOpenerParams(opener) {
+        var openers = [];
+        var closer;
+        for (var key of Object.keys(_nestingData)) {
+            if (_nestingData[opener].type !== "quote" || !_nestingData[opener]) {
+                openers.push(key);
             }
         }
+        var ret = _nestingData[opener];
+        ret.opener = new RegExp("^(?:" + openers.join("|") + ")"); 
+        return ret;
     }
-    if (str.indexOf(this.quotechars[1]) > -1) {
-        for (i = 0, ilen = 2; i < ilen; i += 1) {
-            if (this.quotechars[i + 4]) {
-                if (i === 0 && this.quotechars[i + 4] !== this.quotechars[1]) {
-                    str = str.split(this.quotechars[i + 4]).join(" " + this.quotechars[1]);
-                } else {
-                    str = str.split(this.quotechars[i + 4]).join(this.quotechars[1]);
-                }
-            }
+    var _nestingParams = function() {
+        var ret = {};
+        for (var key of Object.keys(_nestingData)) {
+            ret[key] = _getNestingOpenerParams(key);
+        }
+        return ret;
+    }()
+    var _tagRex = function() {
+        var openers = [];
+        var closers = [];
+        var vals = {};
+        for (var opener of Object.keys(_nestingParams)) {
+            openers.push(opener);
+            vals[_nestingParams[opener].closer] = true;
+        }
+        for (var closer of Object.keys(vals)) {
+            closers.push(closer);
+        }
+        return {
+            open: new RegExp("(^(?:" + openers.join("|") + ")$)"),
+            close: new RegExp("(^(?:" + closers.join("|") + ")$)"),
+        }
+    }();
+    function _nestingFix (tag, pos) {
+        return _pushNestingState(tag, pos);
+    }
+    function _pushNestingState(tag, pos) {
+        if (tag.match(_tagRex.open)) {
+            return _tryOpen(tag, pos);
+        } else {
+            return _tryClose(tag, pos);
         }
     }
-    return str;
-};
-CSL.Util.FlipFlopper.prototype.getSplitStrings = function (str) {
-    var strs, pos, len, newstr, head, tail, expected_closers, expected_openers, expected_flips, tagstack, badTagStack, posA, sameAsOpen, openRev, flipRev, tag, ibeenrunned, posB, wanted_closer, posC, sep, resplice, params, lenA, lenB, lenC, badTagPos, mx, myret;
-    str = this._normalizeString(str);
-    mx = str.match(this.allTagsRexMatch);
-    strs = str.split(this.allTagsRexSplit);
-    myret = [strs[0]];
-    for (pos = 1, len = strs.length; pos < len; pos += 1) {
-        myret.push(mx[pos - 1]);
-        myret.push(strs[pos]);
-    }
-    strs = myret.slice();
-    len = strs.length - 2;
-    for (pos = len; pos > 0; pos += -2) {
-        if (strs[(pos - 1)].slice((strs[(pos - 1)].length - 1)) === "\\") {
-            newstr = strs[(pos - 1)].slice(0, (strs[(pos - 1)].length - 1)) + strs[pos] + strs[(pos + 1)];
-            head = strs.slice(0, (pos - 1));
-            tail = strs.slice((pos + 2));
-            head.push(newstr);
-            strs = head.concat(tail);
+    function _tryOpen(tag, pos) {
+        var params = _nestingState[_nestingState.length - 1];
+        if (!params || tag.match(params.opener)) {
+            _nestingState.push({
+                type: _nestingParams[tag].type,
+                opener: _nestingParams[tag].opener,
+                closer: _nestingParams[tag].closer,
+                pos: pos
+            });
+            return false;
+        } else {
+            _nestingState.pop()
+            _nestingState.push({
+                type: _nestingParams[tag].type,
+                opener: _nestingParams[tag].opener,
+                closer: _nestingParams[tag].closer,
+                pos: pos
+            });
+            return {
+                fixtag: params.pos
+            };
         }
     }
-    expected_closers = [];
-    expected_openers = [];
-    expected_flips = [];
-    tagstack = [];
-    badTagStack = [];
-    lenA = strs.length - 1;
-    for (posA = 1; posA < lenA; posA += 2) {
-        tag = strs[posA];
-        if (this.closeTagsHash[tag]) {
-            expected_closers.reverse();
-            sameAsOpen = this.openToCloseHash[tag];
-            openRev = expected_closers.indexOf(tag);
-            flipRev = expected_flips.indexOf(tag);
-            expected_closers.reverse();
-            if (!sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))) {
-                ibeenrunned = false;
-                lenB = expected_closers.length - 1;
-                for (posB = lenB; posB > -1; posB += -1) {
-                    ibeenrunned = true;
-                    wanted_closer = expected_closers[posB];
-                    if (tag === wanted_closer) {
-                        expected_closers.pop();
-                        expected_openers.pop();
-                        expected_flips.pop();
-                        tagstack.pop();
-                        break;
+    function _tryClose(tag, pos) {
+        var params = _nestingState[_nestingState.length - 1];
+        if (params && tag === params.closer) {
+            _nestingState.pop()
+            if (params.type === "nocase") {
+                return {
+                    nocase: {
+                        open: params.pos,
+                        close: pos
                     }
-                    badTagStack.push(posA);
                 }
-                if (!ibeenrunned) {
-                    badTagStack.push(posA);
+            } else {
+                return false;
+            }
+        } else {
+            if (params) {
+                return {
+                    fixtag: params.pos
+                };
+            } else {
+                return {
+                    fixtag: pos
+                };
+            }
+        }
+    }
+    function _doppelString(str) {
+        str = str.replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?\"[^>]*(>)/g, "$1 $2$3;\"$4");
+        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
+        var match = str.match(/((?: \"| \'|\"|\'|<\/?(?:i|b|sup|sub|sc)>|<span style=\"font-variant:small-caps;\">|<span class=\"(?:nocase|nodecor)\">|<\/span>))/g);
+        if (!match) {
+            return {
+                tags: [],
+                strings: [str]
+            };
+        }
+        var split = str.split(/(?: \"| \'|\"|\'|<\/?(?:i|b|sup|sub|sc)>|<span style=\"font-variant:small-caps;\">|<span class=\"(?:nocase|nodecor)\">|<\/span>)/g);
+        return {
+            tags: match,
+            strings: split
+        }
+    }
+    function _undoppelString(obj) {
+        var lst = obj.strings.slice(-1);
+        for (var i=obj.tags.length-1; i>-1; i+=-1) {
+            lst.push(obj.tags[i]);
+            lst.push(obj.strings[i]);
+        }
+        lst.reverse();
+        return lst.join("|");
+    }
+    function _getParentTags(blob) {
+        var parentTags = {};
+        for (var i=blob.alldecor.length-1;i>-1;i--) {
+            var decorSet = blob.alldecor[i];
+            if (decorSet.length > 0) {
+                for (var j=decorSet.length-1;j>-1;j--) {
+                    var decor = decorSet[j];
+                    if (!parentTags[decor[0]]) {
+                        parentTags[decor[0]] = decor[1];
+                    }
                 }
-                continue;
             }
         }
-        if (this.openToCloseHash[tag]) {
-            expected_closers.push(this.openToCloseHash[tag]);
-            expected_openers.push(tag);
-            expected_flips.push(this.flipTagsHash[tag]);
-            tagstack.push(posA);
-        }
+        return parentTags;
     }
-    lenC = expected_closers.length - 1;
-    for (posC = lenC; posC > -1; posC += -1) {
-        expected_closers.pop();
-        expected_flips.pop();
-        expected_openers.pop();
-        badTagStack.push(tagstack.pop());
-    }
-    badTagStack.sort(
-        function (a, b) {
-            if (a < b) {
-                return 1;
-            } else if (a > b) {
-                return -1;
+    function _apostropheForce(tag, str) {
+        if (tag.match(_tagRex.close)) {
+            if (_nestingDataReverse[tag].type === "quote") {
+                if (str && str.match(/^[^\.\?\:\;\ ]/)) {
+                    return true;
+                }
             }
-            return 0;
+            return false;
         }
-    );
-    len = badTagStack.length;
-    for (pos = 0; pos < len; pos += 1) {
-        badTagPos = badTagStack[pos];
-        head = strs.slice(0, (badTagPos - 1));
-        tail = strs.slice((badTagPos + 2));
-        sep = strs[badTagPos];
-        if (sep.length && sep[0] !== "<" && this.openToDecorations[sep] && this.quotechars.indexOf(sep.replace(/\s+/g,"")) === -1) {
-            params = this.openToDecorations[sep];
-            sep = this.state.fun.decorate[params[0]][params[1][0]](this.state);
-        }
-        resplice = strs[(badTagPos - 1)] + sep + strs[(badTagPos + 1)];
-        head.push(resplice);
-        strs = head.concat(tail);
     }
-    len = strs.length;
-    for (pos = 0; pos < len; pos += 2) {
-        strs[pos] = strs[pos].split("'").join("\u2019");
-        strs[pos] = strs[pos].split("  \u2019").join(" \u2019");
-    }
-    return strs;
-};
-CSL.Util.FlipFlopper.prototype.processTags = function () {
-    var expected_closers, expected_openers, expected_flips, expected_rendering, str, posA, tag, prestr, newblob, blob, sameAsOpen, openRev, flipRev, posB, wanted_closer, newblobnest, param, fulldecor, level, decor, lenA, lenB, posC, lenC;
-    expected_closers = [];
-    expected_openers = [];
-    expected_flips = [];
-    expected_rendering = [];
-    str = "";
-    if (this.strs.length === 1) {
-        this.blob.blobs = this.strs[0];
-    } else if (this.strs.length > 2) {
-        lenA = (this.strs.length - 1);
-        for (posA = 1; posA < lenA; posA += 2) {
-            tag = this.strs[posA];
-            prestr = this.strs[(posA - 1)];
-            if (prestr) {
-                newblob = new CSL.Blob(prestr);
-                blob = this.blobstack.value();
-                blob.push(newblob);
+    function _undoppelToQueue(state, blob, doppel) {
+        var parentTags = _getParentTags(blob);
+        blob.blobs = [];
+        function Stack (blob) {
+            this.stack = [blob];
+            this.latest = blob;
+            this.addStyling = function(str, decor) {
+                this.latest = this.stack[this.stack.length-1];
+                if (decor) {
+                    if ("string" === typeof this.latest.blobs) {
+                        print("************** Not actually sure this ever happens?");
+                        var child = new CSL.Blob();
+                        child.blobs = this.latest.blobs;
+                        child.alldecor = this.latest.alldecor.slice();
+                        this.latest.blobs = [child];
+                    }
+                    var tok = new CSL.Token();
+                    tok.decorations.push(decor);
+                    var newblob = new CSL.Blob(null, tok);
+                    newblob.alldecor = this.latest.alldecor.slice();
+                    newblob.alldecor.push(decor);
+                    if (decor[0] === "@quotes") {
+                        newblob.strings.prefix = " ";
+                    }
+                    this.latest.blobs.push(newblob);
+                    this.stack.push(newblob);
+                    this.latest = newblob;
+                    if (str) {
+                        this.latest.blobs = str;
+                    }
+                } else {
+                    if (str) {
+                        var child = new CSL.Blob();
+                        child.blobs = str;
+                        child.alldecor = this.latest.alldecor.slice();
+                        this.latest.blobs.push(child);
+                    }
+                }
             }
-            if (this.closeTagsHash[tag]) {
-                expected_closers.reverse();
-                sameAsOpen = this.openToCloseHash[tag];
-                openRev = expected_closers.indexOf(tag);
-                flipRev = expected_flips.indexOf(tag);
-                expected_closers.reverse();
-                if (!sameAsOpen || (openRev > -1 && (openRev < flipRev || flipRev === -1))) {
-                    lenB = expected_closers.length;
-                    for (posB = lenB; posB > -1; posB += -1) {
-                        wanted_closer = expected_closers[posB];
-                        if (tag === wanted_closer) {
-                            expected_closers.pop();
-                            expected_openers.pop();
-                            expected_flips.pop();
-                            expected_rendering.pop();
-                            this.blobstack.pop();
+            this.popStyling = function() {
+                this.stack.pop();
+            }
+        };
+        var stack = new Stack(blob);
+        if (doppel.strings.length) {
+            stack.addStyling(doppel.strings[0]);
+        }
+        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
+            var tag = doppel.tags[i];
+            var str = doppel.strings[i+1];
+            if (tag.match(_tagRex.open)) {
+                var attr = _nestingData[tag].attr;
+                if (parentTags[_nestingData[tag].attr]) {
+                    var val = _nestingData[tag].flipflop[parentTags[_nestingData[tag].attr]];
+                    parentTags[_nestingData[tag].attr] = val;
+                } else {
+                    var val = _nestingData[tag].outer;
+                    parentTags[_nestingData[tag].attr] = _nestingData[tag].flipflop[parentTags[_nestingData[tag].attr]];
+                }
+                stack.addStyling(str, [attr, val]);
+            } else {
+                stack.popStyling();
+                stack.addStyling(str);
+            }
+        }
+    }
+    function processTags(state, blob) {
+        var str = blob.blobs;
+        var doppel = _doppelString(str);
+        if (doppel.tags.length === 0) return;
+    	for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
+            var tag = doppel.tags[i];
+            var str = doppel.strings[i+1];
+            if (_apostropheForce(tag, str)) {
+                doppel.strings[i+1] = "\u2019" + doppel.strings[i+1];
+                doppel.tags[i] = "";
+            } else {
+                var tagInfo;
+                while (true) {
+                    tagInfo = _nestingFix(tag, i);
+                    if (tagInfo) {
+                        if (Object.keys(tagInfo).indexOf("fixtag") > -1) {
+                            if (tag.match(_tagRex.close)
+                                && _nestingDataReverse[tag].type === "quote") {
+                                doppel.strings[i+1] = "\u2019" + doppel.strings[i+1];
+                                doppel.tags[i] = "";
+                            } else {
+                                doppel.strings[tagPos+1] = doppel.tags[tagPos] + doppel.strings[tagPos+1];
+                                doppel.tags[tagPos] = "";
+                            }
+                            if (_nestingState.length > 0) {
+                                _nestingState.pop();
+                            } else {
+                                break;
+                            }
+                        } else if (tagInfo.nocase) {
+                            doppel.tags[tagInfo.nocase.open] = "";
+                            doppel.tags[tagInfo.nocase.close] = "";
+                            break;
+                        } else {
                             break;
                         }
-                    }
-                    continue;
-                }
-            }
-            if (this.openToCloseHash[tag]) {
-                expected_closers.push(this.openToCloseHash[tag]);
-                expected_openers.push(tag);
-                expected_flips.push(this.flipTagsHash[tag]);
-                blob = this.blobstack.value();
-                newblobnest = new CSL.Blob();
-                blob.push(newblobnest);
-                param = this.addFlipFlop(newblobnest, this.openToDecorations[tag]);
-                if (tag === "<span class=\"nodecor\">") {
-                    fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(this.blob.alldecor).concat([[["@quotes", "inner"]]]);
-                    lenB = fulldecor.length;
-                    for (posB = 0; posB < lenB; posB += 1) {
-                        level = fulldecor[posB];
-                        lenC = level.length;
-                        for (posC = 0; posC < lenC; posC += 1) {
-                            decor = level[posC];
-                            if (["@font-style", "@font-weight", "@font-variant"].indexOf(decor[0]) > -1) {
-                                param = this.addFlipFlop(newblobnest, this.okReverseHash[decor[0]]);
-                            }
-                        }
+                    } else {
+                        break;
                     }
                 }
-                expected_rendering.push(this.state.fun.decorate[param[0]][param[1]](this.state));
-                this.blobstack.push(newblobnest);
-            }
-        }
-        if (this.strs.length > 2) {
-            str = this.strs[(this.strs.length - 1)];
-            if (str) {
-                blob = this.blobstack.value();
-                newblob = new CSL.Blob(str);
-                blob.push(newblob);
-            }
-        }
-    }
-    return this.blob;
-};
-CSL.Util.FlipFlopper.prototype.addFlipFlop = function (blob, fun) {
-    var posA, posB, fulldecor, lenA, decorations, breakme, decor, posC, newdecor, lenC;
-    posB = 0;
-    fulldecor = this.state[this.state.tmp.area].opt.topdecor.concat(blob.alldecor).concat([[["@quotes", "inner"]]]);
-    lenA = fulldecor.length;
-    for (posA = 0; posA < lenA; posA += 1) {
-        decorations = fulldecor[posA];
-        breakme = false;
-        lenC = decorations.length - 1;
-        for (posC = lenC; posC > -1; posC += -1) {
-            decor = decorations[posC];
-            if (decor[0] === fun[0]) {
-                if (decor[1] === fun[1][0]) {
-                    posB = 1;
+                if (tagPos || tagPos === 0) {
+                    doppel.strings[i+1] = doppel.tags[i] + doppel.strings[i+1];
+                    doppel.tags[i] = "";
                 }
-                breakme = true;
+            }
+        }
+        for (var i=_nestingState.length-1;i>-1;i--) {
+            var tagPos = _nestingState[i].pos
+            var tag = doppel.tags[tagPos];
+            if (tag.match(_tagRex.close)
+                && _nestingDataReverse[tag].apostrophe) {
+                doppel.strings[i+1] = "\u2019" + doppel.strings[i+1];
+                doppel.tags[i] = "";
+            } else if (tag.match(_tagRex.open)
+                    && _nestingData[tag].apostrophe) {
+                doppel.strings[i+1] = " \u2019" + doppel.strings[i+1];
+                doppel.tags[i] = "";
+            } else {
+                doppel.strings[tagPos+1] = doppel.tags[tagPos] + doppel.strings[tagPos+1];
+                doppel.tags[tagPos] = "";
+            }
+            _nestingState.pop();
+        }
+        for (var i=doppel.tags.length-1;i>-1;i--) {
+            if (!doppel.tags[i]) {
+                doppel.tags = doppel.tags.slice(0,i).concat(doppel.tags.slice(i+1));
+                doppel.strings[i] = doppel.strings[i] + doppel.strings[i+1];
+                doppel.strings = doppel.strings.slice(0,i+1).concat(doppel.strings.slice(i+2));
+            }
+        }
+        for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
+            var tag = doppel.tags[i];
+            if (_nestingData[tag] && _nestingData[tag].type === "quote") {
+                _setOuterQuoteForm(tag);
                 break;
             }
         }
-        if (breakme) {
-            break;
-        }
+        _undoppelToQueue(state, blob, doppel);
     }
-    newdecor = [fun[0], fun[1][posB]];
-    blob.decorations.reverse();
-    blob.decorations.push(newdecor);
-    blob.decorations.reverse();
-    return newdecor;
-};
+}
 CSL.Output.Formatters = new function () {
     this.passthrough = passthrough;
     this.lowercase = lowercase;
@@ -14619,7 +14689,7 @@ CSL.Output.Formatters = new function () {
         var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
         var m1match = str.match(/((?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
-        if (!m1match) {
+       if (!m1match) {
             return {
                 tags: [],
                 strings: [str]

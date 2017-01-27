@@ -115,7 +115,7 @@ CSL.setDecorations = function (state, attributes) {
 };
 
 CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
-    //print("params: "+params);
+    //print("params: "+JSON.stringify(params));
     if (params[1] === "normal") {
         var use_param = false;
         var all_the_decor;
@@ -125,9 +125,9 @@ CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
             all_the_decor = blob.alldecor;
         }
         for (var k = all_the_decor.length - 1; k > -1; k += -1) {
-            //print("  all decor: "+all_the_decor[k].length);
+            //print("  all decor: "+JSON.stringify(all_the_decor[k]));
             for (var n = all_the_decor[k].length - 1; n > -1; n += -1) {
-                //print("  superior param: "+all_the_decor[k][n]);
+                //print("  superior param"+n+": "+all_the_decor[k][n][0]);
                 if (all_the_decor[k][n][0] === params[0]) {
                     //print("  HIT!");
                     if (all_the_decor[k][n][1] !== "normal") {
