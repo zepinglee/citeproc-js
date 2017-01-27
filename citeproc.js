@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.145",
+    PROCESSOR_VERSION: "1.1.146",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -480,62 +480,13 @@ var CSL = {
         "available-date",
         "submitted"
     ],
-    TAG_ESCAPE: function (str, stopWords) {
-        var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
-        if (!stopWords) {
-            stopWords = [];
+    TITLE_FIELD_SPLITS: function(seg) {
+        var keys = ["title", "short", "main", "sub"];
+        var ret = {};
+        for (var i=0,ilen=keys.length;i<ilen;i++) {
+            ret[keys[i]] = seg + "title" + (keys[i] === "title" ? "" : "-" + keys[i]);
         }
-        var pairs = {
-            "<span class=\"nocase\">": "</span>",
-            "<span class=\"nodecor\">": "</span>"
-        };
-        var stack = [];
-        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")\s*(>)/g, "$1 $2$3");
-        var m1match = str.match(/((?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
-        if (!m1match) {
-            return [str];
-        }
-        var m1split = str.split(/(?: \"| \'|\" |\'[-.,;\?:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
-        outer: for (var i=0,ilen=m1match.length; i<ilen; i++) {
-            if (pairs[m1match[i]]) {
-                stack.push({
-                    tag: m1match[i],
-                    pos: i
-                });
-                var mFirstWord = m1split[i].match(/^(\s*([^' ]+[']?))(.*)/);
-                if (mFirstWord) {
-                    if (stopWords.indexOf(mFirstWord[2]) > -1) {
-                        if (!m1split[i-1].match(/[:\?\!]\s*$/)) {
-                            m1match[i-1] = m1match[i-1] + mFirstWord[1];
-                            m1split[i] = mFirstWord[3];
-                        }
-                    }
-                }
-                continue;
-            }
-            if (stack.length) {
-                for (var j=stack.length-1; j>-1; j--) {
-                    var stackObj = stack.slice(j)[0];
-                    if (m1match[i] === pairs[stackObj.tag]) {
-                        stack = stack.slice(0, j+1);
-                        var startPos = stack[j].pos;
-                        for (var k=stack[j].pos+1; k<i+1; k++) {
-                            m1match[k] = m1split[k] + m1match[k];
-                            m1split[k] = "";
-                        }
-                        stack.pop();
-                        break;
-                    }
-                }
-            }
-        }
-        myret = [m1split[0]];
-        for (pos = 1, len = m1split.length; pos < len; pos += 1) {
-            myret.push(m1match[pos - 1]);
-            myret.push(m1split[pos]);
-        }
-        var lst = myret.slice();
-        return lst;
+        return ret;
     },
     TAG_USEALL: function (str) {
         var ret, open, close, end;
@@ -562,6 +513,138 @@ var CSL = {
         }
         ret[ret.length - 1] += str;
         return ret;
+    },
+    demoteNoiseWords: function (state, fld, drop_or_demote) {
+        var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
+        if (fld && drop_or_demote) {
+            fld = fld.split(/\s+/);
+            fld.reverse();
+            var toEnd = [];
+            for (var j  = fld.length - 1; j > -1; j += -1) {
+                if (SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
+                    toEnd.push(fld.pop());
+                } else {
+                    break;
+                }
+            }
+            fld.reverse();
+            var start = fld.join(" ");
+            var end = toEnd.join(" ");
+            if ("drop" === drop_or_demote || !end) {
+                fld = start;
+            } else if ("demote" === drop_or_demote) {
+                fld = [start, end].join(", ");
+            }
+        }
+        return fld;
+    },
+    extractTitleAndSubtitle: function (Item) {
+        var segments = ["", "container-"];
+        for (var i=0,ilen=segments.length;i<ilen;i++) {
+            var seg = segments[i];
+            var title = CSL.TITLE_FIELD_SPLITS(seg);
+            var langs = [false];
+            if (Item.multi) {
+                for (var lang in Item.multi._keys[title.short]) {
+                    langs.push(lang);
+                }
+            }
+            for (var j=0,jlen=langs.length;j<ilen;j++) {
+                var lang = langs[j];
+                var vals = {};
+                if (lang) {
+                    if (Item.multi._keys[title.title]) {
+                        vals[title.title] = Item.multi._keys[title.title][lang];
+                    }
+                    if (Item.multi._keys[title["short"]]) {
+                        vals[title["short"]] = Item.multi._keys[title["short"]][lang];
+                    }
+                } else {
+                    vals[title.title] = Item[title.title];
+                    vals[title["short"]] = Item[title["short"]];
+                }
+                vals[title.main] = vals[title.title];
+                vals[title.sub] = false;
+                if (vals[title.title] && vals[title["short"]]) {
+                    var shortTitle = vals[title["short"]];
+                    offset = shortTitle.length;
+                    if (vals[title.title].slice(0,offset) === shortTitle && vals[title.title].slice(offset).match(/^\s*:/)) {
+                        vals[title.main] = vals[title.title].slice(0,offset).replace(/\s+$/,"");
+                        vals[title.sub] = vals[title.title].slice(offset).replace(/^\s*:\s*/,"");
+                    }
+                }
+                if (lang) {
+                    for (var key in vals) {
+                        if (!Item.multi._keys[key]) {
+                            Item.multi._keys[key] = {};
+                        }
+                        Item.multi._keys[key][lang] = vals[key];
+                    }
+                } else {
+                    for (var key in vals) {
+                        Item[key] = vals[key];
+                    }
+                }
+            }
+        }
+    },
+    titlecaseSentenceOrNormal: function(state, Item, seg, lang, sentenceCase) {
+        var title = CSL.TITLE_FIELD_SPLITS(seg);
+        var vals = {};
+        if (lang && Item.multi) {
+            if (Item.multi._keys[title.title]) {
+                vals[title.title] = Item.multi._keys[title.title][lang];
+            }
+            if (Item.multi._keys[title.main]) {
+                vals[title.main] = Item.multi._keys[title.main][lang];
+            }
+            if (Item.multi._keys[title.sub]) {
+                vals[title.sub] = Item.multi._keys[title.sub][lang];
+            }
+        } else {
+            vals[title.title] = Item[title.title];
+            vals[title.main] = Item[title.main];
+            vals[title.sub] = Item[title.sub];
+        }
+        if (vals[title.main] && vals[title.sub]) {
+            var mainTitle = vals[title.main];
+            var subTitle = vals[title.sub];
+            if (sentenceCase) {
+                mainTitle = CSL.Output.Formatters.sentence(state, mainTitle);
+                subTitle = CSL.Output.Formatters.sentence(state, subTitle);
+            } else {
+                subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
+            }
+            return [mainTitle, subTitle].join(vals[title.title].slice(mainTitle.length, -1 * subTitle.length));
+        } else {
+            if (sentenceCase) {
+                return CSL.Output.Formatters.sentence(state, vals[title.title]);
+            } else {
+                return vals[title.title];
+            }
+        }
+    },
+    getSafeEscape: function(state) {
+        if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
+            var callbacks = [];
+            if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
+                callbacks.push(function (txt) {
+                    return txt.replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
+                });
+            }
+            if (callbacks.length) {
+                return function (txt) {
+                    for (var i = 0, ilen = callbacks.length; i < ilen; i += 1) {
+                        txt = callbacks[i](txt);
+                    }
+                    return CSL.Output.Formats[state.opt.mode].text_escape(txt);
+                }
+            } else {
+                return CSL.Output.Formats[state.opt.mode].text_escape;
+            }
+        } else {
+            return function (txt) { return txt; };
+        }
     },
     SKIP_WORDS: ["about","above","across","afore","after","against","along","alongside","amid","amidst","among","amongst","anenst","apropos","apud","around","as","aside","astride","at","athwart","atop","barring","before","behind","below","beneath","beside","besides","between","beyond","but","by","circa","despite","down","during","except","for","forenenst","from","given","in","inside","into","lest","like","modulo","near","next","notwithstanding","of","off","on","onto","out","over","per","plus","pro","qua","sans","since","than","through"," thru","throughout","thruout","till","to","toward","towards","under","underneath","until","unto","up","upon","versus","vs.","v.","vs","v","via","vis-à-vis","with","within","without","according to","ahead of","apart from","as for","as of","as per","as regards","aside from","back to","because of","close to","due to","except for","far from","inside of","instead of","near to","next to","on to","out from","out of","outside of","prior to","pursuant to","rather than","regardless of","such as","that of","up to","where as","or", "yet", "so", "for", "and", "nor", "a", "an", "the", "de", "d'", "von", "van", "c", "et", "ca"],
     FORMAT_KEY_SEQUENCE: [
@@ -2928,31 +3011,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         Item["title-short"] = Item.shortTitle;
     }
     if (this.opt.development_extensions.main_title_from_short_title) {
-        var segments = ["", "container-"];
-        for (var i=0,ilen=segments.length;i<ilen;i++) {
-            var seg = segments[i];
-            Item[seg + "title-main"] = Item[seg + "title"];
-            Item[seg + "title-sub"] = false;
-            if (Item[seg + "title"] && Item[seg + "title-short"]) {
-                var shortTitle = Item[seg + "title-short"];
-                offset = shortTitle.length;
-                if (Item[seg + "title"].slice(0,offset) === shortTitle && Item[seg + "title"].slice(offset).match(/^\s*:/)) {
-                    Item[seg + "title-main"] = Item[seg + "title"].slice(0,offset).replace(/\s+$/,"");
-                    Item[seg + "title-sub"] = Item[seg + "title"].slice(offset).replace(/^\s*:\s*/,"");
-                    if (this.opt.development_extensions.uppercase_subtitles && Item[seg + "title-sub"]) {
-                        var subtitle = Item[seg + "title-sub"]
-                        for (var j=0,jlen=subtitle.length;j<jlen;j++) {
-                            if (subtitle.charAt(j).toLowerCase() !== subtitle.charAt(j).toUpperCase()) {
-                                Item[seg + "title-sub"] = subtitle.slice(0,j) + subtitle.charAt(j).toUpperCase() + subtitle.slice(j+1);
-                                break
-                            }
-                        }
-                    }
-                    var mainPlusJoinOffset = offset + Item[seg + "title"].length - Item[seg + "title-main"].length - Item[seg + "title-sub"].length;
-                    Item[seg + "title"] = Item[seg + "title"].slice(0,mainPlusJoinOffset) + Item[seg + "title-sub"];
-                }
-            }
-        }
+        CSL.extractTitleAndSubtitle(Item);
     }
     var isLegalType = ["bill","legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (this.opt.development_extensions.force_jurisdiction && isLegalType) {
@@ -12122,11 +12181,16 @@ CSL.Transform = function (state) {
         }
         return ret;
     };
-    function getTextSubField(Item, field, locale_type, use_default, stopOrig) {
+    function getTextSubField (Item, field, locale_type, use_default, stopOrig) {
         var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
         var usedOrig = stopOrig;
+        var usingOrig = false;
         if (!Item[field]) {
-            return {name:"", usedOrig:stopOrig};
+            return {
+                name:"",
+                usedOrig:stopOrig,
+                token: CSL.Util.cloneToken(this)
+            };
         }
         ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
         opts = state.opt[locale_type];
@@ -12139,9 +12203,11 @@ CSL.Transform = function (state) {
                 ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
             }
             hasVal = true;
+            usingOrig = true;
         } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
             var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
             hasVal = true;
+            usingOrig = true;
         }
         if (!hasVal) {
             for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
@@ -12149,7 +12215,7 @@ CSL.Transform = function (state) {
                 o = opt.split(/[\-_]/)[0];
                 if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
                     ret.name = Item.multi._keys[field][opt];
-                    ret.locale = o;
+                    ret.locale = opt;
                     if (field === 'jurisdiction') jurisdictionName = ret.name;
                     break;
                 } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
@@ -12161,14 +12227,27 @@ CSL.Transform = function (state) {
             }
             if (!ret.name && use_default) {
                 ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                usingOrig = true;
             }
         }
+        ret.token = CSL.Util.cloneToken(this);
         if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
             if (ret.name && !jurisdictionName) {
                 jurisdictionName = state.sys.getHumanForm(Item[field]);
             }
             if (jurisdictionName) {
                 ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
+            }
+        } else if (["title", "container-title"].indexOf(field) > -1) {
+            if (!usedOrig
+                && (!ret.token.strings["text-case"]
+                    || ret.token.strings["text-case"] === "sentence"
+                    || ret.token.strings["text-case"] === "normal")) {
+                var locale = usingOrig ? false : ret.locale;
+                var seg = field.slice(0,-5);
+                var sentenceCase = ret.token.strings["text-case"] === "sentence" ? true : false;
+                ret.name = CSL.titlecaseSentenceOrNormal(state, Item, seg, locale, sentenceCase);
+                delete ret.token.strings["text-case"];
             }
         }
         return ret;
@@ -12281,9 +12360,10 @@ CSL.Transform = function (state) {
                 }
                 return null;
             }
-            var res = getTextSubField(Item, variables[0], slot.primary, true);
+            var res = getTextSubField.call(this, Item, variables[0], slot.primary, true);
             primary = res.name;
             primary_locale = res.locale;
+            var primary_tok = res.token;
             var primaryUsedOrig = res.usedOrig;
             if (publisherCheck(this, Item, primary, myabbrev_family)) {
                 return null;
@@ -12291,14 +12371,16 @@ CSL.Transform = function (state) {
             secondary = false;
             tertiary = false;
             if (slot.secondary) {
-                res = getTextSubField(Item, variables[0], slot.secondary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
                 secondary_locale = res.locale;
+                var secondary_tok = res.token;
             }
             if (slot.tertiary) {
-                res = getTextSubField(Item, variables[0], slot.tertiary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
                 tertiary_locale = res.locale;
+                var tertiary_tok = res.token;
             }
             if (myabbrev_family) {
                 primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
@@ -12308,8 +12390,6 @@ CSL.Transform = function (state) {
                 secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
                 tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
             }
-            var template_tok = CSL.Util.cloneToken(this);
-            var primary_tok = CSL.Util.cloneToken(this);
             var primaryPrefix;
             if (slot.primary === "locale-translit") {
                 primaryPrefix = state.opt.citeAffixes[langPrefs][slot.primary].prefix;
@@ -12337,7 +12417,6 @@ CSL.Transform = function (state) {
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
                 if (secondary) {
-                    secondary_tok = CSL.Util.cloneToken(template_tok);
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
                     if (!secondary_tok.strings.prefix) {
@@ -12365,7 +12444,6 @@ CSL.Transform = function (state) {
                     }
                 }
                 if (tertiary) {
-                    tertiary_tok = CSL.Util.cloneToken(template_tok);
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
                     if (!tertiary_tok.strings.prefix) {
@@ -14517,196 +14595,303 @@ CSL.Util.FlipFlopper.prototype.addFlipFlop = function (blob, fun) {
     blob.decorations.reverse();
     return newdecor;
 };
-CSL.Output.Formatters = {};
-CSL.getSafeEscape = function(state) {
-    if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
-        var callbacks = [];
-        if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
-            callbacks.push(function (txt) {
-                return txt.replace(/\u202f/g, '<span style="white-space:nowrap">&thinsp;</span>');
-            });
-        }
-        if (callbacks.length) {
-            return function (txt) {
-                for (var i = 0, ilen = callbacks.length; i < ilen; i += 1) {
-                    txt = callbacks[i](txt);
-                }
-                return CSL.Output.Formats[state.opt.mode].text_escape(txt);
-            }
-        } else {
-            return CSL.Output.Formats[state.opt.mode].text_escape;
-        }
-    } else {
-        return function (txt) { return txt; };
+CSL.Output.Formatters = new function () {
+    this.passthrough = passthrough;
+    this.lowercase = lowercase;
+    this.uppercase = uppercase;
+    this.sentence = sentence;
+    this.title = title;
+    this["capitalize-first"] = capitalizeFirst;
+    this["capitalize-all"] = capitalizeAll;
+    var _tagParams = {
+        "<span class=\"nocase\">": "</span>",
+        "<span class=\"nodecor\">": "</span>"
     }
-};
-CSL.Output.Formatters.passthrough = function (state, string) {
-    return string;
-};
-CSL.Output.Formatters.lowercase = function (state, string) {
-    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
-    str.string = str.string.toLowerCase();
-    return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters.uppercase = function (state, string) {
-    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_USEALL);
-    str.string = str.string.toUpperCase();
-    return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters["capitalize-first"] = function (state, string) {
-    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-    if (str.string.length) {
-        str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1);
-        return CSL.Output.Formatters.undoppelString(str);
-    } else {
-        return "";
-    }
-};
-CSL.Output.Formatters.sentence = function (state, string) {
-    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-    str.string = str.string.slice(0, 1).toUpperCase() + str.string.substr(1).toLowerCase();
-    return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters["capitalize-all"] = function (state, string) {
-    var str = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE);
-    var strings = str.string.split(" ");
-    for (var i = 0, ilen = strings.length; i < ilen; i += 1) {
-        if (strings[i].length > 1) {
-			if (state.opt.development_extensions.allow_force_lowercase) {
-				strings[i] = strings[i].slice(0, 1).toUpperCase() + strings[i].substr(1).toLowerCase();
-			} else {
-				strings[i] = strings[i].slice(0, 1).toUpperCase() + strings[i].substr(1);
-			}
-        } else if (strings[i].length === 1) {
-            strings[i] = strings[i].toUpperCase();
-        }
-    }
-    str.string = strings.join(" ");
-    return CSL.Output.Formatters.undoppelString(str);
-};
-CSL.Output.Formatters.title = function (state, string) {
-    var str, words, isAllUpperCase, newString, lastWordIndex, previousWordIndex, upperCaseVariant, lowerCaseVariant, pos, skip, notfirst, notlast, aftercolon, len, idx, tmp, skipword, ppos, mx, lst, myret;
-    var SKIP_WORDS = state.locale[state.opt.lang].opts["skip-words"];
-    if (!string) {
-        return "";
-    }
-    var doppel = CSL.Output.Formatters.doppelString(string, CSL.TAG_ESCAPE, SKIP_WORDS);
-    function capitalise (word, force) {
-        var m = word.match(/([:?!]+\s+|-|^)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
+    function _capitalise (word, force) {
+        var m = word.match(/(^\s*)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
         if (m && !(m[2].match(/^[\u0370-\u03FF]$/) && !m[3])) {
             return m[1] + m[2].toUpperCase() + m[3];
         }
         return word;
     }
-    function splitme (str, rex) {
-        var m = str.match(rex);
-        if (m) {
-            var splits = str.split(rex);
-            res = [splits[0]];
-            for (var i=0; i<m.length; i++) {
-                res.push(m[i]);
-                res.push(splits[i+1]);
+    function _doppelString(str) {
+        var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
+        var m1match = str.match(/((?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
+        if (!m1match) {
+            return {
+                tags: [],
+                strings: [str]
+            };
+        }
+        var m1split = str.split(/(?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
+        return {
+            tags: m1match,
+            strings: m1split,
+            origStrings: m1split.slice()
+        }
+    }
+    function _undoppelString(obj) {
+        var ret, len, pos;
+        lst = [];
+        var lst = obj.strings.slice(-1);
+        for (var i=obj.tags.length-1; i>-1; i+=-1) {
+            lst.push(obj.tags[i]);
+            lst.push(obj.strings[i]);
+        }
+        lst.reverse();
+        return lst.join("");
+    }
+    function _textcaseEngine(config, string) {
+        config.doppel = _doppelString(string);
+        if (!string) {
+            return "";
+        }
+        var quoteParams = {
+            " \"": {
+                opener: " \'",
+                closer: "\""
+            },
+            " \'": {
+                opener: " \"",
+                closer: "\'"
             }
-        } else {
-            res = [str];
         }
-        return res;
-    }
-    var str = doppel.string;
-    var lst = splitme(str, state.locale[state.opt.lang].opts["skip-words-regexp"]);
-    for (i=1,ilen=lst.length;i<ilen;i+=2) {
-        if (lst[i].match(/^[:?!]/)) {
-            lst[i] = capitalise(lst[i]);
-        }
-    }
-    if (!lst[0] && lst[1]) {
-        lst[1] = capitalise(lst[1]);
-    }
-    if (lst.length > 2 && !lst[lst.length-1]) {
-        lst[lst.length-2] = capitalise(lst[lst.length-2]);
-    }
-    for (var i=0,ilen=lst.length;i<ilen;i+=2) {
-        var words = lst[i].split(/([:?!]*\s+|\/|-)/);
-        for (var k=0,klen=words.length;k<klen;k+=2) {
-            if (words[k].length !== 0) {
-                upperCaseVariant = words[k].toUpperCase();
-                lowerCaseVariant = words[k].toLowerCase();
-                if (words[k].match(/[0-9]/)) {
-                    continue;
-                }
-                if (words[k] === lowerCaseVariant) {
-                    words[k] = capitalise(words[k]);
-                }
+        function quoteFix (tag, positions) {
+            var m = tag.match(/(^(?:\"|\')|(?: \"| \')$)/);
+            if (m) {
+                return pushQuoteState(m[1], positions);
             }
         }
-        lst[i] = words.join("");
-    }
-    doppel.string = lst.join("");
-    var ret = CSL.Output.Formatters.undoppelString(doppel);
-    return ret;
-};
-CSL.Output.Formatters.doppelString = function (string, rex, stopWords) {
-    var ret, pos, len;
-    ret = {};
-    ret.array = rex(string, stopWords);
-    ret.string = "";
-    for (var i=0,ilen=ret.array.length; i<ilen; i += 2) {
-        if (ret.array[i-1] === "-" && false) {
-            ret.string += " " + ret.array[i];
-        } else {
-            ret.string += ret.array[i];
-        }
-    }
-    return ret;
-};
-CSL.Output.Formatters.undoppelString = function (str) {
-    var ret, len, pos;
-    ret = "";
-    for (var i=0,ilen=str.array.length; i<ilen; i+=1) {
-        if ((i % 2)) {
-            ret += str.array[i];
-        } else {
-            if (str.array[i-1] === "-" && false) {
-                ret += str.string.slice(0, str.array[i].length+1).slice(1);
-                str.string = str.string.slice(str.array[i].length+1);
+        function pushQuoteState(tag, pos) {
+            var isOpener = [" \"", " \'"].indexOf(tag) > -1 ? true : false;
+            if (isOpener) {
+                return tryOpen(tag, pos);
             } else {
-                ret += str.string.slice(0, str.array[i].length);
-                str.string = str.string.slice(str.array[i].length);
+                return tryClose(tag, pos);
             }
         }
-    }
-    return ret;
-};
-CSL.Output.Formatters.serializeItemAsRdf = function (Item) {
-    return "";
-};
-CSL.Output.Formatters.serializeItemAsRdfA = function (Item) {
-    return "";
-};
-CSL.demoteNoiseWords = function (state, fld, drop_or_demote) {
-    var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
-    if (fld && drop_or_demote) {
-        fld = fld.split(/\s+/);
-        fld.reverse();
-        var toEnd = [];
-        for (var j  = fld.length - 1; j > -1; j += -1) {
-            if (SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
-                toEnd.push(fld.pop());
+        function tryOpen(tag, pos) {
+            if (config.quoteState.length === 0 || tag === config.quoteState[config.quoteState.length - 1].opener) {
+                config.quoteState.push({
+                    opener: quoteParams[tag].opener,
+                    closer: quoteParams[tag].closer,
+                    pos: pos
+                });
+                return false;
             } else {
-                break;
+                var prevPos = config.quoteState[config.quoteState.length-1].pos;
+                config.quoteState.pop()
+                config.quoteState.push({
+                    opener: quoteParams[tag].opener,
+                    closer: quoteParams[tag].closer,
+                    positions: pos
+                });
+                return prevPos;
             }
         }
-        fld.reverse();
-        var start = fld.join(" ");
-        var end = toEnd.join(" ");
-        if ("drop" === drop_or_demote || !end) {
-            fld = start;
-        } else if ("demote" === drop_or_demote) {
-            fld = [start, end].join(", ");
+        function tryClose(tag, pos) {
+            if (config.quoteState.length > 0 && tag === config.quoteState[config.quoteState.length - 1].closer) {
+                config.quoteState.pop()
+            } else {
+                return pos;
+            }
         }
+        if (config.doppel.strings.length && config.doppel.strings[0].trim()) {
+            config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0)
+        }
+    	for (var i=0,ilen=config.doppel.tags.length;i<ilen;i++) {
+            var tag = config.doppel.tags[i];
+            var str = config.doppel.strings[i+1];
+            if (config.tagState !== null) {
+                if (_tagParams[tag]) {
+                    config.tagState.push(_tagParams[tag]);
+                } else if (config.tagState.length && tag === config.tagState[config.tagState.length - 1]) {
+                    config.tagState.pop();
+                }
+            }
+            if (config.afterPunct !== null) {
+                if (tag.match(/[\!\?\:]$/)) {
+                    config.afterPunct = true;
+                }
+            }
+            if (config.tagState.length === 0) {
+                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1);
+            }
+            if (config.quoteState !== null) {
+                var quotePos = quoteFix(tag, i);
+                if (quotePos || quotePos === 0) {
+                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
+                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                    config.lastWordPos = null;
+                }
+            }
+            if (config.isFirst) {
+                if (str.trim()) {
+                    config.isFirst = false;
+                }
+            }
+            if (config.afterPunct) {
+                if (str.trim()) {
+                    config.afterPunct = false;
+                }
+            }
+        }
+        if (config.lastWordPos) {
+            var lastWords = config.doppel.strings[config.lastWordPos.strings].split(" ");
+            var lastWord = _capitalise(lastWords[config.lastWordPos.words]);
+            lastWords[config.lastWordPos.words] = lastWord;
+            config.doppel.strings[config.lastWordPos.strings] = lastWords.join(" ");
+        }
+        return _undoppelString(config.doppel);
     }
-    return fld;
-};
+    function passthrough (state, str) {
+        return str;
+    }
+    function lowercase(state, string) {
+        var config = {
+            quoteState: null,
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = word.toLowerCase();
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
+        }
+        return _textcaseEngine(config, string);
+    }
+    function uppercase(state, string) {
+        var config = {
+            quoteState: null,
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = word.toUpperCase();
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
+        }
+        return _textcaseEngine(config, string);
+    }
+    function sentence(state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        if (config.isFirst) {
+                            words[i] = _capitalise(word);
+                            config.isFirst = false;
+                        } else {
+                            words[i] = word.toLowerCase();
+                        }
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: true
+        }
+        return _textcaseEngine(config, string);
+    }
+    function title(state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str, i) {
+                if (str.trim()) {
+                    var words = str.split(" ");
+                    for (var j=0,jlen=words.length;j<jlen;j++) {
+                        var word = words[j];
+                        if (!word) continue;
+                        if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
+                            words[j] = _capitalise(words[j]);
+                        } else if (config.isFirst) {
+                            words[j] = _capitalise(words[j]);
+                        } else if (config.afterPunct) {
+                            words[j] = _capitalise(words[j]);
+                        }
+                        config.afterPunct = false;
+                        config.isFirst = false;
+                        config.lastWordPos = {
+                            strings: i,
+                            words: j
+                        }
+                    }
+                    str = words.join(" ");
+                }
+                return str;
+            },
+            skipWordsRex: state.locale[state.opt.lang].opts["skip-words-regexp"],
+            tagState: [],
+            afterPunct: false,
+            isFirst: true
+        }
+        return _textcaseEngine(config, string);
+    }
+    function capitalizeFirst(state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        if (config.isFirst) {
+                            words[i] = _capitalise(word);
+                            config.isFirst = false;
+                            break;
+                        }
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: true
+        }
+        return _textcaseEngine(config, string);
+    }
+    function capitalizeAll (state, string) {
+        var config = {
+            quoteState: [],
+            capitaliseWords: function(str) {
+                var words = str.split(" ");
+                for (var i=0,ilen=words.length;i<ilen;i++) {
+                    var word = words[i];
+                    if (word) {
+                        words[i] = _capitalise(word);
+                    }
+                }
+                return words.join(" ");
+            },
+            skipWordsRex: null,
+            tagState: [],
+            afterPunct: null,
+            isFirst: null
+        }
+        return _textcaseEngine(config, string);
+    }
+}
 CSL.Output.Formats = function () {};
 CSL.Output.Formats.prototype.html = {
     "text_escape": function (text) {

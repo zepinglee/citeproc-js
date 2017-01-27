@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.146
+==========================
+
+- Refactor text-case functions, fixing several small bugs.
+
+- Some minor code reorganization.
+
+==========================
 Changes in version 1.1.145
 ==========================
 
