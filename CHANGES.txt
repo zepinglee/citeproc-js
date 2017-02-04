@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.147
+==========================
+
+- Rewrite of "flipflop" module for in-text markup and localized
+  quotation marks.
+
+==========================
 Changes in version 1.1.146
 ==========================
 
