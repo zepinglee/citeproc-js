@@ -9,6 +9,13 @@ CSL.Output.Formatters = new function () {
     this["capitalize-first"] = capitalizeFirst;
     this["capitalize-all"] = capitalizeAll;
 
+    var rexStr = "(?: \"| \'|\"|\'|[-\/.,;?!:]|\\[|\\]|\\(|\\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
+    tagDoppel = new CSL.Doppeler(rexStr, function(str) {
+        return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
+    });
+    
+    wordDoppel = new CSL.Doppeler("(?:[ \u00A0]+)");
+    
     /**
      * INTERNAL
      */
@@ -30,43 +37,13 @@ CSL.Output.Formatters = new function () {
         return word;
     }
 
-    function _doppelString(str) {
-        var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
-        // Normalize markup
-        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
-        var m1match = str.match(/((?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
-       if (!m1match) {
-            return {
-                tags: [],
-                strings: [str]
-            };
-        }
-        var m1split = str.split(/(?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
-        
-        return {
-            tags: m1match,
-            strings: m1split,
-            origStrings: m1split.slice()
-        }
-    }
-
-    function _undoppelString(obj) {
-        var ret, len, pos;
-        lst = [];
-        var lst = obj.strings.slice(-1);
-        for (var i=obj.tags.length-1; i>-1; i+=-1) {
-            lst.push(obj.tags[i]);
-            lst.push(obj.strings[i]);
-        }
-        lst.reverse();
-        return lst.join("");
-    }
-    
     function _textcaseEngine(config, string) {
-        config.doppel = _doppelString(string);
         if (!string) {
             return "";
         }
+        config.doppel = tagDoppel.split(string);
+        
+        //print(JSON.stringify(config.doppel, null, 2));
         var quoteParams = {
             " \"": {
                 opener: " \'",
@@ -179,14 +156,14 @@ CSL.Output.Formatters = new function () {
         }
         // Capitalize the last word if necessary (bypasses stop-word list)
         if (config.lastWordPos) {
-            var lastWords = config.doppel.strings[config.lastWordPos.strings].split(" ");
-            var lastWord = _capitalise(lastWords[config.lastWordPos.words]);
-            lastWords[config.lastWordPos.words] = lastWord;
-            config.doppel.strings[config.lastWordPos.strings] = lastWords.join(" ");
+            var lastWords = wordDoppel.split(config.doppel.strings[config.lastWordPos.strings]);
+            var lastWord = _capitalise(lastWords.strings[config.lastWordPos.words]);
+            lastWords.strings[config.lastWordPos.words] = lastWord;
+            config.doppel.strings[config.lastWordPos.strings] = wordDoppel.join(lastWords);
         }
 
         // Recombine the string
-        return _undoppelString(config.doppel);
+        return tagDoppel.join(config.doppel);
     }
 
     /**
@@ -283,7 +260,10 @@ CSL.Output.Formatters = new function () {
             quoteState: [],
             capitaliseWords: function(str, i) {
                 if (str.trim()) {
-                    var words = str.split(" ");
+                    var words = str.split(/[ \u00A0]+/);
+                    var wordle = wordDoppel.split(str);
+
+                    var words = wordle.strings;
                     for (var j=0,jlen=words.length;j<jlen;j++) {
                         var word = words[j];
                         if (!word) continue;
@@ -304,7 +284,7 @@ CSL.Output.Formatters = new function () {
                             words: j
                         }
                     }
-                    str = words.join(" ");
+                    str = wordDoppel.join(wordle);
                 }
                 return str;
             },

@@ -114,6 +114,42 @@ CSL.setDecorations = function (state, attributes) {
     return ret;
 };
 
+CSL.Doppeler = function(rexStr, stringMangler) {
+    var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+    this.split = split;
+    this.join = join;
+    var matchRex = new RegExp("(" + rexStr + ")", "g");
+    var splitRex = new RegExp(rexStr, "g");
+    function split(str) {
+        // Normalize markup
+        if (stringMangler) {
+            str = stringMangler(str);
+        }
+        var match = str.match(matchRex);
+        if (!match) {
+            return {
+                tags: [],
+                strings: [str]
+            };
+        }
+        var split = str.split(splitRex);
+        return {
+            tags: match,
+            strings: split,
+            origStrings: split.slice()
+        }
+    }
+    function join(obj) {
+        var lst = obj.strings.slice(-1);
+        for (var i=obj.tags.length-1; i>-1; i--) {
+            lst.push(obj.tags[i]);
+            lst.push(obj.strings[i]);
+        }
+        lst.reverse();
+        return lst.join("");
+    }
+}
+
 CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
     //print("params: "+JSON.stringify(params));
     if (params[1] === "normal") {
