@@ -263,6 +263,7 @@ StdRhinoTest.prototype.run = function(){
         persons:["translit"],
         institutions:["translit"],
         titles:["translit", "translat"],
+        journals:['translit'],
         publishers:["translat"],
         places:["translat"]
     }
