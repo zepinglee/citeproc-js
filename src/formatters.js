@@ -123,6 +123,9 @@ CSL.Output.Formatters = new function () {
             // Process if outside tag scope, else noop for upper-casing
             if (config.tagState.length === 0) {
                 config.doppel.strings[i+1] = config.capitaliseWords(str, i+1);
+                
+            } else if (config.doppel.strings[i+1].trim()) {
+                config.lastWordPos = null;
             }
             
             if (config.quoteState !== null) {
@@ -262,7 +265,6 @@ CSL.Output.Formatters = new function () {
                 if (str.trim()) {
                     var words = str.split(/[ \u00A0]+/);
                     var wordle = wordDoppel.split(str);
-
                     var words = wordle.strings;
                     for (var j=0,jlen=words.length;j<jlen;j++) {
                         var word = words[j];
