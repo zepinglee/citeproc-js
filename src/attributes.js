@@ -1261,7 +1261,7 @@ CSL.Attributes["@second-field-align"] = function (state, arg) {
 
 CSL.Attributes["@hanging-indent"] = function (state, arg) {
     if (arg === "true") {
-        state[this.name].opt.hangingindent = 2;
+        state[this.name].opt.hangingindent = true;
     }
 };
 
