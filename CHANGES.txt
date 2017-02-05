@@ -1,6 +1,24 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.148
+==========================
+
+- Fix bug that blocked title case capitalization following
+  proper (not straight) open quotes.
+
+- Fix bug that capitalized a stop-work occurring immediately
+  before a final nocase span in in-text markup.
+
+- Fix bug that was double-rendering the title in some styles.
+
+- Recognize several additional Unicode space characters when
+  performing word splits for text-case conversions.
+
+Many thanks for feedback on these bugs from GitHub codevs
+@retorquere, @bwiernik, @adam3smith, and @KarlHegbloom.
+
+==========================
 Changes in version 1.1.147
 ==========================
 

@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.147",
+    PROCESSOR_VERSION: "1.1.148",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3228,6 +3228,40 @@ CSL.setDecorations = function (state, attributes) {
     }
     return ret;
 };
+CSL.Doppeler = function(rexStr, stringMangler) {
+    var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
+    this.split = split;
+    this.join = join;
+    var matchRex = new RegExp("(" + rexStr + ")", "g");
+    var splitRex = new RegExp(rexStr, "g");
+    function split(str) {
+        if (stringMangler) {
+            str = stringMangler(str);
+        }
+        var match = str.match(matchRex);
+        if (!match) {
+            return {
+                tags: [],
+                strings: [str]
+            };
+        }
+        var split = str.split(splitRex);
+        return {
+            tags: match,
+            strings: split,
+            origStrings: split.slice()
+        }
+    }
+    function join(obj) {
+        var lst = obj.strings.slice(-1);
+        for (var i=obj.tags.length-1; i>-1; i--) {
+            lst.push(obj.tags[i]);
+            lst.push(obj.strings[i]);
+        }
+        lst.reverse();
+        return lst.join("");
+    }
+}
 CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
     if (params[1] === "normal") {
         var use_param = false;
@@ -4581,11 +4615,11 @@ CSL.Engine.Opt = function () {
     this['cite-lang-prefs'] = {
         persons:['orig'],
         institutions:['orig'],
-        titles:['orig','translat'],
-        journals:['translit'],
+        titles:['orig'],
+        journals:['orig'],
         publishers:['orig'],
         places:['orig'],
-        number:['translat']
+        number:['orig']
     };
     this.has_layout_locale = false;
     this.development_extensions = {};
@@ -14783,6 +14817,11 @@ CSL.Output.Formatters = new function () {
     this.title = title;
     this["capitalize-first"] = capitalizeFirst;
     this["capitalize-all"] = capitalizeAll;
+    var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\/.,;?!:]|\\[|\\]|\\(|\\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
+    tagDoppel = new CSL.Doppeler(rexStr, function(str) {
+        return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
+    });
+    wordDoppel = new CSL.Doppeler("(?:[\u0020\u00A0\u2000-\u200B\u205F\u3000]+)");
     var _tagParams = {
         "<span class=\"nocase\">": "</span>",
         "<span class=\"nodecor\">": "</span>"
@@ -14794,39 +14833,11 @@ CSL.Output.Formatters = new function () {
         }
         return word;
     }
-    function _doppelString(str) {
-        var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
-        str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
-        var m1match = str.match(/((?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>))/g);
-       if (!m1match) {
-            return {
-                tags: [],
-                strings: [str]
-            };
-        }
-        var m1split = str.split(/(?: \"| \'|\"|\'|[-\/.,;?!:]|\[|\]|\(|\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)/g);
-        return {
-            tags: m1match,
-            strings: m1split,
-            origStrings: m1split.slice()
-        }
-    }
-    function _undoppelString(obj) {
-        var ret, len, pos;
-        lst = [];
-        var lst = obj.strings.slice(-1);
-        for (var i=obj.tags.length-1; i>-1; i+=-1) {
-            lst.push(obj.tags[i]);
-            lst.push(obj.strings[i]);
-        }
-        lst.reverse();
-        return lst.join("");
-    }
     function _textcaseEngine(config, string) {
-        config.doppel = _doppelString(string);
         if (!string) {
             return "";
         }
+        config.doppel = tagDoppel.split(string);
         var quoteParams = {
             " \"": {
                 opener: " \'",
@@ -14835,16 +14846,24 @@ CSL.Output.Formatters = new function () {
             " \'": {
                 opener: " \"",
                 closer: "\'"
-            }
+            },
+            "\u2018": {
+                opener: "\u2018",
+                closer: "\u2019"
+            },
+            "\u201C": {
+                opener: "\u201C",
+                closer: "\u201D"
+            },
         }
         function quoteFix (tag, positions) {
-            var m = tag.match(/(^(?:\"|\')|(?: \"| \')$)/);
+            var m = tag.match(/(^(?:\u2018|\u2019|\u201C|\u201D|\"|\')|(?: \"| \')$)/);
             if (m) {
                 return pushQuoteState(m[1], positions);
             }
         }
         function pushQuoteState(tag, pos) {
-            var isOpener = [" \"", " \'"].indexOf(tag) > -1 ? true : false;
+            var isOpener = ["\u201C", "\u2018", " \"", " \'"].indexOf(tag) > -1 ? true : false;
             if (isOpener) {
                 return tryOpen(tag, pos);
             } else {
@@ -14897,6 +14916,8 @@ CSL.Output.Formatters = new function () {
             }
             if (config.tagState.length === 0) {
                 config.doppel.strings[i+1] = config.capitaliseWords(str, i+1);
+            } else if (config.doppel.strings[i+1].trim()) {
+                config.lastWordPos = null;
             }
             if (config.quoteState !== null) {
                 var quotePos = quoteFix(tag, i);
@@ -14925,12 +14946,12 @@ CSL.Output.Formatters = new function () {
             }
         }
         if (config.lastWordPos) {
-            var lastWords = config.doppel.strings[config.lastWordPos.strings].split(" ");
-            var lastWord = _capitalise(lastWords[config.lastWordPos.words]);
-            lastWords[config.lastWordPos.words] = lastWord;
-            config.doppel.strings[config.lastWordPos.strings] = lastWords.join(" ");
+            var lastWords = wordDoppel.split(config.doppel.strings[config.lastWordPos.strings]);
+            var lastWord = _capitalise(lastWords.strings[config.lastWordPos.words]);
+            lastWords.strings[config.lastWordPos.words] = lastWord;
+            config.doppel.strings[config.lastWordPos.strings] = wordDoppel.join(lastWords);
         }
-        return _undoppelString(config.doppel);
+        return tagDoppel.join(config.doppel);
     }
     function passthrough (state, str) {
         return str;
@@ -15005,7 +15026,9 @@ CSL.Output.Formatters = new function () {
             quoteState: [],
             capitaliseWords: function(str, i) {
                 if (str.trim()) {
-                    var words = str.split(" ");
+                    var words = str.split(/[ \u00A0]+/);
+                    var wordle = wordDoppel.split(str);
+                    var words = wordle.strings;
                     for (var j=0,jlen=words.length;j<jlen;j++) {
                         var word = words[j];
                         if (!word) continue;
@@ -15023,7 +15046,7 @@ CSL.Output.Formatters = new function () {
                             words: j
                         }
                     }
-                    str = words.join(" ");
+                    str = wordDoppel.join(wordle);
                 }
                 return str;
             },
