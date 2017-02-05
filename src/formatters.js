@@ -9,12 +9,12 @@ CSL.Output.Formatters = new function () {
     this["capitalize-first"] = capitalizeFirst;
     this["capitalize-all"] = capitalizeAll;
 
-    var rexStr = "(?: \"| \'|\"|\'|[-\/.,;?!:]|\\[|\\]|\\(|\\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
+    var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\/.,;?!:]|\\[|\\]|\\(|\\)|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
     tagDoppel = new CSL.Doppeler(rexStr, function(str) {
         return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
     });
     
-    wordDoppel = new CSL.Doppeler("(?:[ \u00A0]+)");
+    wordDoppel = new CSL.Doppeler("(?:[\u0020\u00A0\u2000-\u200B\u205F\u3000]+)");
     
     /**
      * INTERNAL
@@ -52,16 +52,24 @@ CSL.Output.Formatters = new function () {
             " \'": {
                 opener: " \"",
                 closer: "\'"
-            }
+            },
+            "\u2018": {
+                opener: "\u2018",
+                closer: "\u2019"
+            },
+            "\u201C": {
+                opener: "\u201C",
+                closer: "\u201D"
+            },
         }
         function quoteFix (tag, positions) {
-            var m = tag.match(/(^(?:\"|\')|(?: \"| \')$)/);
+            var m = tag.match(/(^(?:\u2018|\u2019|\u201C|\u201D|\"|\')|(?: \"| \')$)/);
             if (m) {
                 return pushQuoteState(m[1], positions);
             }
         }
         function pushQuoteState(tag, pos) {
-            var isOpener = [" \"", " \'"].indexOf(tag) > -1 ? true : false;
+            var isOpener = ["\u201C", "\u2018", " \"", " \'"].indexOf(tag) > -1 ? true : false;
             if (isOpener) {
                 return tryOpen(tag, pos);
             } else {
