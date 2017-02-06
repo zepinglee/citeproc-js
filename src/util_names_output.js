@@ -394,7 +394,7 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
     // Some code duplication here, should be factored out.
     if (this.label[this.labelVariable].before) {
         if ("number" === typeof this.label[this.labelVariable].before.strings.plural) {
-            plural = this.label[this.lableVariable].before.strings.plural;
+            plural = this.label[this.labelVariable].before.strings.plural;
         }
         txt = this._buildLabel(v, plural, "before", this.labelVariable);
         this.state.output.openLevel("empty");
