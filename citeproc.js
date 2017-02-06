@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.149",
+    PROCESSOR_VERSION: "1.1.150",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -2351,8 +2351,18 @@ CSL.DateParser = new function () {
         var orig = txt;
         var slashPos = -1;
         var dashPos = -1;
+        var yearIsNegative = false;
         var lst;
         if (txt) {
+            if (txt.slice(0, 1) === "-") {
+                yearIsNegative = true;
+                txt = txt.slice(1);
+            }
+            if (txt.match(/^[0-9]{1,3}$/)) {
+                while (txt.length < 4) {
+                    txt = "0" + txt;
+                }
+            }
             txt = "" + txt;
             txt = txt.replace(/\s*[0-9]{2}:[0-9]{2}(?::[0-9]+)/,"");
             var m = txt.match(kanjiMonthDay);
@@ -2513,6 +2523,9 @@ CSL.DateParser = new function () {
             if ("string" === typeof thedate[part] && thedate[part].match(/^[0-9]+$/)) {
                 thedate[part] = parseInt(thedate[part], 10);
             }
+        }
+        if (yearIsNegative && Object.keys(thedate).indexOf("year") > -1) {
+            thedate.year = (thedate.year * -1);
         }
         return thedate;
     };
@@ -8053,7 +8066,7 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
     }
     if (this.label[this.labelVariable].before) {
         if ("number" === typeof this.label[this.labelVariable].before.strings.plural) {
-            plural = this.label[this.lableVariable].before.strings.plural;
+            plural = this.label[this.labelVariable].before.strings.plural;
         }
         txt = this._buildLabel(v, plural, "before", this.labelVariable);
         this.state.output.openLevel("empty");
@@ -11472,7 +11485,7 @@ CSL.Attributes["@second-field-align"] = function (state, arg) {
 };
 CSL.Attributes["@hanging-indent"] = function (state, arg) {
     if (arg === "true") {
-        state[this.name].opt.hangingindent = 2;
+        state[this.name].opt.hangingindent = true;
     }
 };
 CSL.Attributes["@line-spacing"] = function (state, arg) {

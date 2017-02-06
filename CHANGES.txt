@@ -1,6 +1,29 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.150
+==========================
+
+- Recognize small and negative years in embedded date parser
+  (for single year values only -- will not handle ranges or
+  dates with month or month/day elements).
+
+  Bug reported by @bwiernik
+
+- Fix spelling error in code that broke certain styles.
+
+  Bug reported by @adam3smith
+
+- Set hangingindent parameter as true (boolean), not as
+  2 (int).
+
+  Bug reported by @dsifford
+
+- Correct documentation of appendCitationCluster()
+
+  Bug reported by @johannesswilm
+
+==========================
 Changes in version 1.1.149
 ==========================
 
