@@ -104,7 +104,7 @@ CSL.Output.Formatters = new function () {
         
         // Run state machine
         if (config.doppel.strings.length && config.doppel.strings[0].trim()) {
-            config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0)
+            config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0, config.doppel.tags[0]);
         }
 
     	for (var i=0,ilen=config.doppel.tags.length;i<ilen;i++) {
@@ -129,7 +129,7 @@ CSL.Output.Formatters = new function () {
 
             // Process if outside tag scope, else noop for upper-casing
             if (config.tagState.length === 0) {
-                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1);
+                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1, config.doppel,config.doppel.tags[i+1]);
                 
             } else if (config.doppel.strings[i+1].trim()) {
                 config.lastWordPos = null;
@@ -268,7 +268,7 @@ CSL.Output.Formatters = new function () {
     function title(state, string) {
         var config = {
             quoteState: [],
-            capitaliseWords: function(str, i) {
+            capitaliseWords: function(str, i, followingTag) {
                 if (str.trim()) {
                     var words = str.split(/[ \u00A0]+/);
                     var wordle = wordDoppel.split(str);
@@ -278,6 +278,8 @@ CSL.Output.Formatters = new function () {
                         if (!word) continue;
                         if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
                             // Capitalize every word that is not a stop-word
+                            words[j] = _capitalise(words[j]);
+                        } else if (j === (words.length - 1) && followingTag === "-") {
                             words[j] = _capitalise(words[j]);
                         } else if (config.isFirst) {
                             // Capitalize first word, even if a stop-word
