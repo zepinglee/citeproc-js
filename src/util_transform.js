@@ -62,11 +62,13 @@ CSL.Transform = function (state) {
     // Internal function
     function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
         var value;
-        if (myabbrev_family === "jurisdiction") {
-            if (state.opt.suppressedJurisdictions[Item.jurisdiction]) {
-                return "";
-            }
-        }
+        // XXX This isn't right, is it?
+        // XXX Shouldn't we convert to human-readable form, and then chop?
+        //if (myabbrev_family === "jurisdiction") {
+        //    if (state.opt.suppressedJurisdictions[Item.jurisdiction]) {
+        //        return "";
+        //    }
+        //}
         myabbrev_family = CSL.FIELD_CATEGORY_REMAP[myabbrev_family];
         if (!myabbrev_family) {
             return basevalue;
@@ -194,14 +196,8 @@ CSL.Transform = function (state) {
             }
         }
         ret.token = CSL.Util.cloneToken(this);
-        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
-            if (ret.name && !jurisdictionName) {
-                jurisdictionName = state.sys.getHumanForm(Item[field]);
-            }
-            // If jurisdictionName does not exist here, this will go boom.
-            if (jurisdictionName) {
-                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
-            }
+        if (state.sys.getHumanForm && field === 'jurisdiction' && ret.name) {
+            ret.name = CSL.getJurisdictionNameAndSuppress(state, Item[field], jurisdictionName);
         } else if (["title", "container-title"].indexOf(field) > -1) {
             if (!usedOrig
                 && (!ret.token.strings["text-case"]
@@ -240,43 +236,9 @@ CSL.Transform = function (state) {
         //
         // See testrunner_stdrhino.js for an example.
         if (state.sys.getAbbreviation) {
-            // Build a list of trial keys, and step through them.
-            // When a match is hit, open an entry under the requested
-            // jurisdiction.
-            // Build the list of candidate keys.
-            var tryList = ['default'];
-            if (jurisdiction !== 'default') {
-                var workLst = jurisdiction.split(":");
-                for (var i=0, ilen=workLst.length; i < ilen; i += 1) {
-                    tryList.push(workLst.slice(0,i+1).join(":"));
-                }
-            }
-            // Step through them, from most to least specific.
-            var found = false;
-            for (var i=tryList.length - 1; i > -1; i += -1) {
-                // Protect against a missing jurisdiction list in memory.
-                if (!state.transform.abbrevs[tryList[i]]) {
-                    state.transform.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
-                }
-                // Refresh from DB if no entry is found in memory.
-                if (state.transform.abbrevs[tryList[i]][category]) {
-                    if (!state.transform.abbrevs[tryList[i]][category][orig]) {
-                        // True is for (deprecated) noHints flag.
-                        state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, true);
-                    }
-                    // Did we find something?
-                    if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
-                        // If we found a match, but in a less-specific list, add the entry to the most
-                        // specific list before breaking.
-                        if (i < tryList.length) {
-                            state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
-                        }
-                        found = true;
-                    }
-                }
-            }
+            return state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, jurisdiction, category, orig, itemType, true);
         }
-        return jurisdiction;
+        return "default";        
     }
     this.loadAbbreviation = loadAbbreviation;
 
