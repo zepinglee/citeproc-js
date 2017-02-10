@@ -1,6 +1,22 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.152
+==========================
+
+- Change to abbreviation loading. Not sure if the changes are
+  backward-compatible -- please test with local getAbbreviation
+  hook when updating.
+
+==========================
+Changes in version 1.1.151
+==========================
+
+- Fix capitalization of stop-words that precede a hyphen.
+
+  But reported by @bwiernik
+
+==========================
 Changes in version 1.1.150
 ==========================
 

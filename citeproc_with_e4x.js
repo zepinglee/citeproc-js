@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.150",
+    PROCESSOR_VERSION: "1.1.152",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -2604,7 +2604,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt["initialize-with-hyphen"] = true;
     this.setStyleAttributes();
     this.opt.xclass = this.cslXml.getAttributeValue(this.cslXml.dataObj, "class");
-    this.opt.class = this.opt.xclass;
+    this.opt["class"] = this.opt.xclass;
     this.opt.styleID = this.cslXml.getStyleId(this.cslXml.dataObj);
     if (CSL.setSuppressedJurisdictions) {
         CSL.setSuppressedJurisdictions(this.opt.styleID, this.opt.suppressedJurisdictions);
@@ -3299,6 +3299,52 @@ CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
     }
     return false;
 };
+CSL.getJurisdictionNameAndSuppress = function(state, jurisdictionID, jurisdictionName) {
+    var ret = null;
+    if (!jurisdictionName) {
+        jurisdictionName = state.sys.getHumanForm(jurisdictionID);
+    }
+    if (!jurisdictionName) {
+        ret = jurisdictionID;
+    } else {
+        var code = jurisdictionID.split(":");
+        var name = jurisdictionName.split("|");
+        var valid = false;
+        if (code.length === 1 && name.length === 2) {
+            valid = true;
+        } else if (code.length > 1 && name.length === code.length) {
+            valid = true;
+        }
+        if (!valid) {
+            ret = name.join("|");
+        } else {
+            var mask = 0;
+            var stub;
+            for (var i=0,ilen=code.length;i<ilen;i++) {
+                stub = code.slice(0, i+1).join(":");
+                if (state.opt.suppressedJurisdictions[stub]) {
+                    mask = (i+1);
+                }
+            }
+            if (mask === 0) {
+                if (code.length === 1) {
+                    ret = name[0];
+                } else {
+                    ret = name.join("|");
+                }
+            } else if (mask === 1) {
+                if (code.length === 1) {
+                    ret = "";
+                } else {
+                    ret = name.slice(mask).join("|");
+                }
+            } else {
+                ret = name.slice(mask).join("|");
+            }
+        }
+    }
+    return ret;
+}
 CSL.Engine.prototype.getCitationLabel = function (Item) {
     var label = "";
     var params = this.getTrigraphParams();
@@ -7152,9 +7198,9 @@ CSL.Node.group = {
                 text_node.execs.push(func);
                 target.push(text_node);
                 var if_end = new CSL.Token("if", CSL.END);
-                CSL.Node.if.build.call(if_end, state, target);
+                CSL.Node["if"].build.call(if_end, state, target);
                 var else_start = new CSL.Token("else", CSL.START);
-                CSL.Node.else.build.call(else_start, state, target);
+                CSL.Node["else"].build.call(else_start, state, target);
             }
         }
         if (this.tokentype === CSL.END) {
@@ -7212,7 +7258,7 @@ CSL.Node.group = {
             this.execs.push(func);
             if (this.juris) {
                 var else_end = new CSL.Token("else", CSL.END);
-                CSL.Node.else.build.call(else_end, state, target);
+                CSL.Node["else"].build.call(else_end, state, target);
                 var choose_end = new CSL.Token("choose", CSL.END);
                 CSL.Node.choose.build.call(choose_end, state, target);
             }
@@ -12180,11 +12226,6 @@ CSL.Transform = function (state) {
     this.getTextSubField = getTextSubField;
     function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
         var value;
-        if (myabbrev_family === "jurisdiction") {
-            if (state.opt.suppressedJurisdictions[Item.jurisdiction]) {
-                return "";
-            }
-        }
         myabbrev_family = CSL.FIELD_CATEGORY_REMAP[myabbrev_family];
         if (!myabbrev_family) {
             return basevalue;
@@ -12291,13 +12332,8 @@ CSL.Transform = function (state) {
             }
         }
         ret.token = CSL.Util.cloneToken(this);
-        if (field === 'jurisdiction' && CSL.getSuppressedJurisdictionName) {
-            if (ret.name && !jurisdictionName) {
-                jurisdictionName = state.sys.getHumanForm(Item[field]);
-            }
-            if (jurisdictionName) {
-                ret.name = CSL.getSuppressedJurisdictionName.call(state, Item[field], jurisdictionName);
-            }
+        if (state.sys.getHumanForm && field === 'jurisdiction' && ret.name) {
+            ret.name = CSL.getJurisdictionNameAndSuppress(state, Item[field], jurisdictionName);
         } else if (["title", "container-title"].indexOf(field) > -1) {
             if (!usedOrig
                 && (!ret.token.strings["text-case"]
@@ -12324,32 +12360,9 @@ CSL.Transform = function (state) {
             return jurisdiction;
         }
         if (state.sys.getAbbreviation) {
-            var tryList = ['default'];
-            if (jurisdiction !== 'default') {
-                var workLst = jurisdiction.split(":");
-                for (var i=0, ilen=workLst.length; i < ilen; i += 1) {
-                    tryList.push(workLst.slice(0,i+1).join(":"));
-                }
-            }
-            var found = false;
-            for (var i=tryList.length - 1; i > -1; i += -1) {
-                if (!state.transform.abbrevs[tryList[i]]) {
-                    state.transform.abbrevs[tryList[i]] = new state.sys.AbbreviationSegments();
-                }
-                if (state.transform.abbrevs[tryList[i]][category]) {
-                    if (!state.transform.abbrevs[tryList[i]][category][orig]) {
-                        state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, tryList[i], category, orig, itemType, true);
-                    }
-                    if (!found && state.transform.abbrevs[tryList[i]][category][orig]) {
-                        if (i < tryList.length) {
-                            state.transform.abbrevs[jurisdiction][category][orig] = state.transform.abbrevs[tryList[i]][category][orig];
-                        }
-                        found = true;
-                    }
-                }
-            }
+            return state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, jurisdiction, category, orig, itemType, true);
         }
-        return jurisdiction;
+        return "default";        
     }
     this.loadAbbreviation = loadAbbreviation;
     function publisherCheck (tok, Item, primary, myabbrev_family) {
@@ -14911,7 +14924,7 @@ CSL.Output.Formatters = new function () {
             }
         }
         if (config.doppel.strings.length && config.doppel.strings[0].trim()) {
-            config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0)
+            config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0, config.doppel.tags[0]);
         }
     	for (var i=0,ilen=config.doppel.tags.length;i<ilen;i++) {
             var tag = config.doppel.tags[i];
@@ -14929,7 +14942,7 @@ CSL.Output.Formatters = new function () {
                 }
             }
             if (config.tagState.length === 0) {
-                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1);
+                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1, config.doppel,config.doppel.tags[i+1]);
             } else if (config.doppel.strings[i+1].trim()) {
                 config.lastWordPos = null;
             }
@@ -15038,7 +15051,7 @@ CSL.Output.Formatters = new function () {
     function title(state, string) {
         var config = {
             quoteState: [],
-            capitaliseWords: function(str, i) {
+            capitaliseWords: function(str, i, followingTag) {
                 if (str.trim()) {
                     var words = str.split(/[ \u00A0]+/);
                     var wordle = wordDoppel.split(str);
@@ -15047,6 +15060,8 @@ CSL.Output.Formatters = new function () {
                         var word = words[j];
                         if (!word) continue;
                         if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
+                            words[j] = _capitalise(words[j]);
+                        } else if (j === (words.length - 1) && followingTag === "-") {
                             words[j] = _capitalise(words[j]);
                         } else if (config.isFirst) {
                             words[j] = _capitalise(words[j]);
