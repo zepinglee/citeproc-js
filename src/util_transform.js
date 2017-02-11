@@ -236,9 +236,12 @@ CSL.Transform = function (state) {
         //
         // See testrunner_stdrhino.js for an example.
         if (state.sys.getAbbreviation) {
-            return state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, jurisdiction, category, orig, itemType, true);
+            jurisdiction = state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, jurisdiction, category, orig, itemType, true);
+            if (!jurisdiction) {
+                jurisdiction = "default";
+            }
         }
-        return "default";        
+        return jurisdiction;
     }
     this.loadAbbreviation = loadAbbreviation;
 
