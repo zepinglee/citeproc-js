@@ -226,6 +226,9 @@ CSL.Transform = function (state) {
             if (!state.transform.abbrevs[jurisdiction]) {
                 state.transform.abbrevs[jurisdiction] = new state.sys.AbbreviationSegments();
             }
+            if (!state.transform.abbrevs[jurisdiction][category]) {
+                state.transform.abbrevs[jurisdiction][category] = {};
+            }
             return jurisdiction;
         }
         // The getAbbreviation() function should check the
