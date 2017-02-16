@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.154",
+    PROCESSOR_VERSION: "1.1.155",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -224,8 +224,7 @@ var CSL = {
         "number-of-volumes": "number",
         "volume": "number",
         "citation-number": "number",
-        "publisher": "institution-part",
-        "authority": "institution-part"
+        "publisher": "institution-part"
     },
     parseLocator: function(item) {
         if (this.opt.development_extensions.locator_date_and_revision) {
@@ -3018,6 +3017,15 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 				}
 			}
 			Item.legislation_id = legislation_id.join("::");
+        }
+    }
+    if (this.opt.development_extensions.force_jurisdiction) {
+        if ("string" === typeof Item.authority) {
+            Item.authority = [
+                {
+                    literal: Item.authority
+                }
+            ]
         }
     }
     if (!Item["title-short"]) {

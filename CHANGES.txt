@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.155
+==========================
+
+- Force string authority to name shape in Juris-M styles.
+
+- Ignore authority in ordinary-field abbreviation map.
+
+==========================
 Changes in version 1.1.154
 ==========================
 
