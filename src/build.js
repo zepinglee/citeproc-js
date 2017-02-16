@@ -689,6 +689,16 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			Item.legislation_id = legislation_id.join("::");
         }
     }
+    // For authority to name shape in legal styles
+    if (this.opt.development_extensions.force_jurisdiction) {
+        if ("string" === typeof Item.authority) {
+            Item.authority = [
+                {
+                    literal: Item.authority
+                }
+            ]
+        }
+    }
     // Add getAbbreviation() call for title-short and container-title-short
     if (!Item["title-short"]) {
         Item["title-short"] = Item.shortTitle;
