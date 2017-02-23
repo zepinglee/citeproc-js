@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.156
+==========================
+
+- Fix bug in particle parsing that rendered Shun'ichi as Shun 'ichi.
+
+    https://forums.zotero.org/discussion/64543/apostrophe-in-name-causes-truncation
+
+==========================
 Changes in version 1.1.155
 ==========================
 

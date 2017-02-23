@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.155",
+    PROCESSOR_VERSION: "1.1.156",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -438,6 +438,8 @@ var CSL = {
     VIETNAMESE_NAMES: /^(?:(?:[.AaBbCcDdEeGgHhIiKkLlMmNnOoPpQqRrSsTtUuVvXxYy \u00c0-\u00c3\u00c8-\u00ca\u00cc\u00cd\u00d2-\u00d5\u00d9\u00da\u00dd\u00e0-\u00e3\u00e8-\u00ea\u00ec\u00ed\u00f2-\u00f5\u00f9\u00fa\u00fd\u0101\u0103\u0110\u0111\u0128\u0129\u0168\u0169\u01a0\u01a1\u01af\u01b0\u1ea0-\u1ef9]{2,6})(\s+|$))+$/,
     NOTE_FIELDS_REGEXP: /\{:(?:[\-_a-z]+|[A-Z]+):[^\}]+\}/g,
     NOTE_FIELD_REGEXP: /^([\-_a-z]+|[A-Z]+):\s*([^\}]+)$/,
+	PARTICLE_GIVEN_REGEXP: /^([^ ]+(?:\u02bb |\u2019 | |\' ) *)(.+)$/,
+	PARTICLE_FAMILY_REGEXP: /^([^ ]+(?:\-|\u02bb|\u2019| |\') *)(.+)$/,
     DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
     NAME_VARIABLES: [
         "author",
@@ -16643,13 +16645,13 @@ CSL.parseParticles = function(){
 		nameValue = caseOverride ? nameValue.toLowerCase() : nameValue;
 		var particleList = [];
 		var apostrophe;
+		var rex;
 		if (firstNameFlag) {
-			apostrophe ="\u02bb";
 			nameValue = nameValue.split("").reverse().join("");
+			rex = CSL.PARTICLE_GIVEN_REGEXP;
 		} else {
-			apostrophe ="-\u2019";
+			rex = CSL.PARTICLE_FAMILY_REGEXP;
 		}
-		var rex = new RegExp("^([^ ]+[" + apostrophe + " \'] *)(.+)$");
 		var m = nameValue.match(rex);
 		while (m) {
 			var m1 = firstNameFlag ? m[1].split("").reverse().join("") : m[1];
