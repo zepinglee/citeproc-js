@@ -33,7 +33,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.155",
+    PROCESSOR_VERSION: "1.1.156",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -515,6 +515,9 @@ var CSL = {
 
     NOTE_FIELDS_REGEXP: /\{:(?:[\-_a-z]+|[A-Z]+):[^\}]+\}/g,
     NOTE_FIELD_REGEXP: /^([\-_a-z]+|[A-Z]+):\s*([^\}]+)$/,
+
+	PARTICLE_GIVEN_REGEXP: /^([^ ]+(?:\u02bb |\u2019 | |\' ) *)(.+)$/,
+	PARTICLE_FAMILY_REGEXP: /^([^ ]+(?:\-|\u02bb|\u2019| |\') *)(.+)$/,
 
     DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
