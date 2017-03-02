@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.156",
+    PROCESSOR_VERSION: "1.1.157",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -7519,10 +7519,10 @@ CSL.Node.key = {
             var variable = this.variables[0];
             if (variable === "citation-number") {
                 if (state.build.area === "citation" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort = true;
+                    state.opt.citation_number_sort = false;
                 }
                 if (state.build.root === "bibliography" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort_used = true;
+                    state.opt.citation_number_sort_used = false;
                 }
             }
             if (CSL.CREATORS.indexOf(variable) > -1) {
