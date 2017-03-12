@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.158
+==========================
+
+- Fix delimiter in author-date styles with "collapse," where an author-date
+  cite was followed by a title-date cite. The processor had detected this
+  as a collapsed cite, and delivered the wrong delimiter. Issue was reported
+  here:
+
+    https://github.com/citation-style-language/styles/pull/2558
+
+==========================
 Changes in version 1.1.157
 ==========================
 
