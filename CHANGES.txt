@@ -1,6 +1,21 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.159
+==========================
+
+- Set default empty-string value on citation splice delimiter when no value
+  is provided in the style.
+
+    https://forums.zotero.org/discussion/64827/macos-error-when-trying-to-insert-new-citations-or-set-doc-preferences
+
+- Do not print an ugly placeholder for items omitted from bibliography in
+  non-numeric styles. In numeric styles, format the placeholder a little
+  more nicely. Arises from discussion here:
+
+    https://forums.zotero.org/discussion/64871/csl-allow-dropping-items-from-bibliography
+
+==========================
 Changes in version 1.1.158
 ==========================
 
