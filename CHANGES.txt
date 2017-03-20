@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.160
+==========================
+
+- Fix crashing bug triggered by closing quotation marks with spaces
+  on both sides.
+
+    https://github.com/citation-style-language/test-suite/blob/master/processor-tests/humans/flipflop_OrphanQuote.txt
+
+==========================
 Changes in version 1.1.159
 ==========================
 

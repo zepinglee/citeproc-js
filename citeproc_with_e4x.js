@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.159",
+    PROCESSOR_VERSION: "1.1.160",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1153,6 +1153,9 @@ CSL.XmlJSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
     return ret;
 }
 CSL.XmlJSON.prototype.nodeNameIs = function (myjson,name) {
+    if (typeof myjson === "undefined") {
+        return false;
+    }
     if (name == myjson.name) {
         return true;
     }
@@ -14992,8 +14995,10 @@ CSL.Output.Formatters = new function () {
         if (config.quoteState) {
             for (var i=0,ilen=config.quoteState.length;i<ilen;i++) {
                 var quotePos = config.quoteState[i].pos;
-                var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
-                config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                if (typeof quotePos !== 'undefined') {
+                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
+                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                }
             }
         }
         if (config.lastWordPos) {
