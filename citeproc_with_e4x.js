@@ -9726,7 +9726,13 @@ CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
 }
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
+    if (!value.literal && value.family) {
+        value.literal = value.family;
+        delete value.family;
+    }
+    console.log("XX10: " + this.Item.id + " " + JSON.stringify(value));
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
+    console.log("  XX10 OK");
     splitInstitution = splitInstitution.split("|");
     if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
         var jurisdiction = this.Item.jurisdiction;
