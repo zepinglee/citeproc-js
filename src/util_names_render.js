@@ -1024,6 +1024,13 @@ CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
 
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
+    // Due to a bug in Juris-M, there are a small number of items in my accounts that have
+    // a institution parent, and a personal child. The bug that created them was fixed before
+    // release, but this hack keeps them from crashing the processor.
+    if (!value.literal && value.family) {
+        value.literal = value.family;
+        delete value.family;
+    }
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     // check for total and utter abbreviation IFF form="short"
     splitInstitution = splitInstitution.split("|");
