@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.163
+==========================
+
+- Treat endash the same as hyphen in title case transform
+
+    https://github.com/Juris-M/citeproc-js/issues/42
+
+==========================
 Changes in version 1.1.162
 ==========================
 
