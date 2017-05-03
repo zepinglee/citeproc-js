@@ -4,6 +4,13 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 Changes in version 1.1.164
 ==========================
 
+- Revert ffa12aa3 (Oct. 31). It did not fix bibliography disambiguation,
+  but broke it instead.
+
+==========================
+Changes in version 1.1.164
+==========================
+
 - Treat emdash the same as hyphen. Ditto as below.
 
 ==========================
