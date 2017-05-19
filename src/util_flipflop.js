@@ -374,7 +374,7 @@ CSL.Util.FlipFlopper = function(state) {
         return false;
     }
 
-    function _undoppelToQueue(blob, doppel) {
+    function _undoppelToQueue(blob, doppel, leadingSpace) {
         var TOP = blob;
         var firstString = true;
         var tagReg = new _TagReg(blob);
@@ -383,7 +383,6 @@ CSL.Util.FlipFlopper = function(state) {
             this.stack = [blob];
             this.latest = blob;
             this.addStyling = function(str, decor) {
-                //print("STR=["+str+"]")
                 if (firstString) {
                     if (str.slice(0, 1) === " ") {
                         str = str.slice(1);
@@ -460,7 +459,11 @@ CSL.Util.FlipFlopper = function(state) {
         };
         var stack = new Stack(blob);
         if (doppel.strings.length) {
-            stack.addStyling(doppel.strings[0]);
+            var str = doppel.strings[0];
+            if (leadingSpace) {
+                str = " " + str;
+            }
+            stack.addStyling(str);
         }
         for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
             var tag = doppel.tags[i];
@@ -481,7 +484,12 @@ CSL.Util.FlipFlopper = function(state) {
      */
 
     function processTags(blob) {
-        var str = " " + blob.blobs;
+        var str = blob.blobs;
+        var leadingSpace = false;
+        if (str.slice(0, 1) === " " && !str.match(/^\s+[\'\"]/)) {
+            leadingSpace = true;
+        }
+        var str = " " + str;
         var doppel = _doppelString(str);
         if (doppel.tags.length === 0) return;
         var quoteFormSeen = false;
@@ -573,6 +581,6 @@ CSL.Util.FlipFlopper = function(state) {
         }
         //print(JSON.stringify(doppel, null, 2))
         //print(_undoppelString(doppel));
-        _undoppelToQueue(blob, doppel);
+        _undoppelToQueue(blob, doppel, leadingSpace);
     }
 }
