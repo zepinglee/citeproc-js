@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.165",
+    PROCESSOR_VERSION: "1.1.167",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3797,6 +3797,10 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.parallel.AppendBlobPointer(curr);
     }
     if ("string" === typeof str) {
+        if ("string" === typeof blob.blobs && [':', '!', '?', '.', ',', ';'].indexOf(blob.blobs.slice(0, 1)) > -1) {
+            blob.strings.prefix = blob.strings.prefix + blob.blobs.slice(0, 1);
+            blob.blobs = blob.blobs.slice(1);
+        }
         if (blob.strings["text-case"]) {
             blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
         }
@@ -14690,7 +14694,7 @@ CSL.Util.FlipFlopper = function(state) {
         }
         return false;
     }
-    function _undoppelToQueue(blob, doppel) {
+    function _undoppelToQueue(blob, doppel, leadingSpace) {
         var TOP = blob;
         var firstString = true;
         var tagReg = new _TagReg(blob);
@@ -14768,7 +14772,11 @@ CSL.Util.FlipFlopper = function(state) {
         };
         var stack = new Stack(blob);
         if (doppel.strings.length) {
-            stack.addStyling(doppel.strings[0]);
+            var str = doppel.strings[0];
+            if (leadingSpace) {
+                str = " " + str;
+            }
+            stack.addStyling(str);
         }
         for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
             var tag = doppel.tags[i];
@@ -14784,7 +14792,12 @@ CSL.Util.FlipFlopper = function(state) {
         }
     }
     function processTags(blob) {
-        var str = " " + blob.blobs;
+        var str = blob.blobs;
+        var leadingSpace = false;
+        if (str.slice(0, 1) === " " && !str.match(/^\s+[\'\"]/)) {
+            leadingSpace = true;
+        }
+        var str = " " + str;
         var doppel = _doppelString(str);
         if (doppel.tags.length === 0) return;
         var quoteFormSeen = false;
@@ -14863,7 +14876,7 @@ CSL.Util.FlipFlopper = function(state) {
                 doppel.strings[i] += tag.slice(0, 1);
             }
         }
-        _undoppelToQueue(blob, doppel);
+        _undoppelToQueue(blob, doppel, leadingSpace);
     }
 }
 CSL.Output.Formatters = new function () {

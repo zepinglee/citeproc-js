@@ -1,7 +1,25 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
-
+=
 ==========================
-Changes in version 1.1.164
+Changes in version 1.1.167
+==========================
+
+- Fix punctuation movement on user-supplied suffixes. Issue
+  reported on Zotero forums:
+
+    https://forums.zotero.org/discussion/65609/comma-period-inside-closing-quotation-mark-in-sblhs
+
+=========================
+Changes in version 1.1.166
+==========================
+
+- Preserve leading spaces on strings processed by flipflop. Issue
+  reported on Zotero forums:
+
+    https://forums.zotero.org/discussion/65702/change-in-suffix-behaviour
+
+===========================
+Changes in version 1.1.165
 ==========================
 
 - Revert ffa12aa3 (Oct. 31). It did not fix bibliography disambiguation,
