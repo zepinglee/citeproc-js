@@ -271,7 +271,10 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.parallel.AppendBlobPointer(curr);
     }
     if ("string" === typeof str) {
-        
+        if ("string" === typeof blob.blobs && [':', '!', '?', '.', ',', ';'].indexOf(blob.blobs.slice(0, 1)) > -1) {
+            blob.strings.prefix = blob.strings.prefix + blob.blobs.slice(0, 1);
+            blob.blobs = blob.blobs.slice(1);
+        }
         if (blob.strings["text-case"]) {
             //
             // This one is _particularly_ hard to follow.  It's not obvious,
