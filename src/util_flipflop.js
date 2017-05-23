@@ -110,7 +110,8 @@ CSL.Util.FlipFlopper = function(state) {
             outer: "true",
             flipflop: {
                 "true": "inner",
-                "inner": "true"
+                "inner": "true",
+                "false": "true"
             }
         },
         " \'": {
@@ -121,7 +122,8 @@ CSL.Util.FlipFlopper = function(state) {
             outer: "inner",
             flipflop: {
                 "true": "inner",
-                "inner": "true"
+                "inner": "true",
+                "false": "true"
             }
         }
     }
