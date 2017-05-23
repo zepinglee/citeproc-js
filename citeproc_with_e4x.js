@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.168",
+    PROCESSOR_VERSION: "1.1.169",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -14456,7 +14456,8 @@ CSL.Util.FlipFlopper = function(state) {
             outer: "true",
             flipflop: {
                 "true": "inner",
-                "inner": "true"
+                "inner": "true",
+                "false": "true"
             }
         },
         " \'": {
@@ -14467,7 +14468,8 @@ CSL.Util.FlipFlopper = function(state) {
             outer: "inner",
             flipflop: {
                 "true": "inner",
-                "inner": "true"
+                "inner": "true",
+                "false": "true"
             }
         }
     }
