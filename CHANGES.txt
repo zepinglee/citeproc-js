@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.170
+==========================
+
+- Revert 5cdc4b from 1.1.150, which broke bibliography formatting in
+  clients. Refs:
+
+    https://github.com/Juris-M/citeproc-js/issues/15
+    https://forums.zotero.org/discussion/comment/277092
+   
+==========================
 Changes in version 1.1.169
 ==========================
 
