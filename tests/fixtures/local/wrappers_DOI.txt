@@ -11,7 +11,7 @@ citation
 
 
 >>===== RESULT =====>>
-(His Anonymous Life <i><a href="http://dx.doi.org/10.1111/j.1747-4469.1976.tb00951.x">10.1111/j.1747-4469.1976.tb00951.x</a></i>)
+(His Anonymous Life <i><a href="https://doi.org/10.1111/j.1747-4469.1976.tb00951.x">10.1111/j.1747-4469.1976.tb00951.x</a></i>)
 <<===== RESULT =====<<
 
 
