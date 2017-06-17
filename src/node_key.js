@@ -79,10 +79,10 @@ CSL.Node.key = {
             // by this variable seem unlikely.
             if (variable === "citation-number") {
                 if (state.build.area === "citation" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort = true;
+                    state.opt.citation_number_sort = false;
                 }
                 if (state.build.root === "bibliography" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort_used = true;
+                    state.opt.citation_number_sort_used = false;
                 }
             }
             if (CSL.CREATORS.indexOf(variable) > -1) {

@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.156",
+    PROCESSOR_VERSION: "1.1.170",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -1153,6 +1153,9 @@ CSL.XmlJSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
     return ret;
 }
 CSL.XmlJSON.prototype.nodeNameIs = function (myjson,name) {
+    if (typeof myjson === "undefined") {
+        return false;
+    }
     if (name == myjson.name) {
         return true;
     }
@@ -3794,6 +3797,10 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.parallel.AppendBlobPointer(curr);
     }
     if ("string" === typeof str) {
+        if ("string" === typeof blob.blobs && [':', '!', '?', '.', ',', ';'].indexOf(blob.blobs.slice(0, 1)) > -1) {
+            blob.strings.prefix = blob.strings.prefix + blob.blobs.slice(0, 1);
+            blob.blobs = blob.blobs.slice(1);
+        }
         if (blob.strings["text-case"]) {
             blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
         }
@@ -5455,6 +5462,8 @@ CSL.getSpliceDelimiter = function (last_collapsed, pos) {
         if (alt_affixes && alt_affixes.delimiter) {
             this.tmp.splice_delimiter = alt_affixes.delimiter;
         }
+    } else if (!this.tmp.splice_delimiter) {
+        this.tmp.splice_delimiter = "";
     }
     return this.tmp.splice_delimiter;
 };
@@ -6082,10 +6091,13 @@ CSL.getBibliographyEntries = function (bibsection) {
             this.output.adjust.fix(this.output.queue[j]);
         }
         res = this.output.string(this, this.output.queue)[0];
-        if (!res) {
-            res = "\n[CSL STYLE ERROR: reference with no printed form.]\n";
+        if (!res && this.opt.update_mode === CSL.NUMERIC) {
+            var err = (ret.length + 1) + ". [CSL STYLE ERROR: reference with no printed form.]"
+            res = CSL.Output.Formats[this.opt.mode]["@bibliography/entry"](this, err) 
         }
-        ret.push(res);
+        if (res) {
+            ret.push(res);
+        }
     }
     var done = false;
     if (bibsection && bibsection.page_start && bibsection.page_length) {
@@ -7520,10 +7532,10 @@ CSL.Node.key = {
             var variable = this.variables[0];
             if (variable === "citation-number") {
                 if (state.build.area === "citation" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort = true;
+                    state.opt.citation_number_sort = false;
                 }
                 if (state.build.root === "bibliography" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort_used = true;
+                    state.opt.citation_number_sort_used = false;
                 }
             }
             if (CSL.CREATORS.indexOf(variable) > -1) {
@@ -8751,11 +8763,11 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         }
         chk = this.state.tmp.disambig_settings.givens[pos][i];
         if ("undefined" === typeof chk) {
-            myform = this.state.inheritOpt(this.name, "form", "name-form", "long");
+            myform = this.state.inheritOpt(this.name, "form", "name-form");
             param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, 0, myform, myinitials);
             this.state.tmp.disambig_settings.givens[pos].push(param);
         }
-        myform = this.state.inheritOpt(this.name, "form", "name-form", "long");
+        myform = this.state.inheritOpt(this.name, "form", "name-form");
         paramx = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, 0, myform, myinitials);
         if (this.state.tmp.disambig_request) {
             var val = this.state.tmp.disambig_settings.givens[pos][i];
@@ -8767,7 +8779,7 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             }
             param = val;
             if (this.state.opt["disambiguate-add-givenname"] && lst[i].given) {
-                param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.state.inheritOpt(this.name, "form", "name-form", "long"), this.state.inheritOpt(this.name, "initialize-with"));
+                param = this.state.registry.namereg.evalname("" + this.Item.id, lst[i], i, param, this.state.inheritOpt(this.name, "form", "name-form"), this.state.inheritOpt(this.name, "initialize-with"));
             }
         } else {
             param = paramx;
@@ -9718,6 +9730,10 @@ CSL.NameOutput.prototype.getStaticOrder = function (name, refresh) {
 }
 CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     var ret = {};
+    if (!value.literal && value.family) {
+        value.literal = value.family;
+        delete value.family;
+    }
     var splitInstitution = value.literal.replace(/\s*\|\s*/g, "|");
     splitInstitution = splitInstitution.split("|");
     if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
@@ -10484,6 +10500,9 @@ CSL.Node.text = {
                     state.build.plural = false;
                 } else if (this.variables_real.length) {
                     func = function (state, Item, item) {
+                        if (this.variables_real[0] !== "locator") {
+                            state.tmp.have_collapsed = false;
+                        }
                         var parallel_variable = this.variables[0];
                         if (parallel_variable === "title" 
                             && (form === "short" || Item["title-short"])) { 
@@ -11542,7 +11561,7 @@ CSL.Attributes["@second-field-align"] = function (state, arg) {
 };
 CSL.Attributes["@hanging-indent"] = function (state, arg) {
     if (arg === "true") {
-        state[this.name].opt.hangingindent = true;
+        state[this.name].opt.hangingindent = 2;
     }
 };
 CSL.Attributes["@line-spacing"] = function (state, arg) {
@@ -14437,7 +14456,8 @@ CSL.Util.FlipFlopper = function(state) {
             outer: "true",
             flipflop: {
                 "true": "inner",
-                "inner": "true"
+                "inner": "true",
+                "false": "true"
             }
         },
         " \'": {
@@ -14448,7 +14468,8 @@ CSL.Util.FlipFlopper = function(state) {
             outer: "inner",
             flipflop: {
                 "true": "inner",
-                "inner": "true"
+                "inner": "true",
+                "false": "true"
             }
         }
     }
@@ -14597,19 +14618,32 @@ CSL.Util.FlipFlopper = function(state) {
         }
     }
     function _doppelString(str) {
+        var forcedSpaces = [];
         str = str.replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?\"[^>]*(>)/g, "$1 $2$3;\"$4");
         str = str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3");
         var match = str.match(_tagRex.matchAll);
         if (!match) {
             return {
                 tags: [],
-                strings: [str]
+                strings: [str],
+                forcedSpaces: []
             };
         }
         var split = str.split(_tagRex.splitAll);
+        for (var i=0,ilen=match.length-1;i<ilen;i++) {
+            if (_nestingData[match[i]]) {
+                if (split[i+1] === "" && ["\"", "'"].indexOf(match[i+1]) > -1) {
+                    match[i+1] = " " + match[i+1]
+                    forcedSpaces.push(true);
+                } else {
+                    forcedSpaces.push(false);
+                }
+            }
+        }
         return {
             tags: match,
-            strings: split
+            strings: split,
+            forcedSpaces: forcedSpaces
         }
     }
     function _undoppelString(obj) {
@@ -14675,7 +14709,7 @@ CSL.Util.FlipFlopper = function(state) {
         }
         return false;
     }
-    function _undoppelToQueue(blob, doppel) {
+    function _undoppelToQueue(blob, doppel, leadingSpace) {
         var TOP = blob;
         var firstString = true;
         var tagReg = new _TagReg(blob);
@@ -14683,7 +14717,7 @@ CSL.Util.FlipFlopper = function(state) {
         function Stack (blob) {
             this.stack = [blob];
             this.latest = blob;
-            this.addStyling = function(str, decor) {
+            this.addStyling = function(str, decor, forcedSpace) {
                 if (firstString) {
                     if (str.slice(0, 1) === " ") {
                         str = str.slice(1);
@@ -14753,7 +14787,11 @@ CSL.Util.FlipFlopper = function(state) {
         };
         var stack = new Stack(blob);
         if (doppel.strings.length) {
-            stack.addStyling(doppel.strings[0]);
+            var str = doppel.strings[0];
+            if (leadingSpace) {
+                str = " " + str;
+            }
+            stack.addStyling(str);
         }
         for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
             var tag = doppel.tags[i];
@@ -14769,7 +14807,12 @@ CSL.Util.FlipFlopper = function(state) {
         }
     }
     function processTags(blob) {
-        var str = " " + blob.blobs;
+        var str = blob.blobs;
+        var leadingSpace = false;
+        if (str.slice(0, 1) === " " && !str.match(/^\s+[\'\"]/)) {
+            leadingSpace = true;
+        }
+        var str = " " + str;
         var doppel = _doppelString(str);
         if (doppel.tags.length === 0) return;
         var quoteFormSeen = false;
@@ -14794,7 +14837,11 @@ CSL.Util.FlipFlopper = function(state) {
                                 doppel.strings[i+1] = "\u2019" + doppel.strings[i+1];
                                 doppel.tags[i] = "";
                             } else {
-                                doppel.strings[tagInfo.fixtag+1] = doppel.tags[tagInfo.fixtag] + doppel.strings[tagInfo.fixtag+1];
+                                var failedTag = doppel.tags[tagInfo.fixtag];
+                                if (doppel.forcedSpaces[tagInfo.fixtag-1]) {
+                                    failedTag = failedTag.slice(1);
+                                }
+                                doppel.strings[tagInfo.fixtag+1] = failedTag + doppel.strings[tagInfo.fixtag+1];
                                 doppel.tags[tagInfo.fixtag] = "";
                             }
                             if (_nestingState.length > 0) {
@@ -14824,11 +14871,10 @@ CSL.Util.FlipFlopper = function(state) {
             var tag = doppel.tags[tagPos];
             if (tag === " \'" || tag === "\'") {
                 doppel.strings[tagPos+1] = " \u2019" + doppel.strings[tagPos+1];
-                doppel.tags[tagPos] = "";
             } else {
                 doppel.strings[tagPos+1] = doppel.tags[tagPos] + doppel.strings[tagPos+1];
-                doppel.tags[tagPos] = "";
             }
+            doppel.tags[tagPos] = "";
             _nestingState.pop();
         }
         for (var i=doppel.tags.length-1;i>-1;i--) {
@@ -14840,15 +14886,18 @@ CSL.Util.FlipFlopper = function(state) {
         }
         for (var i=0,ilen=doppel.tags.length;i<ilen;i++) {
             var tag = doppel.tags[i];
-            if ([" \"", " \'", "(\""].indexOf(tag) > -1) {
+            var forcedSpace = doppel.forcedSpaces[i-1];
+            if ([" \"", " \'", "(\"", "(\'"].indexOf(tag) > -1) {
                 if (!quoteFormSeen) {
                     _setOuterQuoteForm(tag);
                     quoteFormSeen = true;
                 }
-                doppel.strings[i] += tag.slice(0, 1);
+                if (!forcedSpace) {
+                    doppel.strings[i] += tag.slice(0, 1);
+                }
             }
         }
-        _undoppelToQueue(blob, doppel);
+        _undoppelToQueue(blob, doppel, leadingSpace);
     }
 }
 CSL.Output.Formatters = new function () {
@@ -14859,7 +14908,7 @@ CSL.Output.Formatters = new function () {
     this.title = title;
     this["capitalize-first"] = capitalizeFirst;
     this["capitalize-all"] = capitalizeAll;
-    var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\/.,;?!:]|\\[|\\]|\\(|\\)|<span style=\"font-variant: small-caps;\">|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
+    var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\–\—\/.,;?!:]|\\[|\\]|\\(|\\)|<span style=\"font-variant: small-caps;\">|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
     tagDoppel = new CSL.Doppeler(rexStr, function(str) {
         return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3").replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?(\")[^>]*(>)/g, "$1 $2 $3;$4$5");
     });
@@ -14984,8 +15033,10 @@ CSL.Output.Formatters = new function () {
         if (config.quoteState) {
             for (var i=0,ilen=config.quoteState.length;i<ilen;i++) {
                 var quotePos = config.quoteState[i].pos;
-                var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
-                config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                if (typeof quotePos !== 'undefined') {
+                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
+                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                }
             }
         }
         if (config.lastWordPos) {

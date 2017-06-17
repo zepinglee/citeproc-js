@@ -214,6 +214,10 @@ CSL.Node.text = {
                 } else if (this.variables_real.length) {
                     func = function (state, Item, item) {
 
+                        // If some text variable is rendered, we're not collapsing.
+                        if (this.variables_real[0] !== "locator") {
+                            state.tmp.have_collapsed = false;
+                        }
                         var parallel_variable = this.variables[0];
                         
                         if (parallel_variable === "title" 

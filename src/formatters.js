@@ -9,7 +9,7 @@ CSL.Output.Formatters = new function () {
     this["capitalize-first"] = capitalizeFirst;
     this["capitalize-all"] = capitalizeAll;
 
-    var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\/.,;?!:]|\\[|\\]|\\(|\\)|<span style=\"font-variant: small-caps;\">|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
+    var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\–\—\/.,;?!:]|\\[|\\]|\\(|\\)|<span style=\"font-variant: small-caps;\">|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
     tagDoppel = new CSL.Doppeler(rexStr, function(str) {
         return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3").replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?(\")[^>]*(>)/g, "$1 $2 $3;$4$5");
     });
@@ -160,8 +160,12 @@ CSL.Output.Formatters = new function () {
         if (config.quoteState) {
             for (var i=0,ilen=config.quoteState.length;i<ilen;i++) {
                 var quotePos = config.quoteState[i].pos;
-                var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
-                config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                // Test for quotePos avoids a crashing error:
+                //   https://github.com/citation-style-language/test-suite/blob/master/processor-tests/humans/flipflop_OrphanQuote.txt
+                if (typeof quotePos !== 'undefined') {
+                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
+                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                }
             }
         }
         // Capitalize the last word if necessary (bypasses stop-word list)
