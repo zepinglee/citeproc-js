@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.171",
+    PROCESSOR_VERSION: "1.1.172",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3797,9 +3797,19 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         this.state.parallel.AppendBlobPointer(curr);
     }
     if ("string" === typeof str) {
-        if ("string" === typeof blob.blobs && [':', '!', '?', '.', ',', ';'].indexOf(blob.blobs.slice(0, 1)) > -1) {
-            blob.strings.prefix = blob.strings.prefix + blob.blobs.slice(0, 1);
-            blob.blobs = blob.blobs.slice(1);
+        if ("string" === typeof blob.blobs) {
+            if (blob.blobs.slice(0, 1) !== " ") {
+                var blobPrefix = "";
+                var blobBlobs = blob.blobs;
+                while (CSL.TERMINAL_PUNCTUATION.indexOf(blobBlobs.slice(0, 1)) > -1) {
+                    blobPrefix = blobPrefix + blobBlobs.slice(0, 1);
+                    blobBlobs = blobBlobs.slice(1);
+                }
+                if (blobBlobs && blobPrefix) {
+                    blob.strings.prefix = blob.strings.prefix + blobPrefix;
+                    blob.blobs = blobBlobs;
+                }
+            }
         }
         if (blob.strings["text-case"]) {
             blob.blobs = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
