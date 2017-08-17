@@ -1274,10 +1274,12 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     this.tmp.name_node = {};
     this.nameOutput = new CSL.NameOutput(this, Item, item);
 
+
     // rerun?
     while (next < this[this.tmp.area].tokens.length) {
         next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }
+
 
     CSL.citeEnd.call(this, Item, item);
     this.parallel.CloseCite(this);
@@ -1331,7 +1333,9 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
             if (this.tmp.area === 'bibliography' && this.tmp.disambig_settings && this.tmp.disambig_override) {
                 if (this.opt["disambiguate-add-names"]) {
                     this.tmp.disambig_settings.names = this.registry.registry[Item.id].disambig.names.slice();
-                    this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
+                    if (this.tmp.disambig_request) {
+                        this.tmp.disambig_request.names = this.registry.registry[Item.id].disambig.names.slice();
+                    }
                 }
                 if (this.opt["disambiguate-add-givenname"]) {
                     // This is weird and delicate and not fully understood
@@ -1348,6 +1352,7 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
             }
         }
     }
+
     this.tmp.names_used = [];
     this.tmp.nameset_counter = 0;
     this.tmp.years_used = [];
@@ -1370,7 +1375,6 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     //this.setNumberLabels(Item);
     this.tmp.first_name_string = false;
     this.tmp.authority_stop_last = 0;
-
 };
 
 CSL.citeEnd = function (Item, item) {
