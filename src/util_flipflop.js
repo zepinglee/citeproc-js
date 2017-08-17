@@ -337,7 +337,7 @@ CSL.Util.FlipFlopper = function(state) {
         this.set = set;
         this.pair = pair;
         this.pop = pop;
-        _stack = [];
+        var _stack = [];
         function set(tag) {
             var attr = _nestingData[tag].attr;
             var decor = null;

@@ -35,8 +35,9 @@ StdRhinoTest.prototype.retrieveItem = function(id){
 // (Deployments MUST provide an instance object with
 // this method.)
 StdRhinoTest.prototype.retrieveLocale = function(lang){
+    var ret;
     try {
-        var ret = null;
+        ret = null;
         if (this.engineNickname == "rhino") {
             ret = readFile("./locale/locales-"+lang+".xml", "UTF-8");
         } else if (this.engineNickname == "jsc") {
@@ -140,7 +141,7 @@ StdRhinoTest.prototype._setCache = function(){
 
 
 StdRhinoTest.prototype._readTest = function(){
-    var test;
+    var test, ret;
     var filename = "std/machines/" + this.myname + ".json";
     
     var teststring = null;
@@ -169,7 +170,7 @@ StdRhinoTest.prototype.run = function(){
     var result, data, nosort;
     // print(this.myname);
     var len, pos, ret, id_set, nick;
-    ret = new Array();
+    var ret = new Array();
 
     function variableWrapper(params, prePunct, str, postPunct) {
         //print(JSON.stringify(params,null,2));
@@ -257,7 +258,7 @@ StdRhinoTest.prototype.run = function(){
     if (this.test.abbreviations) {
         for (jurisdiction in this.test.abbreviations) {
             for (field in this.test.abbreviations[jurisdiction]) {
-                for (key in this.test.abbreviations[jurisdiction][field]) {
+                for (var key in this.test.abbreviations[jurisdiction][field]) {
                     this.addAbbreviation(jurisdiction,field,key,this.test.abbreviations[jurisdiction][field][key]);
                 }
             }

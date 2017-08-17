@@ -48,13 +48,13 @@ CSL.Output.Queue.prototype.mergeTokenStrings = function (base, modifier) {
             base_token.decorations = [];
         }
         ret = new CSL.Token(base, CSL.SINGLETON);
-        key = "";
-        for (key in base_token.strings) {
+        var key = "";
+        for (var key in base_token.strings) {
             if (base_token.strings.hasOwnProperty(key)) {
                 ret.strings[key] = base_token.strings[key];
             }
         }
-        for (key in modifier_token.strings) {
+        for (var key in modifier_token.strings) {
             if (modifier_token.strings.hasOwnProperty(key)) {
                 ret.strings[key] = modifier_token.strings[key];
             }
@@ -353,7 +353,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     }
 
     var blobjr, use_suffix, use_prefix, params;
-    for (i = 0, ilen = blobs.length; i < ilen; i += 1) {
+    for (var i = 0, ilen = blobs.length; i < ilen; i += 1) {
         blobjr = blobs[i];
 
         if (blobjr.strings.first_blob) {
@@ -440,7 +440,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     }
 
     var span_split = 0;
-    for (i = 0, ilen = ret.length; i < ilen; i += 1) {
+    for (var i = 0, ilen = ret.length; i < ilen; i += 1) {
         if ("string" === typeof ret[i]) {
             span_split = (parseInt(i, 10) + 1);
             if (i < ret.length - 1  && "object" === typeof ret[i + 1]) {
@@ -476,7 +476,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
     var blobs_start = state.output.renderBlobs(ret.slice(0, span_split), blob_delimiter, false, blob);
     if (blobs_start && blob && (blob.decorations.length || blob.strings.suffix || blob.strings.prefix)) {
         if (!state.tmp.suppress_decorations) {
-            for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
+            for (var i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
                 if (["@cite","@bibliography", "@display", "@showid"].indexOf(params[0]) > -1) {
                     continue;
@@ -503,7 +503,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
         }
         blobs_start = b;
         if (!state.tmp.suppress_decorations) {
-            for (i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
+            for (var i = 0, ilen = blob.decorations.length; i < ilen; i += 1) {
                 params = blob.decorations[i];
                 if (["@cite","@bibliography", "@display", "@showid"].indexOf(params[0]) === -1) {
                     continue;
@@ -894,8 +894,8 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
     };
     
     function mergeChars (First, first, Second, second, merge_right) {
-        FirstStrings = "blobs" === first ? First : First.strings;
-        SecondStrings = "blobs" === second ? Second: Second.strings;
+        var FirstStrings = "blobs" === first ? First : First.strings;
+        var SecondStrings = "blobs" === second ? Second: Second.strings;
         var firstChar = FirstStrings[first].slice(-1);
         var secondChar = SecondStrings[second].slice(0,1);
         function cullRight () {

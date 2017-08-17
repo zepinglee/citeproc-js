@@ -368,7 +368,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     nodes = myxml.getNodesByName(locale, 'date');
     for (pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
         if (true) {
-            date = nodes[pos];
+            var date = nodes[pos];
             //
             // Xml: get string value of attribute
             //
