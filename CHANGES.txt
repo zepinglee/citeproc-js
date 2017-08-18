@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.173
+==========================
+
+- Adopt patch from @miguelsm replacing ES6 syntax with ES5
+
+- Declare all loose variables and set 'use strict' on bundled code object.
+
+- Fix assignment of value to nonexistent key.
+
+- Build a CommonJS module along with the raw objects.
+
+==========================
 Changes in version 1.1.172
 ==========================
 

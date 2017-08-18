@@ -22,7 +22,6 @@
  *     this program.  If not, see <https://opensource.org/licenses/> or
  *     <http://www.gnu.org/licenses/> respectively.
  */
-'use strict'
 var CSL = {
     PROCESSOR_VERSION: "1.1.173",
     CONDITION_LEVEL_TOP: 1,
@@ -938,6 +937,7 @@ if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports"
 }
 CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
 CSL.CLOSURES = new RegExp(".*[\\]\\)]");
+module.exports = CSL;
 if ("undefined" === typeof console) {
     CSL.debug = function (str) {
         dump("CSL: " + str + "\n");
@@ -953,6 +953,7 @@ if ("undefined" === typeof console) {
         console.log("CSL error: " + str);
     };
 }
+module.exports = CSL;
 CSL.XmlJSON = function (dataObj) {
     this.dataObj = dataObj;
     this.institution = {
@@ -1456,6 +1457,7 @@ CSL.parseXml = function(str) {
     }
     return _obj.children[0];
 }
+module.exports = CSL;
 CSL.XmlDOM = function (dataObj) {
     this.dataObj = dataObj;
     if ("undefined" == typeof DOMParser) {
@@ -1845,13 +1847,14 @@ CSL.XmlDOM.prototype.flagDateMacros = function(myxml) {
         }
     }
 };
+module.exports = CSL;
 if ("undefined" !== typeof XML) {
     try {
-        load("./src/xmle4x.js");
     } catch (e) {
         throw "OOPS: "+e;
     }
 }
+module.exports = CSL;
 CSL.setupXml = function(xmlObject) {
     var dataObj = {};
     var parser = null;
@@ -1880,6 +1883,7 @@ CSL.setupXml = function(xmlObject) {
     }
     return parser;
 }
+module.exports = CSL;
 CSL.getSortCompare = function (default_locale) {
     if (CSL.stringCompare) {
         return CSL.stringCompare;
@@ -1918,6 +1922,7 @@ CSL.getSortCompare = function (default_locale) {
     }
     return sortCompare;
 };
+module.exports = CSL;
 CSL.ambigConfigDiff = function(a, b) {
     var ret, pos, len, ppos, llen;
     if (a.names.length !== b.names.length) {
@@ -1985,6 +1990,7 @@ CSL.getMaxVals = function () {
 CSL.getMinVal = function () {
     return this.tmp["et-al-min"];
 };
+module.exports = CSL;
 CSL.tokenExec = function (token, Item, item) {
     var next, maybenext, exec, debug;
     debug = false;
@@ -2157,6 +2163,7 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget) {
     }
     CSL.Node[name].build.call(token, state, target, true);
 };
+module.exports = CSL;
 CSL.DateParser = new function () {
     var epochPairs = [
         ["\u660E\u6CBB", 1867],
@@ -2547,6 +2554,7 @@ CSL.DateParser = new function () {
     this.setOrderMonthDay();
     this.resetDateParserMonths();
 };
+module.exports = CSL;
 CSL.Engine = function (sys, style, lang, forceLang) {
     var attrs, langspec, localexml, locale;
     this.processor_version = CSL.PROCESSOR_VERSION;
@@ -3096,6 +3104,7 @@ CSL.Engine.prototype.inheritOpt = function (token, attrname, parentname, default
         }
     }
 };
+module.exports = CSL;
 CSL.Engine.prototype.remapSectionVariable = function (inputList) {
     for (var i = 0, ilen = inputList.length; i < ilen; i += 1) {
         var Item = inputList[i][0];
@@ -3182,6 +3191,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
         }
     }
 }
+module.exports = CSL;
 CSL.substituteOne = function (template) {
     return function (state, list) {
         if (!list) {
@@ -3359,6 +3369,7 @@ CSL.getJurisdictionNameAndSuppress = function(state, jurisdictionID, jurisdictio
     }
     return ret;
 }
+module.exports = CSL;
 CSL.Engine.prototype.getCitationLabel = function (Item) {
     var label = "";
     var params = this.getTrigraphParams();
@@ -3466,6 +3477,7 @@ CSL.Engine.prototype.getTrigraphParams = function () {
     }
     return params;
 };
+module.exports = CSL;
 CSL.Engine.prototype.setOutputFormat = function (mode) {
     this.opt.mode = mode;
     this.fun.decorate = CSL.Mode(mode);
@@ -3604,6 +3616,7 @@ CSL.Engine.prototype.setAbbreviations = function (arg) {
 CSL.Engine.prototype.setSuppressTrailingPunctuation = function (arg) {
     this.citation.opt.suppressTrailingPunctuation = !!arg;
 };
+module.exports = CSL;
 CSL.Output = {};
 CSL.Output.Queue = function (state) {
     this.levelname = ["top"];
@@ -4588,6 +4601,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         return lastChar;
     };
 }
+module.exports = CSL;
 CSL.Engine.Opt = function () {
     this.has_disambiguate = false;
     this.mode = "html";
@@ -4883,6 +4897,7 @@ CSL.Engine.CitationSort = function () {
     this.opt.topdecor = [];
     this.root = "citation";
 };
+module.exports = CSL;
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
     var oldMode = this.opt.mode;
     this.setOutputFormat(newMode);
@@ -5881,6 +5896,7 @@ CSL.citeEnd = function (Item, item) {
     this.tmp.issued_date = false;
     this.tmp.renders_collection_number = false;
 };
+module.exports = CSL;
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
     var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
     debug = false;
@@ -6123,6 +6139,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.tmp.disambig_override = false;
     return [processed_item_ids, ret, done];
 };
+module.exports = CSL;
 CSL.Engine.prototype.setCitationId = function (citation, force) {
     var ret, id, direction;
     ret = false;
@@ -6149,6 +6166,7 @@ CSL.Engine.prototype.setCitationId = function (citation, force) {
     this.registry.citationreg.citationById[citation.citationID] = citation;
     return ret;
 };
+module.exports = CSL;
 CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedItemIDs) {
     if (!citations) {
         citations = [];
@@ -6327,6 +6345,7 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     this.tmp.root = oldRoot;
     return this.registry.getSortedIds();
 };
+module.exports = CSL;
 CSL.localeResolve = function (langstr, defaultLocale) {
     var ret, langlst;
     if (!defaultLocale) {
@@ -6610,6 +6629,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         }
     }
 };
+module.exports = CSL;
 CSL.getLocaleNames = function (myxml, preferredLocale) {
     var stylexml = CSL.setupXml(myxml);
     function extendLocaleList(localeList, locale) {
@@ -6646,6 +6666,7 @@ CSL.getLocaleNames = function (myxml, preferredLocale) {
     }
     return localeIDs;
 };
+module.exports = CSL;
 CSL.Node = {};
 CSL.Node.bibliography = {
     build: function (state, target) {
@@ -6663,6 +6684,7 @@ CSL.Node.bibliography = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node.choose = {
     build: function (state, target) {
         var func;
@@ -6689,6 +6711,7 @@ CSL.Node.choose = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node.citation = {
     build: function (state, target) {
         if (this.tokentype === CSL.START) {
@@ -6720,10 +6743,12 @@ CSL.Node.citation = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node["#comment"] = {
        build: function (state, target) {
        }
 };
+module.exports = CSL;
 CSL.Node.date = {
     build: function (state, target) {
         var func, date_obj, tok, len, pos, part, dpx, parts, mypos, start, end;
@@ -6831,6 +6856,7 @@ CSL.Node.date = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node["date-part"] = {
     build: function (state, target) {
         var func, pos, len, decor, first_date, value, value_end, real, have_collapsed, invoked, precondition, known_year, bc, ad, bc_end, ad_end, ready, curr, dcurr, number, num, formatter, item, i, ilen;
@@ -7049,6 +7075,7 @@ CSL.Node["date-part"] = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node["else-if"] = {
     build: function (state, target) {
         CSL.Conditions.TopNode.call(this, state, target);
@@ -7058,6 +7085,7 @@ CSL.Node["else-if"] = {
         CSL.Conditions.Configure.call(this, state, pos);
     }
 };
+module.exports = CSL;
 CSL.Node["else"] = {
     build: function (state, target) {
         target.push(this);
@@ -7068,6 +7096,7 @@ CSL.Node["else"] = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node["et-al"] = {
     build: function (state, target) {
         if (state.build.area === "citation" || state.build.area === "bibliography") {
@@ -7082,6 +7111,7 @@ CSL.Node["et-al"] = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node.group = {
     build: function (state, target, realGroup) {
         var func, execs, done_vars;
@@ -7309,6 +7339,7 @@ CSL.Node.group = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node["if"] = {
     build: function (state, target) {
         CSL.Conditions.TopNode.call(this, state, target);
@@ -7318,6 +7349,7 @@ CSL.Node["if"] = {
         CSL.Conditions.Configure.call(this, state, pos);
     }
 };
+module.exports = CSL;
 CSL.Node["conditions"] = {
     build: function (state, target) {
         if (this.tokentype === CSL.START) {
@@ -7328,6 +7360,7 @@ CSL.Node["conditions"] = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node["condition"] = {
     build: function (state, target) {
         if (this.tokentype === CSL.SINGLETON) {
@@ -7336,6 +7369,7 @@ CSL.Node["condition"] = {
         }
     }
 };
+module.exports = CSL;
 CSL.Conditions = {};
 CSL.Conditions.TopNode = function (state, target) {
     var func;
@@ -7392,6 +7426,7 @@ CSL.Conditions.Engine.prototype.addMatch = function (match) {
 CSL.Conditions.Engine.prototype.matchCombine = function () {
     this.token.test = this.state.fun.match[this.token.match](this.token, this.state, this.token.tests);
 };
+module.exports = CSL;
 CSL.Node.info = {
     build: function (state, target) {
         if (this.tokentype === CSL.START) {
@@ -7401,6 +7436,7 @@ CSL.Node.info = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node.institution = {
     build: function (state, target) {
         if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
@@ -7474,6 +7510,7 @@ CSL.Node.institution = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node["institution-part"] = {
     build: function (state, target) {
         var func;
@@ -7496,6 +7533,7 @@ CSL.Node["institution-part"] = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node.key = {
     build: function (state, target) {
         target = state[state.build.root + "_sort"].tokens;
@@ -7658,6 +7696,7 @@ CSL.Node.key = {
         target.push(end_key);
     }
 };
+module.exports = CSL;
 CSL.Node.label = {
     build: function (state, target) {
         var debug = false;
@@ -7707,6 +7746,7 @@ CSL.Node.label = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node.layout = {
     build: function (state, target) {
         var func, prefix_token, suffix_token, tok;
@@ -7933,9 +7973,11 @@ CSL.Node.layout = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node.macro = {
     build: function (state, target) {}
 };
+module.exports = CSL;
 CSL.NameOutput = function(state, Item, item, variables) {
     this.debug = false;
     this.state = state;
@@ -8234,6 +8276,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
         }
     }
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.isPerson = function (value) {
     if (value.literal
         || (!value.given && value.family && value.isInstitution)) {
@@ -8242,6 +8285,7 @@ CSL.NameOutput.prototype.isPerson = function (value) {
         return true;
     }
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.truncatePersonalNameLists = function () {
     var v, i, ilen, j, jlen, chopvar, values;
     this.freeters_count = {};
@@ -8346,6 +8390,7 @@ CSL.NameOutput.prototype._truncateNameList = function (container, variable, inde
     }
     return lst;
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.divideAndTransliterateNames = function () {
     var i, ilen, j, jlen;
     var Item = this.Item;
@@ -8482,6 +8527,7 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
     }
     return name;
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.joinPersons = function (blobs, pos, j, tokenname) {
     var ret;
     if (!tokenname) {
@@ -8606,6 +8652,7 @@ CSL.NameOutput.prototype._getToken = function (tokenname) {
     }
     return token;
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.setCommonTerm = function () {
     var variables = this.variables;
     var varnames = variables.slice();
@@ -8668,6 +8715,7 @@ CSL.NameOutput.prototype._compareNamesets = function (base_nameset, nameset) {
     }
     return true;
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.constrainNames = function () {
     this.names_count = 0;
     var pos;
@@ -8733,6 +8781,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;
     this.state.disambiguate.padBase(this.state.tmp.disambig_settings);
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.disambigNames = function () {
     var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
@@ -8812,6 +8861,7 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         }
     }
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.getEtAlConfig = function () {
     var item = this.item;
     this["et-al"] = {};
@@ -8858,6 +8908,7 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
         this.state.tmp["et-al-min"] = this.etal_min;
     }
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.setEtAlParameters = function () {
     var i, ilen, j, jlen;
     for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
@@ -8911,6 +8962,7 @@ CSL.NameOutput.prototype._setEtAlParameter = function (type, v, j) {
         }
     }
 };
+module.exports = CSL;
 CSL.NameOutput.prototype.renderAllNames = function () {
     var pos;
     for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
@@ -9840,6 +9892,7 @@ CSL.NameOutput.prototype._trimInstitution = function (subunits, v, i) {
     }
     return subunits;
 };
+module.exports = CSL;
 CSL.PublisherOutput = function (state, group_tok) {
     this.state = state;
     this.group_tok = group_tok;
@@ -9916,6 +9969,7 @@ CSL.PublisherOutput.prototype.clearVars = function () {
     this.state.tmp["publisher-token"] = false;
     this.state.tmp["publisher-place-token"] = false;
 };
+module.exports = CSL;
 CSL.evaluateLabel = function (node, state, Item, item) {
     var myterm;
     if ("locator" === node.strings.term) {
@@ -9971,6 +10025,7 @@ CSL.castLabel = function (state, node, term, plural, mode) {
     }
     return ret;
 };
+module.exports = CSL;
 CSL.Node.name = {
     build: function (state, target) {
         var func, pos, len, attrname;
@@ -10078,11 +10133,13 @@ CSL.Node.name = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node["name-part"] = {
     build: function (state, target) {
         state.build[this.strings.name] = this;
     }
 };
+module.exports = CSL;
 CSL.Node.names = {
     build: function (state, target) {
         var func, len, pos, attrname;
@@ -10214,6 +10271,7 @@ CSL.Node.names = {
         }
     }
 };
+module.exports = CSL;
 CSL.Node.number = {
     build: function (state, target) {
         var func;
@@ -10284,6 +10342,7 @@ CSL.Node.number = {
         CSL.Util.substituteEnd.call(this, state, target);
     }
 };
+module.exports = CSL;
 CSL.Node.sort = {
     build: function (state, target) {
         target = state[state.build.root + "_sort"].tokens;
@@ -10331,6 +10390,7 @@ CSL.Node.sort = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node.substitute = {
     build: function (state, target) {
         var func;
@@ -10346,6 +10406,7 @@ CSL.Node.substitute = {
         target.push(this);
     }
 };
+module.exports = CSL;
 CSL.Node.text = {
     build: function (state, target) {
         var variable, func, form, plural, id, num, number, formatter, firstoutput, specialdelimiter, label, myname, names, name, year, suffix, term, dp, len, pos, n, m, value, flag;
@@ -10638,6 +10699,7 @@ CSL.Node.text = {
         }
     }
 };
+module.exports = CSL;
 CSL.Attributes = {};
 CSL.Attributes["@genre"] = function (state, arg) {
     arg = arg.replace("-", " ");
@@ -11687,6 +11749,7 @@ CSL.Attributes["@display"] = function (state, arg) {
     }
     this.strings.cls = arg;
 };
+module.exports = CSL;
 CSL.Stack = function (val, literal) {
     this.mystack = [];
     if (literal || val) {
@@ -11732,6 +11795,7 @@ CSL.Stack.prototype.value = function () {
 CSL.Stack.prototype.length = function () {
     return this.mystack.length;
 };
+module.exports = CSL;
 CSL.Parallel = function (state) {
     this.state = state;
     this.sets = new CSL.Stack([]);
@@ -12215,6 +12279,7 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function (original_condition) {
         this.parallel_conditional_blobs_list.pop();
     }
 }
+module.exports = CSL;
 CSL.Util = {};
 CSL.Util.Match = function () {
     this.any = function (token, state, tests) {
@@ -12263,6 +12328,7 @@ CSL.Util.Match = function () {
         };
     };
 };
+module.exports = CSL;
 CSL.Transform = function (state) {
     var debug = false, abbreviations, token, fieldname, abbrev_family, opt;
     this.abbrevs = {};
@@ -12616,6 +12682,7 @@ CSL.Transform = function (state) {
     }
     this.quashCheck = quashCheck;
 };
+module.exports = CSL;
 CSL.Token = function (name, tokentype) {
     this.name = name;
     this.strings = {};
@@ -12660,6 +12727,7 @@ CSL.Util.cloneToken = function (token) {
     }
     return newtok;
 };
+module.exports = CSL;
 CSL.AmbigConfig = function () {
     this.maxvals = [];
     this.minval = 1;
@@ -12668,6 +12736,7 @@ CSL.AmbigConfig = function () {
     this.year_suffix = false;
     this.disambiguate = 0;
 };
+module.exports = CSL;
 CSL.Blob = function (str, token, levelname) {
     var len, pos, key;
     this.levelname = levelname;
@@ -12711,6 +12780,7 @@ CSL.Blob.prototype.push = function (blob) {
         this.blobs.push(blob);
     }
 };
+module.exports = CSL;
 CSL.NumericBlob = function (particle, num, mother_token, id) {
     this.id = id;
     this.alldecor = [];
@@ -12791,6 +12861,7 @@ CSL.NumericBlob.prototype.checkLast = function (last) {
     }
     return false;
 };
+module.exports = CSL;
 CSL.Util.fixDateNode = function (parent, pos, node) {
     var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, subchildren, kkey, display, cslid;
     var lingo = this.cslXml.getAttributeValue(node, "lingo");
@@ -12875,6 +12946,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
     }
     return this.cslXml.insertChildNodeAfter(parent, node, pos, datexml);
 };
+module.exports = CSL;
 CSL.dateMacroAsSortKey = function (state, Item) {
     CSL.dateAsSortKey.call(this, state, Item, true);
 };
@@ -12963,6 +13035,7 @@ CSL.Engine.prototype.dateParseArray = function (date_obj) {
     }
     return ret;
 };
+module.exports = CSL;
 CSL.Util.Names = {};
 CSL.Util.Names.compareNamesets = CSL.NameOutput.prototype._compareNamesets;
 CSL.Util.Names.unInitialize = function (state, name) {
@@ -13140,6 +13213,7 @@ CSL.Util.Names.getRawName = function (name) {
     }
     return ret.join(" ");
 };
+module.exports = CSL;
 CSL.Util.Dates = {};
 CSL.Util.Dates.year = {};
 CSL.Util.Dates.year["long"] = function (state, num) {
@@ -13317,6 +13391,7 @@ CSL.Util.Dates.day["numeric-leading-zeros"] = function (state, num) {
 CSL.Util.Dates.day.ordinal = function (state, num, gender) {
     return state.fun.ordinalizer.format(num, gender);
 };
+module.exports = CSL;
 CSL.Util.Sort = {};
 CSL.Util.Sort.strip_prepositions = function (str) {
     var m;
@@ -13329,6 +13404,7 @@ CSL.Util.Sort.strip_prepositions = function (str) {
     }
     return str;
 };
+module.exports = CSL;
 CSL.Util.substituteStart = function (state, target) {
     var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
     func = function (state, Item) {
@@ -13586,6 +13662,7 @@ CSL.Util.substituteEnd = function (state, target) {
         this.execs.push(func);
     }
 };
+module.exports = CSL;
 CSL.Util.padding = function (num) {
     var m = num.match(/\s*(-{0,1}[0-9]+)/);
     if (m) {
@@ -14232,6 +14309,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
     }
     state.output.closeLevel();
 }
+module.exports = CSL;
 CSL.Util.PageRangeMangler = {};
 CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
@@ -14376,6 +14454,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     }
     return ret_func;
 };
+module.exports = CSL;
 CSL.Util.FlipFlopper = function(state) {
     this.processTags = processTags;
     var _nestingState = [];
@@ -14926,6 +15005,7 @@ CSL.Util.FlipFlopper = function(state) {
         _undoppelToQueue(blob, doppel, leadingSpace);
     }
 }
+module.exports = CSL;
 CSL.Output.Formatters = new function () {
     this.passthrough = passthrough;
     this.lowercase = lowercase;
@@ -15224,6 +15304,7 @@ CSL.Output.Formatters = new function () {
         return _textcaseEngine(config, string);
     }
 }
+module.exports = CSL;
 CSL.Output.Formats = function () {};
 CSL.Output.Formats.prototype.html = {
     "text_escape": function (text) {
@@ -15477,6 +15558,7 @@ CSL.Output.Formats.prototype.rtf = {
     }
 };
 CSL.Output.Formats = new CSL.Output.Formats();
+module.exports = CSL;
 CSL.Registry = function (state) {
     var pos, len, ret, i, ilen;
     this.debug = false;
@@ -15849,6 +15931,7 @@ CSL.getSortKeys = function (Item, key_type) {
     this.tmp.extension = extension;
     return this[key_type].keys;
 };
+module.exports = CSL;
 CSL.Registry.NameReg = function (state) {
     var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems, i, ilen;
     this.state = state;
@@ -16072,10 +16155,12 @@ CSL.Registry.NameReg = function (state) {
     this.delitems = delitems;
     this.evalname = evalname;
 };
+module.exports = CSL;
 CSL.Registry.CitationReg = function (state) {
     this.citationById = {};
     this.citationByIndex = [];
 };
+module.exports = CSL;
 CSL.Disambiguation = function (state) {
     this.state = state;
     this.sys = this.state.sys;
@@ -16444,6 +16529,7 @@ CSL.Disambiguation.prototype.captureStepToBase = function() {
     }
     this.betterbase.names[this.gnameset] = this.base.names[this.gnameset];
 };
+module.exports = CSL;
 CSL.Engine.prototype.getJurisdictionList = function (jurisdiction) {
     var jurisdictionList = [];
     var jurisdictionElems = jurisdiction.split(":");
@@ -16475,6 +16561,7 @@ CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
     }
     return ret;
 }
+module.exports = CSL;
 CSL.ParticleList = function() {
 	var always_dropping_1 = [[[0,1], null]];
 	var always_dropping_2 = [[[0,2], null]];
@@ -16813,3 +16900,4 @@ CSL.parseParticles = function(){
         }
     }
 }();
+module.exports = CSL;
