@@ -73,7 +73,7 @@ CSL.Node.layout = {
             func = function (state, Item) {
 
                 state.tmp.done_vars = [];
-                if (!state.tmp.just_looking && state.registry.registry[Item.id].parallel) {
+                if (!state.tmp.just_looking && state.registry.registry[Item.id] && state.registry.registry[Item.id].parallel) {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }
                 //CSL.debug(" === init rendered_name === ");
