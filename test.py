@@ -289,8 +289,8 @@ doh.register("%s.%s", [
         ofh = open( os.path.join(path("runners"), "run.js"), "w+b")
         header = 'dojo.require("doh.runner");\n'
         ofh.write(header)
-        #if self.opt.processor:
-        if False:
+        if self.opt.processor:
+        #if False:
             testpath = path("citeproc-js")
             self.category = "citeproc_js"
         else:
@@ -635,10 +635,10 @@ if __name__ == "__main__":
                       default=False,
                       action="store_true", 
                       help='Grind human-readable test code into machine-readable form (used only for debugging the test framework).')
-    #parser.add_option("-p", "--processor", dest="processor",
-    #                  default=False,
-    #                  action="store_true", 
-    #                  help='Run processor tests (cannot be used with -c, -g or -s opts, takes only test name as single argument).')
+    parser.add_option("-p", "--processor", dest="processor",
+                      default=False,
+                      action="store_true",
+                      help='Run processor tests (cannot be used with -c, -g or -s opts, takes only test name as single argument).')
     parser.add_option("-v", "--verbose", dest="verbose",
                       default=False,
                       action="store_true", 
@@ -702,10 +702,10 @@ if __name__ == "__main__":
     # Set up paths engine
     # 
     category = "std"
-    #if opt.processor:
-    #    params = Params(opt,args,"citeproc_js",force="citeproc_js")
-    #elif len(args) < 2:
-    if len(args) < 2:
+    if opt.processor:
+        params = Params(opt,args,"citeproc_js",force="citeproc_js")
+    elif len(args) < 2:
+    #if len(args) < 2:
         params = Params(opt,args,category,force="std")
     else:
         params = Params(opt,args,category)
@@ -743,9 +743,9 @@ if __name__ == "__main__":
             if opt.testrun:
                 params.buildRunner()
                 params.runTests(bundle=opt.bundle)
-        #elif opt.processor:
-        #    params.buildRunner()
-        #    params.runTests()
+        elif opt.processor:
+            params.buildRunner()
+            params.runTests()
     except (KeyboardInterrupt, SystemExit):
         for file in os.listdir("."):
             if not file.startswith("tmp") or not len(file) == 9: continue
