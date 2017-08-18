@@ -5,6 +5,7 @@ var StdRhinoTest = function(myname,engineNickname){
     this._acache = {};
     this._acache["default"] = new CSL.AbbreviationSegments();
     this._ids = [];
+    this.test = {};
     if (myname){
         var test;
         if (this.engineNickname == "rhino") {
