@@ -24,7 +24,7 @@
  */
 'use strict'
 var CSL = {
-    PROCESSOR_VERSION: "1.1.173",
+    PROCESSOR_VERSION: "1.1.174",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -7762,7 +7762,7 @@ CSL.Node.layout = {
         if (this.tokentype === CSL.START && !state.tmp.cite_affixes[state.build.area]) {
             func = function (state, Item) {
                 state.tmp.done_vars = [];
-                if (!state.tmp.just_looking && state.registry.registry[Item.id].parallel) {
+                if (!state.tmp.just_looking && state.registry.registry[Item.id] && state.registry.registry[Item.id].parallel) {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }
                 state.tmp.rendered_name = false;
