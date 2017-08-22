@@ -982,7 +982,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
             }
        }
     }
-
     myparams = [];
     len = inputList.length;
     for (pos = 0; pos < len; pos += 1) {
@@ -1010,6 +1009,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
             this.tmp.term_predecessor = false;
             CSL.getCite.call(this, Item, item, null, true);
         }
+
         // Make a note of any errors
         if (!this.tmp.cite_renders_content) {
             error_object = {
@@ -1269,6 +1269,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     var next, error_object;
     this.tmp.cite_renders_content = false;
     this.parallel.StartCite(Item, item, prevItemID);
+
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
     this.tmp.name_node = {};
@@ -1279,7 +1280,6 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     while (next < this[this.tmp.area].tokens.length) {
         next = CSL.tokenExec.call(this, this[this.tmp.area].tokens[next], Item, item);
     }
-
 
     CSL.citeEnd.call(this, Item, item);
     this.parallel.CloseCite(this);
@@ -1379,7 +1379,7 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
 
 CSL.citeEnd = function (Item, item) {
     // RESTORE PARAMETERS IF APPROPRIATE
-    if (this.tmp.disambig_restore) {
+    if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
         this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names.slice();
         this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens.slice();
         for (var i=0,ilen=this.registry.registry[Item.id].disambig.givens.length;i<ilen;i+=1) {
