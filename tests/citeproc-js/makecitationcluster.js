@@ -19,19 +19,35 @@ doh.registerGroup("citeproc_js.makecitationcluster",
                 + "            <text variable=\"title\"/>"
                 + "            <group delimiter=\" \">"
                 + "              <label variable=\"locator\" form=\"short\"/>"
-                + "              <text variable=\"locator\">"
+                + "              <text variable=\"locator\"/>"
                 + "            </group>"
                 + "          </group>"
                 + "        </layout>"
                 + "      </citation>"
+                + "      <bibliography>"
+                + "        <layout delimiter=\"x \">"
+                + "          <text variable=\"title\"/>"
+                + "        </layout>"
+                + "      </bibliography>"
                 + "    </style>"
-			var result = citeproc_js.makecitationcluster.doMakeCitationCluster(xml);
+			var style = citeproc_js.makecitationcluster.initCiteproc(xml);
+
+			style.updateUncitedItems(["Item-3", "Item-4"]);
+            var bib = style.makeBibliography();
+			doh.assertEqual(2, bib[1].length);
+
+            var result = citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo(style);
 			doh.assertEqual("Hello!, p. 10; Hello again!, p. 15", result);
+
+            var bib = style.makeBibliography();
+			doh.assertEqual(2, bib[1].length);
+			doh.assertEqual("  <div class=\"csl-entry\">Goodbye!</div>\n", bib[1][0]);
+			doh.assertEqual("  <div class=\"csl-entry\">Goodbye again!</div>\n", bib[1][1]);
 		}
 	],
 	function(){  //setup
-		citeproc_js.makecitationcluster.doMakeCitationCluster = function(myxml){
-			var sys = new StdRhinoTest(null, "rhino");
+		citeproc_js.makecitationcluster.initCiteproc = function(myxml){
+			var sys = new StdRhinoTest(null, "jsc");
             sys.test.input = [
                 {
                     id: "Item-1",
@@ -42,10 +58,41 @@ doh.registerGroup("citeproc_js.makecitationcluster",
                     id: "Item-2",
                     title: "Hello again!",
                     type: "book"
+                },
+                {
+                    id: "Item-3",
+                    title: "Goodbye!",
+                    type: "book"
+                },
+                {
+                    id: "Item-4",
+                    title: "Goodbye again!",
+                    type: "book"
                 }
             ];
             sys._setCache();
 			var style = new CSL.Engine(sys, myxml);
+            return style;
+        }
+		citeproc_js.makecitationcluster.doMakeCitationClusterItemOne = function(style){
+			var ret = style.makeCitationCluster([
+                {
+                    id: "Item-1",
+                    position: 0
+                }
+            ])
+            return ret;
+		};
+		citeproc_js.makecitationcluster.doMakeCitationClusterItemTwo = function(style){
+			var ret = style.makeCitationCluster([
+                {
+                    id: "Item-2",
+                    position: 0
+                }
+            ])
+            return ret;
+		};
+		citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo = function(style){
 			var ret = style.makeCitationCluster([
                 {
                     id: "Item-1",
