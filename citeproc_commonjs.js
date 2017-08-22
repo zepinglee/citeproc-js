@@ -23,7 +23,7 @@
  *     <http://www.gnu.org/licenses/> respectively.
  */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.174",
+    PROCESSOR_VERSION: "1.1.175",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3925,7 +3925,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             }
             ret = ret.concat(addtoret);
         }
-        if (blobjr.strings.first_blob) {
+        if (blobjr.strings.first_blob && state.registry.registry[blobjr.strings.first_blob]) {
             state.registry.registry[blobjr.strings.first_blob].offset = state.tmp.offset_characters;
             state.tmp.count_offset_characters = false;
         }
@@ -5862,7 +5862,7 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.authority_stop_last = 0;
 };
 CSL.citeEnd = function (Item, item) {
-    if (this.tmp.disambig_restore) {
+    if (this.tmp.disambig_restore && this.registry.registry[Item.id]) {
         this.registry.registry[Item.id].disambig.names = this.tmp.disambig_restore.names.slice();
         this.registry.registry[Item.id].disambig.givens = this.tmp.disambig_restore.givens.slice();
         for (var i=0,ilen=this.registry.registry[Item.id].disambig.givens.length;i<ilen;i+=1) {

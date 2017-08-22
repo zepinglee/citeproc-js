@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.175
+==========================
+
+- Do not distribute unnecessary files via NPM.
+
+  Reflects a pull request from Derek Sifford:
+
+    https://github.com/Juris-M/citeproc-js/pull/52
+
+- Fix bug triggered on some styles in strict mode:
+
+    https://forums.zotero.org/discussion/comment/284261
+
+==========================
 Changes in version 1.1.174
 ==========================
 
@@ -35,6 +49,11 @@ Changes in version 1.1.173
   Reflects changes originally proposed and implemented by Derek Sifford:
 
     https://github.com/Juris-M/citeproc-js/pull/50
+
+- Drive the ``citeproc-js`` NPM package directly from this source repo.
+  Addresses requests from Derek Sifford (above) and Aamir Shah:
+
+    https://github.com/Juris-M/citeproc-js/pull/44
 
 ==========================
 Changes in version 1.1.172
