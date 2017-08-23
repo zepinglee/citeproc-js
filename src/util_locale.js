@@ -37,9 +37,10 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
     if (beShy && this.locale[langspec.best]) {
         return;
     }
-    localexml = CSL.setupXml(this.sys.retrieveLocale("en-US"));
-    this.localeSet(localexml, "en-US", langspec.best);
-    if (langspec.best !== "en-US") {
+    if (langspec.best === "en-US") {
+        localexml = CSL.setupXml(this.sys.retrieveLocale("en-US"));
+        this.localeSet(localexml, "en-US", langspec.best);
+    } else if (langspec.best !== "en-US") {
         if (langspec.base !== langspec.best) {
             localexml = CSL.setupXml(this.sys.retrieveLocale(langspec.base));
             this.localeSet(localexml, langspec.base, langspec.best);
