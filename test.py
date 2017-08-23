@@ -155,7 +155,6 @@ class Bundle:
         if not e4xSupport:
             subfile = re.sub("(?sm)^\s*load.*?$","",subfile)
         if asModule:
-            subfile = re.sub("(?sm)^\'use strict\'","",subfile)
             subfile += '\nmodule.exports = CSL;\n'
             m = re.match("(?sm)^.*PROCESSOR_VERSION:[\s\'\"]*([\.0-9]+)", subfile)
             if m:
@@ -178,6 +177,13 @@ class Bundle:
                 file += self.cleanFile(ifh.read(), citeproc["e4x"], citeproc["as-module"])
             open(citeproc["bundle_name"],"w+b").write(file)
             print "Wrote %s (processor %s)" % (citeproc["bundle_name"], citeproc["note"])
+    def unStrictify(self):
+        for citeprocInfo in self.citeprocs:
+            filename = citeprocInfo["bundle_name"]
+            txt = open(filename, "rb").read()
+            txt = re.sub("(?sm)^\'use strict\'", "", txt)
+            open(filename,"w+b").write(txt)
+
 
 class Params:
     def __init__(self,opt,args,category,force=None):
@@ -661,6 +667,7 @@ if __name__ == "__main__":
         bundler.createNewBundles()
         license = ApplyLicense()
         license.apply()
+        bundler.unStrictify()
         sys.exit();
         
     # Testing sequence:
@@ -746,6 +753,8 @@ if __name__ == "__main__":
         elif opt.processor:
             params.buildRunner()
             params.runTests()
+        bundle = Bundle()
+        bundle.unStrictify()
     except (KeyboardInterrupt, SystemExit):
         for file in os.listdir("."):
             if not file.startswith("tmp") or not len(file) == 9: continue
