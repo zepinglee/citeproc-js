@@ -390,7 +390,7 @@ CSL.Util.FlipFlopper = function(state) {
     
     function _apostropheForce(tag, str) {
         if (tag === "\'") {
-            if (str && str.match(/^[^\.\?\:\;\ ]/)) {
+            if (str && str.match(/^[^\,\.\?\:\;\ ]/)) {
                 return true;
             }
         } else if (tag === " \'" && str && str.match(/^[\ ]/)) {
