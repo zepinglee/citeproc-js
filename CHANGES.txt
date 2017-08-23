@@ -1,6 +1,28 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.176
+==========================
+
+- Do not force the trailing portion of given names to lowercase.
+
+- Avoid redundant load of en-US locale data when default locale differs.
+
+- Recognize quote before comma as a close-quote.
+
+- Bundle code without 'use strict' declaration.
+
+==========================
+Changes in version 1.1.176
+==========================
+
+- Fix long-standing bug that forced given names to lowercase after second
+  character (yeah, that was a weird thing to do).
+
+  https://forums.zotero.org/discussion/17610/apsa-problems-with-capitalization-of-mc-mac-etc/
+  https://github.com/Juris-M/citeproc-js/issues/43
+
+==========================
 Changes in version 1.1.175
 ==========================
 
