@@ -14,6 +14,9 @@ doh.registerGroup("citeproc_js.makecitationcluster",
                 + "        <updated>2009-08-10T04:49:00+09:00</updated>"
                 + "      </info>"
                 + "      <citation>"
+                + "        <sort>"
+                + "          <key variable=\"title\"/>"
+                + "        </sort>"
                 + "        <layout delimiter=\"; \">"
                 + "          <group delimiter=\", \">"
                 + "            <text variable=\"title\"/>"
@@ -37,7 +40,7 @@ doh.registerGroup("citeproc_js.makecitationcluster",
 			doh.assertEqual(2, bib[1].length);
 
             var result = citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo(style);
-			doh.assertEqual("Hello ZZ Top!, p. 10; Hello Alan Partridge!, p. 15", result);
+			doh.assertEqual("Hello Alan Partridge!, p. 15; Hello ZZ Top!, p. 10", result);
 
             var bib = style.makeBibliography();
 			doh.assertEqual(2, bib[1].length);
