@@ -2,9 +2,9 @@ dojo.provide("citeproc_js.makecitationcluster");
 
 
 doh.registerGroup("citeproc_js.makecitationcluster",
-	[
-		function testMakeCitationCluster(){
-			var xml = "<style "
+    [
+        function testMakeCitationCluster(){
+            var xml = "<style "
                 + "      xmlns=\"http://purl.org/net/xbiblio/csl\""
                 + "      class=\"note\""
                 + "      version=\"1.0\">"
@@ -33,24 +33,24 @@ doh.registerGroup("citeproc_js.makecitationcluster",
                 + "        </layout>"
                 + "      </bibliography>"
                 + "    </style>"
-			var style = citeproc_js.makecitationcluster.initCiteproc(xml);
+            var style = citeproc_js.makecitationcluster.initCiteproc(xml);
 
-			style.updateUncitedItems(["Item-3", "Item-4"]);
+            style.updateUncitedItems(["Item-3", "Item-4"]);
             var bib = style.makeBibliography();
-			doh.assertEqual(2, bib[1].length);
+            doh.assertEqual(2, bib[1].length);
 
             var result = citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo(style);
-			doh.assertEqual("Hello Alan Partridge!, p. 15; Hello ZZ Top!, p. 10", result);
+            doh.assertEqual("Hello Alan Partridge!, p. 15; Hello ZZ Top!, p. 10", result);
 
             var bib = style.makeBibliography();
-			doh.assertEqual(2, bib[1].length);
-			doh.assertEqual("  <div class=\"csl-entry\">Goodbye!</div>\n", bib[1][0]);
-			doh.assertEqual("  <div class=\"csl-entry\">Goodbye again!</div>\n", bib[1][1]);
-		}
-	],
-	function(){  //setup
-		citeproc_js.makecitationcluster.initCiteproc = function(myxml){
-			var sys = new StdRhinoTest(null, "jsc");
+            doh.assertEqual(2, bib[1].length);
+            doh.assertEqual("  <div class=\"csl-entry\">Goodbye!</div>\n", bib[1][0]);
+            doh.assertEqual("  <div class=\"csl-entry\">Goodbye again!</div>\n", bib[1][1]);
+        }
+    ],
+    function(){  //setup
+        citeproc_js.makecitationcluster.initCiteproc = function(myxml){
+            var sys = new StdRhinoTest(null, "jsc");
             sys.test.input = [
                 {
                     id: "Item-1",
@@ -74,29 +74,29 @@ doh.registerGroup("citeproc_js.makecitationcluster",
                 }
             ];
             sys._setCache();
-			var style = new CSL.Engine(sys, myxml);
+            var style = new CSL.Engine(sys, myxml);
             return style;
         }
-		citeproc_js.makecitationcluster.doMakeCitationClusterItemOne = function(style){
-			var ret = style.makeCitationCluster([
+        citeproc_js.makecitationcluster.doMakeCitationClusterItemOne = function(style){
+            var ret = style.makeCitationCluster([
                 {
                     id: "Item-1",
                     position: 0
                 }
             ])
             return ret;
-		};
-		citeproc_js.makecitationcluster.doMakeCitationClusterItemTwo = function(style){
-			var ret = style.makeCitationCluster([
+        };
+        citeproc_js.makecitationcluster.doMakeCitationClusterItemTwo = function(style){
+            var ret = style.makeCitationCluster([
                 {
                     id: "Item-2",
                     position: 0
                 }
             ])
             return ret;
-		};
-		citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo = function(style){
-			var ret = style.makeCitationCluster([
+        };
+        citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo = function(style){
+            var ret = style.makeCitationCluster([
                 {
                     id: "Item-1",
                     position: 0,
@@ -109,11 +109,10 @@ doh.registerGroup("citeproc_js.makecitationcluster",
                 }
             ])
             return ret;
-		};
-	},
-	function(){	// teardown
-	}
-
+        };
+    },
+    function(){    // teardown
+    }
 );
 
 /*
