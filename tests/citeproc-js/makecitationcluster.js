@@ -37,7 +37,7 @@ doh.registerGroup("citeproc_js.makecitationcluster",
 			doh.assertEqual(2, bib[1].length);
 
             var result = citeproc_js.makecitationcluster.doMakeCitationClusterItemOneTwo(style);
-			doh.assertEqual("Hello!, p. 10; Hello again!, p. 15", result);
+			doh.assertEqual("Hello ZZ Top!, p. 10; Hello Alan Partridge!, p. 15", result);
 
             var bib = style.makeBibliography();
 			doh.assertEqual(2, bib[1].length);
@@ -51,12 +51,12 @@ doh.registerGroup("citeproc_js.makecitationcluster",
             sys.test.input = [
                 {
                     id: "Item-1",
-                    title: "Hello!",
+                    title: "Hello ZZ Top!",
                     type: "book"
                 },
                 {
                     id: "Item-2",
-                    title: "Hello again!",
+                    title: "Hello Alan Partridge!",
                     type: "book"
                 },
                 {
