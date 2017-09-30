@@ -15300,7 +15300,7 @@ CSL.Output.Formats.prototype.html = {
         if (state.sys.embedBibliographyEntry) {
             insert = state.sys.embedBibliographyEntry(this.item_id) + "\n";
         }
-        return "  <div class=\"csl-entry\">" + str + "</div>\n" + insert;
+        return "  <div class=\"csl-entry\" id=\"" + this.system_id + "\">" + str + "</div>\n" + insert;
     },
     "@display/block": function (state, str) {
         return "\n\n    <div class=\"csl-block\">" + str + "</div>\n";
