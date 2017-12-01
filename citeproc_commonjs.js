@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.180",
+    PROCESSOR_VERSION: "1.1.181",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -921,7 +921,7 @@ var CSL = {
                 }
             }
         } else {
-            if (termtxt && termtxt.slice(-1).match(/[0-9]/)) {
+            if (termtxt.slice(-1).match(/[0-9]/)) {
                 state.tmp.just_did_number = true;
             } else {
                 state.tmp.just_did_number = false;
@@ -3284,6 +3284,13 @@ CSL.Doppeler = function(rexStr, stringMangler) {
             };
         }
         var split = str.split(splitRex);
+        for (var i=match.length-1; i> -1; i--) {
+            var tag = match[i];
+            if (tag === "\'" && split[i+1].length > 0) {
+                split[i+1] = match[i] + split[i+1];
+                match[i] = "";
+            }
+        }
         return {
             tags: match,
             strings: split,
