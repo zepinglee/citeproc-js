@@ -921,7 +921,7 @@ var CSL = {
                 }
             }
         } else {
-            if (termtxt.slice(-1).match(/[0-9]/)) {
+            if (termtxt && termtxt.slice(-1).match(/[0-9]/)) {
                 state.tmp.just_did_number = true;
             } else {
                 state.tmp.just_did_number = false;
