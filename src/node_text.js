@@ -314,7 +314,17 @@ CSL.Node.text = {
                                         // true is for non-suppression of periods
                                         if (state.opt.development_extensions.wrap_url_and_doi) {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
+                                                // Special-casing to fix https://github.com/Juris-M/citeproc-js/issues/57
+                                                // clone current token, to avoid collateral damage
+                                                // cast a group token
+                                                // set the DOI decoration on the token
+                                                // cast a text token
+                                                // set the prefix as the content of the token
+                                                // remove prefix from the clone
+                                                // append new text token and clone to group token
+                                                // append group token to output
                                                 this.decorations = [["@" + this.variables[0], "true"]].concat(this.decorations);
+                                                
                                             }
                                         } else {
                                             if (this.decorations.length && this.decorations[0][0] === "@" + this.variables[0]) {
