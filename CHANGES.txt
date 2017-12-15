@@ -1,5 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
+
+==========================
+Changes in version 1.1.183
+==========================
+
+- Correctly nest JSON-parsed style internally when singleton terms are
+  used in cs:locale:
+
+    https://forums.zotero.org/discussion/comment/295820#Comment_295820
+
 ==========================
 Changes in version 1.1.182
 ==========================
