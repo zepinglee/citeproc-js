@@ -286,6 +286,37 @@ var CSL = {
         }
         return lst.join("-");
     },
+
+    isDatePart: function(str, less, more) {
+        if (str.length > less && str.length < more && parseInt(str)) {
+            return true
+        } else {
+            return false;
+        }
+    },
+
+    isDateString: function(str) {
+        var strLst = str.split("-");
+        if (strLst.length > 0) {
+            if (!isDatePart(strLst[0], 3, 5)) {
+                return false;
+            }
+        }
+        if (strLst.length > 1) {
+            if (!isDatePart(strLst[1], 0, 3)) {
+                return false
+            }
+        }
+        if (strLst.length > 2) {
+            if (!isDatePart(strLst[2], 0, 3)) {
+                return false
+            }
+        }
+        if (strLst.length > 3) {
+            return false;
+        }
+        return true;
+    },
     
     parseNoteFieldHacks: function(Item, validFieldsForType, allowDateOverride) {
         if ("string" !== typeof Item.note) return;
@@ -340,7 +371,7 @@ var CSL = {
             } else if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
                 if (allowDateOverride) {
                     Item[key] = {raw: val};
-                    if (!validFieldsForType || (validFieldsForType[key] && val.match(/^[0-9]{4}(?:-[0-9]{1,2}(?:-[0-9]{1,2})*)*$/))) {
+                    if (!validFieldsForType || (validFieldsForType[key] && isDateString(val))) {
                         lines[i] = "";
                     }
                 }
