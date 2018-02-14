@@ -296,6 +296,7 @@ var CSL = {
     },
 
     isDateString: function(str) {
+        if (!str) return false;
         var strLst = str.split("-");
         if (strLst.length > 0) {
             if (!isDatePart(strLst[0], 3, 5)) {
