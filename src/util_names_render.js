@@ -435,9 +435,8 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
     var non_dropping_particle = this._nonDroppingParticle(name);
     var given = this._givenName(name, pos, i);
     var suffix = this._nameSuffix(name);
-    if (this._isShort(pos, i) && !name["full-form-always"]) {
+    if (given === false) {
         dropping_particle = false;
-        given = false;
         suffix = false;
     }
     var sort_sep = this.state.inheritOpt(this.name, "sort-separator");
@@ -600,14 +599,6 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
     return blob;
 };
 
-CSL.NameOutput.prototype._isShort = function (pos, i) {
-    if (0 === this.state.tmp.disambig_settings.givens[pos][i]) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
 /*
         // Do not include given name, dropping particle or suffix in strict short form of name
 
@@ -707,18 +698,52 @@ CSL.NameOutput.prototype._familyName = function (name) {
 
 CSL.NameOutput.prototype._givenName = function (name, pos, i) {
     var ret;
-    if (this.state.inheritOpt(this.name, "initialize") === false) {
-        if (name.family && name.given && this.state.inheritOpt(this.name, "initialize") === false) {
-            name.given = CSL.Util.Names.initializeWith(this.state, name.given, this.state.inheritOpt(this.name, "initialize-with"), true);
-        }
-        name.given = CSL.Util.Names.unInitialize(this.state, name.given);
+    // citation
+    //   use disambig as-is
+    // biblography
+    //   use disambig only if it boosts over the default
+    //   SO WHAT IS THE DEFAULT?
+    //   A: If "form" is short, it's 0.
+    //      If "form" is long, initialize-with exists (and initialize is not false) it's 1
+    //      If "form" is long, and initialize_with does not exist, it's 2.
+    var formIsShort = this.state.inheritOpt(this.name, "form", "name-form", "long") !== "long";
+    var initializeIsTurnedOn = !(this.state.inheritOpt(this.name, "initialize") === false);
+    var hasInitializeWith = "string" === typeof this.state.inheritOpt(this.name, "initialize-with") && !name.block_initialize;
+    var inBibliography = this.state.tmp.area.slice(0, 12) === "bibliography";
+    var defaultLevel;
+    var useLevel;
+    if (name["full-form-always"]) {
+        useLevel = 2;
     } else {
-        if (name.family && 1 === this.state.tmp.disambig_settings.givens[pos][i] && !name.block_initialize) {
-            var initialize_with = this.state.inheritOpt(this.name, "initialize-with");
-            name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with);
+        if (formIsShort) {
+            defaultLevel = 0;
+        } else if (hasInitializeWith) {
+            defaultLevel = 1;
+        } else {
+            defaultLevel = 2;
+        }
+        var requestedLevel = this.state.tmp.disambig_settings.givens[pos][i];
+        if (requestedLevel > defaultLevel) {
+            useLevel = requestedLevel;
+        } else {
+            useLevel = defaultLevel;
+        }
+    }
+    var gdropt = this.state.citation.opt["givenname-disambiguation-rule"];
+   if (gdropt && gdropt.slice(-14) === "-with-initials") {
+        hasInitializeWith = true;
+    }
+    if (name.family && useLevel === 1) {
+        if (hasInitializeWith) {
+            var initialize_with = this.state.inheritOpt(this.name, "initialize-with", false, "");
+            name.given = CSL.Util.Names.initializeWith(this.state, name.given, initialize_with, !initializeIsTurnedOn);
         } else {
             name.given = CSL.Util.Names.unInitialize(this.state, name.given);
         }
+    } else if (useLevel === 0) {
+        return false;
+    } else if (useLevel === 2) {
+        name.given = CSL.Util.Names.unInitialize(this.state, name.given);
     }
 
     var str = this._stripPeriods("given", name.given);
