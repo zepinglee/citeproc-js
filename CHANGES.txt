@@ -2,6 +2,15 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.186
+==========================
+
+- Reflect steps of disambiguate="true" in the bibliography. Addresses an issue
+  raised by @F.Altermann, following discussion with @adamsmith:
+
+  https://forums.zotero.org/discussion/70341/add-title-short-to-disambiguate-in-bibliography-only-if-necsessary
+
+==========================
 Changes in version 1.1.185
 ==========================
 

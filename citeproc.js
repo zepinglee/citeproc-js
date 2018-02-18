@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.185",
+    PROCESSOR_VERSION: "1.1.186",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -10755,11 +10755,18 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
     if (arg === "true") {
         state.opt.has_disambiguate = true;
         var func = function (Item, item) {
-            state.tmp.disambiguate_maxMax += 1;
-            if (state.tmp.disambig_settings.disambiguate
-                && state.tmp.disambiguate_count < state.tmp.disambig_settings.disambiguate) {
-                state.tmp.disambiguate_count += 1;
-                return true;
+            if (state.tmp.area === "bibliography") {
+                if (state.tmp.disambiguate_count < state.registry.registry[Item.id].disambig.disambiguate) {
+                    state.tmp.disambiguate_count += 1;
+                    return true;
+                }
+            } else {
+                state.tmp.disambiguate_maxMax += 1;
+                if (state.tmp.disambig_settings.disambiguate
+                    && state.tmp.disambiguate_count < state.tmp.disambig_settings.disambiguate) {
+                    state.tmp.disambiguate_count += 1;
+                    return true;
+                }
             }
             return false;
         };
