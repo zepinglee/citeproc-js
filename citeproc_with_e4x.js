@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.186",
+    PROCESSOR_VERSION: "1.1.187",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -13909,9 +13909,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         defaultLabel = defaultLabel ? defaultLabel : "";
         str = normalizeFieldValue(str, defaultLabel);
         var elems = [];
-        var m = str.match(/(,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
+        var m = str.match(/(;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
         if (m) {
-            var lst = str.split(/(?:,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
+            var lst = str.split(/(?:;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
             for (var i=0,ilen=lst.length-1; i<ilen; i++) {
                 elems.push(lst[i]);
                 elems.push(m[i]);
@@ -13929,36 +13929,51 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             if (m) {
                 var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/);
                 for (var j=lst.length-1;j>0;j--) {
-                    if (lst[j-1] && (!lst[j].match(/^[0-9]+([-,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-,:a-zA-Z]*)$/))) {
+                    if (lst[j-1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
                         lst[j-1] = lst[j-1] + m[j-1] + lst[j];
                         lst = lst.slice(0,j).concat(lst.slice(j+1))
                         m = m.slice(0,j-1).concat(m.slice(j))
                     }
                 }
-                if (m.length > 0 && i === 0) {
-                    var slug = m[0].trim();
-                    if (!CSL.STATUTE_SUBDIV_STRINGS[slug]
-                        || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
-                        || (["locator", "number"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable)) {
-                        m = m.slice(1);
-                        lst[0] = lst[0] + " " + slug + " " + lst[1];
-                        lst = lst.slice(0,1).concat(lst.slice(2))
+                if (m.length > 0) {
+                    if (i === 0) {
+                        var slug = m[0].trim();
+                        if (!CSL.STATUTE_SUBDIV_STRINGS[slug]
+                            || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
+                            || (["locator", "number"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable)) {
+                            m = m.slice(1);
+                            lst[0] = lst[0] + " " + slug + " " + lst[1];
+                            lst = lst.slice(0,1).concat(lst.slice(2))
+                        } else {
+                            origLabel = slug;
+                        }
                     }
                 }
                 for (var j=0,jlen=lst.length; j<jlen; j++) {
                     if (lst[j] || j === (lst.length-1)) {
+                        var filteredOrigLabel;
                         label = m[j-1] ? m[j-1] : label;
-                        var origLabel = j > 1 ? m[j-1] : "";
+                        if (origLabel === label.trim()) {
+                            filteredOrigLabel = "";
+                        } else {
+                            filteredOrigLabel = origLabel;
+                        }
                         var str = lst[j] ? lst[j].trim() : "";
                         if (j === (lst.length-1)) {
-                            values.push(composeNumberInfo(origLabel, label, str, elems[i+1]));
+                            values.push(composeNumberInfo(filteredOrigLabel, label, str, elems[i+1]));
                         } else {
-                            values.push(composeNumberInfo(origLabel, label, str));
+                            values.push(composeNumberInfo(filteredOrigLabel, label, str));
                         }
                     }
                 }
             } else {
-                values.push(composeNumberInfo(origLabel, label, elems[i], elems[i+1]));
+                var filteredOrigLabel;
+                if (origLabel === label.trim()) {
+                    filteredOrigLabel = "";
+                } else {
+                    filteredOrigLabel = origLabel;
+                }
+                values.push(composeNumberInfo(filteredOrigLabel, label, elems[i], elems[i+1]));
             }
         }
         return values;
@@ -14129,7 +14144,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     function checkTerm(variable, val) {
         var ret = true;
         if (variable === "locator") {
-            ret = !!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[val.label]);
+            var label;
+            if (val.origLabel) {
+                label = val.origLabel;
+            } else {
+                label = val.label;
+            }
+            ret = !!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[label]);
         }
         return ret;
     }

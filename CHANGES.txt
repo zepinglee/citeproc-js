@@ -2,6 +2,13 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.187
+==========================
+
+- Be more aggressive about en-dashes. Do not reset pluralization group when an unrecognized
+  label is encountered. Allow semi-colon as delimiter. Based on use case flagged by Mark Bruffey.
+
+==========================
 Changes in version 1.1.186
 ==========================
 
