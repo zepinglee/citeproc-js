@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] 10th r. 1-6
+>>[0] 10th r. 1–6
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
@@ -15,7 +15,7 @@ citation
             "citationItems": [
                 {
                     "id": "ITEM-1", 
-                    "locator": "10 r. 1-6"
+                    "locator": "10 r. 1–6"
                 }
             ], 
             "properties": {

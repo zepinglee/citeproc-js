@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] chapter x r. 1-6
+>>[0] chapter x r. 1–6
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>

@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] x pos. 1-6
+>>[0] x pos. 1–6
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
