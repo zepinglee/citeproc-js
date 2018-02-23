@@ -3,12 +3,12 @@ citation
 <<===== MODE =====<<
 
 
-Test string provided by Mark Bruffey.
+Test string prompted by Mark Bruffey.
 
 
 >>===== RESULT =====>>
 ..[0] Book Title
->>[1] Ibid., 293–329, esp. 262–263, fols. 294–311; 236, 439–443, 11–12
+>>[1] Ibid., 293-a, 262–63, fol. 294, esp. 1536–1538, nn. 11–12 with 13–14 etc
 <<===== RESULT =====<<
 
 
@@ -36,7 +36,7 @@ Test string provided by Mark Bruffey.
                 {
                     "id": "ITEM-1", 
                     "label": "page", 
-                    "locator": "293-329, esp. 262-263, fol. 294-311; 236, 439-443, 11-12"
+                    "locator": "293-a, 262-263, fol. 294, esp. 1536-1538, n. 11-12 with 13-14 etc"
                 }
             ], 
             "properties": {
@@ -59,7 +59,8 @@ Test string provided by Mark Bruffey.
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.0"
+      page-range-format="chicago">
   <info>
     <id />
     <title />
