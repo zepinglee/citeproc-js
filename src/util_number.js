@@ -236,7 +236,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
         
         if (label) {
-            var m = label.match(/(\s*)([^\s]*)(\s*)/);
+            var m = label.match(/(\s*)([^\s]+)(\s*)/);
             info.label = m[2];
             info.origLabel = origLabel;
             info.labelSuffix = m[3] ? m[3] : "";
@@ -313,17 +313,18 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 }
                 // merge bad leading label into content
                 if (m.length > 0) {
-                    if (i === 0) {
-                        var slug = m[0].trim();
-                        if (!CSL.STATUTE_SUBDIV_STRINGS[slug]
-                            || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
-                            || (["locator", "number"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable)) {
+                    var slug = m[0].trim();
+                    var notAlabel = !CSL.STATUTE_SUBDIV_STRINGS[slug]
+                        || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
+                        || (["locator", "number"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable);
+                    if (notAlabel) {
+                        if (i === 0) {
                             m = m.slice(1);
                             lst[0] = lst[0] + " " + slug + " " + lst[1];
                             lst = lst.slice(0,1).concat(lst.slice(2))
-                        } else {
-                            origLabel = slug;
                         }
+                    } else {
+                        origLabel = slug;
                     }
                 }
 
@@ -390,11 +391,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             currentLabelInfo.collapsible = false;
         }
         var isCollapsible = currentLabelInfo.collapsible;
-        if (!isCollapsible && i>0 && val.match(/^[ivxlcmIVXLCM]+$/) && values[i-1].value.match(/^[ivxlcmIVXLCM]+$/)) {
-            // spoof collapsible for roman numerals
-            isCollapsible = true;
+        if (!isCollapsible) {
+            if (i>0 && val.match(/^[ivxlcmIVXLCM]+$/) && values[i-1].value.match(/^[ivxlcmIVXLCM]+$/)) {
+                // spoof collapsible for roman numerals
+                isCollapsible = true;
+            } else if (i>0 && val.match(/^[0-9]+(?:\s|$)/) && values[i-1].value.match(/^[0-9]+(?:\s|$)/)) {
+                isCollapsible = true;
+            }
         }
         for (var j=currentLabelInfo.pos,jlen=values.length; j<jlen; j++) {
+            // print("?? "+values[j].value+", isCollapsible="+isCollapsible+", currentLableInfo.count="+currentLabelInfo.count+", currentLabeLInfo.label="+currentLabelInfo.label+", values[j].label="+values[j].label);
             if (currentLabelInfo.label === values[j].label && currentLabelInfo.count > 1 && isCollapsible) {
                 values[j].plural = 1;
             }
@@ -471,7 +477,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 var origLabel = values[i].origLabel ? values[i].origLabel : "";
                 values[i].value = (origLabel + values[i].value).trim();
                 if (values[i].label !== values[0].label) {
-                    values[i].label = "";
+                    // XXX This should never happen
+                    //values[i].label = "";
                 }
             }
         }
@@ -552,7 +559,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
 
     function checkPage(variable, val) {
         return variable === "page" 
-            || (variable === "locator" && (["p."].indexOf(val.label) > -1));
+            || (variable === "locator" && (["p."].indexOf(val.label) > -1 || ["p."].indexOf(val.origLabel) > -1));
     }
     
     function checkTerm(variable, val) {
