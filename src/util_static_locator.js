@@ -17,7 +17,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             //   (a) Leave be an overriding label at the start of the locator field, defaulting to label value
             if (item.locator) {
                 item.locator = item.locator.trim();
-                var m = item.locator.match(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                var m = item.locator.match(CSL.STATUTE_SUBDIV_PLAIN_REGEX_FRONT);
                 if (!m) {
                     if (item.label) {
                         item.locator = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[item.label] + " " + item.locator;
@@ -31,7 +31,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             var sectionMasterLabel = null;
             if (Item.section) {
                 Item.section = Item.section.trim();
-                var m = Item.section.match(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
+                var m = Item.section.match(CSL.STATUTE_SUBDIV_PLAIN_REGEX_FRONT);
                 if (!m) {
                     Item.section = "sec. " + Item.section;
                     sectionMasterLabel = "sec.";
