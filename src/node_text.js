@@ -285,13 +285,6 @@ CSL.Node.text = {
                                     CSL.Util.outputNumericField(state, this.variables[0], Item.id);
                                     // XXX END
 
-                                    
-                                    //var value = "" + item[this.variables[0]];
-                                    //value = value.replace(/([^\\])--*/g,"$1"+state.getTerm("page-range-delimiter"));
-                                    //value = value.replace(/\\-/g,"-");
-                                    //print("??FIXIT?? "+value);
-                                    // true is for non-suppression of periods
-                                    state.output.append(value, this, false, false, true);
                                     if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
                                        && !state.tmp.just_looking) { 
                                         state.tmp.done_vars.push(this.variables_real[0]);
