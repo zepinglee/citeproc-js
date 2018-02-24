@@ -793,6 +793,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
     } else {
         embeddedLabelForm = "short";
     }
+    var labelCapitalizeIfFirst = state.tmp.shadow_numbers[varname].labelCapitalizeIfFirst;
     var labelDecorations = state.tmp.shadow_numbers[varname].labelDecorations;
     var lastLabelName = null;
     for (var i=0,ilen=nums.length;i<ilen;i++) {
@@ -810,6 +811,9 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
                     label = state.getTerm(labelName, labelForm, num.plural);
                 } else {
                     label = state.getTerm(labelName, embeddedLabelForm, num.plural);
+                }
+                if (labelCapitalizeIfFirst) {
+                    label = CSL.Output.Formatters["capitalize-first"](state, label);
                 }
             }
         }
@@ -864,6 +868,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
             }
         }
         lastLabelName === labelName;
+        state.tmp.term_predecessor = true;
     }
     state.output.closeLevel();
 }

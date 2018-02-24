@@ -23,6 +23,12 @@ CSL.Node.group = {
                     }
                 }
                 
+                if (this.strings.label_capitalize_if_first_override) {
+                    if (!state.tmp.group_context.tip.label_capitalize_if_first) {
+                        state.tmp.group_context.tip.label_capitalize_if_first = this.strings.label_capitalize_if_first_override;
+                    }
+                }
+                
                 if (this.realGroup) {
                     var condition = false;
                     var force_suppress = false;
@@ -38,6 +44,10 @@ CSL.Node.group = {
                         label_form = this.strings.label_form_override;
                     }
                     
+                    var label_capitalize_if_first = state.tmp.group_context.tip.label_capitalize_if_first;
+                    if (!label_capitalize_if_first) {
+                        label_capitalize_if_first = this.strings.label_capitalize_if_first;
+                    }
                     if (state.tmp.group_context.tip.condition) {
                         condition = state.tmp.group_context.tip.condition;
                         force_suppress = state.tmp.group_context.tip.force_suppress;
@@ -65,12 +75,14 @@ CSL.Node.group = {
                     //    print("PUSH parent="+JSON.stringify(state.tmp.group_context.tip, params))
                     //}
                     state.tmp.group_context.push({
+                        old_term_predecessor: state.tmp.term_predecessor,
                         term_intended: false,
                         variable_attempt: false,
                         variable_success: false,
                         variable_success_parent: state.tmp.group_context.tip.variable_success,
                         output_tip: state.output.current.tip,
                         label_form: label_form,
+                        label_capitalize_if_first: label_capitalize_if_first,
                         parallel_conditions: this.strings.set_parallel_condition,
                         condition: condition,
                         force_suppress: force_suppress,
@@ -281,6 +293,7 @@ CSL.Node.group = {
                             state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
                         }
                     } else {
+                        state.tmp.term_predecessor = flags.old_term_predecessor;
                         state.tmp.group_context.tip.variable_attempt = flags.variable_attempt;
                         if (flags.force_suppress && !state.tmp.group_context.tip.condition) {
                             state.tmp.group_context.tip.variable_attempt = true;

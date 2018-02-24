@@ -882,6 +882,14 @@ CSL.Attributes["@cslid"] = function (state, arg) {
     this.cslid = parseInt(arg, 10);
 };
 
+CSL.Attributes["@capitalize-if-first"] = function (state, arg) {
+    this.strings.capitalize_if_first_override = arg;
+};
+
+CSL.Attributes["@label-capitalize-if-first"] = function (state, arg) {
+    this.strings.label_capitalize_if_first_override = arg;
+};
+
 CSL.Attributes["@label-form"] = function (state, arg) {
     this.strings.label_form_override = arg;
 };

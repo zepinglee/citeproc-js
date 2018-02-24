@@ -33,7 +33,12 @@ CSL.Node.label = {
                 }
                 CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, termtxt);
                 if (termtxt.indexOf("%s") === -1) {
-                    // Suppress output here if we have an embedded term
+                    // ^ Suppress output here if we have an embedded term
+                    if (this.strings.capitalize_if_first) {
+                        if (!state.tmp.term_predecessor && !(state.opt["class"] === "in-text" && state.tmp.area === "citation")) {
+                            termtxt = CSL.Output.Formatters["capitalize-first"](state, termtxt);
+                        }
+                    }
                     state.output.append(termtxt, this);
                 }
                 if (item && this.strings.term === "locator") {
