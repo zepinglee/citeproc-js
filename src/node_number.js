@@ -65,11 +65,6 @@ CSL.Node.number = {
             // is rendered after collection-number.
             var value = Item[this.variables[0]];
             
-            var form = "long";
-            if (this.strings.label_form_override) {
-                form = this.strings.label_form_override;
-            }
-            
             // For bill or legislation items that have a label-form
             // attribute set on the cs:number node rendering the locator,
             // the form and pluralism of locator terms are controlled
