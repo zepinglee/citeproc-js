@@ -2,6 +2,26 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.190
+==========================
+
+- Add capitalize-if-first for label, and label-capitalize-if-first for macros.
+
+- Fix bug affecting locator label + embedded labels.
+
+- Make term_predecessor robust in require/reject implicit conditionals.
+
+- Remove some redundant bits of code
+
+==========================
+Changes in version 1.1.189
+==========================
+
+- Add CSL-M group require/reject conditional "empty-label-no-decor." Needed
+  for modular support of New Zealand Law Style and other styles that use "At"
+  for ibid backreferences with square-braced paragraph numbers.
+
+==========================
 Changes in version 1.1.188
 ==========================
 
