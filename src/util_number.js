@@ -244,10 +244,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             info.labelVisibility = false;
         }
         
-        var m = val.match(/^([a-zA-Z0]*)([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
-        //var m = val.match(/^([a-zA-Z]0*)([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
+        var m = val.match(/^([0-9]*[a-zA-Z]+0*)?([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
+        //var m = val.match(/^([0-9]*[a-zA-Z]0*)([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
         if (m) {
-            info.particle = m[1];
+            info.particle = m[1] ? m[1] : "";
             info.value = m[2];
         } else {
             info.particle = "";
@@ -602,7 +602,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         } else {
             str = values[i-1].value + stripHyphenBackslash(values[i-1].joiningSuffix) + values[i].value;
         }
-        var m = str.match(/^([a-zA-Z]?0*)([0-9]+)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+)$/);
+        var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+)$/);
         if (m) {
             var rangeDelimiter = m[3];
             rangeDelimiter = fixupRangeDelimiter(variable, val, rangeDelimiter, values[i].numeric);
@@ -844,7 +844,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
             }
         }
         if (num.collapsible) {
-            if (num.value.match(/^[0-9]+$/)) {
+            if (num.value.match(/^[1-9][0-9]*$/)) {
                 var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
             } else {
                 var blob = new CSL.NumericBlob(num.particle, num.value, numStyling, itemID);
