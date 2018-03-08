@@ -357,6 +357,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 values.push(composeNumberInfo(filteredOrigLabel, label, elems[i], elems[i+1]));
             }
         }
+        //print(JSON.stringify(values, null, 2))
         return values;
     }
 
@@ -388,7 +389,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             }
         }
         if ((mVal && mVal[1]) || (mCurrentLabel && mCurrentLabel[1])) {
+            //print(i + " val="+val+"\n  mVal="+mVal+"\n  mCurrentLabel="+mCurrentLabel+"\n  isEscapedHyphen="+isEscapedHyphen);
             currentLabelInfo.collapsible = false;
+        }
+        if (i === 0 && undefined === values[0].collapsible) {
+            values[0].collapsible = true;
         }
         var isCollapsible = currentLabelInfo.collapsible;
         if (!isCollapsible) {
@@ -399,8 +404,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 isCollapsible = true;
             }
         }
+        // XXX pos+1 ?
         for (var j=currentLabelInfo.pos,jlen=values.length; j<jlen; j++) {
-            // print("?? "+values[j].value+", isCollapsible="+isCollapsible+", currentLableInfo.count="+currentLabelInfo.count+", currentLabeLInfo.label="+currentLabelInfo.label+", values[j].label="+values[j].label);
+            print("?? "+values[j].value+", isCollapsible="+isCollapsible+", currentLableInfo.count="+currentLabelInfo.count+", currentLabeLInfo.label="+currentLabelInfo.label+", values[j].label="+values[j].label);
             if (currentLabelInfo.label === values[j].label && currentLabelInfo.count > 1 && isCollapsible) {
                 values[j].plural = 1;
             }
@@ -428,10 +434,17 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
         var masterLabel = values.length ? values[0].label : null;
         for (var i=0,ilen=values.length;i<ilen;i++) {
+            if (i === 0) {
+                currentLabelInfo.particle = values[0].particle;
+            }
+            //if (undefined === values[i].collapsible) {
+            //    values[i].collapsible = true;
+            //}
             if (values[i].label) {
-                if (values[i].label === currentLabelInfo.label) {
+                if (values[i].label === currentLabelInfo.label && values[i].particle === currentLabelInfo.particle) {
                     currentLabelInfo.count++;
                 } else {
+                    print("ENTER 1");
                     fixNumericAndCount(values, i, currentLabelInfo);
                     // Special problem.
                     // If there are braces, we mostly want to suppress
@@ -466,6 +479,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 }
             }
         }
+        print("ENTER 2");
         fixNumericAndCount(values, values.length-1, currentLabelInfo);
         if (values.length && values[0].numeric && variable.slice(0, 10) === "number-of-") {
             if (parseInt(ItemObject[variable], 10) > 1) {
@@ -772,6 +786,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
 
         if (node) {
             fixRanges(values);
+
             this.tmp.shadow_numbers[variable].masterStyling = setStyling(values)
             //print("setStyling(): "+JSON.stringify(values, null, 2));
         }
