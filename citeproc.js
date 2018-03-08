@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.192",
+    PROCESSOR_VERSION: "1.1.193",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5509,20 +5509,30 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     this.tmp.group_context.replace(oldTermSiblingLayer);
     return ret;
 };
-CSL.getSpliceDelimiter = function (last_collapsed, pos) {
-    if (last_collapsed && ! this.tmp.have_collapsed && "string" === typeof this.citation.opt["after-collapse-delimiter"]) {
-        this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
+CSL.getSpliceDelimiter = function (last_locator, last_collapsed, pos) {
+    if (undefined !== this.citation.opt["after-collapse-delimiter"]) {
+        if (last_locator) {
+            this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
+        } else if (last_collapsed && !this.tmp.have_collapsed) {
+            this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
+        } else if (!last_collapsed && !this.tmp.have_collapsed && this.citation.opt.collapse !== "year-suffix") {
+            this.tmp.splice_delimiter = this.citation.opt["after-collapse-delimiter"];
+        } else {
+            this.tmp.splice_delimiter = this.citation.opt.layout_delimiter;
+        }
     } else if (this.tmp.use_cite_group_delimiter) {
         this.tmp.splice_delimiter = this.citation.opt.cite_group_delimiter;
-    } else if (this.tmp.have_collapsed && this.opt.xclass === "in-text" && this.opt.update_mode !== CSL.NUMERIC) {
-        this.tmp.splice_delimiter = ", ";
-    } else if (this.tmp.cite_locales[pos - 1]) {
-        var alt_affixes = this.tmp.cite_affixes[this.tmp.area][this.tmp.cite_locales[pos - 1]];
-        if (alt_affixes && alt_affixes.delimiter) {
-            this.tmp.splice_delimiter = alt_affixes.delimiter;
+    } else {
+        if (this.tmp.have_collapsed && this.opt.xclass === "in-text" && this.opt.update_mode !== CSL.NUMERIC) {
+            this.tmp.splice_delimiter = ", ";
+        } else if (this.tmp.cite_locales[pos - 1]) {
+            var alt_affixes = this.tmp.cite_affixes[this.tmp.area][this.tmp.cite_locales[pos - 1]];
+            if (alt_affixes && alt_affixes.delimiter) {
+                this.tmp.splice_delimiter = alt_affixes.delimiter;
+            }
+        } else if (!this.tmp.splice_delimiter) {
+            this.tmp.splice_delimiter = "";
         }
-    } else if (!this.tmp.splice_delimiter) {
-        this.tmp.splice_delimiter = "";
     }
     return this.tmp.splice_delimiter;
 };
@@ -5603,6 +5613,10 @@ CSL.getCitationCluster = function (inputList, citationID) {
         item = inputList[pos][1];
         item = CSL.parseLocator.call(this, item);
         last_collapsed = this.tmp.have_collapsed;
+        var last_locator = false;
+        if (pos > 0 && inputList[pos-1][1]) {
+            last_locator = !!inputList[pos-1][1].locator;
+        }
         params = {};
         this.tmp.shadow_numbers = {};
         if (!this.tmp.just_looking && this.opt.hasPlaceholderTerm) {
@@ -5633,7 +5647,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
         if (pos === (inputList.length - 1)) {
             this.parallel.ComposeSet();
         }
-        params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_collapsed, pos);
+        params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_locator, last_collapsed, pos);
         if (item && item["author-only"]) {
             this.tmp.suppress_decorations = true;
         }
@@ -5768,9 +5782,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
         if (buffer.length) {
             if ("string" === typeof buffer[0]) {
                 if (pos > 0) {
-                    if (((myblobs.length-1) > pos && myparams[pos+1].have_collapsed) && !myparams[pos].have_collapsed) {
-                        this.tmp.splice_delimiter = myparams[pos-1].splice_delimiter;
-                    }
                     buffer[0] = txt_esc(this.tmp.splice_delimiter) + buffer[0];
                 }
             } else {
