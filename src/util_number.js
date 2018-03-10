@@ -622,10 +622,6 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 currentInfo.count = 0;
                 currentInfo.label = null;
                 var isNumeric = val.numeric;
-                if (i<(values.length-1) && !isNumeric && val.value.match(/^[ivxlcmIVXLCM]+$/) && values[i+1].value.match(/^[ivxlcmIVXLCM]+$/)) {
-                    // spoof numeric for roman numerals
-                    isNumeric = true;
-                }
                 val.joiningSuffix = fixupRangeDelimiter(variable, val, val.joiningSuffix, isNumeric);
             } else if (currentInfo.label === val.label && val.joiningSuffix === "-") {
                 // So if there is a hyphen here, and none previous, reset to 1
@@ -641,7 +637,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 currentInfo.label = val.label;
                 currentInfo.count = 1;
             } else {
-                // Otherwise label doesn't match and count is some other value, so reset to 1
+                // Safety belt: label doesn't match and count is some other value, so reset to 1
+                // This never happens, though.
                 currentInfo.count = 1;
                 currentInfo.label = val.label;
             }
