@@ -5,10 +5,13 @@ citation
 
 Test string prompted by Mark Bruffey.
 
+Note the failure of the en-dash on "13-14 etc." Distinguishing
+that construct from a non-numeric entity is a step too far.
+
 
 >>===== RESULT =====>>
 ..[0] Book Title
->>[1] Ibid., 293-a, 262–63, fol. 294, esp. 1536–1538, nn. 11–12 with 13–14 etc
+>>[1] Ibid., 293-a, 262–63, fol. 294, esp. 1536–1538, nn. 11–12 with 13-14 etc
 <<===== RESULT =====<<
 
 

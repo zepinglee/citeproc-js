@@ -11,7 +11,7 @@ of the range.
 
 >>===== RESULT =====>>
 ..[0] Book Title
->>[1] Ibid., 8n8-9, 8n10–14
+>>[1] Ibid., 8n8-9, 8n10–14, ix–xv
 <<===== RESULT =====<<
 
 
@@ -39,7 +39,7 @@ of the range.
                 {
                     "id": "ITEM-1", 
                     "label": "page", 
-                    "locator": "8n8-9, 8n10-8n14"
+                    "locator": "8n8-9, 8n10-8n14, ix-xv"
                 }
             ], 
             "properties": {
