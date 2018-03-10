@@ -2,6 +2,13 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.194
+==========================
+
+- Some cleanup and improvement of parsing in numeric and locator
+  fields.
+
+==========================
 Changes in version 1.1.193
 ==========================
 

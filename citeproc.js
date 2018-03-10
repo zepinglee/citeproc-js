@@ -3911,6 +3911,10 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
             if ("number" === typeof blobjr.num) {
                 ret.push(blobjr);
             } else if (blobjr.blobs) {
+                if (blobjr.particle) {
+                    blobjr.blobs = blobjr.particle + blobjr.blobs;
+                    blobjr.particle = "";
+                }
                 b = txt_esc(blobjr.blobs);
                 var blen = b.length;
                 if (!state.tmp.suppress_decorations) {
@@ -13964,9 +13968,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var label = defaultLabel;
         var origLabel = "";
         for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/g);
+            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/g);
             if (m) {
-                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/);
+                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/);
                 for (var j=lst.length-1;j>0;j--) {
                     if (lst[j-1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
                         lst[j-1] = lst[j-1] + m[j-1] + lst[j];
@@ -14046,73 +14050,74 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if ((mVal && mVal[1]) || (mCurrentLabel && mCurrentLabel[1])) {
             currentLabelInfo.collapsible = false;
         }
-        var isCollapsible = currentLabelInfo.collapsible;
-        if (!isCollapsible) {
-            if (i>0 && val.match(/^[ivxlcmIVXLCM]+$/) && values[i-1].value.match(/^[ivxlcmIVXLCM]+$/)) {
-                isCollapsible = true;
-            } else if (i>0 && val.match(/^[0-9]+(?:\s|$)/) && values[i-1].value.match(/^[0-9]+(?:\s|$)/)) {
-                isCollapsible = true;
+        if (undefined === values[i].collapsible) {
+            for (var j=i,jlen=i+currentLabelInfo.count;j<jlen;j++) {
+                if (isNaN(parseInt(values[j].value)) && !values[j].value.match(/^[ivxlcmIVXLCM]+$/)) {
+                    values[j].collapsible = false;
+                } else {
+                    values[j].collapsible = true;
+                }
             }
+            currentLabelInfo.collapsible = values[i].collapsible;
         }
-        for (var j=currentLabelInfo.pos,jlen=values.length; j<jlen; j++) {
-            if (currentLabelInfo.label === values[j].label && currentLabelInfo.count > 1 && isCollapsible) {
+        var isCollapsible = currentLabelInfo.collapsible;
+        for (var j=currentLabelInfo.pos,jlen=(currentLabelInfo.pos + currentLabelInfo.count); j<jlen; j++) {
+            if (currentLabelInfo.count > 1 && isCollapsible) {
                 values[j].plural = 1;
             }
             values[j].numeric = currentLabelInfo.numeric;
             values[j].collapsible = currentLabelInfo.collapsible;
         }
-        currentLabelInfo.label = values[i].label;
-        currentLabelInfo.count = 1;
-        currentLabelInfo.pos = i;
-        currentLabelInfo.numeric = true;
-        currentLabelInfo.collapsible = true;
     }
-    function setPluralsAndNumerics(values) {
-        var currentLabelInfo = {
-            label: null,
-            count: 1,
-            numeric: true,
-            collapsible: true,
-            pos: 0
-        }
-        var masterLabel = values.length ? values[0].label : null;
-        for (var i=0,ilen=values.length;i<ilen;i++) {
-            if (values[i].label) {
-                if (values[i].label === currentLabelInfo.label) {
-                    currentLabelInfo.count++;
-                } else {
-                    fixNumericAndCount(values, i, currentLabelInfo);
-                    if (currentLabelInfo.pos === 0) {
-                        if (variable === "locator" || variable === "number") {
-                            if (!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label]) && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                                values[currentLabelInfo.pos].labelVisibility = true;
-                            }
-                        }
-                        if (["locator", "number"].indexOf(variable) === -1) {
-                            if (CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                                values[0].labelVisibility = true;
-                            }
-                        }
-                    } else {
-                        if (values[i-1].label !== values[i].label && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                            values[currentLabelInfo.pos].labelVisibility = true;
-                        }
+    function fixLabelVisibility(values, groupStartPos, currentLabelInfo) {
+        if (currentLabelInfo.label.slice(0, 4) !== "var:") {
+            if (currentLabelInfo.pos === 0) {
+                if (variable === "locator" || variable === "number") {
+                    if (!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label])) {
+                        values[currentLabelInfo.pos].labelVisibility = true;
                     }
                 }
+                if (["locator", "number"].indexOf(variable) === -1) {
+                    if (CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable) {
+                        values[0].labelVisibility = true;
+                    }
+                }
+            } else {
+                values[currentLabelInfo.pos].labelVisibility = true;
             }
         }
-        fixNumericAndCount(values, values.length-1, currentLabelInfo);
+    }
+    function setPluralsAndNumerics(values) {
+        if (values.length === 0) return;
+        var groupStartPos = 0;
+        var groupCount = 1;
+        for (var i=1,ilen=values.length;i<ilen;i++) {
+            var lastVal = values[i-1];
+            var thisVal = values[i];
+            if (lastVal.label === thisVal.label && lastVal.particle === lastVal.particle) {
+                groupCount++;
+            } else {
+                var currentLabelInfo = JSON.parse(JSON.stringify(values[groupStartPos]));
+                currentLabelInfo.pos = groupStartPos;
+                currentLabelInfo.count = groupCount;
+                currentLabelInfo.numeric = true;
+                fixNumericAndCount(values, groupStartPos, currentLabelInfo);
+                if (i === 0 || (lastVal.label !== thisVal.label)) {
+                    fixLabelVisibility(values, groupStartPos, currentLabelInfo);
+                }
+                groupStartPos = i;
+                groupCount = 1;
+            }
+        }
+        var currentLabelInfo = JSON.parse(JSON.stringify(values[groupStartPos]));
+        currentLabelInfo.pos = groupStartPos;
+        currentLabelInfo.count = groupCount;
+        currentLabelInfo.numeric = true;
+        fixNumericAndCount(values, groupStartPos, currentLabelInfo);
+        fixLabelVisibility(values, groupStartPos, currentLabelInfo);
         if (values.length && values[0].numeric && variable.slice(0, 10) === "number-of-") {
             if (parseInt(ItemObject[variable], 10) > 1) {
                 values[0].plural = 1;
-            }
-        }
-        for (var i=0,ilen=values.length;i<ilen;i++) {
-            if (!values[i].numeric) {
-                var origLabel = values[i].origLabel ? values[i].origLabel : "";
-                values[i].value = (origLabel + values[i].value).trim();
-                if (values[i].label !== values[0].label) {
-                }
             }
         }
     }        
@@ -14215,10 +14220,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         }
         var val = values[i];
         var isPage = checkPage(variable, val);
-        if (isPage) {
+        if (isPage && !isNaN(parseInt(values[i-1].value)) && !isNaN(parseInt(values[i].value))) {
             var str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
             str = me.fun.page_mangler(str);
         } else {
+            if (("" + values[i-1].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/) && ("" + values[i].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/)) {
+                values[i-1].joiningSuffix = me.getTerm("page-range-delimiter");
+            }
             str = values[i-1].value + stripHyphenBackslash(values[i-1].joiningSuffix) + values[i].value;
         }
         var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+)$/);
@@ -14247,9 +14255,6 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 currentInfo.count = 0;
                 currentInfo.label = null;
                 var isNumeric = val.numeric;
-                if (i<(values.length-1) && !isNumeric && val.value.match(/^[ivxlcmIVXLCM]+$/) && values[i+1].value.match(/^[ivxlcmIVXLCM]+$/)) {
-                    isNumeric = true;
-                }
                 val.joiningSuffix = fixupRangeDelimiter(variable, val, val.joiningSuffix, isNumeric);
             } else if (currentInfo.label === val.label && val.joiningSuffix === "-") {
                 currentInfo.count = 1;
