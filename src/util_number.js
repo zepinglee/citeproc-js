@@ -297,12 +297,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var label = defaultLabel;
         var origLabel = "";
         for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/g);
+            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/g);
             if (m) {
-                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\. *)/);
-                // ZZZ
-                //print("m="+JSON.stringify(m));
-                //print("lst="+JSON.stringify(lst));
+                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/);
                 // Head off disaster by merging parsed labels on non-numeric values into content
                 for (var j=lst.length-1;j>0;j--) {
                     if (lst[j-1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
@@ -357,7 +354,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 values.push(composeNumberInfo(filteredOrigLabel, label, elems[i], elems[i+1]));
             }
         }
-        //print(JSON.stringify(values, null, 2))
+        var lastVal = values[values.length-1];
+        if (!lastVal.joiningSuffix && false) {
+            var m = lastVal.value.match(/^([0-9]+)(\s.*)$/);
+            if (m) {
+                lastVal.value = m[1];
+                lastVal.joiningSuffix = m[2];
+            }
+        }
         return values;
     }
 
@@ -389,111 +393,88 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             }
         }
         if ((mVal && mVal[1]) || (mCurrentLabel && mCurrentLabel[1])) {
-            //print(i + " val="+val+"\n  mVal="+mVal+"\n  mCurrentLabel="+mCurrentLabel+"\n  isEscapedHyphen="+isEscapedHyphen);
             currentLabelInfo.collapsible = false;
         }
-        if (i === 0 && undefined === values[0].collapsible) {
-            values[0].collapsible = true;
+        if (undefined === values[i].collapsible) {
+            for (var j=i,jlen=i+currentLabelInfo.count;j<jlen;j++) {
+                if (isNaN(parseInt(values[j].value)) && !values[j].value.match(/^[ivxlcmIVXLCM]+$/)) {
+                    values[j].collapsible = false;
+                } else {
+                    values[j].collapsible = true;
+                }
+            }
+            currentLabelInfo.collapsible = values[i].collapsible;
         }
         var isCollapsible = currentLabelInfo.collapsible;
-        if (!isCollapsible) {
-            if (i>0 && val.match(/^[ivxlcmIVXLCM]+$/) && values[i-1].value.match(/^[ivxlcmIVXLCM]+$/)) {
-                // spoof collapsible for roman numerals
-                isCollapsible = true;
-            } else if (i>0 && val.match(/^[0-9]+(?:\s|$)/) && values[i-1].value.match(/^[0-9]+(?:\s|$)/)) {
-                isCollapsible = true;
-            }
-        }
-        // XXX pos+1 ?
-        for (var j=currentLabelInfo.pos,jlen=values.length; j<jlen; j++) {
-            print("?? "+values[j].value+", isCollapsible="+isCollapsible+", currentLableInfo.count="+currentLabelInfo.count+", currentLabeLInfo.label="+currentLabelInfo.label+", values[j].label="+values[j].label);
-            if (currentLabelInfo.label === values[j].label && currentLabelInfo.count > 1 && isCollapsible) {
+        for (var j=currentLabelInfo.pos,jlen=(currentLabelInfo.pos + currentLabelInfo.count); j<jlen; j++) {
+            if (currentLabelInfo.count > 1 && isCollapsible) {
                 values[j].plural = 1;
             }
             values[j].numeric = currentLabelInfo.numeric;
             values[j].collapsible = currentLabelInfo.collapsible;
         }
-        currentLabelInfo.label = values[i].label;
-        currentLabelInfo.count = 1;
-        currentLabelInfo.pos = i;
-        currentLabelInfo.numeric = true;
-        currentLabelInfo.collapsible = true;
     }
 
-    function setPluralsAndNumerics(values) {
-
-        // XXX This is broken.
-        // XXX Some numerics in complex strings are being skipped.
-
-        var currentLabelInfo = {
-            label: null,
-            count: 1,
-            numeric: true,
-            collapsible: true,
-            pos: 0
-        }
-        var masterLabel = values.length ? values[0].label : null;
-        for (var i=0,ilen=values.length;i<ilen;i++) {
-            if (i === 0) {
-                currentLabelInfo.particle = values[0].particle;
-            }
-            //if (undefined === values[i].collapsible) {
-            //    values[i].collapsible = true;
-            //}
-            if (values[i].label) {
-                if (values[i].label === currentLabelInfo.label && values[i].particle === currentLabelInfo.particle) {
-                    currentLabelInfo.count++;
-                } else {
-                    print("ENTER 1");
-                    fixNumericAndCount(values, i, currentLabelInfo);
-                    // Special problem.
-                    // If there are braces, we mostly want to suppress
-                    // the master label. Always? Or only on locator?
-
-                    if (currentLabelInfo.pos === 0) {
-                        if (variable === "locator" || variable === "number") {
-                            // Actually, shouldn't we do this always?
-                            if (!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label]) && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                                values[currentLabelInfo.pos].labelVisibility = true;
-                            }
-                        }
-                        // If there is an explicit
-                        // label embedded at the start of a field that
-                        // does not match the context, it should be
-                        // marked for rendering.
-                        if (["locator", "number"].indexOf(variable) === -1) {
-                            // XXXX Needs one more thing here.
-                            // If there is no term, force visibility.
-                            if (CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                                values[0].labelVisibility = true;
-                            }
-                        }
-                    } else {
-                        // Also, mark initial mid-field labels for
-                        // rendering.
-                        if (values[i-1].label !== values[i].label && currentLabelInfo.label.slice(0, 4) !== "var:") {
-                            values[currentLabelInfo.pos].labelVisibility = true;
-                        }
+    function fixLabelVisibility(values, groupStartPos, currentLabelInfo) {
+        if (currentLabelInfo.label.slice(0, 4) !== "var:") {
+            if (currentLabelInfo.pos === 0) {
+                if (variable === "locator" || variable === "number") {
+                    // Actually, shouldn't we do this always?
+                    if (!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label])) {
+                        values[currentLabelInfo.pos].labelVisibility = true;
                     }
-                    
                 }
+                // If there is an explicit
+                // label embedded at the start of a field that
+                // does not match the context, it should be
+                // marked for rendering.
+                if (["locator", "number"].indexOf(variable) === -1) {
+                    if (CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable) {
+                        values[0].labelVisibility = true;
+                    }
+                }
+            } else {
+                // Also, mark initial mid-field labels for
+                // rendering.
+                //if (values[i-1].label !== values[i].label && currentLabelInfo.label.slice(0, 4) !== "var:") {
+                values[currentLabelInfo.pos].labelVisibility = true;
+                //}
             }
         }
-        print("ENTER 2");
-        fixNumericAndCount(values, values.length-1, currentLabelInfo);
+    }
+    
+    function setPluralsAndNumerics(values) {
+        if (values.length === 0) return;
+        var groupStartPos = 0;
+        var groupCount = 1;
+        
+        for (var i=1,ilen=values.length;i<ilen;i++) {
+            var lastVal = values[i-1];
+            var thisVal = values[i];
+            if (lastVal.label === thisVal.label && lastVal.particle === lastVal.particle) {
+                groupCount++;
+            } else {
+                var currentLabelInfo = JSON.parse(JSON.stringify(values[groupStartPos]));
+                currentLabelInfo.pos = groupStartPos;
+                currentLabelInfo.count = groupCount;
+                currentLabelInfo.numeric = true;
+                fixNumericAndCount(values, groupStartPos, currentLabelInfo);
+                if (i === 0 || (lastVal.label !== thisVal.label)) {
+                    fixLabelVisibility(values, groupStartPos, currentLabelInfo);
+                }
+                groupStartPos = i;
+                groupCount = 1;
+            }
+        }
+        var currentLabelInfo = JSON.parse(JSON.stringify(values[groupStartPos]));
+        currentLabelInfo.pos = groupStartPos;
+        currentLabelInfo.count = groupCount;
+        currentLabelInfo.numeric = true;
+        fixNumericAndCount(values, groupStartPos, currentLabelInfo);
+        fixLabelVisibility(values, groupStartPos, currentLabelInfo);
         if (values.length && values[0].numeric && variable.slice(0, 10) === "number-of-") {
             if (parseInt(ItemObject[variable], 10) > 1) {
                 values[0].plural = 1;
-            }
-        }
-        for (var i=0,ilen=values.length;i<ilen;i++) {
-            if (!values[i].numeric) {
-                var origLabel = values[i].origLabel ? values[i].origLabel : "";
-                values[i].value = (origLabel + values[i].value).trim();
-                if (values[i].label !== values[0].label) {
-                    // XXX This should never happen
-                    //values[i].label = "";
-                }
             }
         }
     }        
@@ -610,10 +591,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
 
         var isPage = checkPage(variable, val);
 
-        if (isPage) {
+        if (isPage && !isNaN(parseInt(values[i-1].value)) && !isNaN(parseInt(values[i].value))) {
             var str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
             str = me.fun.page_mangler(str);
         } else {
+            // if (("" + values[i-1].value).match(/[0-9]$/) && ("" + values[i].value).match(/^[0-9]/)) {
+            if (("" + values[i-1].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/) && ("" + values[i].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/)) {
+                values[i-1].joiningSuffix = me.getTerm("page-range-delimiter");
+            }
             str = values[i-1].value + stripHyphenBackslash(values[i-1].joiningSuffix) + values[i].value;
         }
         var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+)$/);
