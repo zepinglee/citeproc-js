@@ -354,14 +354,6 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                 values.push(composeNumberInfo(filteredOrigLabel, label, elems[i], elems[i+1]));
             }
         }
-        var lastVal = values[values.length-1];
-        if (!lastVal.joiningSuffix && false) {
-            var m = lastVal.value.match(/^([0-9]+)(\s.*)$/);
-            if (m) {
-                lastVal.value = m[1];
-                lastVal.joiningSuffix = m[2];
-            }
-        }
         return values;
     }
 
