@@ -73,6 +73,12 @@ CSL.Node.layout = {
             func = function (state, Item) {
 
                 state.tmp.done_vars = [];
+                if (state.opt.suppressedJurisdictions[Item["country"]]
+                    && Item["country"]
+                    && ["treaty", "patent"].indexOf(Item.type) === -1) {
+                    
+                    state.tmp.done_vars.push("country");
+                }
                 if (!state.tmp.just_looking && state.registry.registry[Item.id] && state.registry.registry[Item.id].parallel) {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }

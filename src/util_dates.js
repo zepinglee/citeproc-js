@@ -70,7 +70,9 @@ CSL.Util.Dates.year.imperial = function (state, num, end, makeShort) {
     if (label && offset) {
         var normalizedKey = label;
         if (state.sys.normalizeAbbrevsKey) {
-            normalizedKey = state.sys.normalizeAbbrevsKey(label);
+            // The first argument does not need to specify the exact variable
+            // name.
+            normalizedKey = state.sys.normalizeAbbrevsKey("number", label);
         }
         if (!state.transform.abbrevs['default']['number'][normalizedKey]) {
             state.transform.loadAbbreviation('default', "number", normalizedKey);

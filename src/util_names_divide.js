@@ -130,7 +130,8 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
         if (author && this.state.sys.getAbbreviation && !(this.item && this.item["suppress-author"])) {
             var normalizedKey = author;
             if (this.state.sys.normalizeAbbrevsKey) {
-                normalizedKey = this.state.sys.normalizeAbbrevsKey(author);
+                // The first argument does not have to be the exact variable name.
+                normalizedKey = this.state.sys.normalizeAbbrevsKey("author", author);
             }
             this.state.transform.loadAbbreviation("default", "nickname", normalizedKey);
             // XXX Why does this have to happen here?

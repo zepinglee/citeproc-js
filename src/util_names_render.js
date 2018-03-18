@@ -1013,7 +1013,7 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
         for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
             var normalizedKey = long_form[j];
             if (this.state.sys.normalizeAbbrevsKey) {
-                normalizedKey = this.state.sys.normalizeAbbrevsKey(long_form[j]);
+                normalizedKey = this.state.sys.normalizeAbbrevsKey(varname, long_form[j]);
             }
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", normalizedKey);
             if (this.state.transform.abbrevs[jurisdiction]["institution-part"][normalizedKey]) {
@@ -1072,7 +1072,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
             var str = splitInstitution.slice(0, j).join("|");
             var normalizedKey = str;
             if (this.state.sys.normalizeAbbrevsKey) {
-                normalizedKey = this.state.sys.normalizeAbbrevsKey(str);
+                normalizedKey = this.state.sys.normalizeAbbrevsKey(v, str);
             }
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", normalizedKey);
             if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][normalizedKey]) {

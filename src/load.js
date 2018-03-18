@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.194",
+    PROCESSOR_VERSION: "1.1.195",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -184,7 +184,7 @@ var CSL = {
         };
     },
 
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","jurisdiction","archive","archive-place"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","country","jurisdiction","archive","archive-place"],
 
     LangPrefsMap: {
         "title":"titles",
@@ -226,6 +226,7 @@ var CSL = {
         "title": "title",
         "container-title": "container-title",
         "collection-title": "collection-title",
+        "country": "place",
         "number": "number",
         "place": "place",
         "archive": "collection-title",

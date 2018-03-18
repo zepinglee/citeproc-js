@@ -97,7 +97,7 @@ StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) 
     }
     return ret;
 }
- 
+
 StdRhinoTest.prototype.getAbbreviation = function(dummyListNameVar, obj, jurisdiction, category, key){
     var newkey = key;
     if (!this._acache[jurisdiction]) {

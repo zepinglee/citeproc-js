@@ -10,6 +10,11 @@ citation
 
 >>===== ABBREVIATIONS =====>>
 {
+    "default": {
+        "place": {
+            "us:federal:mn": "D. Minn."
+        }
+    }, 
     "us": {
         "container-title": {
             "F.2d": "!jurisdiction>>>F.2d", 
@@ -17,11 +22,6 @@ citation
         }, 
         "institution-part": {
             "Court of Appeals for the Eighth Circuit": "8th Cir."
-        }
-    }, 
-    "us:federal:mn": {
-        "place": {
-            "us:federal:mn": "D. Minn."
         }
     }
 }

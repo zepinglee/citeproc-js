@@ -146,9 +146,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.xclass = this.cslXml.getAttributeValue(this.cslXml.dataObj, "class");
     this.opt["class"] = this.opt.xclass;
     this.opt.styleID = this.cslXml.getStyleId(this.cslXml.dataObj);
-    if (CSL.setSuppressedJurisdictions) {
-        CSL.setSuppressedJurisdictions(this.opt.styleID, this.opt.suppressedJurisdictions);
-    }
     this.opt.styleName = this.cslXml.getStyleId(this.cslXml.dataObj, true);
 
     if (this.opt.version.slice(0,4) === "1.1m") {
@@ -718,10 +715,15 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         if (!Item.jurisdiction) {
             noHints = true;
         }
-        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", Item.title, Item.type, true);
-        if (this.transform.abbrevs[jurisdiction].title) {
-            if (this.transform.abbrevs[jurisdiction].title[Item.title]) {
-                Item["title-short"] = this.transform.abbrevs[jurisdiction].title[Item.title];
+        if (this.sys.normalizeAbbrevsKey) {
+            var normalizedKey = this.sys.normalizeAbbrevsKey(Item.title);
+        } else {
+            var normalizedKey = Item.title;
+        }
+        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", normalizedKey, Item.type);
+        if (this.transform.abbrevs[jurisdiction]["title"]) {
+            if (this.transform.abbrevs[jurisdiction]["title"][normalizedKey]) {
+                Item["title-short"] = this.transform.abbrevs[jurisdiction]["title"][normalizedKey];
             }
         }
     }
@@ -729,12 +731,20 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         Item["container-title-short"] = Item.journalAbbreviation;
     }
     if (Item["container-title"] && this.sys.getAbbreviation) {
-        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", Item["container-title"]);
+        if (this.sys.normalizeAbbrevsKey) {
+            var normalizedKey = this.sys.normalizeAbbrevsKey(Item["container-title"]);
+        } else {
+            var normalizedKey = Item["container-title"];
+        }
+        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", normalizedKey);
         if (this.transform.abbrevs[jurisdiction]["container-title"]) {
-            if (this.transform.abbrevs[jurisdiction]["container-title"][Item["container-title"]]) {
-                Item["container-title-short"] = this.transform.abbrevs[jurisdiction]["container-title"][Item["container-title"]];
+            if (this.transform.abbrevs[jurisdiction]["container-title"][normalizedKey]) {
+                Item["container-title-short"] = this.transform.abbrevs[jurisdiction]["container-title"][normalizedKey];
             }
         }
+    }
+    if (Item["jurisdiction"]) {
+        Item["country"] = Item["jurisdiction"].split(":")[0];
     }
     this.registry.refhash[id] = Item;
     return Item;

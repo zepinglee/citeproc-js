@@ -60,35 +60,73 @@ CSL.Transform = function (state) {
     this.getTextSubField = getTextSubField;
 
     // Internal function
-    function abbreviate(state, Item, altvar, basevalue, myabbrev_family, use_field) {
-        var value;
-        // XXX This isn't right, is it?
-        // XXX Shouldn't we convert to human-readable form, and then chop?
-        //if (myabbrev_family === "jurisdiction") {
-        //    if (state.opt.suppressedJurisdictions[Item.jurisdiction]) {
-        //        return "";
-        //    }
-        //}
-        myabbrev_family = CSL.FIELD_CATEGORY_REMAP[myabbrev_family];
+    function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field, form) {
+        var value = "";
+        var myabbrev_family = CSL.FIELD_CATEGORY_REMAP[family_var];
         if (!myabbrev_family) {
             return basevalue;
         }
 
-        var variable = myabbrev_family;
+        var variable = family_var;
         // Lazy retrieval of abbreviations.
-        value = "";
         if (state.sys.getAbbreviation) {
+            
             var normalizedKey = basevalue;
             if (state.sys.normalizeAbbrevsKey) {
-                normalizedKey = state.sys.normalizeAbbrevsKey(basevalue);
+                normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
             }
-            // True is for (deprecated) noHints flag
-            var jurisdiction = state.transform.loadAbbreviation(Item.jurisdiction, myabbrev_family, normalizedKey, Item.type, true);
 
-            // XXX Need a fallback mechanism here. Other to default.
-            if (state.transform.abbrevs[jurisdiction][myabbrev_family] && normalizedKey && state.sys.getAbbreviation) {
-                if (state.transform.abbrevs[jurisdiction][myabbrev_family][normalizedKey]) {
-                    value = state.transform.abbrevs[jurisdiction][myabbrev_family][normalizedKey].replace("{stet}",basevalue);
+            if (["jurisdiction", "country"].indexOf(variable) > -1) {
+                var loadJurisdiction = "default";
+            } else if (Item.jurisdiction) {
+                var loadJurisdiction = Item.jurisdiction;
+            } else {
+                var loadJurisdiction = "default";
+            }
+            var jurisdiction = state.transform.loadAbbreviation(loadJurisdiction, myabbrev_family, normalizedKey, Item.type);
+
+            // Some rules:
+            // # variable === "country"
+            // (1) If an abbreviation is associated with the code, then:
+            //     (a) return the abbreviated form if form="short"
+            // (2) Otherwise:
+            //     (a) return the human-readable country name, or whatever is there if it's not a code
+            // # variable === "jurisdiction"
+            // (1) If !!getHumanForm(jurisdictionID, false, false):
+            //     (a) If the code is top-level (i.e. a country):
+            //         (i) return nothing -- this is what the "country" variable is for.
+            //     (b) otherwise:
+            //         (i) If an abbreviation is associated with the code, then:
+            //             (A) return the abbreviated form
+            //         (ii) Otherwise
+            //             (A) return the human-readable form, with the country name & code removed from the front
+            // (2) Otherwise:
+            //     (a) abbreviate as per normal.
+            // # other variables
+            // (1) Abbreviate as per normal.
+
+            if (state.transform.abbrevs[jurisdiction][myabbrev_family] && normalizedKey) {
+                // Safe to test presence of abbrev against raw object in this block
+                var abbrev = state.transform.abbrevs[jurisdiction][myabbrev_family][normalizedKey];
+                if (tok.strings.form === "short" && abbrev) {
+                    value = abbrev;
+                } else {
+                    if (variable === "country") {
+                        if (state.sys.getHumanForm) {
+                            value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                            value = value.split("|")[0];
+                        }
+                    } else if (variable === "jurisdiction") {
+                        if (state.sys.getHumanForm) {
+                            value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                            if (normalizedKey.indexOf(":") > -1) {
+                                value = value.split("|").slice(1).join(", ");
+                            } else {
+                                // Bare country name is rendered by "country", not "jurisdiction"
+                                value = "";
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -101,18 +139,6 @@ CSL.Transform = function (state) {
         if (!value) {
             value = basevalue;
         }
-        // If starts with suppress
-        //   then if variable is jurisdiction,
-        //   and Item.type is treaty or patent
-        //   print the remainder
-        // Otherwise return false
-        if (value && value.match(/^\!(?:[^>]+,)*here(?:,[^>]+)*>>>/)) {
-            if (variable === "jurisdiction" && ["treaty", "patent"].indexOf(Item.type) > -1) {
-                value = value.replace(/^\![^>]*>>>\s*/, "");
-            } else {
-                value = false;
-            }
-        } 
         return value;
     }
 
@@ -185,12 +211,12 @@ CSL.Transform = function (state) {
                 if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
                     ret.name = Item.multi._keys[field][opt];
                     ret.locale = opt;
-                    if (field === 'jurisdiction') jurisdictionName = ret.name;
+                    //if (field === 'jurisdiction') jurisdictionName = ret.name;
                     break;
                 } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
                     ret.name = Item.multi._keys[field][o];
                     ret.locale = o;
-                    if (field === 'jurisdiction') jurisdictionName = ret.name;
+                    //if (field === 'jurisdiction') jurisdictionName = ret.name;
                     break;
                 }
             }
@@ -200,9 +226,7 @@ CSL.Transform = function (state) {
             }
         }
         ret.token = CSL.Util.cloneToken(this);
-        if (state.sys.getHumanForm && ret.name && field === 'jurisdiction') {
-            ret.name = CSL.getJurisdictionNameAndSuppress(state, Item[field], jurisdictionName, this.strings.jurisdiction_depth);
-        } else if (["title", "container-title"].indexOf(field) > -1) {
+        if (["title", "container-title"].indexOf(field) > -1) {
             if (!usedOrig
                 && (!ret.token.strings["text-case"]
                     || ret.token.strings["text-case"] === "sentence"
@@ -252,7 +276,7 @@ CSL.Transform = function (state) {
     }
     this.loadAbbreviation = loadAbbreviation;
 
-    function publisherCheck (tok, Item, primary, myabbrev_family) {
+    function publisherCheck (tok, Item, primary, family_var) {
         var varname = tok.variables[0];
         if (state.publisherOutput && primary) {
             if (["publisher","publisher-place"].indexOf(varname) === -1) {
@@ -268,8 +292,7 @@ CSL.Transform = function (state) {
                 }
                 // XXX Abbreviate each of the items in the list here!
                 for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
-                    // myabbrev_family just turns abbreviation on if it has a value (any value)
-                    lst[i] = abbreviate(state, Item, false, lst[i], myabbrev_family, true);
+                    lst[i] = abbreviate(state, tok, Item, false, lst[i], family_var, true);
                 }
                 state.tmp[varname + "-token"] = tok;
                 return true;
@@ -279,7 +302,7 @@ CSL.Transform = function (state) {
     }
 
     // Return function appropriate to selected options
-    function getOutputFunction(variables, myabbrev_family, abbreviation_fallback, alternative_varname, transform_fallback) {
+    function getOutputFunction(variables, family_var, abbreviation_fallback, alternative_varname, transform_fallback) {
         // var mytoken;
 
         // Set the primary_locale and secondary_locale lists appropriately.
@@ -348,7 +371,7 @@ CSL.Transform = function (state) {
             var primary_tok = res.token;
             var primaryUsedOrig = res.usedOrig;
 
-            if (publisherCheck(this, Item, primary, myabbrev_family)) {
+            if (publisherCheck(this, Item, primary, family_var)) {
                 return null;
             }
 
@@ -373,16 +396,15 @@ CSL.Transform = function (state) {
             // Abbreviate if requested and if poss.
             // (We don't yet control for the possibility that full translations may not
             // be provided on the alternative variable.)
-            if (myabbrev_family) {
-                primary = abbreviate(state, Item, alternative_varname, primary, myabbrev_family, true);
-
+            if (family_var) {
+                primary = abbreviate(state, primary_tok, Item, alternative_varname, primary, family_var, true);
                 if (primary) {
                     // Suppress subsequent use of another variable if requested by
                     // hack syntax in this abbreviation short form.
                     primary = quashCheck(primary);
                 }
-                secondary = abbreviate(state, Item, false, secondary, myabbrev_family, true);
-                tertiary = abbreviate(state, Item, false, tertiary, myabbrev_family, true);
+                secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
+                tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
             }
             
             // Decoration of primary (currently translit only) goes here

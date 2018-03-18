@@ -247,7 +247,7 @@ CSL.Node.text = {
                         var abbrfall = false;
                         var altvar = false;
                         var transfall = false;
-                        if (form === "short") {
+                        if (form === "short" || ["country", "jurisdiction"].indexOf(this.variables_real[0]) > -1) {
                             if (this.variables_real[0] === "container-title") {
                                 altvar = "journalAbbreviation";
                             } else if (this.variables_real[0] === "title") {
