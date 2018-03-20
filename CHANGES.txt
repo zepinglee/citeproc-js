@@ -2,6 +2,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.196
+==========================
+
+- Throw more informative errors in three locations.
+
+    https://forums.zotero.org/discussion/70927/zotero-experienced-an-error-updating-your-document#Comment_303868
+
+==========================
 Changes in version 1.1.195
 ==========================
 
