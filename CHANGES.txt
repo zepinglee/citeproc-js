@@ -2,6 +2,19 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.195
+==========================
+
+- Refactoring to address a deep bug in the handling of jurisdiction
+  abbreviations reported by John Luke Bentley:
+
+    https://github.com/Juris-M/zotero/issues/43#issuecomment-374096589
+
+  Among other things, this change introduces a new CSL-M variable "country",
+  which carries the country code at the front of a jurisdiction code, and
+  can be controlled in styles and in the processor as an independent CSL variable.
+
+==========================
 Changes in version 1.1.194
 ==========================
 
