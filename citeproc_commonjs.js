@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.196",
+    PROCESSOR_VERSION: "1.1.197",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5005,7 +5005,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             err += "  " + e + "\n";
             err += "  citationID=" + c[0] + "\n";
             err += "  noteIndex=" + c[1] + "\n";
-            err += "  in array citationsPre at index " + i + ", document position " + i;
+            err += "  atarray citationsPre index " + i + ", from citation at document position " + citationsPre.length;
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
@@ -5020,7 +5020,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             err += "  " + e + "\n";
             err += "  citationID=" + c[0] + "\n";
             err += "  noteIndex=" + c[1] + "\n";
-            err += "  in array citationsPost at index " + i + ", document position " + (citationsPre.length + 1 + i);
+            err += "  at array citationsPost index " + i + ", from citation at document position " + citationsPre.length;
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
