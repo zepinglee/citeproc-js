@@ -153,14 +153,32 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     for (var i = 0, ilen = citationsPre.length; i < ilen; i += 1) {
         c = citationsPre[i];
         //CSL.debug("  -- attempting to access Pre citation with ID: ("+c[0]+")");
-        this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
+        try {
+            this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
+        } catch (e) {
+            var err = "CSL error\n";
+            err += "  " + e + "\n";
+            err += "  citationID=" + c[0] + "\n";
+            err += "  noteIndex=" + c[1] + "\n";
+            err += "  in array citationsPre at index " + i + ", document position " + i;
+            throw err;
+        }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
     }
     citationByIndex.push(citation);
     for (var i = 0, ilen = citationsPost.length; i < ilen; i += 1) {
         c = citationsPost[i];
         //CSL.debug("  -- attempting to access Post citation with ID: ("+c[0]+")");
-        this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
+        try {
+            this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
+        } catch (e) {
+            var err = "CSL error\n";
+            err += "  " + e + "\n";
+            err += "  citationID=" + c[0] + "\n";
+            err += "  noteIndex=" + c[1] + "\n";
+            err += "  in array citationsPost at index " + i + ", document position " + (citationsPre.length + 1 + i);
+            throw err;
+        }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
     }
     this.registry.citationreg.citationByIndex = citationByIndex;
@@ -410,7 +428,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         var suprame = false;
                         // XXX Ugly, but This is used in the second else-if branch condition below.
                         if (j > 0) {
-                            oldlastid =  citations[j - 1].sortedItems.slice(-1)[0][1].id;
+                            try {
+                                oldlastid =  citations[j - 1].sortedItems.slice(-1)[0][1].id;
+                            } catch (e) {
+                                var err = "CSL Error\n";
+                                err += "  " + e;
+                                err += "  in citation object " + citations[j - 1].citationID + " at index " + (j - 1);
+                                throw err;
+                            }
                             if (citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id) {
                                 oldlastid = citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id;
                             }
