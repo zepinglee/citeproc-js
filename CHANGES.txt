@@ -2,10 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.198
+==========================
+
+- Block rendering of bare country name or ID for jurisdictions,
+  when human-readable forms of jurisdiction IDs are available.
+
+==========================
 Changes in version 1.1.197
 ==========================
 
-- Small improvement on tag
+- Small improvement on previous tag
 
 ==========================
 Changes in version 1.1.196

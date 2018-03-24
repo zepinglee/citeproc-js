@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.197",
+    PROCESSOR_VERSION: "1.1.198",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -12462,7 +12462,7 @@ CSL.Transform = function (state) {
             && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
-        if (!value) {
+        if (!value && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
         return value;
