@@ -136,7 +136,7 @@ CSL.Transform = function (state) {
             && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
-        if (!value && variable !== "jurisdiction") {
+        if (!value && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
         return value;
