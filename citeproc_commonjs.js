@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.198",
+    PROCESSOR_VERSION: "1.1.199",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -15117,7 +15117,7 @@ CSL.Util.FlipFlopper = function(state) {
         if (str.slice(0, 1) === " " && !str.match(/^\s+[\'\"]/)) {
             leadingSpace = true;
         }
-        var str = " " + str;
+        var str = " " + str.replace(/([A-Za-z])’([A-Za-z])/g, "$1\'$2");
         var doppel = _doppelString(str);
         if (doppel.tags.length === 0) return;
         var quoteFormSeen = false;

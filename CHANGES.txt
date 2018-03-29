@@ -2,6 +2,15 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.199
+==========================
+
+- Fix markup parser misstep on curly single-quote apostrophe
+  inside markup.
+
+    https://forums.zotero.org/discussion/71167/initial-html-tags-in-citation-prefixes
+
+==========================
 Changes in version 1.1.198
 ==========================
 
