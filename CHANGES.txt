@@ -2,6 +2,15 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.200
+==========================
+
+- Extend 1.1.199 to protect embedded apostrophe in all Romanesque character sets (ascii,
+  Latin1, Persian, Hebrew, etc.)
+
+    https://forums.zotero.org/discussion/71008/unexpected-rich-text-output
+
+==========================
 Changes in version 1.1.199
 ==========================
 
