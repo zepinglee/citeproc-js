@@ -2,6 +2,16 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.201
+==========================
+
+- Fix nesting error triggered by a date set and called inside
+  cs:substitute, followed by a call to the same date variable
+  later in the style.
+
+    https://forums.zotero.org/discussion/71242/debugid-d682095689
+
+==========================
 Changes in version 1.1.200
 ==========================
 
