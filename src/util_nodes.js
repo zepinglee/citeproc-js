@@ -172,7 +172,7 @@ CSL.configureMacro = function (mytarget) {
  * @param {Int} tokentype  A CSL namespace constant (<code>CSL.START</code>,
  * <code>CSL.END</code> or <code>CSL.SINGLETON</code>.
  */
-CSL.XmlToToken = function (state, tokentype, explicitTarget) {
+CSL.XmlToToken = function (state, tokentype, explicitTarget, var_stack) {
     var name, txt, attrfuncs, attributes, decorations, token, key, target;
     name = state.cslXml.nodename(this);
     //CSL.debug(tokentype + " : " + name);
@@ -217,10 +217,13 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget) {
             }
         }
         token.decorations = decorations;
+        if (CSL.DATE_VARIABLES.indexOf(attributes['@variable']) > -1) {
+            var_stack.push(token.variables);
+        }
     } else if (tokentype === CSL.END && attributes['@variable']) {
         token.hasVariable = true;
         if (CSL.DATE_VARIABLES.indexOf(attributes['@variable']) > -1) {
-            token.variables = attributes['@variable'].split(/\s+/);
+            token.variables = var_stack.pop();
         }
     }
     //

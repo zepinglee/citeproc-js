@@ -274,14 +274,15 @@ CSL.Engine.prototype.setCloseQuotesArray = function () {
 };
 
 CSL.makeBuilder = function (me, target) {
+    var var_stack = [];
     function enterFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.START, target);
+        CSL.XmlToToken.call(node, me, CSL.START, target, var_stack);
     };
     function leaveFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.END, target);
+        CSL.XmlToToken.call(node, me, CSL.END, target, var_stack);
     };
     function singletonFunc (node) {
-        CSL.XmlToToken.call(node, me, CSL.SINGLETON, target);
+        CSL.XmlToToken.call(node, me, CSL.SINGLETON, target, var_stack);
     };
     function buildStyle (node) {
         var starttag, origparent;
