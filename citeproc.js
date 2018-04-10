@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.202",
+    PROCESSOR_VERSION: "1.1.203",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -12418,22 +12418,18 @@ CSL.Transform = function (state) {
     this.abbrevs = {};
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
     this.getTextSubField = getTextSubField;
-    function getCountryOrJurisdiction(variable, normalizedKey) {
+    function getCountryOrJurisdiction(variable, normalizedKey, quashCountry) {
         var value = "";
         if (state.sys.getHumanForm) {
             if (variable === "country") {
-                if (state.sys.getHumanForm) {
-                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                    value = value.split("|")[0];
-                }
+                value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                value = value.split("|")[0];
             } else if (variable === "jurisdiction") {
-                if (state.sys.getHumanForm) {
-                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                    if (normalizedKey.indexOf(":") > -1) {
-                        value = value.split("|").slice(1).join(", ");
-                    } else {
-                        value = "";
-                    }
+                value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                if (!quashCountry) {
+                    value = value.split("|").slice(1).join(", ");
+                } else {
+                    value = "";
                 }
             }
 	    }
@@ -12446,11 +12442,15 @@ CSL.Transform = function (state) {
             return basevalue;
         }
         var variable = family_var;
+        var normalizedKey = basevalue;
+        if (state.sys.normalizeAbbrevsKey) {
+            normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
+        }
+        var quashCountry = false;
+        if (variable === "jurisdiction" && normalizedKey) {
+            quashCountry = normalizedKey.indexOf(":") === -1;
+        }
         if (state.sys.getAbbreviation) {
-            var normalizedKey = basevalue;
-            if (state.sys.normalizeAbbrevsKey) {
-                normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
-            }
             if (["jurisdiction", "country"].indexOf(variable) > -1) {
                 var loadJurisdiction = "default";
             } else if (Item.jurisdiction) {
@@ -12462,9 +12462,13 @@ CSL.Transform = function (state) {
             if (state.transform.abbrevs[jurisdiction][myabbrev_family] && normalizedKey) {
                 var abbrev = state.transform.abbrevs[jurisdiction][myabbrev_family][normalizedKey];
                 if (tok.strings.form === "short" && abbrev) {
-                    value = abbrev;
+                    if (quashCountry) {
+                        value = "";
+                    } else {
+                        value = abbrev;
+                    }
                 } else {
-	                value = getCountryOrJurisdiction(variable, normalizedKey);
+	                value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
                 }
             }
         }
@@ -12473,7 +12477,10 @@ CSL.Transform = function (state) {
             && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
-        if (!value && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
+        if (!value && !state.sys.getAbbreviation && state.sys.getHumanForm) {
+	        value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
+	    }
+        if (!value && !quashCountry && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
         return value;
