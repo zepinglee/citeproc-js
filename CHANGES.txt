@@ -2,6 +2,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.202
+==========================
+
+- Show country names as names, not raw codes, when Abbreviation Filter is
+  disabled and the processor has access to the sys.getHumanForm() method
+  (as in Juris-M).
+
+==========================
 Changes in version 1.1.201
 ==========================
 

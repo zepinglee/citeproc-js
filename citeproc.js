@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.201",
+    PROCESSOR_VERSION: "1.1.202",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -12418,6 +12418,27 @@ CSL.Transform = function (state) {
     this.abbrevs = {};
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
     this.getTextSubField = getTextSubField;
+    function getCountryOrJurisdiction(variable, normalizedKey) {
+        var value = "";
+        if (state.sys.getHumanForm) {
+            if (variable === "country") {
+                if (state.sys.getHumanForm) {
+                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                    value = value.split("|")[0];
+                }
+            } else if (variable === "jurisdiction") {
+                if (state.sys.getHumanForm) {
+                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                    if (normalizedKey.indexOf(":") > -1) {
+                        value = value.split("|").slice(1).join(", ");
+                    } else {
+                        value = "";
+                    }
+                }
+            }
+	    }
+	    return value;
+    }
     function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field, form) {
         var value = "";
         var myabbrev_family = CSL.FIELD_CATEGORY_REMAP[family_var];
@@ -12443,21 +12464,7 @@ CSL.Transform = function (state) {
                 if (tok.strings.form === "short" && abbrev) {
                     value = abbrev;
                 } else {
-                    if (variable === "country") {
-                        if (state.sys.getHumanForm) {
-                            value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                            value = value.split("|")[0];
-                        }
-                    } else if (variable === "jurisdiction") {
-                        if (state.sys.getHumanForm) {
-                            value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                            if (normalizedKey.indexOf(":") > -1) {
-                                value = value.split("|").slice(1).join(", ");
-                            } else {
-                                value = "";
-                            }
-                        }
-                    }
+	                value = getCountryOrJurisdiction(variable, normalizedKey);
                 }
             }
         }
