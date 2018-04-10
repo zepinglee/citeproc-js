@@ -2221,7 +2221,7 @@ citation
                 <choose>
                   <if variable="jurisdiction" type="report" match="all">
                     <group delimiter=" ">
-                      <text variable="jurisdiction" form="short"/>
+                      <text variable="country" form="short"/>
                       <text value="Doc."/>
                       <text variable="archive_location"/>
                     </group>

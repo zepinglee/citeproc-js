@@ -2587,7 +2587,7 @@ citation
           <name/>
           <institution/>
         </names>
-        <text variable="jurisdiction" form="short" prefix="(" suffix=")"/>
+        <text variable="country" form="short" prefix="(" suffix=")"/>
       </group>
       <text macro="kh-case-subsequent"/>
     </group>
