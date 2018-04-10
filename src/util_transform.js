@@ -59,23 +59,19 @@ CSL.Transform = function (state) {
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
     this.getTextSubField = getTextSubField;
 
-    function getCountryOrJurisdiction(variable, normalizedKey) {
+    function getCountryOrJurisdiction(variable, normalizedKey, quashCountry) {
         var value = "";
         if (state.sys.getHumanForm) {
             if (variable === "country") {
-                if (state.sys.getHumanForm) {
-                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                    value = value.split("|")[0];
-                }
+                value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                value = value.split("|")[0];
             } else if (variable === "jurisdiction") {
-                if (state.sys.getHumanForm) {
-                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                    if (normalizedKey.indexOf(":") > -1) {
-                        value = value.split("|").slice(1).join(", ");
-                    } else {
-                        // Bare country name is rendered by "country", not "jurisdiction"
-                        value = "";
-                    }
+                value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                if (!quashCountry) {
+                    value = value.split("|").slice(1).join(", ");
+                } else {
+                    // Bare country name is rendered by "country", not "jurisdiction"
+                    value = "";
                 }
             }
 	    }
@@ -91,14 +87,19 @@ CSL.Transform = function (state) {
         }
 
         var variable = family_var;
+
+        var normalizedKey = basevalue;
+        if (state.sys.normalizeAbbrevsKey) {
+            normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
+        }
+        var quashCountry = false;
+        if (variable === "jurisdiction" && normalizedKey) {
+            quashCountry = normalizedKey.indexOf(":") === -1;
+        }
+        
         // Lazy retrieval of abbreviations.
         if (state.sys.getAbbreviation) {
             
-            var normalizedKey = basevalue;
-            if (state.sys.normalizeAbbrevsKey) {
-                normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
-            }
-
             if (["jurisdiction", "country"].indexOf(variable) > -1) {
                 var loadJurisdiction = "default";
             } else if (Item.jurisdiction) {
@@ -132,9 +133,13 @@ CSL.Transform = function (state) {
                 // Safe to test presence of abbrev against raw object in this block
                 var abbrev = state.transform.abbrevs[jurisdiction][myabbrev_family][normalizedKey];
                 if (tok.strings.form === "short" && abbrev) {
-                    value = abbrev;
+                    if (quashCountry) {
+                        value = "";
+                    } else {
+                        value = abbrev;
+                    }
                 } else {
-	                value = getCountryOrJurisdiction(variable, normalizedKey);
+	                value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
                 }
             }
         }
@@ -145,16 +150,10 @@ CSL.Transform = function (state) {
             && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
-        /*
         if (!value && !state.sys.getAbbreviation && state.sys.getHumanForm) {
-            var normalizedKey = basevalue;
-            if (state.sys.normalizeAbbrevsKey) {
-                normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
-            }
-	        value = getCountryOrJurisdiction(variable, normalizedKey);
+	        value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
 	    }
-        */
-        if (!value && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
+        if (!value && !quashCountry && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
         return value;
