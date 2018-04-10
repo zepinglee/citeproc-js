@@ -59,6 +59,29 @@ CSL.Transform = function (state) {
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
     this.getTextSubField = getTextSubField;
 
+    function getCountryOrJurisdiction(variable, normalizedKey) {
+        var value = "";
+        if (state.sys.getHumanForm) {
+            if (variable === "country") {
+                if (state.sys.getHumanForm) {
+                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                    value = value.split("|")[0];
+                }
+            } else if (variable === "jurisdiction") {
+                if (state.sys.getHumanForm) {
+                    value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
+                    if (normalizedKey.indexOf(":") > -1) {
+                        value = value.split("|").slice(1).join(", ");
+                    } else {
+                        // Bare country name is rendered by "country", not "jurisdiction"
+                        value = "";
+                    }
+                }
+            }
+	    }
+	    return value;
+    }
+    
     // Internal function
     function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field, form) {
         var value = "";
@@ -111,31 +134,26 @@ CSL.Transform = function (state) {
                 if (tok.strings.form === "short" && abbrev) {
                     value = abbrev;
                 } else {
-                    if (variable === "country") {
-                        if (state.sys.getHumanForm) {
-                            value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                            value = value.split("|")[0];
-                        }
-                    } else if (variable === "jurisdiction") {
-                        if (state.sys.getHumanForm) {
-                            value = state.sys.getHumanForm(normalizedKey.toLowerCase(), false, true);
-                            if (normalizedKey.indexOf(":") > -1) {
-                                value = value.split("|").slice(1).join(", ");
-                            } else {
-                                // Bare country name is rendered by "country", not "jurisdiction"
-                                value = "";
-                            }
-                        }
-                    }
+	                value = getCountryOrJurisdiction(variable, normalizedKey);
                 }
             }
         }
+        
         // Was for: 
         if (!value 
             && (!state.opt.development_extensions.require_explicit_legal_case_title_short || Item.type !== 'legal_case') 
             && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
+        /*
+        if (!value && !state.sys.getAbbreviation && state.sys.getHumanForm) {
+            var normalizedKey = basevalue;
+            if (state.sys.normalizeAbbrevsKey) {
+                normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
+            }
+	        value = getCountryOrJurisdiction(variable, normalizedKey);
+	    }
+        */
         if (!value && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
