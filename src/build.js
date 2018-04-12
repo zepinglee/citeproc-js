@@ -605,35 +605,17 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    // Mandatory data rescue
-    // LEX HACK
-    //if (Item.type === "bill" && Item.number && !Item.volume && Item.page) {
-    //    Item.volume = Item.number;
-    //    Item.number = undefined;
-    //}
 
-    // Remap language field value
-    if (this.sys.getLanguageName && Item.language) {
-		// Split language field into "language" and "language-original"
-		if (Item.language) {
-            // Force lowercase always
-            Item.language = Item.language.toLowerCase();
-			// Attempt to split field in two
-			var lst = Item.language.split("<");
-            if (lst.length > 0) {
-                var languageName = this.sys.getLanguageName(lst[0]);
-                if (languageName) {
-                    Item["language-name"] = languageName;
-                }
-            }
-			if (lst.length === 2) {
-				var originalLanguage = this.sys.getLanguageName(lst[1]);
-				if (originalLanguage) {
-					Item["language-name-original"] = originalLanguage;
-				}
-			}
-		}
-		
+    // Normalize language field into "language" and "language-original"
+    if (Item.language) {
+        // Attempt to split field in two
+        var lst = Item.language.split("<");
+        if (lst.length > 0) {
+            Item["language-name"] = lst[0];
+        }
+        if (lst.length === 2) {
+            Item["language-name-original"] = lst[1];
+        }
     }
 
     if (Item.page) {
@@ -646,7 +628,6 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     // Optional development extensions
     if (this.opt.development_extensions.field_hack && Item.note) {
-        //Zotero.debug("XXX   (1): "+Item.note);
         // false is for validFieldsForType (all conforming entries scrubbed when false)
         CSL.parseNoteFieldHacks(Item, false, this.opt.development_extensions.allow_field_hack_date_override);
     }
