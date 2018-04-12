@@ -87,7 +87,6 @@ CSL.Transform = function (state) {
         }
 
         var variable = family_var;
-
         var normalizedKey = basevalue;
         if (state.sys.normalizeAbbrevsKey) {
             normalizedKey = state.sys.normalizeAbbrevsKey(family_var, basevalue);
@@ -307,7 +306,7 @@ CSL.Transform = function (state) {
                 if (lst.length === state.publisherOutput[varname + "-list"].length) {
                     state.publisherOutput[varname + "-list"] = lst;
                 }
-                // XXX Abbreviate each of the items in the list here!
+                // Abbreviate each of the items in the list here!
                 for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
                     lst[i] = abbreviate(state, tok, Item, false, lst[i], family_var, true);
                 }
@@ -415,13 +414,18 @@ CSL.Transform = function (state) {
             // be provided on the alternative variable.)
             if (family_var) {
                 primary = abbreviate(state, primary_tok, Item, alternative_varname, primary, family_var, true);
+                // Suppress subsequent use of another variable if requested by
+                // hack syntax in this abbreviation short form.
                 if (primary) {
-                    // Suppress subsequent use of another variable if requested by
-                    // hack syntax in this abbreviation short form.
                     primary = quashCheck(primary);
                 }
-                secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
-                tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                // Avoid needless thrashing
+                if (secondary) {
+                    secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
+                }
+                if (tertiary) {
+                    tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                }
             }
             
             // Decoration of primary (currently translit only) goes here
