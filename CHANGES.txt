@@ -2,6 +2,12 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.205
+==========================
+
+- Show only default-jurisdiction entry for "abbreviated" language names.
+
+==========================
 Changes in version 1.1.204
 ==========================
 

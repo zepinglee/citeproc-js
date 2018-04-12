@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.204",
+    PROCESSOR_VERSION: "1.1.205",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -12442,7 +12442,7 @@ CSL.Transform = function (state) {
             quashCountry = normalizedKey.indexOf(":") === -1;
         }
         if (state.sys.getAbbreviation) {
-            if (["jurisdiction", "country"].indexOf(variable) > -1) {
+            if (["jurisdiction", "country", "language-name", "language-name-original"].indexOf(variable) > -1) {
                 var loadJurisdiction = "default";
             } else if (Item.jurisdiction) {
                 var loadJurisdiction = Item.jurisdiction;
