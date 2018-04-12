@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.203",
+    PROCESSOR_VERSION: "1.1.204",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -2999,23 +2999,14 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    if (this.sys.getLanguageName && Item.language) {
-		if (Item.language) {
-            Item.language = Item.language.toLowerCase();
-			var lst = Item.language.split("<");
-            if (lst.length > 0) {
-                var languageName = this.sys.getLanguageName(lst[0]);
-                if (languageName) {
-                    Item["language-name"] = languageName;
-                }
-            }
-			if (lst.length === 2) {
-				var originalLanguage = this.sys.getLanguageName(lst[1]);
-				if (originalLanguage) {
-					Item["language-name-original"] = originalLanguage;
-				}
-			}
-		}
+    if (Item.language) {
+        var lst = Item.language.split("<");
+        if (lst.length > 0) {
+            Item["language-name"] = lst[0];
+        }
+        if (lst.length === 2) {
+            Item["language-name-original"] = lst[1];
+        }
     }
     if (Item.page) {
         Item["page-first"] = Item.page;
@@ -12690,8 +12681,12 @@ CSL.Transform = function (state) {
                 if (primary) {
                     primary = quashCheck(primary);
                 }
-                secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
-                tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                if (secondary) {
+                    secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
+                }
+                if (tertiary) {
+                    tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                }
             }
             var primaryPrefix;
             if (slot.primary === "locale-translit") {
