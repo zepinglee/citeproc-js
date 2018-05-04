@@ -2,6 +2,14 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.206
+==========================
+
+- Fix regexp for markup split in formatters.js. The Unicode literals of
+  en-dash and em-dash worked under early JS implementations, but fail
+  in more recent Firefox. The escaped forms is robust.
+
+==========================
 Changes in version 1.1.205
 ==========================
 
