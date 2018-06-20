@@ -673,9 +673,20 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         if ("string" === typeof Item.authority) {
             Item.authority = [
                 {
-                    literal: Item.authority
+                    literal: Item.authority,
+                    multi: {
+                        _key: {}
+                    }
                 }
             ]
+            if (Item.multi && Item.multi._keys && Item.multi._keys.authority) {
+                Item.authority[0].multi._key = {};
+                for (var key in Item.multi._keys.authority) {
+                    Item.authority[0].multi._key[key] = {
+                        literal: Item.multi._keys.authority[key]
+                    }
+                }
+            }
         }
     }
     // Add getAbbreviation() call for title-short and container-title-short
