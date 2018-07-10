@@ -54,10 +54,11 @@ CSL.XmlDOM = function (dataObj) {
         };
     }
     this.importNode = function (doc, srcElement) {
+        var ret;
         if ("undefined" == typeof doc.importNode) {
-            var ret = this._importNode(doc, srcElement, true);
+            ret = this._importNode(doc, srcElement, true);
         } else {
-            var ret = doc.importNode(srcElement, true);
+            ret = doc.importNode(srcElement, true);
         }
         return ret;
     };

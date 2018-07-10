@@ -195,8 +195,9 @@ CSL.DateParser = new function () {
         thedate["date-parts"] = [];
         thedate["date-parts"].push([]);
         var slicelen = 0;
+        var part;
         for (var i=0,ilen=3; i<ilen; i++) {
-            var part = ["year", "month", "day"][i];
+            part = ["year", "month", "day"][i];
             if (!thedate[part]) {
                 break;
             }

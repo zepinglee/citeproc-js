@@ -2,6 +2,16 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.208
+==========================
+
+- Fix out-of-scope variable assignments.
+
+- For some reason the variable name loadJurisdiction refused to accept
+  a variable assignment, although the variable exists nowhere else in
+  the code. Changing the variable name fixes the fault.
+
+==========================
 Changes in version 1.1.207
 ==========================
 

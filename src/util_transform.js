@@ -82,6 +82,7 @@ CSL.Transform = function (state) {
     function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field, form) {
         var value = "";
         var myabbrev_family = CSL.FIELD_CATEGORY_REMAP[family_var];
+        var preferredJurisdiction;
         if (!myabbrev_family) {
             return basevalue;
         }
@@ -98,15 +99,15 @@ CSL.Transform = function (state) {
         
         // Lazy retrieval of abbreviations.
         if (state.sys.getAbbreviation) {
-            
+
             if (["jurisdiction", "country", "language-name", "language-name-original"].indexOf(variable) > -1) {
-                var loadJurisdiction = "default";
+                preferredJurisdiction = "default";
             } else if (Item.jurisdiction) {
-                var loadJurisdiction = Item.jurisdiction;
+                preferredJurisdiction = Item.jurisdiction;
             } else {
-                var loadJurisdiction = "default";
+                preferredJurisdiction = "default";
             }
-            var jurisdiction = state.transform.loadAbbreviation(loadJurisdiction, myabbrev_family, normalizedKey, Item.type);
+            var jurisdiction = state.transform.loadAbbreviation(preferredJurisdiction, myabbrev_family, normalizedKey, Item.type);
 
             // Some rules:
             // # variable === "country"
@@ -394,18 +395,20 @@ CSL.Transform = function (state) {
             // No fallback for secondary and tertiary
             secondary = false;
             tertiary = false;
+            var secondary_tok;
+            var tertiary_tok;
             if (slot.secondary) {
                 res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig);
                 secondary = res.name;
                 secondary_locale = res.locale;
-                var secondary_tok = res.token;
+                secondary_tok = res.token;
                 //print("XXX secondary_locale: "+secondary_locale);
             }
             if (slot.tertiary) {
                 res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig);
                 tertiary = res.name;
                 tertiary_locale = res.locale;
-                var tertiary_tok = res.token;
+                tertiary_tok = res.token;
                 //print("XXX tertiary_locale: "+tertiary_locale);
             }
         

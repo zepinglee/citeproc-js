@@ -317,12 +317,13 @@ CSL.Node.text = {
                                                     groupblob.decorations.push(["@DOI", "true"]);
                                                     // strip a proper DOI prefix
                                                     value = value.replace(/^https?:\/\/doi\.org\//, "");
+                                                    var prefix;
                                                     if (value.match(/^https?:\/\//)) {
                                                         // don't mess with an HTTP[S] prefix if value already has one
-                                                        var prefix = "";
+                                                        prefix = "";
                                                     } else {
                                                         // otherwise do the normal thing
-                                                        var prefix = "https://doi.org/";
+                                                        prefix = "https://doi.org/";
                                                     }
                                                     // cast a text blob
                                                     // set the prefix as the content of the blob

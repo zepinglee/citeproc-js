@@ -336,7 +336,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                         }
                         
                         //var origLabel = j > 1 ? m[j-1] : "";
-                        var str = lst[j] ? lst[j].trim() : "";
+                        str = lst[j] ? lst[j].trim() : "";
                         if (j === (lst.length-1)) {
                             values.push(composeNumberInfo(filteredOrigLabel, label, str, elems[i+1]));
                         } else {
@@ -582,9 +582,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var val = values[i];
 
         var isPage = checkPage(variable, val);
-
+        var str;
         if (isPage && !isNaN(parseInt(values[i-1].value)) && !isNaN(parseInt(values[i].value))) {
-            var str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
+            str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
             str = me.fun.page_mangler(str);
         } else {
             // if (("" + values[i-1].value).match(/[0-9]$/) && ("" + values[i].value).match(/^[0-9]/)) {
@@ -788,8 +788,8 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
     for (var i=0,ilen=nums.length;i<ilen;i++) {
         var num = nums[i];
         var label = "";
+        var labelName;
         if (num.label) {
-            var labelName;
             if ('var:' === num.label.slice(0,4)) {
                 labelName = num.label.slice(4);
             } else {
@@ -833,10 +833,11 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
             }
         }
         if (num.collapsible) {
+            var blob;
             if (num.value.match(/^[1-9][0-9]*$/)) {
-                var blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
+                blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
             } else {
-                var blob = new CSL.NumericBlob(num.particle, num.value, numStyling, itemID);
+                blob = new CSL.NumericBlob(num.particle, num.value, numStyling, itemID);
             }
             if ("undefined" === typeof blob.gender) {
                 blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
@@ -856,7 +857,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
                 state.output.append(label.slice(labelPlaceholderPos+2), suffixLabelStyling);
             }
         }
-        lastLabelName === labelName;
+        lastLabelName = labelName;
         state.tmp.term_predecessor = true;
     }
     state.output.closeLevel();

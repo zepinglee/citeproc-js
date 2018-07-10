@@ -703,15 +703,16 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             Item.jurisdiction = "us";
         }
     }
+    var normalizedKey;
     if (!isLegalType && Item.title && this.sys.getAbbreviation) {
         var noHints = false;
         if (!Item.jurisdiction) {
             noHints = true;
         }
         if (this.sys.normalizeAbbrevsKey) {
-            var normalizedKey = this.sys.normalizeAbbrevsKey(Item.title);
+            normalizedKey = this.sys.normalizeAbbrevsKey(Item.title);
         } else {
-            var normalizedKey = Item.title;
+            normalizedKey = Item.title;
         }
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", normalizedKey, Item.type);
         if (this.transform.abbrevs[jurisdiction]["title"]) {
@@ -725,9 +726,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     if (Item["container-title"] && this.sys.getAbbreviation) {
         if (this.sys.normalizeAbbrevsKey) {
-            var normalizedKey = this.sys.normalizeAbbrevsKey(Item["container-title"]);
+            normalizedKey = this.sys.normalizeAbbrevsKey(Item["container-title"]);
         } else {
-            var normalizedKey = Item["container-title"];
+            normalizedKey = Item["container-title"];
         }
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", normalizedKey);
         if (this.transform.abbrevs[jurisdiction]["container-title"]) {

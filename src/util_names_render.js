@@ -414,9 +414,10 @@ CSL.NameOutput.prototype._isRomanesque = function (name) {
     if (!ret && name.given && name.given.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)) {
         ret = 1;
     }
+    var top_locale;
     if (ret == 2) {
         if (name.multi && name.multi.main) {
-            var top_locale = name.multi.main.slice(0, 2);
+            top_locale = name.multi.main.slice(0, 2);
         } else if (this.Item.language) {
             top_locale = this.Item.language.slice(0, 2);
         }
@@ -871,6 +872,7 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
     name_params["static-ordering"] = this.getStaticOrder(name);
 
     var foundTag = true;
+    var langTag;
     if (slotLocaleset !== 'locale-orig') {
         foundTag = false;
         if (name.multi) {
@@ -892,7 +894,7 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
     }
 
     if (!foundTag) {
-        var langTag = false;
+        langTag = false;
         if (name.multi && name.multi.main) {
             langTag = name.multi.main;
         } else if (this.Item.language) {

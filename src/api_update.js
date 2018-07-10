@@ -1,5 +1,3 @@
-/*global CSL: true */
-
 CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedItemIDs) {
     // Rebuilds the processor from scratch, based on a list of citation
     // objects. In a dynamic application, once the internal state of processor
@@ -239,6 +237,7 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs, impli
 };
 
 CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
+    var idHash;
     var debug = false;
     var oldArea = this.tmp.area;
     var oldRoot = this.tmp.root;
@@ -253,13 +252,13 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     }
     if ("object" == typeof idList) {
         if ("undefined" == typeof idList.length) {
-            var idHash = idList;
+            idHash = idList;
             idList = [];
             for (var key in idHash) {
                 idList.push(key);
             }
         } else if ("number" == typeof idList.length) {
-            var idHash = {};
+            idHash = {};
             for (var i=0,ilen=idList.length;i<ilen;i+=1) {
                 idHash[idList[i]] = true;
             }

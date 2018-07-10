@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.207",
+    PROCESSOR_VERSION: "1.1.208",
 
     CONDITION_LEVEL_TOP: 1,
 
@@ -301,17 +301,17 @@ var CSL = {
         if (!str) return false;
         var strLst = str.split("-");
         if (strLst.length > 0) {
-            if (!isDatePart(strLst[0], 3, 5)) {
+            if (!this.isDatePart(strLst[0], 3, 5)) {
                 return false;
             }
         }
         if (strLst.length > 1) {
-            if (!isDatePart(strLst[1], 0, 3)) {
+            if (!this.isDatePart(strLst[1], 0, 3)) {
                 return false
             }
         }
         if (strLst.length > 2) {
-            if (!isDatePart(strLst[2], 0, 3)) {
+            if (!this.isDatePart(strLst[2], 0, 3)) {
                 return false
             }
         }
@@ -374,7 +374,7 @@ var CSL = {
             } else if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
                 if (allowDateOverride) {
                     Item[key] = {raw: val};
-                    if (!validFieldsForType || (validFieldsForType[key] && isDateString(val))) {
+                    if (!validFieldsForType || (validFieldsForType[key] && this.isDateString(val))) {
                         lines[i] = "";
                     }
                 }

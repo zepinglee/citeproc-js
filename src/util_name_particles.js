@@ -256,6 +256,7 @@ CSL.parseParticles = function(){
 		var particleList = [];
 		var apostrophe;
 		var rex;
+        var hasParticle;
 		if (firstNameFlag) {
 			nameValue = nameValue.split("").reverse().join("");
 			rex = CSL.PARTICLE_GIVEN_REGEXP;
@@ -267,7 +268,7 @@ CSL.parseParticles = function(){
 			var m1 = firstNameFlag ? m[1].split("").reverse().join("") : m[1];
 			var firstChar = m ? m1 : false;
 			var firstChar = firstChar ? m1.replace(/^[-\'\u02bb\u2019\s]*(.).*$/, "$1") : false;
-			var hasParticle = firstChar ? firstChar.toUpperCase() !== firstChar : false;
+			hasParticle = firstChar ? firstChar.toUpperCase() !== firstChar : false;
 			if (!hasParticle) break;
 			if (firstNameFlag) {
 				particleList.push(origNameValue.slice(m1.length * -1));
