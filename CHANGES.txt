@@ -2,6 +2,18 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.209
+==========================
+
+- Insert to registry at bibliography sort location rather than
+  resorting the entire array. Many (many) thanks to @adomasven of
+  Zotero for diagnosing the excessive memory consumption that this
+  caused with large item sets, and for pointing at a solution:
+  
+  https://stackoverflow.com/questions/1344500/efficient-way-to-insert-a-number-into-a-sorted-array-of-numbers
+
+
+==========================
 Changes in version 1.1.208
 ==========================
 
