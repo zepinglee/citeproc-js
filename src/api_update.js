@@ -148,6 +148,9 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs, impli
     var oldArea = this.tmp.area;
     var oldRoot = this.tmp.root;
     var oldExtension = this.tmp.extension;
+    if (this.bibliography_sort.tokens.length === 0) {
+        nosort = true;
+    }
     this.tmp.area = "citation";
     this.tmp.root = "citation";
     this.tmp.extension = "";
@@ -168,64 +171,27 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs, impli
 		}
 	}
 
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> dodeletes <--");
-    }
-    //SNIP-END
     this.registry.dodeletes(this.registry.myhash);
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> doinserts <--");
-    }
-    //SNIP-END
+    
     this.registry.doinserts(this.registry.mylist);
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> dorefreshes <--");
-    }
-    //SNIP-END
+    
     this.registry.dorefreshes();
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> rebuildlist <--");
-    }
-    //SNIP-END
-    this.registry.rebuildlist();
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> setsortkeys <--");
-    }
-    //SNIP-END
+
+    // *** affects reflist
+    this.registry.rebuildlist(nosort);
+    
     this.registry.setsortkeys();
+
     // taints always
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> setdisambigs <--");
-    }
-    //SNIP-END
     this.registry.setdisambigs();
 
-    if (!nosort) {
-        //SNIP-START
-        if (debug) {
-            CSL.debug("--> sorttokens <--");
-        }
-        //SNIP-END
-        this.registry.sorttokens();
-    }
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> renumber <--");
-    }
-    //SNIP-END
+    // *** affects reflist
+    this.registry.sorttokens(nosort);
+
+    // *** affects reflist
     // taints if numbered style
     this.registry.renumber();
-    //SNIP-START
-    if (debug) {
-        CSL.debug("--> yearsuffix <--");
-    }
-    //SNIP-END
+    
     // taints always
     //this.registry.yearsuffix();
 
@@ -242,6 +208,9 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
     var oldArea = this.tmp.area;
     var oldRoot = this.tmp.root;
     var oldExtension = this.tmp.extension;
+    if (this.bibliography_sort.tokens.length === 0) {
+        nosort = true;
+    }
     this.tmp.area = "citation";
     this.tmp.root = "citation"
     this.tmp.extension = ""
@@ -277,15 +246,13 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
 
     this.registry.dorefreshes();
 
-    this.registry.rebuildlist();
+    this.registry.rebuildlist(nosort);
 
     this.registry.setsortkeys();
 
     this.registry.setdisambigs();
 
-    if (!nosort) {
-        this.registry.sorttokens();
-    }
+    this.registry.sorttokens(nosort);
 
     this.registry.renumber();
 

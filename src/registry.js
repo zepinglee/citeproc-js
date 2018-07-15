@@ -201,10 +201,7 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
                 myhash[itemIDs[i]] = true;
             }
         }
-        this.mylist = [];
-        for (var i=0,ilen=itemIDs.length;i<ilen;i+=1) {
-            this.mylist.push("" + itemIDs[i]);
-        }
+        this.mylist = itemIDs;
         this.myhash = myhash;
     }
     //
@@ -233,8 +230,9 @@ CSL.Registry.prototype.dopurge = function (myhash) {
 CSL.Registry.prototype.dodeletes = function (myhash) {
     var otheritems, key, ambig, pos, len, items, kkey, mypos, id;
     if ("string" === typeof myhash) {
+        var key = myhash;
         myhash = {};
-        myhash[myhash] = true;
+        myhash[key] = true;
     }
     //
     //  3. Delete loop.
@@ -314,6 +312,13 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
                 }
             }
             //
+            // 3d-1. Remove item from reflist
+            for (var i=this.reflist.length-1;i>-1;i--) {
+                if (this.reflist[i].id === key) {
+                    this.reflist = this.reflist.slice(0, i).concat(this.reflist.slice(i+1));
+                }
+            }
+            //
             //  3d. Delete all items in deletion list from hash.
             //
             delete this.registry[key];
@@ -371,7 +376,8 @@ CSL.Registry.prototype.doinserts = function (mylist) {
                 "ambig": false,
                 "rendered": false,
                 "disambig": false,
-                "ref": Item
+                "ref": Item,
+                "newItem": true
             };
             //
             //
@@ -426,33 +432,43 @@ CSL.Registry.prototype.douncited = function () {
 };
 */
 
-CSL.Registry.prototype.rebuildlist = function () {
-    var count, len, pos, item;
+CSL.Registry.prototype.rebuildlist = function (nosort) {
+    var count, len, pos, item, Item;
     //
     //  5. Create "new" list of hash pointers, in the order given in the argument
     //     to the update function.
     //
-    this.reflist = [];
     //
-    //  6. Apply citation numbers to new list,
-    //     saving off old sequence numbers as we go.
+    // XXX Keep reflist in place.
     //
-    // count = 1;
-    if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
-       && this.state.opt.citation_number_sort_used) {
-        //this.mylist.reverse();
-    }
-    len = this.mylist.length;
-    for (pos = 0; pos < len; pos += 1) {
-        item = this.mylist[pos];
-        this.reflist.push(this.registry[item]);
-        this.oldseq[item] = this.registry[item].seq;
-        this.registry[item].seq = (pos + 1);
-        // count += 1;
-    }
-    if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
-       && this.state.opt.citation_number_sort_used) {
-        //this.mylist.reverse();
+    if (!nosort) {
+        this.reflist_inserts = [];
+        //
+        //  6. Apply citation numbers to new list,
+        //     saving off old sequence numbers as we go.
+        //
+        // XXX Just memo inserts -- actual insert happens below, at last "sort"
+        //
+        len = this.mylist.length;
+        for (pos = 0; pos < len; pos += 1) {
+            item = this.mylist[pos];
+            Item = this.registry[item];
+            if (Item.newItem) {
+                this.reflist_inserts.push(Item);
+            }
+            this.oldseq[item] = this.registry[item].seq;
+            this.registry[item].seq = (pos + 1);
+        }
+    } else {
+        this.reflist = [];
+        len = this.mylist.length;
+        for (pos = 0; pos < len; pos += 1) {
+            item = this.mylist[pos];
+            Item = this.registry[item];
+            this.reflist.push(Item);
+            this.oldseq[item] = this.registry[item].seq;
+            this.registry[item].seq = (pos + 1);
+        }
     }
 };
 
@@ -514,7 +530,7 @@ CSL.Registry.prototype.dorefreshes = function () {
  * crunched into this function?
  */
 CSL.Registry.prototype.setdisambigs = function () {
-    var akey, leftovers, key, pos, len, id;
+    var akey, key, pos, len, id;
     //
     // Okay, more changes.  Here is where we resolve all disambiguation
     // issues for cites touched by the update.  The this.ambigcites set is
@@ -523,9 +539,6 @@ CSL.Registry.prototype.setdisambigs = function () {
     // is performed.
     //
 
-    //
-    // we'll save a list of leftovers for each disambig pool.
-    this.leftovers = [];
     //
     //  8.  Set disambiguation parameters on each inserted item token.
     //
@@ -548,10 +561,6 @@ CSL.Registry.prototype.renumber = function () {
     //
     // 19. Reset citation numbers on list items
     //
-    if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
-       && this.state.opt.citation_number_sort_used) {
-        //this.reflist.reverse();
-    }
     len = this.reflist.length;
     for (pos = 0; pos < len; pos += 1) {
         item = this.reflist[pos];
@@ -571,6 +580,9 @@ CSL.Registry.prototype.renumber = function () {
        && this.state.opt.citation_number_sort_used) {
         this.reflist.reverse();
     }
+    //for (var key in this.state.tmp.taintedItemIDs) {
+    //    print("  tainted: " + this.registry[key].seq + " " + key);
+    //}
 };
 
 CSL.Registry.prototype.setsortkeys = function () {
@@ -587,11 +599,68 @@ CSL.Registry.prototype.setsortkeys = function () {
     }
 };
 
-CSL.Registry.prototype.sorttokens = function () {
+CSL.Registry.prototype._insertItem = function(element, array) {
+    array.splice(this._locationOf(element, array) + 1, 0, element);
+    return array;
+};
+
+CSL.Registry.prototype._locationOf = function(element, array, start, end) {
+    if (array.length === 0)
+        return -1;
+    
+    start = start || 0;
+    end = end || array.length;
+    var pivot = (start + end) >> 1;  // should be faster than dividing by 2
+    
+    var c = this.sorter.compareKeys(element, array[pivot]);
+    if (end - start <= 1) return c == -1 ? pivot - 1 : pivot;
+    
+    switch (c) {
+        case -1: return this._locationOf(element, array, start, pivot);
+        case 0: return pivot;
+        case 1: return this._locationOf(element, array, pivot, end);
+    };
+};
+
+CSL.Registry.prototype.sorttokens = function (nosort) {
+    var len, item, Item, pos;
     //
     // 18. Resort token list.
     //
-    this.reflist.sort(this.sorter.compareKeys);
+    if (!nosort) {
+        this.reflist_inserts = [];
+        len = this.mylist.length;
+        for (pos = 0; pos < len; pos += 1) {
+            item = this.mylist[pos];
+            Item = this.registry[item];
+            if (Item.newItem) {
+                this.reflist_inserts.push(Item);
+            }
+        }
+        // There is a thin possibility that tainted items in a sorted list
+        // will change position due to disambiguation. We cover for that here.
+        for (var key in this.state.tmp.taintedItemIDs) {
+            if (this.registry[key] && !this.registry[key].newItem) {
+                // Move tainted items from reflist to reflist_inserts
+                for (var i=this.reflist.length-1;i>-1;i--) {
+                    if (this.reflist[i].id === key) {
+                        this.reflist_inserts.push(this.reflist[i]);
+                        this.reflist = this.reflist.slice(0, i).concat(this.reflist.slice(i+1));
+                    }
+                }
+            }
+        }
+        for (var i=0,ilen=this.reflist_inserts.length;i<ilen;i++) {
+            var Item = this.reflist_inserts[i];
+            delete Item.newItem;
+            this.reflist = this._insertItem(Item, this.reflist);
+        }
+        for (pos = 0; pos < len; pos += 1) {
+            item = this.mylist[pos];
+            Item = this.registry[item];
+            this.registry[item].seq = (pos + 1);
+        }
+    }
 };
 
 /**
