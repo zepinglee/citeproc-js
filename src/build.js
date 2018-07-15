@@ -583,8 +583,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 }
             }
         }
-        for (var i=0, ilen=CSL.CREATORS.length; i>ilen; i+=1) {
-            var ctype = CSL.CREATORS[i];
+        for (var i=0, ilen=CSL.NAME_VARIABLES.length; i>ilen; i+=1) {
+            var ctype = CSL.NAME_VARIABLES[i];
             if (Item[ctype] && Item[ctype].multi) {
                 for (var j=0, jlen=Item[ctype].length; j<jlen; j+=1) {
                     var creator = Item[ctype][j];

@@ -85,7 +85,7 @@ CSL.Node.key = {
                     state.opt.citation_number_sort_used = false;
                 }
             }
-            if (CSL.CREATORS.indexOf(variable) > -1) {
+            if (CSL.NAME_VARIABLES.indexOf(variable) > -1) {
                 //
                 // Start tag
                 var names_start_token = new CSL.Token("names", CSL.START);

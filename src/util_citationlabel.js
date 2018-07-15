@@ -11,8 +11,8 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
     }
     myname = myname.replace(".", "");
     myname = myname.slice(0, 1).toUpperCase() + myname.slice(1);
-    for (var i = 0, ilen = CSL.CREATORS.length; i < ilen; i += 1) {
-        var n = CSL.CREATORS[i];
+    for (var i = 0, ilen = CSL.NAME_VARIABLES.length; i < ilen; i += 1) {
+        var n = CSL.NAME_VARIABLES[i];
         if (Item[n]) {
             var names = Item[n];
             if (names.length > params.length) {

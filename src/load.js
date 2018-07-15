@@ -559,17 +559,18 @@ var CSL = {
 
     NAME_VARIABLES: [
         "author",
-        "editor",
-        "translator",
-        "contributor",
         "collection-editor",
         "composer",
         "container-author",
         "director",
+        "editor",
         "editorial-director",
+        "illustrator",
         "interviewer",
         "original-author",
-        "recipient"
+        "recipient",
+        "reviewed-author",
+        "translator"
     ],
     NUMERIC_VARIABLES: [
         "call-number",
@@ -805,18 +806,6 @@ var CSL = {
         [ "", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc" ],
         [ "", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm" ],
         [ "", "m", "mm", "mmm", "mmmm", "mmmmm"]
-    ],
-    CREATORS: [
-        "author",
-        "editor",
-        "contributor",
-        "translator",
-        "recipient",
-        "interviewer",
-        "composer",
-        "original-author",
-        "container-author",
-        "collection-editor"
     ],
 
     LANGS: {
