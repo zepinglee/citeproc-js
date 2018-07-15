@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.209",
+    PROCESSOR_VERSION: "1.1.210",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -476,17 +476,18 @@ var CSL = {
     DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
     NAME_VARIABLES: [
         "author",
-        "editor",
-        "translator",
-        "contributor",
         "collection-editor",
         "composer",
         "container-author",
         "director",
+        "editor",
         "editorial-director",
+        "illustrator",
         "interviewer",
         "original-author",
-        "recipient"
+        "recipient",
+        "reviewed-author",
+        "translator"
     ],
     NUMERIC_VARIABLES: [
         "call-number",
@@ -703,18 +704,6 @@ var CSL = {
         [ "", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc" ],
         [ "", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm" ],
         [ "", "m", "mm", "mmm", "mmmm", "mmmmm"]
-    ],
-    CREATORS: [
-        "author",
-        "editor",
-        "contributor",
-        "translator",
-        "recipient",
-        "interviewer",
-        "composer",
-        "original-author",
-        "container-author",
-        "collection-editor"
     ],
     LANGS: {
         "af-ZA":"Afrikaans",
@@ -2980,8 +2969,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 }
             }
         }
-        for (var i=0, ilen=CSL.CREATORS.length; i>ilen; i+=1) {
-            var ctype = CSL.CREATORS[i];
+        for (var i=0, ilen=CSL.NAME_VARIABLES.length; i>ilen; i+=1) {
+            var ctype = CSL.NAME_VARIABLES[i];
             if (Item[ctype] && Item[ctype].multi) {
                 for (var j=0, jlen=Item[ctype].length; j<jlen; j+=1) {
                     var creator = Item[ctype][j];
@@ -3385,8 +3374,8 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
     }
     myname = myname.replace(".", "");
     myname = myname.slice(0, 1).toUpperCase() + myname.slice(1);
-    for (var i = 0, ilen = CSL.CREATORS.length; i < ilen; i += 1) {
-        var n = CSL.CREATORS[i];
+    for (var i = 0, ilen = CSL.NAME_VARIABLES.length; i < ilen; i += 1) {
+        var n = CSL.NAME_VARIABLES[i];
         if (Item[n]) {
             var names = Item[n];
             if (names.length > params.length) {
@@ -7626,7 +7615,7 @@ CSL.Node.key = {
                     state.opt.citation_number_sort_used = false;
                 }
             }
-            if (CSL.CREATORS.indexOf(variable) > -1) {
+            if (CSL.NAME_VARIABLES.indexOf(variable) > -1) {
                 var names_start_token = new CSL.Token("names", CSL.START);
                 names_start_token.tokentype = CSL.START;
                 names_start_token.variables = this.variables;
