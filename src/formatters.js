@@ -168,11 +168,14 @@ CSL.Output.Formatters = new function () {
                 }
             }
         }
-        // Capitalize the last word if necessary (bypasses stop-word list)
+        // Specially capitalize the last word if necessary (invert stop-word list)
         if (config.lastWordPos) {
             var lastWords = wordDoppel.split(config.doppel.strings[config.lastWordPos.strings]);
-            var lastWord = _capitalise(lastWords.strings[config.lastWordPos.words]);
-            lastWords.strings[config.lastWordPos.words] = lastWord;
+            var lastWord = lastWords.strings[config.lastWordPos.words];
+            if (lastWord.length > 1 && lastWord.toLowerCase().match(config.skipWordsRex)) {
+                lastWord = _capitalise(lastWord);
+                lastWords.strings[config.lastWordPos.words] = lastWord;
+            }
             config.doppel.strings[config.lastWordPos.strings] = wordDoppel.join(lastWords);
         }
 
