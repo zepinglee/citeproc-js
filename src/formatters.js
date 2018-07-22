@@ -23,7 +23,10 @@ CSL.Output.Formatters = new function () {
     var _tagParams = {
         "<span style=\"font-variant: small-caps;\">": "</span>",
         "<span class=\"nocase\">": "</span>",
-        "<span class=\"nodecor\">": "</span>"
+        "<span class=\"nodecor\">": "</span>",
+        "<sc>": "</sc>",
+        "<sub>": "</sub>",
+        "<sup>": "</sup>"
     }
 
     function _capitalise (word, force) {
@@ -101,7 +104,6 @@ CSL.Output.Formatters = new function () {
                 return pos;
             }
         }
-        
         // Run state machine
         if (config.doppel.strings.length && config.doppel.strings[0].trim()) {
             config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0, config.doppel.tags[0]);
