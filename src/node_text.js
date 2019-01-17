@@ -307,7 +307,7 @@ CSL.Node.text = {
                                         // true is for non-suppression of periods
                                         if (state.opt.development_extensions.wrap_url_and_doi) {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
-					        // HAD THIS IN FOLLOWING CONDITION:  && this.strings.prefixXXXXX === "https://doi.org/"
+                            // HAD THIS IN FOLLOWING CONDITION:  && this.strings.prefixXXXXX === "https://doi.org/"
                                                 if (this.variables_real[0] === "DOI") {
                                                     // Special-casing to fix https://github.com/Juris-M/citeproc-js/issues/57
                                                     // clone current token, to avoid collateral damage
@@ -318,18 +318,18 @@ CSL.Node.text = {
                                                     groupblob.decorations.push(["@DOI", "true"]);
                                                     // strip a proper DOI prefix
                                                     var prefix;
-						                            if (this.strings.prefix === "https://doi.org/") {
+                                                    if (this.strings.prefix && this.strings.prefix.match(/^.*https:\/\/doi\.org\/$/)) {
                                                         value = value.replace(/^https?:\/\/doi\.org\//, "");
                                                         if (value.match(/^https?:\/\//)) {
-                                                            // don't mess with an HTTP[S] prefix if value already has one
+                                                            // Do not tamper with another protocol + domain if already set in field value
                                                             prefix = "";
                                                         } else {
-                                                            // otherwise do the normal thing
+                                                            // Otherwise https + domain
                                                             prefix = "https://doi.org/";
                                                         }
-                                                        // remove prefix from the clone
-                                                        clonetoken.strings.prefix = "";
-						                            }
+                                                        // set any string prefix on the clone
+                                                        clonetoken.strings.prefix = this.strings.prefix.slice(0, clonetoken.strings.prefix.length-16);
+                                                    }
                                                     // cast a text blob
                                                     // set the prefix as the content of the blob
                                                     var prefixblob = new CSL.Blob(prefix);
