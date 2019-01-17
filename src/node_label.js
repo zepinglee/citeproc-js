@@ -47,6 +47,9 @@ CSL.Node.label = {
             };
             this.execs.push(func);
         } else {
+            if (!this.strings.form) {
+                this.strings.form = "long";
+            }
             // Names labels
             // Picked up in names END
             var namevars = state.build.names_variables.slice(-1)[0];
