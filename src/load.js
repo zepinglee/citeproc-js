@@ -193,7 +193,7 @@ var CSL = {
         "genre":"titles",
         "medium":"titles",
         "container-title":"journals",
-        "collection-title":"journals",
+        "collection-title":"titles",
         "archive":"journals",
         "publisher":"publishers",
         "authority":"publishers",
@@ -201,10 +201,10 @@ var CSL = {
         "event-place": "places",
         "archive-place": "places",
         "jurisdiction": "places",
-        "number": "number",
-        "edition":"number",
-        "issue":"number",
-        "volume":"number"
+        "number": "places",
+        "edition":"places",
+        "issue":"places",
+        "volume":"places"
     },
 
     AbbreviationSegments: function () {
@@ -558,6 +558,21 @@ var CSL = {
     DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
     NAME_VARIABLES: [
+        "author",
+        "collection-editor",
+        "composer",
+        "container-author",
+        "director",
+        "editor",
+        "editorial-director",
+        "illustrator",
+        "interviewer",
+        "original-author",
+        "recipient",
+        "reviewed-author",
+        "translator"
+    ],
+    CREATORS: [
         "author",
         "collection-editor",
         "composer",
