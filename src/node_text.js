@@ -249,7 +249,7 @@ CSL.Node.text = {
                         var transfall = false;
                         if (form === "short" || ["country", "jurisdiction"].indexOf(this.variables_real[0]) > -1) {
                             if (this.variables_real[0] === "container-title") {
-                                altvar = "journalAbbreviation";
+                                altvar = "container-title-short";
                             } else if (this.variables_real[0] === "title") {
                                 altvar = "title-short";
                             }
@@ -307,7 +307,8 @@ CSL.Node.text = {
                                         // true is for non-suppression of periods
                                         if (state.opt.development_extensions.wrap_url_and_doi) {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
-                                                if (this.variables_real[0] === "DOI" && this.strings.prefix === "https://doi.org/") {
+					        // HAD THIS IN FOLLOWING CONDITION:  && this.strings.prefixXXXXX === "https://doi.org/"
+                                                if (this.variables_real[0] === "DOI") {
                                                     // Special-casing to fix https://github.com/Juris-M/citeproc-js/issues/57
                                                     // clone current token, to avoid collateral damage
                                                     var clonetoken = CSL.Util.cloneToken(this);
@@ -316,23 +317,25 @@ CSL.Node.text = {
                                                     // set the DOI decoration on the blob
                                                     groupblob.decorations.push(["@DOI", "true"]);
                                                     // strip a proper DOI prefix
-                                                    value = value.replace(/^https?:\/\/doi\.org\//, "");
                                                     var prefix;
-                                                    if (value.match(/^https?:\/\//)) {
-                                                        // don't mess with an HTTP[S] prefix if value already has one
-                                                        prefix = "";
-                                                    } else {
-                                                        // otherwise do the normal thing
-                                                        prefix = "https://doi.org/";
-                                                    }
+						                            if (this.strings.prefix === "https://doi.org/") {
+                                                        value = value.replace(/^https?:\/\/doi\.org\//, "");
+                                                        if (value.match(/^https?:\/\//)) {
+                                                            // don't mess with an HTTP[S] prefix if value already has one
+                                                            prefix = "";
+                                                        } else {
+                                                            // otherwise do the normal thing
+                                                            prefix = "https://doi.org/";
+                                                        }
+                                                        // remove prefix from the clone
+                                                        clonetoken.strings.prefix = "";
+						                            }
                                                     // cast a text blob
                                                     // set the prefix as the content of the blob
                                                     var prefixblob = new CSL.Blob(prefix);
                                                     // cast another text blob
                                                     // set the value as the content of the second blob
                                                     var valueblob = new CSL.Blob(value);
-                                                    // remove prefix from the clone
-                                                    clonetoken.strings.prefix = "";
                                                     // append new text token and clone to group token
                                                     groupblob.push(prefixblob);
                                                     groupblob.push(valueblob);

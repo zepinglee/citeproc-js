@@ -286,7 +286,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     if (variable === "title") {
                         variable = "title-short";
                     } else if (variable === "container-title") {
-                        variable = "journalAbbreviation";
+                        variable = "container-title-short";
                     }
                 }
                 if (variable === "year-suffix") {
