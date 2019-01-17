@@ -52,7 +52,7 @@ citation
   <citation>
     <layout delimiter="; ">
       <group delimiter=" ">
-        <label variable="edition"/>
+        <label variable="edition" form="long"/>
         <number variable="edition"/>
       </group>
     </layout>
