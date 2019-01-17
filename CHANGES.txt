@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.212
+==========================
+
+- Wrap DOI correctly even if cruft exists before protocol in prefix attribute
+
+- Add a local test for wrapped DOI with cruft before protocol + domain prefix
+
+- Fix typo (Ukranaian -> Ukrainian)
+
+
+==========================
 Changes in version 1.1.211
 ==========================
 
