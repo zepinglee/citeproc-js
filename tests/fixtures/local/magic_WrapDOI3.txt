@@ -12,11 +12,11 @@ https://github.com/Juris-M/citeproc-js/issues/95
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">Bare DOI, <a href="https://doi.org/10.4103/0976-500X.85940">10.4103/0976-500X.85940</a>,</div>
-  <div class="csl-entry">DOI with HTTP prefix, <a href="http://doi.org/10.4103/0976-500X.85940">http://doi.org/10.4103/0976-500X.85940</a>,</div>
-  <div class="csl-entry">DOI with HTTPS prefix, <a href="https://doi.org/10.4103/0976-500X.85940">https://doi.org/10.4103/0976-500X.85940</a>,</div>
-  <div class="csl-entry">DOI with weird HTTP prefix, <a href="http://weird.doi.org/10.4103/0976-500X.85940">http://weird.doi.org/10.4103/0976-500X.85940</a>,</div>
-  <div class="csl-entry">DOI with weird HTTPS prefix, <a href="https://weird.doi.org/10.4103/0976-500X.85940">https://weird.doi.org/10.4103/0976-500X.85940</a>,</div>
+  <div class="csl-entry">Bare DOI, doi:<a href="https://doi.org/10.4103/0976-500X.85940">10.4103/0976-500X.85940</a>,</div>
+  <div class="csl-entry">DOI with HTTP prefix, doi:<a href="http://doi.org/10.4103/0976-500X.85940">http://doi.org/10.4103/0976-500X.85940</a>,</div>
+  <div class="csl-entry">DOI with HTTPS prefix, doi:<a href="https://doi.org/10.4103/0976-500X.85940">https://doi.org/10.4103/0976-500X.85940</a>,</div>
+  <div class="csl-entry">DOI with weird HTTP prefix, doi:<a href="http://weird.doi.org/10.4103/0976-500X.85940">http://weird.doi.org/10.4103/0976-500X.85940</a>,</div>
+  <div class="csl-entry">DOI with weird HTTPS prefix, doi:<a href="https://weird.doi.org/10.4103/0976-500X.85940">https://weird.doi.org/10.4103/0976-500X.85940</a>,</div>
 </div>
 <<===== RESULT =====<<
 
