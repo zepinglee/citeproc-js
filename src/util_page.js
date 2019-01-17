@@ -7,7 +7,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     
     var range_delimiter = state.getTerm(rangeType + "-range-delimiter");
 
-    rangerex = /([0-9]*[a-zA-Z]+0*)?([0-9]+)\s*(?:\u2013|-)\s*([0-9]*[a-zA-Z]+0*)?([0-9]+)/;
+    rangerex = /([0-9]*[a-zA-Z]+0*)?([0-9]+[a-z]*)\s*(?:\u2013|-)\s*([0-9]*[a-zA-Z]+0*)?([0-9]+[a-z]*)/;
 
     stringify = function (lst) {
         len = lst.length;
@@ -32,8 +32,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         // Workaround for Internet Explorer
         //var rexm = new RegExp("((?:[0-9]*[a-zA-Z]+)?[0-9]+" + hyphens + "(?:[0-9]*[a-zA-Z]+)?[0-9]+)", "g");
         //var rexlst = new RegExp("(?:[0-9]*[a-zA-Z]+)?[0-9]+" + hyphens + "(?:[0-9]*[a-zA-Z]+)?[0-9]+");
-        var rexm = new RegExp("((?:[0-9]*[a-zA-Z]+0*)?[0-9]+" + hyphens + "(?:[0-9]*[a-zA-Z]+0*)?[0-9]+)", "g");
-        var rexlst = new RegExp("(?:[0-9]*[a-zA-Z]+0*)?[0-9]+" + hyphens + "(?:[0-9]*[a-zA-Z]+0*)?[0-9]+");
+        var rexm = new RegExp("((?:[0-9]*[a-zA-Z]+0*)?[0-9]+[a-z]*" + hyphens + "(?:[0-9]*[a-zA-Z]+0*)?[0-9]+[a-z]*)", "g");
+        var rexlst = new RegExp("(?:[0-9]*[a-zA-Z]+0*)?[0-9]+[a-z]*" + hyphens + "(?:[0-9]*[a-zA-Z]+0*)?[0-9]+[a-z]*");
         m = str.match(rexm);
         lst = str.split(rexlst);
         if (lst.length === 0) {

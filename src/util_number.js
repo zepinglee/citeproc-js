@@ -281,14 +281,25 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var m = str.match(/(;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
         if (m) {
             var lst = str.split(/(?:;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
-            for (var i=0,ilen=lst.length-1; i<ilen; i++) {
-                elems.push(lst[i]);
-                elems.push(m[i]);
+            var recombine = false;
+            for (var i in lst) {
+                if (lst[i].replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {
+                    //recombine = true;
+                    break;
+                }
             }
-            elems.push(lst[lst.length-1]);
-            //print("ELEMS: "+elems);
-            elems = fixupSubsections(elems);
-            //print("  fixup: "+elems);
+            if (recombine) {
+                elems = [str];
+            } else {
+                for (var i=0,ilen=lst.length-1; i<ilen; i++) {
+                    elems.push(lst[i]);
+                    elems.push(m[i]);
+                }
+                elems.push(lst[lst.length-1]);
+                //print("ELEMS: "+elems);
+                elems = fixupSubsections(elems);
+                //print("  fixup: "+elems);
+            }
         } else {
             var elems = [str];
         }
@@ -334,7 +345,6 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
                         } else {
                             filteredOrigLabel = origLabel;
                         }
-                        
                         //var origLabel = j > 1 ? m[j-1] : "";
                         str = lst[j] ? lst[j].trim() : "";
                         if (j === (lst.length-1)) {
@@ -525,7 +535,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         if (hasTerm && rangeDelimiter === "-") {
             if (isNumeric) {
                 if (isPage || ["locator", "issue", "volume", "edition", "number"].indexOf(variable) > -1) {
-                    rangeDelimiter = me.getTerm("page-range-delimiter")
+                    rangeDelimiter = me.getTerm("page-range-delimiter");
                     if (!rangeDelimiter) {
                         rangeDelimiter = "\u2013";
                     }
@@ -575,7 +585,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             currentInfo.count = 1;
             return;
         }
-        if (!me.opt["page-range-format"] && parseInt(values[i-1].value, 10) > parseInt(values[i].value, 10)) {
+        if (!me.opt["page-range-format"] && (parseInt(values[i-1].value, 10) > parseInt(values[i].value, 10))) {
             values[i-1].joiningSuffix = fixupRangeDelimiter(variable, values[i], values[i-1].joiningSuffix, true);
             return;
         }
@@ -593,7 +603,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
             }
             str = values[i-1].value + stripHyphenBackslash(values[i-1].joiningSuffix) + values[i].value;
         }
-        var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+)$/);
+        var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+[a-z]*)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+[a-z]*)$/);
+        // var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+[a-z]*)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+[a-z]*)$/);
         if (m) {
             var rangeDelimiter = m[3];
             rangeDelimiter = fixupRangeDelimiter(variable, val, rangeDelimiter, values[i].numeric);
@@ -607,6 +618,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
     }
     
     function fixRanges(values) {
+
         if (!node) return;
         if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume", "locator"].indexOf(variable) === -1) return;
 
@@ -745,8 +757,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable, type)
         var defaultLabel = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[variable];
 
         if (!this.tmp.shadow_numbers.values) {
+            // XXX
             var values = parseString(val, defaultLabel);
-            //print("parseString(): "+JSON.stringify(values, null, 2));
             
             setSpaces(values);
             //print("setSpaces(): "+JSON.stringify(values, null, 2));
@@ -781,6 +793,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         embeddedLabelForm = labelForm
     } else {
         embeddedLabelForm = "short";
+        //labelForm = "short";
     }
     var labelCapitalizeIfFirst = state.tmp.shadow_numbers[varname].labelCapitalizeIfFirst;
     var labelDecorations = state.tmp.shadow_numbers[varname].labelDecorations;
