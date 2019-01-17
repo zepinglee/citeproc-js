@@ -2,6 +2,29 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.211
+==========================
+
+- Add plain, asciidoc, and xslfo output options for test script
+
+- Set page-range-delimiter on ranged numbers with trailing alpha chars
+
+- Reset position info when processing full cs:names objects
+
+- Fix bug in wrapped DOI/URL, properly recognize container-title-short
+
+- Default to form=long on explicit label nodes
+
+- Add list of CREATORS, reclassify some abbrevs
+
+- Fix handling of suffix on DOI renderings without a protocol prefix
+
+- Implicit nocase for sub, sub and sc tags
+
+- (Re)capitalize only stop-list words in last position
+
+
+==========================
 Changes in version 1.1.210
 ==========================
 
