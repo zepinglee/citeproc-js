@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.210",
+    PROCESSOR_VERSION: "1.1.212",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -765,7 +765,7 @@ var CSL = {
         "sv-SE":"Swedish",
         "th-TH":"Thai",
         "tr-TR":"Turkish",
-        "uk-UA":"Ukranian",
+        "uk-UA":"Ukrainian",
         "vi-VN":"Vietnamese",
         "zh-CN":"Chinese (CN)",
         "zh-TW":"Chinese (TW)"
@@ -10774,15 +10774,15 @@ CSL.Node.text = {
                                                     var groupblob = new CSL.Blob(null, null, "url-wrapper");
                                                     groupblob.decorations.push(["@DOI", "true"]);
                                                     var prefix;
-						                            if (this.strings.prefix === "https://doi.org/") {
+                                                    if (this.strings.prefix && this.strings.prefix.match(/^.*https:\/\/doi\.org\/$/)) {
                                                         value = value.replace(/^https?:\/\/doi\.org\//, "");
                                                         if (value.match(/^https?:\/\//)) {
                                                             prefix = "";
                                                         } else {
                                                             prefix = "https://doi.org/";
                                                         }
-                                                        clonetoken.strings.prefix = "";
-						                            }
+                                                        clonetoken.strings.prefix = this.strings.prefix.slice(0, clonetoken.strings.prefix.length-16);
+                                                    }
                                                     var prefixblob = new CSL.Blob(prefix);
                                                     var valueblob = new CSL.Blob(value);
                                                     groupblob.push(prefixblob);
