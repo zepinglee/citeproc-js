@@ -26,6 +26,7 @@ CSL.Node.names = {
         if (this.tokentype === CSL.START) {
 
             state.build.names_flag = true;
+            state.build.name_flag = false;
             state.build.names_level += 1;
             if (state.build.names_level === 1) {
                 state.build.names_variables = [];
