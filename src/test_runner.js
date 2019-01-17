@@ -225,6 +225,15 @@ StdRhinoTest.prototype.run = function(){
     if (this.submode["rtf"]) {
         this.style.setOutputFormat("rtf");
     }
+    if (this.submode["plain"]) {
+        this.style.setOutputFormat("plain");
+    }
+    if (this.submode["asciidoc"]) {
+        this.style.setOutputFormat("asciidoc");
+    }
+    if (this.submode["xslfo"]) {
+        this.style.setOutputFormat("xslfo");
+    }
     //this.style.setParseNames(true);
     //this.style.opt.development_extensions.static_statute_locator = true;
     //this.style.opt.development_extensions.clobber_locator_if_no_statute_section = true;
