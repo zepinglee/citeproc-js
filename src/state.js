@@ -512,3 +512,39 @@ CSL.Engine.CitationSort = function () {
     this.opt.topdecor = [];
     this.root = "citation";
 };
+
+CSL.Engine.InText = function () {
+     // InText options area.
+     // Holds a mixture of persistent and ephemeral
+     // options and scratch data used during processing of
+     // a citation.</p>
+    this.opt = {
+        inheritedAttributes: {}
+    };
+
+    this.tokens = [];
+    // Placeholder function
+    //this.srt = new CSL.Registry.Comparifier(state, "citation_sort");
+    //
+    // configuration array to hold the collapse
+    // options, if any.
+    this.opt.collapse = [];
+    //
+    // disambiguate options
+    this.opt["disambiguate-add-names"] = false;
+    this.opt["disambiguate-add-givenname"] = false;
+    this.opt["disambiguate-add-year-suffix"] = false;
+    this.opt["givenname-disambiguation-rule"] = "by-cite";
+    this.opt["near-note-distance"] = 5;
+
+    this.opt.topdecor = [];
+    this.opt.layout_decorations = [];
+    this.opt.layout_prefix = "";
+    this.opt.layout_suffix = "";
+    this.opt.layout_delimiter = "";
+    //
+    // sorting
+    this.opt.sort_locales = [];
+    this.opt.max_number_of_names = 0;
+    this.root = "in-text";
+};

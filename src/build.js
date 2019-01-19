@@ -44,6 +44,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.bibliography_sort = new CSL.Engine.BibliographySort();
     this.citation = new CSL.Engine.Citation(this);
     this.bibliography = new CSL.Engine.Bibliography();
+    this.intext = new CSL.Engine.InText();
 
     this.output = new CSL.Output.Queue(this);
 
@@ -223,6 +224,10 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
 
     this.build.area = "bibliography";
+    var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
+    this.buildTokenLists(area_nodes, this[this.build.area].tokens);
+
+    this.build.area = "intext";
     var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
 

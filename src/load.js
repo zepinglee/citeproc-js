@@ -458,7 +458,7 @@ var CSL = {
 
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
-    AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
+    AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort", "intext"],
 
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-extra"],
 
