@@ -1046,7 +1046,15 @@ CSL.getCitationCluster = function (inputList, citationID) {
        }
     }
     myparams = [];
-    len = inputList.length;
+    var area_orig = this.tmp.area;
+    if (inputList[0] && inputList[0][1] && inputList[0][1]["author-only"]) {
+        if (this.intext && this.intext.tokens.length > 0) {
+            this.tmp.area = "intext";
+        }
+        len = 1;
+    } else {
+        len = inputList.length;
+    }
     for (pos = 0; pos < len; pos += 1) {
         Item = inputList[pos][0];
         item = inputList[pos][1];
@@ -1123,6 +1131,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
         //
         myparams.push(params);
     }
+    this.tmp.area = area_orig;
 
     this.tmp.has_purged_parallel = false;
     this.parallel.PruneOutputQueue(this);
@@ -1330,7 +1339,6 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     next = 0;
     this.tmp.name_node = {};
     this.nameOutput = new CSL.NameOutput(this, Item, item);
-
 
     // rerun?
     while (next < this[this.tmp.area].tokens.length) {
