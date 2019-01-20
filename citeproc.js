@@ -409,7 +409,7 @@ var CSL = {
     POSITION_IBID_WITH_LOCATOR: 3,
     MARK_TRAILING_NAMES: true,
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
-    AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort"],
+    AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort", "intext"],
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-extra"],
     MINIMAL_NAME_FIELDS: ["literal", "family"],
     SWAPPING_PUNCTUATION: [".", "!", "?", ":", ","],
@@ -2623,6 +2623,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.bibliography_sort = new CSL.Engine.BibliographySort();
     this.citation = new CSL.Engine.Citation(this);
     this.bibliography = new CSL.Engine.Bibliography();
+    this.intext = new CSL.Engine.InText();
     this.output = new CSL.Output.Queue(this);
     this.dateput = new CSL.Output.Queue(this);
     this.cslXml = CSL.setupXml(style);
@@ -2714,6 +2715,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
     this.build.area = "bibliography";
+    var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
+    this.buildTokenLists(area_nodes, this[this.build.area].tokens);
+    this.build.area = "intext";
     var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
     this.juris = {};
@@ -4906,6 +4910,26 @@ CSL.Engine.CitationSort = function () {
     this.opt.topdecor = [];
     this.root = "citation";
 };
+CSL.Engine.InText = function () {
+    this.opt = {
+        inheritedAttributes: {}
+    };
+    this.tokens = [];
+    this.opt.collapse = [];
+    this.opt["disambiguate-add-names"] = false;
+    this.opt["disambiguate-add-givenname"] = false;
+    this.opt["disambiguate-add-year-suffix"] = false;
+    this.opt["givenname-disambiguation-rule"] = "by-cite";
+    this.opt["near-note-distance"] = 5;
+    this.opt.topdecor = [];
+    this.opt.layout_decorations = [];
+    this.opt.layout_prefix = "";
+    this.opt.layout_suffix = "";
+    this.opt.layout_delimiter = "";
+    this.opt.sort_locales = [];
+    this.opt.max_number_of_names = 0;
+    this.root = "intext";
+};
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
     var oldMode = this.opt.mode;
     this.setOutputFormat(newMode);
@@ -5610,7 +5634,15 @@ CSL.getCitationCluster = function (inputList, citationID) {
        }
     }
     myparams = [];
-    len = inputList.length;
+    var area_orig = this.tmp.area;
+    if (inputList[0] && inputList[0][1] && inputList[0][1]["author-only"]) {
+        if (this.intext && this.intext.tokens.length > 0) {
+            this.tmp.area = "intext";
+        }
+        len = 1;
+    } else {
+        len = inputList.length;
+    }
     for (pos = 0; pos < len; pos += 1) {
         Item = inputList[pos][0];
         item = inputList[pos][1];
@@ -5671,6 +5703,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
         params.have_collapsed = this.tmp.have_collapsed;
         myparams.push(params);
     }
+    this.tmp.area = area_orig;
     this.tmp.has_purged_parallel = false;
     this.parallel.PruneOutputQueue(this);
     empties = 0;
@@ -6782,6 +6815,36 @@ CSL.Node.citation = {
                 state.citation_sort.opt.sort_directions = [firstkey].concat(state.citation_sort.opt.sort_directions);
             }
             state.citation.srt = new CSL.Registry.Comparifier(state, "citation_sort");
+        }
+        target.push(this);
+    }
+};
+CSL.Node.intext = {
+    build: function (state, target) {
+        if (this.tokentype === CSL.START) {
+            state.build.area = "intext";
+            state.build.root = "intext";
+            state.build.extension = "";
+            var func = function(state, Item) {
+                state.tmp.area = "intext";
+                state.tmp.root = "intext";
+                state.tmp.extension = "";
+            }
+            this.execs.push(func);
+        }
+        if (this.tokentype === CSL.END) {
+            state.opt.grouped_sort = state.opt.xclass === "in-text" 
+                && (state.citation.opt.collapse 
+                    && state.citation.opt.collapse.length)
+                || (state.citation.opt.cite_group_delimiter
+                    && state.citation.opt.cite_group_delimiter.length)
+                && state.opt.update_mode !== CSL.POSITION
+                && state.opt.update_mode !== CSL.NUMERIC;
+            if (state.opt.grouped_sort 
+                && state.citation_sort.opt.sort_directions.length) {
+                state.intext_sort.opt.sort_directions = state.citation_sort.opt.sort_directions;
+            }
+            state.intext.srt = state.citation.srt;
         }
         target.push(this);
     }
@@ -10665,11 +10728,9 @@ CSL.Node.text = {
                         var abbrfall = false;
                         var altvar = false;
                         var transfall = false;
-                        if (form === "short" || ["country", "jurisdiction"].indexOf(this.variables_real[0]) > -1) {
-                            if (this.variables_real[0] === "container-title") {
-                                altvar = "container-title-short";
-                            } else if (this.variables_real[0] === "title") {
-                                altvar = "title-short";
+                        if (form === "short") {
+                            if (this.variables_real[0].slice(-6) !== "-short") {
+                                altvar = this.variables_real[0] + "-short";
                             }
                         } else {
                             abbrevfam = false;
