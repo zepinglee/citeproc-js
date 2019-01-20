@@ -546,5 +546,5 @@ CSL.Engine.InText = function () {
     // sorting
     this.opt.sort_locales = [];
     this.opt.max_number_of_names = 0;
-    this.root = "in-text";
+    this.root = "intext";
 };
