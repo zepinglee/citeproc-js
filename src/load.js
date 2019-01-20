@@ -1185,6 +1185,7 @@ if (!CSL.Node) {
     load("./src/node_choose.js");
     // jslint OK
     load("./src/node_citation.js");
+    load("./src/node_intext.js");
     load("./src/node_comment.js");
     // jslint OK
     // jslint OK
