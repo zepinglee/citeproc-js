@@ -247,11 +247,9 @@ CSL.Node.text = {
                         var abbrfall = false;
                         var altvar = false;
                         var transfall = false;
-                        if (form === "short" || ["country", "jurisdiction"].indexOf(this.variables_real[0]) > -1) {
-                            if (this.variables_real[0] === "container-title") {
-                                altvar = "container-title-short";
-                            } else if (this.variables_real[0] === "title") {
-                                altvar = "title-short";
+                        if (form === "short") {
+                            if (this.variables_real[0].slice(-6) !== "-short") {
+                                altvar = this.variables_real[0] + "-short";
                             }
                         } else {
                             abbrevfam = false;
