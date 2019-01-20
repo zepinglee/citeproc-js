@@ -52,9 +52,11 @@ citation
     </layout>
   </citation>
   <intext>
-    <names variable="author">
-      <name/>
-    </names>
+    <layout>
+      <names variable="author">
+        <name/>
+      </names>
+    </layout>
   </intext>
 </style>
 <<===== CSL =====<<
