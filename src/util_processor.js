@@ -134,6 +134,9 @@ CSL.Doppeler = function(rexStr, stringMangler) {
         }
         var split = str.split(splitRex);
         for (var i=match.length-1; i> -1; i--) {
+            if (typeof match[i] === "number") {
+                match[i] = "";
+            }
             var tag = match[i];
             if (tag === "\'" && split[i+1].length > 0) {
                 // Fixes https://forums.zotero.org/discussion/comment/294317
