@@ -5361,7 +5361,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     var ret = [];
     if (flag === CSL.PREVIEW) {
         try {
-            ret = this.process_CitationCluster.call(this, citation.sortedItems, citation.citationID);
+            ret = this.process_CitationCluster.call(this, citation.sortedItems, citation);
         } catch (e) {
             CSL.error("Error running CSL processor for preview: "+e);
         }
@@ -5401,7 +5401,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             this.tmp.citation_id = "" + mycitation.citationID;
             obj = [];
             obj.push(mycitation.properties.index);
-            obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems, mycitation.citationID));
+            obj.push(this.process_CitationCluster.call(this, mycitation.sortedItems, mycitation));
             obj.push(mycitation.citationID);
             ret.push(obj);
         }
@@ -5412,7 +5412,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         this.tmp.citation_id = "" + citation.citationID;
         obj = [];
         obj.push(citationsPre.length);
-        obj.push(this.process_CitationCluster.call(this, sortedItems, citation.citationID));
+        obj.push(this.process_CitationCluster.call(this, sortedItems, citation));
         obj.push(citation.citationID);
         ret.push(obj);
         ret.sort(function (a, b) {
@@ -5428,10 +5428,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     return_data.citation_errors = this.tmp.citation_errors.slice();
     return [return_data, ret];
 };
-CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citationID) {
+CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) {
     var str;
     this.parallel.StartCitation(sortedItems);
-    str = CSL.getCitationCluster.call(this, sortedItems, citationID);
+    str = CSL.getCitationCluster.call(this, sortedItems, citation);
     return str;
 };
 CSL.Engine.prototype.makeCitationCluster = function (rawList) {
@@ -5564,8 +5564,13 @@ CSL.getSpliceDelimiter = function (last_locator, last_collapsed, pos) {
     }
     return this.tmp.splice_delimiter;
 };
-CSL.getCitationCluster = function (inputList, citationID) {
-    var result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object;
+CSL.getCitationCluster = function (inputList, citation) {
+    var result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object, citationID, authorOnly, suppressAuthor;
+    if (citation) {
+        citationID = citation.citationID;
+        authorOnly = citation.properties["author-only"];
+        suppressAuthor = citation.properties["suppress-author"];
+    }
     inputList = inputList ? inputList : [];
     this.tmp.last_primary_names_string = false;
     txt_esc = CSL.getSafeEscape(this);
@@ -5636,11 +5641,17 @@ CSL.getCitationCluster = function (inputList, citationID) {
     }
     myparams = [];
     var area_orig = this.tmp.area;
-    if (inputList[0] && inputList[0][1] && inputList[0][1]["author-only"]) {
+    if (authorOnly) {
         if (this.intext && this.intext.tokens.length > 0) {
             this.tmp.area = "intext";
+        } else if (inputList[0] && inputList[0][1]) {
+            inputList[0][1]["author-only"] = true;
         }
         len = 1;
+    } else if (suppressAuthor) {
+        if (inputList[0] && inputList[0][1]) {
+            inputList[0][1]["suppress-author"] = true;
+        }
     } else {
         len = inputList.length;
     }
