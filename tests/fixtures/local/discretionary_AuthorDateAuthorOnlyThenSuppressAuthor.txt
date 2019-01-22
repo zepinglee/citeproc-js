@@ -6,32 +6,76 @@ citation
 
 
 >>== RESULT ==>>
-Smith
-(2005)
-(Jones 2000)
+..[0] Smith
+..[1] (2005)
+>>[2] (Jones 2000)
 <<== RESULT ==<<
 
->>== CITATION-ITEMS ==>>
+>>== CITATIONS ==>>
 [
     [
         {
-            "author-only": 1, 
-            "id": "ITEM-1"
-        }
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1"
+                }
+            ], 
+            "properties": {
+                "author-only": true, 
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
     ], 
     [
         {
-            "id": "ITEM-1", 
-            "suppress-author": 1
-        }
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2, 
+                "suppress-author": true
+            }
+        }, 
+        [
+            [
+                "CITATION-1", 
+                1
+            ]
+        ], 
+        []
     ], 
     [
         {
-            "id": "ITEM-2"
-        }
+            "citationID": "CITATION-3", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 3
+            }
+        }, 
+        [
+            [
+                "CITATION-1", 
+                1
+            ], 
+            [
+                "CITATION-2", 
+                2
+            ]
+        ], 
+        []
     ]
 ]
-<<== CITATION-ITEMS ==<<
+<<== CITATIONS ==<<
 
 
 >>===== CSL =====>>
@@ -45,7 +89,7 @@ Smith
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout prefix="(" suffix=")">
+    <layout prefix="(" suffix=")" delimiter="; ">
       <group delimiter=" ">
         <names variable="author">
           <name form="short"/>
@@ -69,8 +113,7 @@ Smith
         "author": [
             {
                 "family": "Smith", 
-                "given": "John", 
-                "static-ordering": false
+                "given": "John"
             }
         ], 
         "id": "ITEM-1", 
@@ -88,8 +131,7 @@ Smith
         "author": [
             {
                 "family": "Jones", 
-                "given": "Robert", 
-                "static-ordering": false
+                "given": "Robert"
             }
         ], 
         "id": "ITEM-2", 
