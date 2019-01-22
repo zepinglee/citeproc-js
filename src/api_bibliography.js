@@ -1,7 +1,7 @@
 /*global CSL: true */
 
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
-    var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
+    var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
     debug = false;
     // API change: added in version 1.0.51
     if (!this.bibliography.tokens.length) {
@@ -75,7 +75,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-    var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, chr, entry_item_data, j, jlen, newIDs, originalIDs;
+    var ret, input, include, anymatch, allmatch, bib_entry, res, item, spec, lllen, pppos, topblobs, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, entry_item_data, j, jlen;
     ret = [];
     entry_item_data = [];
     this.tmp.area = "bibliography";
@@ -129,7 +129,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         page_item_count = 0;
         if (bibsection.page_start !== true) {
-            for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+            for (i = 0, ilen = input.length; i < ilen; i += 1) {
                 skips[input[i]] = true;
                 if (bibsection.page_start == input[i]) {
                     break;
@@ -140,7 +140,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 
     var processed_item_ids = [];
 
-    for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+    for (i = 0, ilen = input.length; i < ilen; i += 1) {
         
         // For paged returns
         if (bibsection && bibsection.page_start && bibsection.page_length) {
@@ -240,7 +240,7 @@ CSL.getBibliographyEntries = function (bibsection) {
 
         sortedItems = [[{id: "" + item.id}, item]];
         entry_item_ids = [];
-        if (this.registry.registry[item.id].master 
+        if (this.registry.registry[item.id].master
             && !(bibsection && bibsection.page_start && bibsection.page_length)) {
 
             collapse_parallel = true;
@@ -297,11 +297,11 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
         }
-        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+        for (j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
             CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[j]);
             //print("XXX: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
         }
-        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+        for (j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
             this.output.adjust.upward(this.output.queue[j]);
             this.output.adjust.leftward(this.output.queue[j]);
             this.output.adjust.downward(this.output.queue[j],true);
@@ -318,11 +318,11 @@ CSL.getBibliographyEntries = function (bibsection) {
 
         //print("JSON "+JSON.stringify(this.output.queue[0].blobs, null, 2));
 
-        var res = this.output.string(this, this.output.queue)[0];
+        res = this.output.string(this, this.output.queue)[0];
         
         if (!res && this.opt.update_mode === CSL.NUMERIC) {
-            var err = (ret.length + 1) + ". [CSL STYLE ERROR: reference with no printed form.]"
-            res = CSL.Output.Formats[this.opt.mode]["@bibliography/entry"](this, err) 
+            var err = (ret.length + 1) + ". [CSL STYLE ERROR: reference with no printed form.]";
+            res = CSL.Output.Formats[this.opt.mode]["@bibliography/entry"](this, err);
         }
         if (res) {
             ret.push(res);
