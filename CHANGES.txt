@@ -2,6 +2,25 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.213
+==========================
+
+- Clean up test runner
+
+- Fix memory leak in citationById object (IDs were never removed)
+
+- Remove declarations of unused variables in api_bibliography
+
+- Protect against erronenous numeric value in string split array
+  HT to Emiliano Heyns for identifying the fault in i386 systems
+  and crafting a patch.
+
+- Add tests for non-CSL collection-title-short variable
+
+- Recognize -short form of any variable rendered via cs:text
+
+
+==========================
 Changes in version 1.1.212
 ==========================
 
