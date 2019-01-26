@@ -3,10 +3,16 @@ citation
 <<== MODE ==<<
 
 
+This test misrepresents how author-only items should work in practice. If
+processCitationCluster is used to generate these strings (as in the citeproc-js
+test runner), the call would be made to the same citationID as the associated
+suppress-author citation stub. The calling application would then need to figure
+out how to manage insertion into the document (and possibly update maintenance
+if that is supported).
 
 
 >>== RESULT ==>>
-..[0] Smith
+..[0] John Aloysius Smith
 ..[1] (2005)
 >>[2] (Jones 2000)
 <<== RESULT ==<<
@@ -23,7 +29,7 @@ citation
             ], 
             "properties": {
                 "author-only": true, 
-                "noteIndex": 1
+                "noteIndex": 0
             }
         }, 
         [], 
@@ -38,14 +44,14 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 2, 
+                "noteIndex": 1, 
                 "suppress-author": true
             }
         }, 
         [
             [
                 "CITATION-1", 
-                1
+                0
             ]
         ], 
         []
@@ -59,7 +65,7 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 3
+                "noteIndex": 2
             }
         }, 
         [
@@ -69,7 +75,7 @@ citation
             ], 
             [
                 "CITATION-2", 
-                2
+                1
             ]
         ], 
         []
@@ -103,6 +109,13 @@ citation
       <text variable="title" />
     </layout>
   </bibliography>
+  <intext>
+    <layout>
+      <names variable="author">
+        <name/>
+      </names>
+    </layout>
+  </intext>
 </style>
 <<===== CSL =====<<
 
@@ -113,7 +126,7 @@ citation
         "author": [
             {
                 "family": "Smith", 
-                "given": "John"
+                "given": "John Aloysius"
             }
         ], 
         "id": "ITEM-1", 
