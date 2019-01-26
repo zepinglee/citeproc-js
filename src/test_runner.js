@@ -165,6 +165,52 @@ StdRhinoTest.prototype._readTest = function(){
     this.test = test;
 };
 
+StdRhinoTest.prototype.updateDoc = function() {
+    for (var i=0,ilen=this.test.citations.length;i<ilen;i++) {
+        var citation = this.test.citations[i];
+        [data, result] = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+        // To get the indexes right, we have to do removals first.
+        for (var j=this.doc.length-1; j>-1; j--) {
+            var citationID = this.doc[j].citationID;
+            if (!this.style.registry.citationreg.citationById[citationID]) {
+                this.doc = this.doc.slice(0, j).concat(this.doc.slice(j + 1));
+            }
+        }
+        // Reset prefixes of any elements that exist in doc.
+        for (var j in this.doc) {
+            this.doc[j].prefix = "..";
+        }
+        // If citationID matches in doc, just replace the existing one.
+        for (var j in result) {
+            var insert = result[j];
+            for (var k in this.doc) {
+                var cite = this.doc[k];
+                if (cite.citationID === insert[2]) {
+                    // replace cite with insert, somehow
+                    this.doc[k] = {
+                        prefix: ">>",
+                        citationID: cite.citationID,
+                        String: insert[1]
+                    }
+                    result[j] = null;
+                    break;
+                }
+            }
+        }
+        // For citationIDs that don't yet exist in doc, insert at the specified index locations.
+        for (var j in result) {
+            var insert = result[j];
+            if (!insert) continue;
+            this.doc = this.doc.slice(0, insert[0]).concat([
+                {
+                    prefix: ">>",
+                    citationID: insert[2],
+                    String: insert[1]
+                }
+            ]).concat(this.doc.slice(insert[0]));
+        }
+    }
+}
 
 StdRhinoTest.prototype.run = function(){
     //print("-->"+this.myname);
@@ -298,32 +344,14 @@ StdRhinoTest.prototype.run = function(){
             citations.push(this.style.makeCitationCluster(citation));
         }
     } else if (this.test.citations){
-        for (var i=0,ilen=this.test.citations.slice(0, -1).length;i<ilen;i++) {
-            var citation = this.test.citations.slice(0,-1)[i];
-            this.style.processCitationCluster(citation[0],citation[1],citation[2]);
-        };
+        this.doc = [];
+        this.updateDoc();
         if (this.test.input2) {
             this.test.input = this.test.input2;
             this._setCache();
+            this.updateDoc();
         }
-        var citation = this.test.citations.slice(-1)[0];
-        if (citation) {
-            [data, result] = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
-        } else {
-            [data, result] = this.style.rebuildProcessorState([], null, []);
-        }
-    };
-    var indexMap = new Object();
-    for (var pos in result){
-        indexMap[""+result[pos][0]] = pos;
-    };
-    for (var cpos=0;cpos<this.style.registry.citationreg.citationByIndex.length;cpos++){
-        var citation = this.style.registry.citationreg.citationByIndex[cpos];
-        if (indexMap[""+cpos]){
-            citations.push(">>["+cpos+"] "+result[indexMap[cpos]][1]);
-        } else {
-            citations.push("..["+cpos+"] "+this.style.process_CitationCluster.call(this.style,this.style.registry.citationreg.citationByIndex[cpos].sortedItems));
-        }
+        citations = this.doc.map(function(elem, idx){return elem.prefix + "[" + idx + "] " + elem.String});
     };
     ret = citations.join("\n");
     if (this.test.mode == "bibliography" && !this.submode["header"]){
