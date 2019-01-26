@@ -864,6 +864,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     this.tmp.area = "citation";
     this.tmp.root = "citation";
     this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
+    var origSuppressDecorations = this.tmp.suppress_decorations;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
 
@@ -883,7 +884,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     }
     var ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
-    this.tmp.suppress_decorations = false;
+    this.tmp.suppress_decorations = origSuppressDecorations;
     this.parallel.use_parallels = this.parallel.use_parallels === null ? true : false;
     // Cache the result.
     this.tmp.group_context.replace(oldTermSiblingLayer);
@@ -1056,20 +1057,14 @@ CSL.getCitationCluster = function (inputList, citation) {
        }
     }
     myparams = [];
-    var area_orig = this.tmp.area;
-    if (authorOnly) {
-        if (this.intext && this.intext.tokens.length > 0) {
-            this.tmp.area = "intext";
-        } else if (inputList[0] && inputList[0][1]) {
+    len = inputList.length;
+    if (inputList[0] && inputList[0][1]) {
+        if (authorOnly) {
             inputList[0][1]["author-only"] = true;
-        }
-        len = 1;
-    } else if (suppressAuthor) {
-        if (inputList[0] && inputList[0][1]) {
+            len = 1;
+        } else if (suppressAuthor) {
             inputList[0][1]["suppress-author"] = true;
         }
-    } else {
-        len = inputList.length;
     }
     for (pos = 0; pos < len; pos += 1) {
         Item = inputList[pos][0];
@@ -1147,7 +1142,6 @@ CSL.getCitationCluster = function (inputList, citation) {
         //
         myparams.push(params);
     }
-    this.tmp.area = area_orig;
 
     this.tmp.has_purged_parallel = false;
     this.parallel.PruneOutputQueue(this);
@@ -1230,6 +1224,10 @@ CSL.getCitationCluster = function (inputList, citation) {
         }
         this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
+        if (this.tmp.suppress_decorations && this.output.queue.length) {
+            this.output.queue[0].blobs[0].strings.suffix = "";
+            this.output.queue[0].blobs[0].strings.prefix = "";
+        }
         composite = this.output.string(this, this.output.queue);
 
        
@@ -1348,6 +1346,10 @@ CSL.getCitationCluster = function (inputList, citation) {
  */
 CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     var next, error_object;
+    var areaOrig = this.tmp.area;
+    if (item && item["author-only"] && this.intext && this.intext.tokens.length > 0) {
+            this.tmp.area = "intext";
+    }
     this.tmp.cite_renders_content = false;
     this.parallel.StartCite(Item, item, prevItemID);
 
@@ -1374,6 +1376,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
             this.tmp.bibliography_errors.push(error_object);
         }
     }
+    this.tmp.area = areaOrig;
     return "" + Item.id;
 };
 
