@@ -487,7 +487,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             //     (a) there must be an imediately preceding reference to  the
                             //         same item in this onecitation; and
                             ibidme = true;
-                        } else if (k === 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
+                        } else if (k === 0 && j > 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
                                    && citations[j - 1].sortedItems.length 
                                    && oldlastid == myid) {
                             // ... in case there are separate citations in the same note ...
