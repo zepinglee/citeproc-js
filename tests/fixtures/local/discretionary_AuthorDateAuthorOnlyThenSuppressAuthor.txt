@@ -3,14 +3,6 @@ citation
 <<== MODE ==<<
 
 
-This test misrepresents how author-only items should work in practice. If
-processCitationCluster is used to generate these strings (as in the citeproc-js
-test runner), the call would be made to the same citationID as the associated
-suppress-author citation stub. The calling application would then need to figure
-out how to manage insertion into the document (and possibly update maintenance
-if that is supported).
-
-
 >>== RESULT ==>>
 ..[0] John Aloysius Smith
 ..[1] (2005)
