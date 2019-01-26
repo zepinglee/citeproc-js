@@ -2,6 +2,12 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.214
+==========================
+
+- Fix potential array-underrun crash in ibid evaluation
+
+==========================
 Changes in version 1.1.213
 ==========================
 
