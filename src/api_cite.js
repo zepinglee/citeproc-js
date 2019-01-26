@@ -435,7 +435,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         if (j > 0) {
                             try {
                                 var old_last_id_offset = 1;
-                                if (citations[j-1].properties["author-only"]) {
+                                if (citations[j-1].properties["author-only"] && j > 1) {
                                     old_last_id_offset = 2;
                                 }
                                 oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
