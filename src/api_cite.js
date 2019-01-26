@@ -150,6 +150,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
     // build reconstituted citations list in current document order
     var citationByIndex = [];
+    var citationById = {};
     for (var i = 0, ilen = citationsPre.length; i < ilen; i += 1) {
         c = citationsPre[i];
         //CSL.debug("  -- attempting to access Pre citation with ID: ("+c[0]+")");
@@ -164,8 +165,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
+        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];;
     }
     citationByIndex.push(citation);
+    citationById[citation.citationID] = citation;
     for (var i = 0, ilen = citationsPost.length; i < ilen; i += 1) {
         c = citationsPost[i];
         //CSL.debug("  -- attempting to access Post citation with ID: ("+c[0]+")");
@@ -180,8 +183,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
+        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];
     }
     this.registry.citationreg.citationByIndex = citationByIndex;
+    this.registry.citationreg.citationById = citationById;
 
     //
     // The processor provides three facilities to support
