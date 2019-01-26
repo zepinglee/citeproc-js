@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.213",
+    PROCESSOR_VERSION: "1.1.214",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -5243,7 +5243,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         } else if (k > 0 && incitationid == myid) {
                             ibidme = true;
-                        } else if (k === 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
+                        } else if (k === 0 && j > 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
                                    && citations[j - 1].sortedItems.length 
                                    && oldlastid == myid) {
                             ibidme = true;
