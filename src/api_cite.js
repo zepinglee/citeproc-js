@@ -416,7 +416,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     }
                     var oldlastid;
 
-                    if ("undefined" === typeof first_ref[myid]) {
+                    if ("undefined" === typeof first_ref[myid] && !onecitation.properties["author-only"]) {
                         first_ref[myid] = onecitation.properties.noteIndex;
                         if (this.registry.registry[myid]) {
                             this.registry.registry[myid]['first-reference-note-number'] = onecitation.properties.noteIndex;
@@ -434,7 +434,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         // XXX Ugly, but This is used in the second else-if branch condition below.
                         if (j > 0) {
                             try {
-                                oldlastid =  citations[j - 1].sortedItems.slice(-1)[0][1].id;
+                                var old_last_id_offset = 1;
+                                if (citations[j-1].properties["author-only"]) {
+                                    old_last_id_offset = 2;
+                                }
+                                oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
                             } catch (e) {
                                 var err = "CSL Error\n";
                                 err += "  " + e;
@@ -570,6 +574,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             item[1].position = CSL.POSITION_SUBSEQUENT;
                         }
                         if (suprame || ibidme) {
+                            if (onecitation.properties["author-only"]) {
+                                item[1].position = CSL.POSITION_FIRST;
+                            }
                             if (first_ref[myid] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[myid];
                                 if (this.registry.registry[myid]) {
@@ -1224,10 +1231,6 @@ CSL.getCitationCluster = function (inputList, citation) {
         }
         this.tmp.have_collapsed = myparams[pos].have_collapsed;
 
-        if (this.tmp.suppress_decorations && this.output.queue.length) {
-            this.output.queue[0].blobs[0].strings.suffix = "";
-            this.output.queue[0].blobs[0].strings.prefix = "";
-        }
         composite = this.output.string(this, this.output.queue);
 
        
