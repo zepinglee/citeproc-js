@@ -24,7 +24,7 @@
  */
 
 var CSL = {
-    PROCESSOR_VERSION: "1.1.212",
+    PROCESSOR_VERSION: "1.1.213",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -3344,6 +3344,9 @@ CSL.Doppeler = function(rexStr, stringMangler) {
         }
         var split = str.split(splitRex);
         for (var i=match.length-1; i> -1; i--) {
+            if (typeof match[i] === "number") {
+                match[i] = "";
+            }
             var tag = match[i];
             if (tag === "\'" && split[i+1].length > 0) {
                 split[i+1] = match[i] + split[i+1];
@@ -5009,6 +5012,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     }
     citation.sortedItems = sortedItems;
     var citationByIndex = [];
+    var citationById = {};
     for (var i = 0, ilen = citationsPre.length; i < ilen; i += 1) {
         c = citationsPre[i];
         try {
@@ -5022,8 +5026,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
+        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];;
     }
     citationByIndex.push(citation);
+    citationById[citation.citationID] = citation;
     for (var i = 0, ilen = citationsPost.length; i < ilen; i += 1) {
         c = citationsPost[i];
         try {
@@ -5037,8 +5043,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
+        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];
     }
     this.registry.citationreg.citationByIndex = citationByIndex;
+    this.registry.citationreg.citationById = citationById;
     this.registry.citationreg.citationsByItemId = {};
     if (this.opt.update_mode === CSL.POSITION) {
         textCitations = [];
@@ -5962,7 +5970,7 @@ CSL.citeEnd = function (Item, item) {
 };
 module.exports = CSL;
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
-    var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings, bibliography_errors;
+    var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
     debug = false;
     if (!this.bibliography.tokens.length) {
         return false;
@@ -6004,7 +6012,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
     return [params, entry_strings];
 };
 CSL.getBibliographyEntries = function (bibsection) {
-    var ret, input, include, anymatch, allmatch, bib_entry, res, len, pos, item, llen, ppos, spec, lllen, pppos, bib_layout, topblobs, all_item_ids, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, chr, entry_item_data, j, jlen, newIDs, originalIDs;
+    var ret, input, include, anymatch, allmatch, bib_entry, res, item, spec, lllen, pppos, topblobs, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, entry_item_data, j, jlen;
     ret = [];
     entry_item_data = [];
     this.tmp.area = "bibliography";
@@ -6050,7 +6058,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         page_item_count = 0;
         if (bibsection.page_start !== true) {
-            for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+            for (i = 0, ilen = input.length; i < ilen; i += 1) {
                 skips[input[i]] = true;
                 if (bibsection.page_start == input[i]) {
                     break;
@@ -6059,7 +6067,7 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
     }
     var processed_item_ids = [];
-    for (var i = 0, ilen = input.length; i < ilen; i += 1) {
+    for (i = 0, ilen = input.length; i < ilen; i += 1) {
         if (bibsection && bibsection.page_start && bibsection.page_length) {
             if (skips[input[i]]) {
                 continue;
@@ -6136,7 +6144,7 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
         sortedItems = [[{id: "" + item.id}, item]];
         entry_item_ids = [];
-        if (this.registry.registry[item.id].master 
+        if (this.registry.registry[item.id].master
             && !(bibsection && bibsection.page_start && bibsection.page_length)) {
             collapse_parallel = true;
             this.parallel.StartCitation(sortedItems);
@@ -6174,19 +6182,19 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
         }
-        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+        for (j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
             CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[j]);
         }
-        for (var j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+        for (j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
             this.output.adjust.upward(this.output.queue[j]);
             this.output.adjust.leftward(this.output.queue[j]);
             this.output.adjust.downward(this.output.queue[j],true);
             this.output.adjust.fix(this.output.queue[j]);
         }
-        var res = this.output.string(this, this.output.queue)[0];
+        res = this.output.string(this, this.output.queue)[0];
         if (!res && this.opt.update_mode === CSL.NUMERIC) {
-            var err = (ret.length + 1) + ". [CSL STYLE ERROR: reference with no printed form.]"
-            res = CSL.Output.Formats[this.opt.mode]["@bibliography/entry"](this, err) 
+            var err = (ret.length + 1) + ". [CSL STYLE ERROR: reference with no printed form.]";
+            res = CSL.Output.Formats[this.opt.mode]["@bibliography/entry"](this, err);
         }
         if (res) {
             ret.push(res);
@@ -10728,11 +10736,9 @@ CSL.Node.text = {
                         var abbrfall = false;
                         var altvar = false;
                         var transfall = false;
-                        if (form === "short" || ["country", "jurisdiction"].indexOf(this.variables_real[0]) > -1) {
-                            if (this.variables_real[0] === "container-title") {
-                                altvar = "container-title-short";
-                            } else if (this.variables_real[0] === "title") {
-                                altvar = "title-short";
+                        if (form === "short") {
+                            if (this.variables_real[0].slice(-6) !== "-short") {
+                                altvar = this.variables_real[0] + "-short";
                             }
                         } else {
                             abbrevfam = false;
