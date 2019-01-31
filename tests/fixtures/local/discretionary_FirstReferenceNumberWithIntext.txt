@@ -60,7 +60,8 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 2
+                "noteIndex": 2, 
+                "suppress-author": true
             }
         }, 
         [
