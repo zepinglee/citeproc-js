@@ -3,15 +3,13 @@ citation
 <<== MODE ==<<
 
 
-
-
 >>== RESULT ==>>
-..[0] Reference [1]
-..[1] <i>[1]</i>
->>[2] <i>[2]</i>
+..[0] John Aloysius Smith
+..[1] Smith, Book A, 2005
+>>[2] Jones, Book B, 2000
 <<== RESULT ==<<
 
->>===== CITATIONS =====>>
+>>== CITATIONS ==>>
 [
     [
         {
@@ -38,7 +36,7 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 0, 
+                "noteIndex": 1, 
                 "suppress-author": true
             }
         }, 
@@ -59,29 +57,29 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 0
+                "noteIndex": 2
             }
         }, 
         [
             [
                 "CITATION-1", 
-                0
+                1
             ], 
             [
                 "CITATION-2", 
-                0
+                1
             ]
         ], 
         []
     ]
 ]
-<<===== CITATIONS =====<<
+<<== CITATIONS ==<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />
@@ -89,18 +87,28 @@ citation
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout font-style="italic">
-      <text prefix="[" suffix="]" variable="citation-number"/>
+    <layout delimiter="; ">
+      <group delimiter=", ">
+        <names variable="author">
+          <name form="short"/>
+        </names>
+        <text variable="title"/>
+        <date variable="issued" form="text" date-parts="year"/>
+      </group>
     </layout>
   </citation>
   <bibliography>
     <layout>
-      <group delimiter=" ">
-        <text variable="citation-number" suffix=".">
-        <text variable="title" />
-      </group>
+      <text variable="title" />
     </layout>
   </bibliography>
+  <intext>
+    <layout>
+      <names variable="author">
+        <name/>
+      </names>
+    </layout>
+  </intext>
 </style>
 <<===== CSL =====<<
 
@@ -111,8 +119,7 @@ citation
         "author": [
             {
                 "family": "Smith", 
-                "given": "John", 
-                "static-ordering": false
+                "given": "John Aloysius"
             }
         ], 
         "id": "ITEM-1", 
@@ -130,8 +137,7 @@ citation
         "author": [
             {
                 "family": "Jones", 
-                "given": "Robert", 
-                "static-ordering": false
+                "given": "Robert"
             }
         ], 
         "id": "ITEM-2", 
