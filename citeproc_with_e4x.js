@@ -5582,7 +5582,9 @@ CSL.getCitationCluster = function (inputList, citation) {
     if (citation) {
         citationID = citation.citationID;
         authorOnly = citation.properties["author-only"];
-        suppressAuthor = citation.properties["suppress-author"];
+        if (this.opt.xclass !== "note" && this.opt.bib_mode !== CSL.NUMERIC) {
+            suppressAuthor = citation.properties["suppress-author"];
+        }
     }
     inputList = inputList ? inputList : [];
     this.tmp.last_primary_names_string = false;
