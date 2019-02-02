@@ -147,6 +147,9 @@ CSL.Node.text = {
                     };
                     this.execs.push(func);
                 } else if (this.variables_real[0] === "citation-label") {
+                    if (state.build.root === "bibliography") {
+                        state.opt.bib_mode = CSL.TRIGRAPH;
+                    }
                     state.opt.has_year_suffix = true;
                     func = function (state, Item) {
                         label = Item["citation-label"];

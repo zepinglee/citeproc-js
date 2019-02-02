@@ -471,6 +471,7 @@ var CSL = {
     NONE: 0,
     NUMERIC: 1,
     POSITION: 2,
+    TRIGRAPH: 3,
 
     COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
 
