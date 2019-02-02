@@ -5,6 +5,37 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.processor_version = CSL.PROCESSOR_VERSION;
     this.csl_version = "1.0";
     this.sys = sys;
+    
+    if (typeof Object.assign != 'function') {
+        // Must be writable: true, enumerable: false, configurable: true
+        Object.defineProperty(Object, "assign", {
+            value: function assign(target, varArgs) { // .length of function is 2
+                'use strict';
+                if (target == null) { // TypeError if undefined or null
+                    throw new TypeError('Cannot convert undefined or null to object');
+                }
+
+                var to = Object(target);
+
+                for (var index = 1; index < arguments.length; index++) {
+                    var nextSource = arguments[index];
+
+                    if (nextSource != null) { // Skip over if undefined or null
+                        for (var nextKey in nextSource) {
+                            // Avoid bugs when hasOwnProperty is shadowed
+                            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                                to[nextKey] = nextSource[nextKey];
+                            }
+                        }
+                    }
+                }
+                return to;
+            },
+            writable: true,
+            configurable: true
+        });
+    }
+
     // XXX This may be excess code. Given the normalization performed on
     // XXX the output queue before variableWrapper() is run, a single
     // XXX space should be the most cruft that we ever see before a variable.
@@ -521,11 +552,11 @@ CSL.Engine.prototype.configureTokenList = function (tokens) {
     }
 }
 
-CSL.Engine.prototype.retrieveItems = function (ids) {
+CSL.Engine.prototype.refetchItems = function (ids) {
     var ret, pos, len;
     ret = [];
     for (var i = 0, ilen = ids.length; i < ilen; i += 1) {
-        ret.push(this.retrieveItem("" + ids[i]));
+        ret.push(this.refetchItem("" + ids[i]));
     }
     return ret;
 };
@@ -740,9 +771,23 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (Item["jurisdiction"]) {
         Item["country"] = Item["jurisdiction"].split(":")[0];
     }
-    this.registry.refhash[id] = Item;
-    return Item;
+    if (this.registry.refhash[id]) {
+        if (JSON.stringify(this.registry.refhash[id]) != JSON.stringify(Item)) {
+            for (var key in this.registry.refhash[id]) {
+                delete this.registry.refhash[id][key];
+            }
+            this.tmp.taintedItemIDs[Item.id] = true;
+            Object.assign(this.registry.refhash[id], Item);
+        }
+    } else {
+        this.registry.refhash[id] = Item;
+    }
+    return this.registry.refhash[id];
 };
+
+CSL.Engine.prototype.refetchItem = function (id) {
+    return this.registry.refhash[id];
+}
 
 // Executed during style build
 CSL.Engine.prototype.setOpt = function (token, name, value) {

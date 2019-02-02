@@ -496,7 +496,7 @@ CSL.Registry.prototype.dorefreshes = function () {
             continue;
         }
         regtoken.sortkeys = undefined;
-        Item = this.state.retrieveItem(key);
+        Item = this.state.refetchItem(key);
         var akey = regtoken.ambig;
 
         if ("undefined" === typeof akey) {
@@ -508,7 +508,7 @@ CSL.Registry.prototype.dorefreshes = function () {
         for (var akkey in this.ambigresets) {
             if (this.ambigresets[akkey] === 1) {
                 var loneKey = this.ambigcites[akey][0];
-                var Item = this.state.retrieveItem(loneKey);
+                var Item = this.state.refetchItem(loneKey);
                 this.registry[loneKey].disambig = new CSL.AmbigConfig;
                 this.state.tmp.disambig_settings = false;
                 var akey = CSL.getAmbiguousCite.call(this.state, Item);
@@ -572,7 +572,7 @@ CSL.Registry.prototype.renumber = function () {
         if (this.state.opt.update_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
             this.state.tmp.taintedItemIDs[item.id] = true;
         }
-        if (this.state.opt.bib_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
+        if (item.seq != this.oldseq[item.id]) {
             this.return_data.bibchange = true;
         }
     }
