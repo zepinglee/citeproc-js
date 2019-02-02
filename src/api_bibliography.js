@@ -90,7 +90,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     if (bibsection && bibsection.page_start && bibsection.page_length) {
         input = this.registry.getSortedIds();        
     } else {
-        input = this.retrieveItems(this.registry.getSortedIds());
+        input = this.refetchItems(this.registry.getSortedIds());
     }
     
     this.tmp.disambig_override = true;
@@ -147,7 +147,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             if (skips[input[i]]) {
                 continue;
             }
-            item = this.retrieveItem(input[i]);
+            item = this.refetchItem(input[i]);
             if (page_item_count === bibsection.page_length) {
                 break;
             }
@@ -252,7 +252,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             siblings = this.registry.registry[item.id].siblings;
             for (j = 0, jlen = siblings.length; j < jlen; j += 1) {
                 var k = this.registry.registry[item.id].siblings[j];
-                eyetem = this.retrieveItem(k);
+                eyetem = this.refetchItem(k);
                 entry_item_ids.push("" + CSL.getCite.call(this, eyetem));
                 skips[eyetem.id] = true;
             }

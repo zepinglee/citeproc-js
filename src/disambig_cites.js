@@ -442,7 +442,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
         return false;
     }
     var Item = false;
-    var myItem = this.state.retrieveItem("" + myIds[0]);
+    var myItem = this.state.refetchItem("" + myIds[0]);
     this.getCiteData(myItem);
     this.base = CSL.getAmbigConfig.call(this.state);
     if (myIds && myIds.length > 1) {
@@ -453,7 +453,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
         // to be disambiguated. If they are in descending order
         // with name expansions, the processor will hang.
         for (var i = 1, ilen = myIds.length; i < ilen; i += 1) {
-            myItem = this.state.retrieveItem("" + myIds[i]);
+            myItem = this.state.refetchItem("" + myIds[i]);
             this.getCiteData(myItem, this.base);
             myItemBundles.push([this.maxNamesByItemId[myItem.id], myItem]);
         }
@@ -481,7 +481,7 @@ CSL.Disambiguation.prototype.initVars = function (akey) {
         this.lists.push([this.base, myItems]);
         this.Item = this.lists[0][1][0];
     } else {
-        this.Item = this.state.retrieveItem("" + myIds[0]);
+        this.Item = this.state.refetchItem("" + myIds[0]);
     }
 
     this.modeindex = 0;

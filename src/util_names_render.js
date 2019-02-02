@@ -93,7 +93,6 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
         //print("primary, v, j = "+primary+", "+v+", "+j);
         primary = this.fixupInstitution(primary, v, j);
     }
-
 	secondary = false;
 	if (slot.secondary) {
         res = this.getName(name, slot.secondary, false, usedOrig);
@@ -915,6 +914,10 @@ CSL.NameOutput.prototype.getName = function (name, slotLocaleset, fallback, stop
     }
     if (!name.given) {
         name.given = "";
+    }
+    if (name.literal) {
+        delete name.family;
+        delete name.given;
     }
     // var clone the item before writing into it
     name = {

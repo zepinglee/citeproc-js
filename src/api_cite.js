@@ -35,7 +35,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     
     //print("################### processCitationCluster() #################");
     this.tmp.citation_errors = [];
-    var return_data = {"bibchange": false};
+    this.registry.return_data = {"bibchange": false};
 
     // make sure this citation has a unique ID, and register it in citationById.
     this.setCitationId(citation);
@@ -273,8 +273,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
         if (this.opt.grouped_sort &&  !citation.properties.unsorted) {
             // Insert authorstring as key.
-            // Note the position of each ID that correspond to the relevant
-            // object in the myblobs list.
             for (var i = 0, ilen = sortedItems.length; i < ilen; i += 1) {
                 var sortkeys = sortedItems[i][1].sortkeys;
                 this.tmp.authorstring_request = true;
@@ -765,8 +763,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         // a citation index number, and the second the text to be inserted.
         //
     }
-    return_data.citation_errors = this.tmp.citation_errors.slice();
-    return [return_data, ret];
+    this.registry.return_data.citation_errors = this.tmp.citation_errors.slice();
+    return [this.registry.return_data, ret];
 };
 
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) {
