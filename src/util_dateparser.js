@@ -117,8 +117,6 @@ CSL.DateParser = new function () {
         }
 
         // Extend as necessary to resolve ambiguities
-        var otherMatch = [];
-        var thisMatch = [];
         // For each new month string ...
         for (var i=0,ilen=lst.length; i<ilen; i++) {
             var abbrevLength = null;
@@ -156,7 +154,7 @@ CSL.DateParser = new function () {
                     }
                 }
                 for (var jKey in extendedSets) {
-                    for (kKey in extendedSets[jKey]) {
+                    for (var kKey in extendedSets[jKey]) {
                         abbrevLength = extendedSets[jKey][kKey];
                         jKey = parseInt(jKey, 10);
                         kKey = parseInt(kKey, 10);
@@ -225,21 +223,23 @@ CSL.DateParser = new function () {
         // Returns string
         var ret = [];
         for (var i = 0, ilen = 3; i < ilen; i += 1) {
-            if (thedate[DATE_PARTS_ALL[i]]) {
-                ret.push(thedate[DATE_PARTS_ALL[i]]);
+            if (thedate[CSL.DATE_PARTS_ALL[i]]) {
+                ret.push(thedate[CSL.DATE_PARTS_ALL[i]]);
             } else {
                 break;
             }
         }
         return ret.join("-");
-    }
+    };
 
     /*
      * Utility function
      */
 
     this._parseNumericDate = function (ret, delim, suff, txt) {
-        if (!suff) suff = "";
+        if (!suff) {
+            suff = "";
+        }
         var lst = txt.split(delim);
         
         for (var i=0, ilen=lst.length; i<ilen; i++) {
@@ -320,7 +320,8 @@ CSL.DateParser = new function () {
                     }
                     for (var i=0,ilen=slst.length; i<ilen; i++) {
                         lst.push(slst[i]);
-                        if (i !== (len - 1)) {
+                        if (i !== (ilen - 1)) {
+                            // pos is undeclared, and multiplying by 2 here is insane.
                             var mmpos = (pos * 2);
                             lst.push(mmx[mmpos]);
                             lst.push(mmx[mmpos + 1]);
@@ -528,15 +529,15 @@ CSL.DateParser = new function () {
 
     this.parseDateToArray = function(txt) {
         return this.convertDateObjectToArray(this.parseDateToObject(txt));            
-    }
+    };
 
     this.parseDateToString = function(txt) {
         return this.convertDateObjectToString(this.parseDateToObject(txt));
-    }
+    };
     
     this.parse = function(txt) {
         return this.parseDateToObject(txt);
-    }
+    };
     
     /*
 

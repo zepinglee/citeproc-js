@@ -40,21 +40,21 @@ CSL.Node.sort = {
                     state.tmp.lang_sort_hold = state.opt.lang;
                     state.opt.lang = langForItem;
                 }
-            }
+            };
             this.execs.push(func);
             
         }
         if (this.tokentype === CSL.END) {
             state.build.area = state.build.root;
             state.build.extension = "";
-            var func = function (state, Item) {
+            var func = function (state) {
                 if (state.opt.has_layout_locale) {
                     state.opt.lang = state.tmp.lang_sort_hold;
                     delete state.tmp.lang_sort_hold;
                 }
                 //state.tmp.area = state.tmp.root;
                 //state.tmp.extension = "";
-            }
+            };
             this.execs.push(func);
             /*
             var func = function (state, Item) {

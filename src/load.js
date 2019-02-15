@@ -30,7 +30,7 @@
 // under; along; out; between; among; outside; inside; amid; amidst; against; toward; towards.
 // See https://forums.zotero.org/discussion/30484/?Focus=159613#Comment_159613
 
-'use strict'
+'use strict';
 
 
 var CSL = {
@@ -164,24 +164,24 @@ var CSL = {
                 for (var i=1,ilen=lst.length;i<ilen;i += 2) {
                     if (lst[i] === '(') {
                         if (1 === (this.depth % 2)) {
-                            lst[i] = '['
+                            lst[i] = '[';
                         }
                         this.depth += 1;
                     } else if (lst[i] === ')') {
                         if (0 === (this.depth % 2)) {
-                            lst[i] = ']'
+                            lst[i] = ']';
                         }
                         this.depth -= 1;
                     }
                 }
                 var ret = lst.join("");
                 return ret;
-            }
+            };
         } else {
             this.update = function(str) {
                 return str;
-            }
-        };
+            };
+        }
     },
 
     MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","country","jurisdiction","archive","archive-place"],
@@ -280,7 +280,9 @@ var CSL = {
     },
 
     normalizeLocaleStr: function(str) {
-        if (!str) return;
+        if (!str) {
+            return;
+        }
         var lst = str.split('-');
         lst[0] = lst[0].toLowerCase();
         if (lst[1]) {
@@ -291,14 +293,16 @@ var CSL = {
 
     isDatePart: function(str, less, more) {
         if (str.length > less && str.length < more && parseInt(str)) {
-            return true
+            return true;
         } else {
             return false;
         }
     },
 
     isDateString: function(str) {
-        if (!str) return false;
+        if (!str) {
+            return false;
+        }
         var strLst = str.split("-");
         if (strLst.length > 0) {
             if (!this.isDatePart(strLst[0], 3, 5)) {
@@ -307,12 +311,12 @@ var CSL = {
         }
         if (strLst.length > 1) {
             if (!this.isDatePart(strLst[1], 0, 3)) {
-                return false
+                return false;
             }
         }
         if (strLst.length > 2) {
             if (!this.isDatePart(strLst[2], 0, 3)) {
-                return false
+                return false;
             }
         }
         if (strLst.length > 3) {
@@ -322,10 +326,11 @@ var CSL = {
     },
     
     parseNoteFieldHacks: function(Item, validFieldsForType, allowDateOverride) {
-        if ("string" !== typeof Item.note) return;
+        if ("string" !== typeof Item.note) {
+            return;
+        }
         var elems = [];
         var lines = Item.note.split('\n');
-        var lastline = "";
         // Normalize entries
         for (var i=0, ilen=lines.length; i<ilen; i++) {
             var line = lines[i];
@@ -337,11 +342,11 @@ var CSL = {
                     elems.push(splt[j]);
                     elems.push(m[j]);
                 }
-                elems.push(splt[splt.length-1])
+                elems.push(splt[splt.length-1]);
                 for (var j=1,jlen=elems.length;j<jlen;j += 2) {
                     // Abort conversions if preceded by unparseable text
                     if (elems[j-1].trim() && (i>0 || j>1) && !elems[j-1].match(CSL.NOTE_FIELD_REGEXP)) {
-                        break
+                        break;
                     } else {
                         elems[j] = '\n' + elems[j].slice(2,-1).trim() + '\n';
                     }
@@ -405,7 +410,7 @@ var CSL = {
         // Final cleanup for validCslFields only: eliminate blank lines, add blank line to text
         if (validFieldsForType) {
             if (lines[offset].trim()) {
-                lines[offset] = '\n' + lines[offset]
+                lines[offset] = '\n' + lines[offset];
             }
             for (var i=offset-1;i>-1;i--) {
                 if (!lines[i].trim()) {
@@ -693,7 +698,7 @@ var CSL = {
                     langs.push(lang);
                 }
             }
-            for (var j=0,jlen=langs.length;j<ilen;j++) {
+            for (var j=0,jlen=langs.length;j<jlen;j++) {
                 var lang = langs[j];
                 var vals = {};
                 if (lang) {
@@ -786,7 +791,7 @@ var CSL = {
                         txt = callbacks[i](txt);
                     }
                     return CSL.Output.Formats[state.opt.mode].text_escape(txt);
-                }
+                };
             } else {
                 return CSL.Output.Formats[state.opt.mode].text_escape;
             }
@@ -1086,7 +1091,6 @@ var CSL = {
 
 // For citeproc-node
 if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports" in module) {
-    var CSL_IS_NODEJS = true;
     exports.CSL = CSL;
 }
 

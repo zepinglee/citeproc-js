@@ -2,14 +2,9 @@
 
 CSL.Node.label = {
     build: function (state, target) {
-        var debug = false;
         
         if (this.strings.term) {
             // Non-names labels
-            var plural = false;
-            if (!this.strings.form) {
-                //this.strings.form = "long";
-            }
             var func = function (state, Item, item) {
                 // Must accomplish this without touching strings
                 // shared with the calling application: "sub verbo"

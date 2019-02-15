@@ -96,10 +96,9 @@ StdRhinoTest.prototype.retrieveStyleModule = function(jurisdiction, preference) 
         }
     }
     return ret;
-}
+};
 
 StdRhinoTest.prototype.getAbbreviation = function(dummyListNameVar, obj, jurisdiction, category, key){
-    var newkey = key;
     if (!this._acache[jurisdiction]) {
         this._acache[jurisdiction] = new CSL.AbbreviationSegments();
     }
@@ -166,9 +165,10 @@ StdRhinoTest.prototype._readTest = function(){
 };
 
 StdRhinoTest.prototype.updateDoc = function() {
+    var data, result;
     for (var i=0,ilen=this.test.citations.length;i<ilen;i++) {
         var citation = this.test.citations[i];
-        [data, result] = this.style.processCitationCluster(citation[0],citation[1],citation[2]);
+        [data, result] = this.style.processCitationCluster(citation[0], citation[1], citation[2]);
         // To get the indexes right, we have to do removals first.
         for (var j=this.doc.length-1; j>-1; j--) {
             var citationID = this.doc[j].citationID;
@@ -191,7 +191,7 @@ StdRhinoTest.prototype.updateDoc = function() {
                         prefix: ">>",
                         citationID: cite.citationID,
                         String: insert[1]
-                    }
+                    };
                     result[j] = null;
                     break;
                 }
@@ -200,7 +200,9 @@ StdRhinoTest.prototype.updateDoc = function() {
         // For citationIDs that don't yet exist in doc, insert at the specified index locations.
         for (var j in result) {
             var insert = result[j];
-            if (!insert) continue;
+            if (!insert) {
+                continue;
+            }
             this.doc = this.doc.slice(0, insert[0]).concat([
                 {
                     prefix: ">>",
@@ -210,14 +212,13 @@ StdRhinoTest.prototype.updateDoc = function() {
             ]).concat(this.doc.slice(insert[0]));
         }
     }
-}
+};
 
 StdRhinoTest.prototype.run = function(){
     //print("-->"+this.myname);
-    var result, data, nosort;
     // print(this.myname);
-    var len, pos, ret, id_set, nick;
-    var ret = new Array();
+    var len, pos, ret, id_set;
+    var ret = [];
 
     function variableWrapper(params, prePunct, str, postPunct) {
         //print(JSON.stringify(params,null,2));
@@ -235,7 +236,7 @@ StdRhinoTest.prototype.run = function(){
         } else {
             return (prePunct + str + postPunct);
         }
-    };
+    }
 
 
     // this.csl_reverse_lookup_support = true;
@@ -286,7 +287,9 @@ StdRhinoTest.prototype.run = function(){
     //this.style.opt.development_extensions.handle_parallel_articles = true;
     //this.style.opt.development_extensions.rtl_support = true;
 	for (var opt in this.test.options) {
-        if (opt === "variableWrapper") continue;
+        if (opt === "variableWrapper") {
+            continue;
+        }
 		this.style.opt.development_extensions[opt] = this.test.options[opt];
 	}
 
@@ -301,7 +304,7 @@ StdRhinoTest.prototype.run = function(){
         journals:['translit'],
         publishers:["translat"],
         places:["translat"]
-    }
+    };
     if (this.test.langparams) {
         for (var key in this.test.langparams) {
             langParams[key] = this.test.langparams[key];
@@ -312,8 +315,8 @@ StdRhinoTest.prototype.run = function(){
         this.style.setLangPrefsForCiteAffixes(this.test.multiaffix);
     }
     if (this.test.abbreviations) {
-        for (jurisdiction in this.test.abbreviations) {
-            for (field in this.test.abbreviations[jurisdiction]) {
+        for (var jurisdiction in this.test.abbreviations) {
+            for (var field in this.test.abbreviations[jurisdiction]) {
                 for (var key in this.test.abbreviations[jurisdiction][field]) {
                     this.addAbbreviation(jurisdiction,field,key,this.test.abbreviations[jurisdiction][field][key]);
                 }
@@ -351,8 +354,10 @@ StdRhinoTest.prototype.run = function(){
             this._setCache();
             this.updateDoc();
         }
-        citations = this.doc.map(function(elem, idx){return elem.prefix + "[" + idx + "] " + elem.String});
-    };
+        citations = this.doc.map(function(elem, idx) {
+            return elem.prefix + "[" + idx + "] " + elem.String;
+        });
+    }
     ret = citations.join("\n");
     if (this.test.mode == "bibliography" && !this.submode["header"]){
         if (this.test.bibsection){

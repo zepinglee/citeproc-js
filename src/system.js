@@ -32,4 +32,4 @@ CSL.setupXml = function(xmlObject) {
         throw "citeproc-js error: unable to parse CSL style or locale object";
     }
     return parser;
-}
+};

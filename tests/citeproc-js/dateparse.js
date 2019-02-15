@@ -1,6 +1,6 @@
 dojo.provide("citeproc_js.dateparse");
 
-var sys = new RhinoTest();
+var sys = new StdRhinoTest();
 
 var citeproc = new CSL.Engine(sys,'<style version="1.0"><citation><layout><text value="BOGUS"/></layout></citation></style>');
 

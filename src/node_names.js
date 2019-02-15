@@ -2,21 +2,17 @@
 
 CSL.Node.names = {
     build: function (state, target) {
-        var func, len, pos, attrname;
-        var debug = false;
+        var func;
         // CSL.debug = print;
 
         if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
             CSL.Util.substituteStart.call(this, state, target);
             state.build.substitute_level.push(1);
-/*            
-            state.fixOpt(this, "names-delimiter", "delimiter");
-*/
         }
         
         if (this.tokentype === CSL.SINGLETON) {
             state.build.names_variables.push(this.variables);
-            func = function (state, Item, item) {
+            func = function (state) {
                 var labelVariable = state.nameOutput.labelVariable;
                 state.nameOutput.reinit(this, labelVariable);
             };
@@ -36,7 +32,7 @@ CSL.Node.names = {
 
             // init can substitute
             // init names
-            func = function (state, Item, item) {
+            func = function (state) {
                 state.tmp.can_substitute.push(true);
                 state.parallel.StartVariable("names",this.variables[0]);
                 state.nameOutput.init(this);
@@ -69,7 +65,7 @@ CSL.Node.names = {
             // moment.
 
             // "and" and "ellipsis" are set in node_name.js
-            func = function (state, Item, item) {
+            func = function (state) {
                 // Et-al (strings only)
                 // Blob production has to happen inside nameOutput()
                 // since proper escaping requires access to the output
@@ -155,7 +151,7 @@ CSL.Node.names = {
             this.execs.push(func);
 
             // unsets
-            func = function (state, Item) {
+            func = function (state) {
                 if (!state.tmp.can_substitute.pop()) {
                     state.tmp.can_substitute.replace(false, CSL.LITERAL);
                 }

@@ -9,7 +9,7 @@ CSL.getSortCompare = function (default_locale) {
         sensitivity:"base",
         ignorePunctuation:true,
         numeric:true
-   }
+    };
     // In order, attempt the following:
     //   (1) Set locale collation from processor language
     //   (2) Use localeCompare()
@@ -24,16 +24,16 @@ CSL.getSortCompare = function (default_locale) {
     };
     var stripPunct = function (str) {
         return str.replace(/^[\[\]\'\"]*/g, "");
-    }
+    };
     var getBracketPreSort = function () {
         if (!strcmp("[x","x")) {
             return false;
         } else {
             return function (a, b) {
                 return strcmp(stripPunct(a), stripPunct(b));
-            }
+            };
         }
-    }
+    };
     var bracketPreSort = getBracketPreSort();
     var sortCompare = function (a, b) {
         if (bracketPreSort) {
@@ -41,6 +41,6 @@ CSL.getSortCompare = function (default_locale) {
         } else {
             return strcmp(a, b);
         }
-    }
+    };
     return sortCompare;
 };

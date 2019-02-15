@@ -165,7 +165,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             throw err;
         }
         citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
-        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];;
+        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];
     }
     citationByIndex.push(citation);
     citationById[citation.citationID] = citation;
@@ -392,7 +392,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     item[1]["near-note"] = false;
                     if (this.registry.citationreg.citationsByItemId[myid]) {
                         if (this.opt.xclass === 'note' && this.opt.has_disambiguate) {
-                            var oldCount = this.registry.registry[myid]["citation-count"]
+                            var oldCount = this.registry.registry[myid]["citation-count"];
                             var newCount = this.registry.citationreg.citationsByItemId[myid].length;
                             this.registry.registry[myid]["citation-count"] = this.registry.citationreg.citationsByItemId[myid].length;
                             if ("number" === typeof oldCount) {
@@ -822,7 +822,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
  * [boolean] If true, include first-reference-note-number value in cite
  */
 CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
-    var use_parallels, ret;
+    var ret;
     var flags = this.tmp.group_context.tip;
     var oldTermSiblingLayer = {
         term_intended: flags.term_intended,
@@ -834,7 +834,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         condition: flags.condition,
         force_suppress: flags.force_suppress,
         done_vars: flags.done_vars.slice()
-    }
+    };
     if (disambig) {
         this.tmp.disambig_request = disambig;
     } else {
@@ -1137,13 +1137,6 @@ CSL.getCitationCluster = function (inputList, citationID) {
     empties = 0;
     myblobs = this.output.queue.slice();
 
-    // Use a fake blob to reflect any mods to the suffix and delimiter
-    var fakeblob = {
-        strings: {
-            suffix: this.citation.opt.layout_suffix,
-            delimiter: this.citation.opt.layout_delimiter                
-        }
-    };
     var suffix = this.citation.opt.layout_suffix;
     var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
     //
@@ -1483,7 +1476,7 @@ CSL.citeEnd = function (Item, item) {
         }
         // Notice the deletion to parallels machinery
         if (this.parallel.use_parallels) {
-            this.parallel.cite["issued"] = false;
+            this.parallel.cite.issued = false;
         }
     }
     this.tmp.issued_date = false;

@@ -219,7 +219,7 @@ CSL.Output.Formats.prototype.text = {
     "@display/indent": function (state, str) {
         return "\n    "+str;
     },
-    "@showid/true": function (state, str, cslid) {
+    "@showid/true": function (state, str) {
         return str;
     },
     "@URL/true": function (state, str) {
@@ -306,7 +306,7 @@ CSL.Output.Formats.prototype.rtf = {
     "@display/indent": function (state, str) {
         return "\n\\tab "+str+"\\line\r\n";
     },
-    "@showid/true": function (state, str, cslid) {
+    "@showid/true": function (state, str) {
         if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
             var prePunct = "";
             if (str) {
@@ -417,7 +417,7 @@ CSL.Output.Formats.prototype.asciidoc = {
     "@display/indent": function (state, str) {
         return " " + str;
     },
-    "@showid/true": function (state, str, cslid) {
+    "@showid/true": function (state, str) {
         if (!state.tmp.just_looking && !state.tmp.suppress_decorations && this.params && "string" === typeof str) {
             var prePunct = "";
             if (str) {
@@ -537,7 +537,7 @@ CSL.Output.Formats.prototype.fo = {
     "@display/indent": function (state, str) {
         return "<fo:block margin-left=\"2em\">" + str + "</fo:block>\n";
     },
-    "@showid/true": function (state, str, cslid) {
+    "@showid/true": function (state, str) {
         if (!state.tmp.just_looking && !state.tmp.suppress_decorations && this.params && "string" === typeof str) {
             var prePunct = "";
             if (str) {
