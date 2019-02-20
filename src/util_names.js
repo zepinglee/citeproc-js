@@ -70,11 +70,24 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     // (1) Split the string
     namelist = namelist.replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
     namelist = namelist.replace(/-([a-z])/g, "\u2013$1");
+
+    for (var i=namelist.length-2; i>-1; i += -1) {
+        if (namelist.slice(i, i+1) === "." && namelist.slice(i+1, i+2) !== " ") {
+            namelist = namelist.slice(0, i) + ". " + namelist.slice(i+1);
+        }
+    }
+
     // Workaround for Internet Explorer
     //namelist = namelist.split(/(\-|\s+)/);
     // Workaround for Internet Explorer
     mm = namelist.match(/[\-\s]+/g);
     lst = namelist.split(/[\-\s]+/);
+    if (mm === null) {
+        var mmm = lst[0].match(/[^\.]+$/);
+        if (mmm && mmm[0].length === 1 && mmm[0] !== mmm[0].toLowerCase()) {
+            lst[0] += ".";
+        }
+    }
 
     if (lst.length === 0) {
         // This doesn't make much sense, and may be impossible.
@@ -87,24 +100,6 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
         }
     }
     lst = namelist;
-
-    // This case remains: John T.S. Smith. Fix up by stepping through
-    // in reverse.
-    for (i = lst.length -1; i > -1; i += -1) {
-        if (lst[i] && lst[i].slice(0, -1).indexOf(".") > -1) {
-            
-            var lstend = lst.slice(i + 1);
-            var lstmid = lst[i].slice(0, -1).split(".");
-            lst = lst.slice(0, i);
-            for (j = 0, jlen = lstmid.length; j < jlen; j += 1) {
-                lst.push(lstmid[j] + ".");
-                if (j < lstmid.length - 1) {
-                    lst.push(" ");
-                }
-            }
-            lst = lst.concat(lstend);
-        }
-    }
 
     // Use doInitializeName or doNormalizeName, depending on requirements.
     if (normalizeOnly) {
@@ -195,7 +190,11 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
         if (!m && (!n.match(CSL.STARTSWITH_ROMANESQUE_REGEXP) && n.length > 1 && terminator.match("%s"))) {
             m = n.match(/(.)(.*)/);
         }
-        if (m && m[1] === m[1].toUpperCase()) {
+        if (m && m[2] && m[3]) {
+            m[1] = m[1] + m[2];
+            m[2] = "";
+        }
+        if (m && m[1].slice(0, 1) === m[1].slice(0, 1).toUpperCase()) {
             var extra = "";
             if (m[2]) {
                 var s = "";
@@ -212,7 +211,8 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
                     extra = s.toLocaleLowerCase();
                 }
             }
-            namelist[i] = m[1].toLocaleUpperCase() + extra;
+            // namelist[i] = m[1].toLocaleUpperCase() + extra;
+            namelist[i] = m[1] + extra;
             if (i < (ilen - 1)) {
                 if (terminator.match("%s")) {
                     namelist[i] = terminator.replace("%s", namelist[i]);
@@ -220,7 +220,11 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
                     if (namelist[i + 1].indexOf("-") > -1) {
                         namelist[i + 1] = terminator + namelist[i + 1];
                     } else {
-                        namelist[i + 1] = terminator;
+                        if (namelist[i].length > 1 && terminator.slice(-1) !== " ") {
+                            namelist[i + 1] = terminator + " ";
+                        } else {
+                            namelist[i + 1] = terminator;
+                        }
                     }
                 }
             } else {
@@ -230,7 +234,7 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
                     namelist.push(terminator);
                 }
             }
-        } else if (n.match(CSL.ROMANESQUE_REGEXP)) {
+        } else if (n.match(CSL.ROMANESQUE_REGEXP) && (!m || !m[3])) {
             namelist[i] = " " + n;
         }
     }
