@@ -137,29 +137,11 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
             if (i < namelist.length - 2) {
                 // Start from scratch on space-like things following an abbreviation
                 namelist[i + 1] = "";
-                // Check to see if the terminator is just a visible space of some sort
-                // 0009 = TAB
-                // 000a = LINE FEED
-                // 000b = LINE TAB
-                // 000c = FORM FEED
-                // 000d = CARRIAGE RETURN
-                // 0020 = SPACE
-                // 00a0 = NO-BREAK SPACE
-                var onlySpace = terminator.match(/^[\u0009\u000a\u000b\u000c\u000d\u0020\u00a0]+$/)
-                // Change the empty trailing separator to a space if
-                // * There is no terminator set in the style, or the terminator is a visible space of some sort, and
-                // * The element is romanesque; and
-                // * The separator will fall between two single-character initials
-                if (
-                    onlySpace
-                    || (
-                        (!terminator || (terminator.slice(-1) && !terminator.slice(-1).match(/[\u0009\u000a\u000b\u000c\u000d\u0020\u00a0]/)))
-                        && namelist[i].length && namelist[i].match(CSL.ALL_ROMANESQUE_REGEXP)
-                        && (namelist[i].length > 1 || namelist[i + 2].length > 1)
-                    )
-                ) {
+
+                if (!isAbbrev[i+2]) {
                     namelist[i + 1] = " ";
                 }
+                
                 // Add the terminator to the element
                 // If the following element is not a single-character abbreviation, remove a trailing zero-width non-break space, if present
                 // These ops may leave some duplicate cruft in the elements and separators. This will be cleaned at the end of the function.
@@ -220,11 +202,7 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
                     if (namelist[i + 1].indexOf("-") > -1) {
                         namelist[i + 1] = terminator + namelist[i + 1];
                     } else {
-                        if (namelist[i].length > 1 && terminator.slice(-1) !== " ") {
-                            namelist[i + 1] = terminator + " ";
-                        } else {
-                            namelist[i + 1] = terminator;
-                        }
+                        namelist[i + 1] = terminator;
                     }
                 }
             } else {
