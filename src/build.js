@@ -639,14 +639,24 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
 
     // Normalize language field into "language" and "language-original"
-    if (Item.language) {
+    if (Item.language && Item.language.match(/[\>\<]/)) {
         // Attempt to split field in two
-        var lst = Item.language.split("<");
-        if (lst.length > 0) {
-            Item["language-name"] = lst[0];
+        var m = Item.language.match(/(.*?)([\<\>])(.*)/);
+        if (m[2] === "<") {
+            Item["language-name"] = m[1];
+            Item["language-name-original"] = m[3];
+        } else {
+            Item["language-name"] = m[3];
+            Item["language-name-original"] = m[1];
         }
-        if (lst.length === 2) {
-            Item["language-name-original"] = lst[1];
+        if (this.opt.multi_layout) {
+            if (Item["language-name-original"]) {
+                Item.language = Item["language-name-original"];
+            }
+        } else {
+            if (Item["language-name"]) {
+                Item.language = Item["language-name"];
+            }
         }
     }
 
@@ -664,16 +674,18 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         CSL.parseNoteFieldHacks(Item, false, this.opt.development_extensions.allow_field_hack_date_override);
     }
     // not including locator-date
-    for (var i = 1, ilen = CSL.DATE_VARIABLES.length; i < ilen; i += 1) {
-        var dateobj = Item[CSL.DATE_VARIABLES[i]];
-        if (dateobj) {
-            // raw date parsing is harmless, but can be disabled if desired
-            if (this.opt.development_extensions.raw_date_parsing) {
-                if (dateobj.raw) {
-                    dateobj = this.fun.dateparser.parseDateToObject(dateobj.raw);
+    for (var key in Item) {
+        if (CSL.DATE_VARIABLES.indexOf(key.replace(/^alt-/, "")) > -1) {
+            var dateobj = Item[key];
+            if (dateobj) {
+                // raw date parsing is harmless, but can be disabled if desired
+                if (this.opt.development_extensions.raw_date_parsing) {
+                    if (dateobj.raw) {
+                        dateobj = this.fun.dateparser.parseDateToObject(dateobj.raw);
+                    }
                 }
+                Item[key] = this.dateParseArray(dateobj);
             }
-            Item[CSL.DATE_VARIABLES[i]] = this.dateParseArray(dateobj);
         }
     }
     if (this.opt.development_extensions.static_statute_locator) {
@@ -682,14 +694,14 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             var varname;
             var elements = ["type", "title", "jurisdiction", "genre", "volume", "container-title"];
             var legislation_id = [];
-            for (i = 0, ilen = elements.length; i < ilen; i += 1) {
+            for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
                 varname = elements[i];
 				if (Item[varname]) {
 					legislation_id.push(Item[varname]);
 				}
 			}
             elements = ["original-date", "issued"];
-			for (i = 0, elements.length; i < ilen; i += 1) {
+			for (var i = 0, ilen=elements.length; i < ilen; i += 1) {
                 varname = elements[i];
 				if (Item[varname] && Item[varname].year) {
 					var value = Item[varname].year;

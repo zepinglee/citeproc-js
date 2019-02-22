@@ -44,7 +44,7 @@ def path(name):
     if name == "std":
         return os.path.join("tests", "fixtures", "std", "processor-tests", "humans")
     elif name == "styles":
-        return os.path.join("tests", "fixtures", "std", "styles")
+        return os.path.join("tests", "fixtures", "local", "styles")
     elif name == "run":
         return os.path.join("tests", "fixtures", "run")
     elif name == "bundled":
@@ -121,7 +121,7 @@ class Bundle:
         f.extend(["node_date","node_datepart","node_elseif","node_else","node_etal","node_group"]);
         f.extend(["node_if","node_conditions","node_condition","util_conditions","node_info"]);
         f.extend(["node_institution","node_institutionpart","node_key"]);
-        f.extend(["node_label","node_layout","node_macro","util_names_output","util_names_tests"]);
+        f.extend(["node_label","node_layout","node_macro","node_alternative","node_alternativetext","util_names_output","util_names_tests"]);
         f.extend(["util_names_truncate","util_names_divide","util_names_join","util_names_common"]);
         f.extend(["util_names_constraints","util_names_disambig","util_names_etalconfig","util_names_etal"]);
         f.extend(["util_names_render","util_publishers","util_label","node_name","node_namepart"]);

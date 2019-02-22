@@ -513,11 +513,15 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
 
 CSL.Attributes["@context"] = function (state, arg) {
     var func = function () {
-		var area = state.tmp.area.slice(0, arg.length);
-		if (area === arg) {
-			return true;
-		}
-		return false;
+        if (["bibliography", "citation"].indexOf(arg) > -1) {
+		    var area = state.tmp.area.slice(0, arg.length);
+		    if (area === arg) {
+			    return true;
+		    }
+		    return false;
+        } else if ("alternative" === arg) {
+            return !!state.tmp.abort_alternative;
+        }
     };
     this.tests.push(func);
 };
@@ -630,12 +634,17 @@ CSL.Attributes["@locale"] = function (state, arg) {
         // For layout
         this.locale_raw = arg;
         if (this.tokentype === CSL.START) {
+            if (!state.opt.multi_layout) {
+                state.opt.multi_layout = [];
+            }
+            var locale_data = [];
             // Register the primary locale in the set, and others that "map" to it, 
             // so that they can be used when generating sort keys. See node_sort.js.
             // Not idempotent. Only do this once.
             var locales = arg.split(/\s+/);
             var sort_locale = {};
             var localeMaster = CSL.localeResolve(locales[0], locale_default);
+            locale_data.push(localeMaster);
             if (localeMaster.generic) {
                 sort_locale[localeMaster.generic] = localeMaster.best;
             } else {
@@ -643,6 +652,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             }
             for (var i=1,ilen=locales.length;i<ilen;i+=1) {
                 var localeServant = CSL.localeResolve(locales[i], locale_default);
+                locale_data.push(localeServant);
                 if (localeServant.generic) {
                     sort_locale[localeServant.generic] = localeMaster.best;
                 } else {
@@ -651,6 +661,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
 
             }
             state[state.build.area].opt.sort_locales.push(sort_locale);
+            state.opt.multi_layout.push(locale_data);
         }
         state.opt.has_layout_locale = true;
     } else {
@@ -730,6 +741,16 @@ CSL.Attributes["@authority-residue"] = function (state, arg) {
         };
     };
     this.tests.push(maketest());
+};
+
+CSL.Attributes["@alternative-node-internal"] = function (state) {
+    var maketest = function () {
+        return function() {
+            return !state.tmp.abort_alternative;
+        };
+    };
+    var me = this;
+    this.tests.push(maketest(me));
 };
 
 CSL.Attributes["@locale-internal"] = function (state, arg) {

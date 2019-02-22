@@ -87,7 +87,7 @@ CSL.Node.number = {
                 return false;
             }
 
-            if (varname === "locator") {
+            if (["locator", "locator-extra"].indexOf(varname) > -1) {
                 // amazing that we reach this. should abort sooner if no content?
                 state.processNumber(node, item, varname, Item.type);
             } else {

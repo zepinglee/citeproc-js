@@ -105,26 +105,27 @@ CSL.Node.group = {
             // will be parsed out and properly joined, piggybacking on
             // join parameters set on cs:citation or cs:bibliography.
             if (this.strings["has-publisher-and-publisher-place"]) {
-                // Set the handling function only if name-delimiter
-                // is set on the parent cs:citation or cs:bibliography
-                // node.
-                state.build["publisher-special"] = true;
                 // Pass variable string values to the closing
                 // tag via a global, iff they conform to expectations.
-                func = function (state, Item) {
-                    if (this.strings["subgroup-delimiter"]
-                        && Item.publisher && Item["publisher-place"]) {
-                        var publisher_lst = Item.publisher.split(/;\s*/);
-                        var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
-                        if (publisher_lst.length > 1
-                            && publisher_lst.length === publisher_place_lst.length) {
-                            state.publisherOutput = new CSL.PublisherOutput(state, this);
-                            state.publisherOutput["publisher-list"] = publisher_lst;
-                            state.publisherOutput["publisher-place-list"] = publisher_place_lst;
+                state.build["publisher-special"] = true;
+                if (this.strings["subgroup-delimiter"]) {
+                    // Set the handling function only if name-delimiter
+                    // is set on the parent cs:citation or cs:bibliography
+                    // node.
+                    func = function (state, Item) {
+                        if (Item.publisher && Item["publisher-place"]) {
+                            var publisher_lst = Item.publisher.split(/;\s*/);
+                            var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
+                            if (publisher_lst.length > 1
+                                && publisher_lst.length === publisher_place_lst.length) {
+                                state.publisherOutput = new CSL.PublisherOutput(state, this);
+                                state.publisherOutput["publisher-list"] = publisher_lst;
+                                state.publisherOutput["publisher-place-list"] = publisher_place_lst;
+                            }
                         }
-                    }
-                };
-                this.execs.push(func);
+                    };
+                    this.execs.push(func);
+                }
             }
 
             if (this.juris) {
@@ -250,15 +251,13 @@ CSL.Node.group = {
             // hence the global flag on state.build.
             if (state.build["publisher-special"]) {
                 state.build["publisher-special"] = false;
-                if ("string" === typeof state[state.build.root].opt["name-delimiter"]) {
-                    func = function (state) {
-                        if (state.publisherOutput) {
-                            state.publisherOutput.render();
-                            state.publisherOutput = false;
-                        }
-                    };
-                    this.execs.push(func);
-                }
+                func = function (state) {
+                    if (state.publisherOutput) {
+                        state.publisherOutput.render();
+                        state.publisherOutput = false;
+                    }
+                };
+                this.execs.push(func);
             }
             
             // quashnonfields

@@ -247,6 +247,7 @@ var CSL = {
         "page": "number",
         "issue": "number",
         "locator": "number",
+        "locator-extra": "number",
         "number-of-pages": "number",
         "number-of-volumes": "number",
         "volume": "number",
@@ -376,7 +377,7 @@ var CSL = {
             if (key === "type") {
                 Item.type = val;
                 lines[i] = "";
-            } else if (CSL.DATE_VARIABLES.indexOf(key) > -1) {
+            } else if (CSL.DATE_VARIABLES.indexOf(key.replace(/^alt-/, "")) > -1) {
                 if (allowDateOverride) {
                     Item[key] = {raw: val};
                     if (!validFieldsForType || (validFieldsForType[key] && this.isDateString(val))) {
@@ -384,7 +385,7 @@ var CSL = {
                     }
                 }
             } else if (!Item[key]) {
-                if (CSL.NAME_VARIABLES.indexOf(key) > -1) {
+                if (CSL.NAME_VARIABLES.indexOf(key.replace(/^alt-/, "")) > -1) {
                     if (!names[key]) {
                         names[key] = [];
                     }
@@ -600,6 +601,7 @@ var CSL = {
         "page",
         "issue",
         "locator",
+        "locator-extra",
         "number",
         "number-of-pages",
         "number-of-volumes",
@@ -620,11 +622,9 @@ var CSL = {
         "container", 
         "original-date",
         "publication-date",
-        "original-date",
         "available-date",
         "submitted"
     ],
-
     TITLE_FIELD_SPLITS: function(seg) {
         var keys = ["title", "short", "main", "sub"];
         var ret = {};
@@ -1184,6 +1184,8 @@ if (!CSL.Node) {
     load("./src/node_label.js");
     load("./src/node_layout.js");
     load("./src/node_macro.js");
+    load("./src/node_alternative.js");
+    load("./src/node_alternativetext.js");
 
     load("./src/util_names_output.js");
     load("./src/util_names_tests.js");

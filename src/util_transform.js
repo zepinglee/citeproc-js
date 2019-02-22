@@ -359,7 +359,7 @@ CSL.Transform = function (state) {
             if (state.tmp.area.slice(-5) === "_sort") {
                 slot.primary = 'locale-sort';
             } else {
-                if (localesets) {
+                if (localesets && !state.tmp.multi_layout) {
                     var slotnames = ["primary", "secondary", "tertiary"];
                     for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
                         if (localesets.length - 1 <  i) {
@@ -380,6 +380,11 @@ CSL.Transform = function (state) {
                          && state.opt.xclass === "note"
                          && item && !item.position))) {
                 
+                slot.secondary = false;
+                slot.tertiary = false;
+            }
+
+            if (state.tmp.multi_layout) {
                 slot.secondary = false;
                 slot.tertiary = false;
             }

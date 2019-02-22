@@ -209,7 +209,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var m = str.match(/^([^ ]+)/);
         if (m && !CSL.STATUTE_SUBDIV_STRINGS[m[1]]) {
             var embeddedLabel = null;
-            if (variable === "locator" ) {
+            if (["locator", "locator-extra"].indexOf(variable) > -1) {
                 if (ItemObject.label) {
                     embeddedLabel = CSL.STATUTE_SUBDIV_STRINGS_REVERSE[ItemObject.label];
                 } else {
@@ -323,7 +323,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                     var slug = m[0].trim();
                     var notAlabel = !CSL.STATUTE_SUBDIV_STRINGS[slug]
                         || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
-                        || (["locator", "number"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable);
+                        || (["locator", "number", "locator-extra"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable);
                     if (notAlabel) {
                         if (i === 0) {
                             m = m.slice(1);
@@ -419,7 +419,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     function fixLabelVisibility(values, groupStartPos, currentLabelInfo) {
         if (currentLabelInfo.label.slice(0, 4) !== "var:") {
             if (currentLabelInfo.pos === 0) {
-                if (variable === "locator" || variable === "number") {
+                if (["locator", "number", "locator-extra"].indexOf(variable) > -1) {
                     // Actually, shouldn't we do this always?
                     if (!me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label])) {
                         values[currentLabelInfo.pos].labelVisibility = true;
@@ -429,7 +429,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 // label embedded at the start of a field that
                 // does not match the context, it should be
                 // marked for rendering.
-                if (["locator", "number"].indexOf(variable) === -1) {
+                if (["locator", "number", "locator-extra"].indexOf(variable) === -1) {
                     if (CSL.STATUTE_SUBDIV_STRINGS[currentLabelInfo.label] !== variable) {
                         values[0].labelVisibility = true;
                     }
@@ -532,7 +532,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
     function checkTerm(variable, val) {
         var ret = true;
-        if (variable === "locator") {
+        if (["locator", "locator-extra"].indexOf(variable) > -1) {
             var label;
             if (val.origLabel) {
                 label = val.origLabel;
@@ -546,7 +546,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
     function checkPage(variable, val) {
         return variable === "page" 
-            || (variable === "locator" && (["p."].indexOf(val.label) > -1 || ["p."].indexOf(val.origLabel) > -1));
+            || (["locator", "locator-extra"].indexOf(variable) > -1 && (["p."].indexOf(val.label) > -1 || ["p."].indexOf(val.origLabel) > -1));
     }
     
     function fixupRangeDelimiter(variable, val, rangeDelimiter, isNumeric) {
@@ -554,7 +554,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var hasTerm = checkTerm(variable, val);
         if (hasTerm && rangeDelimiter === "-") {
             if (isNumeric) {
-                if (isPage || ["locator", "issue", "volume", "edition", "number"].indexOf(variable) > -1) {
+                if (isPage || ["locator", "locator-extra", "issue", "volume", "edition", "number"].indexOf(variable) > -1) {
                     rangeDelimiter = me.getTerm("page-range-delimiter");
                     if (!rangeDelimiter) {
                         rangeDelimiter = "\u2013";
@@ -625,7 +625,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         if (!node) {
             return;
         }
-        if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume", "locator"].indexOf(variable) === -1) {
+        if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume", "locator", "locator-extra"].indexOf(variable) === -1) {
             return;
         }
 
