@@ -31,7 +31,7 @@ CSL.Util.Dates.year["long"] = function (state, num) {
  * Crudely convert to Japanese Imperial form.
  * <p>Returns the result as a string.</p>
  */
-CSL.Util.Dates.year.imperial = function (state, num, end, makeShort) {
+CSL.Util.Dates.year.imperial = function (state, num, end) {
     var year = "";
     if (!num) {
         if ("boolean" === typeof num) {
@@ -79,7 +79,7 @@ CSL.Util.Dates.year.imperial = function (state, num, end, makeShort) {
         }
         if (state.transform.abbrevs['default']['number'][normalizedKey]) {
             label = state.transform.abbrevs['default']['number'][normalizedKey];
-        };
+        }
         year = label + (num - offset);
     }
     return year;
@@ -153,7 +153,7 @@ CSL.Util.Dates.normalizeMonth = function (num, useSeason) {
         ret = num;
     }
     return ret;
-}
+};
 
 CSL.Util.Dates.month = {};
 

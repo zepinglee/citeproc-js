@@ -40,7 +40,7 @@ CSL.Util.Names.unInitialize = function (state, name) {
  * Initialize a name.
  */
 CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly) {
-    var i, ilen, j, jlen, n, m, mm, str, lst, ret;
+    var i, ilen, mm, lst, ret;
     if (!name) {
         return "";
     }
@@ -111,7 +111,7 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     return ret;
 };
 
-CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
+CSL.Util.Names.doNormalize = function (state, namelist, terminator) {
     var i, ilen;
     // namelist is a flat list of given-name elements and space-like separators between them
     terminator = terminator ? terminator : "";
@@ -127,8 +127,6 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
             isAbbrev.push(false);
         }
     }
-    // Initialize the return array
-    var ret = [];
     // Step through the elements of the givenname array
     for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
         // If the element is not an abbreviation, leave it and its trailing spaces alone
@@ -161,7 +159,7 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator, mode) {
     return namelist.join("").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/,"").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
 };
 
-CSL.Util.Names.doInitialize = function (state, namelist, terminator, mode) {
+CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
     var i, ilen, m, j, jlen, lst, n;
     for (i = 0, ilen = namelist.length; i < ilen; i += 2) {
         n = namelist[i];

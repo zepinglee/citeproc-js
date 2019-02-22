@@ -12,7 +12,9 @@ CSL.getLocaleNames = function (myxml, preferredLocale) {
             }
         }
     }
-
+    
+    var localeIDs = ["en-US"];
+    
     function sniffLocaleOnOneNodeName(nodeName) {
         var nodes = stylexml.getNodesByName(stylexml.dataObj, nodeName);
         for (var i=0,ilen=nodes.length;i<ilen;i++) {
@@ -26,7 +28,6 @@ CSL.getLocaleNames = function (myxml, preferredLocale) {
         }
     }
 
-    var localeIDs = ["en-US"];
     extendLocaleList(localeIDs, preferredLocale);
 
     var styleNode = stylexml.getNodesByName(stylexml.dataObj, "style")[0];

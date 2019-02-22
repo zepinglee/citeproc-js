@@ -9,7 +9,6 @@
 // 2. Second pass: tags
 
 CSL.Util.FlipFlopper = function(state) {
-    this.processTags = processTags;
     
     /**
      * INTERNAL
@@ -126,10 +125,10 @@ CSL.Util.FlipFlopper = function(state) {
                 "false": "true"
             }
         }
-    }
+    };
 
-    _nestingData["(\""] = _nestingData[" \""]
-    _nestingData["(\'"] = _nestingData[" \'"]
+    _nestingData["(\""] = _nestingData[" \""];
+    _nestingData["(\'"] = _nestingData[" \'"];
 
     var localeOpenQuote = state.getTerm("open-quote");
     var localeCloseQuote = state.getTerm("close-quote");
@@ -150,47 +149,19 @@ CSL.Util.FlipFlopper = function(state) {
         _nestingData[localeOpenInnerQuote].closer = localeCloseInnerQuote;
     }
     
-    var _nestingQuoteReverse = function() {
-        var ret = {};
-        var keys = Object.keys(_nestingData);
-        for (var i = 0, l = keys.length; i < l; i++) {
-            var key = keys[i];
-            if (_nestingData[key].type === "quote") {
-                ret[_nestingData[key].closer] = _nestingData[key];
-            }
-        }
-        return ret;
-    }();
-    
-    var _nestingDataAttr = function() {
-        var ret = {};
-        var keys = Object.keys(_nestingData);
-        for (var i = 0, l = keys.length; i < l; i++) {
-            var key = keys[i];
-            if (_nestingData[key].type === "nocase") continue;
-            var attr = _nestingData[key].attr;
-            var outer = _nestingData[key].outer;
-            var inner = _nestingData[key].flipflop[_nestingData[key].outer];
-            ret[attr + "/" + outer] = _nestingData[key];
-            ret[attr + "/" + inner] = _nestingData[key];
-        }
-        return ret;
-    }();
-    
     function _setOuterQuoteForm(quot) {
         var flip = {
             " \'": " \"",
             " \"": " \'",
             "(\"": "(\'",
             "(\'": "(\""
-        }
+        };
         _nestingData[quot].outer = "true";
         _nestingData[flip[quot]].outer = "inner";
     }
     
     function _getNestingOpenerParams(opener) {
         var openers = [];
-        var closer;
         var keys = Object.keys(_nestingData);
         for (var i = 0, l = keys.length; i < l; i++) {
             var key = keys[i];
@@ -199,11 +170,13 @@ CSL.Util.FlipFlopper = function(state) {
             }
         }
         var ret = _nestingData[opener];
-        ret.opener = new RegExp("^(?:" + openers.map(function(str){return str.replace("(", "\\(")}).join("|") + ")"); 
+        ret.opener = new RegExp("^(?:" + openers.map(function(str){
+            return str.replace("(", "\\(");
+        }).join("|") + ")");
         return ret;
     }
 
-    var _nestingParams = function() {
+    var _nestingParams = (function() {
         var ret = {};
         var keys = Object.keys(_nestingData);
         for (var i = 0, l = keys.length; i < l; i++) {
@@ -211,9 +184,9 @@ CSL.Util.FlipFlopper = function(state) {
             ret[key] = _getNestingOpenerParams(key);
         }
         return ret;
-    }()
+    }());
 
-    var _tagRex = function() {
+    var _tagRex = (function() {
         var openers = [];
         var closers = [];
         var vals = {};
@@ -227,28 +200,20 @@ CSL.Util.FlipFlopper = function(state) {
             closers.push(closer);
         }
 
-        var all = openers.concat(closers).map(function(str){return str.replace("(", "\\(")}).join("|");
+        var all = openers.concat(closers).map(function(str){
+            return str.replace("(", "\\(");
+        }).join("|");
 
         return {
             matchAll: new RegExp("((?:" + all + "))", "g"),
             splitAll: new RegExp("(?:" + all + ")", "g"),
-            open: new RegExp("(^(?:" + openers.map(function(str){return str.replace("(", "\\(")}).join("|") + ")$)"),
+            open: new RegExp("(^(?:" + openers.map(function(str){
+                return str.replace("(", "\\(");
+            }).join("|") + ")$)"),
             close: new RegExp("(^(?:" + closers.join("|") + ")$)"),
-        }
-    }();
+        };
+    }());
 
-    function _nestingFix (tag, pos) {
-        return _pushNestingState(tag, pos);
-    }
-    
-    function _pushNestingState(tag, pos) {
-        if (tag.match(_tagRex.open)) {
-            return _tryOpen(tag, pos);
-        } else {
-            return _tryClose(tag, pos);
-        }
-    }
-    
     function _tryOpen(tag, pos) {
         var params = _nestingState[_nestingState.length - 1];
         if (!params || tag.match(params.opener)) {
@@ -260,7 +225,7 @@ CSL.Util.FlipFlopper = function(state) {
             });
             return false;
         } else {
-            _nestingState.pop()
+            _nestingState.pop();
             _nestingState.push({
                 type: _nestingParams[tag].type,
                 opener: _nestingParams[tag].opener,
@@ -276,14 +241,14 @@ CSL.Util.FlipFlopper = function(state) {
     function _tryClose(tag, pos) {
         var params = _nestingState[_nestingState.length - 1];
         if (params && tag === params.closer) {
-            _nestingState.pop()
+            _nestingState.pop();
             if (params.type === "nocase") {
                 return {
                     nocase: {
                         open: params.pos,
                         close: pos
                     }
-                }
+                };
             } else {
                 return false;
             }
@@ -298,6 +263,18 @@ CSL.Util.FlipFlopper = function(state) {
                 };
             }
         }
+    }
+    
+    function _pushNestingState(tag, pos) {
+        if (tag.match(_tagRex.open)) {
+            return _tryOpen(tag, pos);
+        } else {
+            return _tryClose(tag, pos);
+        }
+    }
+    
+    function _nestingFix (tag, pos) {
+        return _pushNestingState(tag, pos);
     }
     
     function _doppelString(str) {
@@ -319,7 +296,7 @@ CSL.Util.FlipFlopper = function(state) {
         for (var i=0,ilen=match.length-1;i<ilen;i++) {
             if (_nestingData[match[i]]) {
                 if (split[i+1] === "" && ["\"", "'"].indexOf(match[i+1]) > -1) {
-                    match[i+1] = " " + match[i+1]
+                    match[i+1] = " " + match[i+1];
                     forcedSpaces.push(true);
                 } else {
                     forcedSpaces.push(false);
@@ -330,25 +307,12 @@ CSL.Util.FlipFlopper = function(state) {
             tags: match,
             strings: split,
             forcedSpaces: forcedSpaces
-        }
+        };
     }
 
-    function _undoppelString(obj) {
-        var lst = obj.strings.slice(-1);
-        for (var i=obj.tags.length-1; i>-1; i+=-1) {
-            lst.push(obj.tags[i]);
-            lst.push(obj.strings[i]);
-        }
-        lst.reverse();
-        return lst.join("|");
-    }
-    
-    var _TagReg = function(blob) {
-        this.set = set;
-        this.pair = pair;
-        this.pop = pop;
+    var TagReg = function(blob) {
         var _stack = [];
-        function set(tag) {
+        this.set = function (tag) {
             var attr = _nestingData[tag].attr;
             var decor = null;
             for (var i=_stack.length-1;i>-1;i--) {
@@ -359,11 +323,13 @@ CSL.Util.FlipFlopper = function(state) {
                 }
             }
             if (!decor) {
-                var allTheDecor = [state[state.tmp.area].opt.layout_decorations].concat(blob.alldecor)
+                var allTheDecor = [state[state.tmp.area].opt.layout_decorations].concat(blob.alldecor);
                 outer:
                 for (var i=allTheDecor.length-1;i>-1;i--) {
                     var decorset = allTheDecor[i];
-                    if (!decorset) continue;
+                    if (!decorset) {
+                        continue;
+                    }
                     for (var j=decorset.length-1;j>-1;j--) {
                         var _decor = decorset[j];
                         if (_decor[0] === attr) {
@@ -379,14 +345,14 @@ CSL.Util.FlipFlopper = function(state) {
                 decor = [attr, _nestingData[tag].flipflop[decor[1]]];
             }
             _stack.push(decor);
-        }
-        function pair() {
+        };
+        this.pair = function () {
             return _stack[_stack.length-1];
-        }
-        function pop() {
+        };
+        this.pop = function () {
             _stack.pop();
-        }
-    }
+        };
+    };
     
     function _apostropheForce(tag, str) {
         if (tag === "\'") {
@@ -400,14 +366,13 @@ CSL.Util.FlipFlopper = function(state) {
     }
 
     function _undoppelToQueue(blob, doppel, leadingSpace) {
-        var TOP = blob;
         var firstString = true;
-        var tagReg = new _TagReg(blob);
+        var tagReg = new TagReg(blob);
         blob.blobs = [];
         function Stack (blob) {
             this.stack = [blob];
             this.latest = blob;
-            this.addStyling = function(str, decor, forcedSpace) {
+            this.addStyling = function(str, decor) {
                 if (firstString) {
                     if (str.slice(0, 1) === " ") {
                         str = str.slice(1);
@@ -436,10 +401,12 @@ CSL.Util.FlipFlopper = function(state) {
                     if (decor[0] === "@class" && decor[1] === "nodecor") {
                         var newdecorset = [];
                         var seen = {};
-                        var allTheDecor = [state[state.tmp.area].opt.layout_decorations].concat(newblob.alldecor)
+                        var allTheDecor = [state[state.tmp.area].opt.layout_decorations].concat(newblob.alldecor);
                         for (var i=allTheDecor.length-1;i>-1;i--) {
                             var _decorset = allTheDecor[i];
-                            if (!_decorset) continue;
+                            if (!_decorset) {
+                                continue;
+                            }
                             for (var j=_decorset.length-1;j>-1;j--) {
                                 var _olddecor = _decorset[j];
                                 if (["@font-weight", "@font-style", "@font-variant"].indexOf(_olddecor[0]) > -1
@@ -447,7 +414,7 @@ CSL.Util.FlipFlopper = function(state) {
                                     
                                     if (decor[1] !== "normal") {
                                         newblob.decorations.push([_olddecor[0], "normal"]);
-                                        newdecorset.push([_olddecor[0], "normal"])
+                                        newdecorset.push([_olddecor[0], "normal"]);
                                     }
                                     seen[_olddecor[0]] = true;
                                 }
@@ -477,11 +444,11 @@ CSL.Util.FlipFlopper = function(state) {
                         this.latest.blobs.push(child);
                     }
                 }
-            }
+            };
             this.popStyling = function() {
                 this.stack.pop();
-            }
-        };
+            };
+        }
         var stack = new Stack(blob);
         if (doppel.strings.length) {
             var str = doppel.strings[0];
@@ -508,16 +475,18 @@ CSL.Util.FlipFlopper = function(state) {
      * PUBLIC
      */
 
-    function processTags(blob) {
+    this.processTags = function (blob) {
         var str = blob.blobs;
         var leadingSpace = false;
         if (str.slice(0, 1) === " " && !str.match(/^\s+[\'\"]/)) {
             leadingSpace = true;
         }
-        var rex = new RegExp("(" + CSL.ROMANESQUE_REGEXP.source + ")\u2019(" + CSL.ROMANESQUE_REGEXP.source + ")", "g")
+        var rex = new RegExp("(" + CSL.ROMANESQUE_REGEXP.source + ")\u2019(" + CSL.ROMANESQUE_REGEXP.source + ")", "g");
         var str = " " + str.replace(rex, "$1\'$2");
         var doppel = _doppelString(str);
-        if (doppel.tags.length === 0) return;
+        if (doppel.tags.length === 0) {
+            return;
+        }
         var quoteFormSeen = false;
         // ZZZ
         // It is inside THIS loop that we can convert the nocase and nodecor
@@ -577,7 +546,7 @@ CSL.Util.FlipFlopper = function(state) {
         }
         // Stray tags are neutralized here
         for (var i=_nestingState.length-1;i>-1;i--) {
-            var tagPos = _nestingState[i].pos
+            var tagPos = _nestingState[i].pos;
             var tag = doppel.tags[tagPos];
             if (tag === " \'" || tag === "\'") {
 
@@ -613,5 +582,5 @@ CSL.Util.FlipFlopper = function(state) {
         //print(JSON.stringify(doppel, null, 2))
         //print(_undoppelString(doppel));
         _undoppelToQueue(blob, doppel, leadingSpace);
-    }
-}
+    };
+};

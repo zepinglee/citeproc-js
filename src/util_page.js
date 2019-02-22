@@ -3,7 +3,7 @@
 CSL.Util.PageRangeMangler = {};
 
 CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
-    var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func, ppos, llen;
+    var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func;
     
     var range_delimiter = state.getTerm(rangeType + "-range-delimiter");
 
@@ -138,7 +138,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
 		var lst = expand(str);
         var ret = func(lst, minchars, isyear);
         return ret;
-    }
+    };
     if (!state.opt[rangeType + "-range-format"]) {
         ret_func = function (str) {
             //return str.replace("-", "\u2013", "g");

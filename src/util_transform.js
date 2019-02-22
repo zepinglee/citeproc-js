@@ -52,12 +52,9 @@
  */
 
 CSL.Transform = function (state) {
-    var debug = false, abbreviations, token, fieldname, abbrev_family, opt;
-
     // Abbreviation families
     this.abbrevs = {};
     this.abbrevs["default"] = new state.sys.AbbreviationSegments();
-    this.getTextSubField = getTextSubField;
 
     function getCountryOrJurisdiction(variable, normalizedKey, quashCountry) {
         var value = "";
@@ -79,7 +76,7 @@ CSL.Transform = function (state) {
     }
     
     // Internal function
-    function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field, form) {
+    function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field) {
         var value = "";
         var myabbrev_family = CSL.FIELD_CATEGORY_REMAP[family_var];
         var preferredJurisdiction;
@@ -160,7 +157,7 @@ CSL.Transform = function (state) {
     }
 
     function getFieldLocale(Item,field) {
-        var ret = state.opt["default-locale"][0].slice(0, 2)
+        var ret = state.opt["default-locale"][0].slice(0, 2);
         var localeRex;
         if (state.opt.development_extensions.strict_text_case_locales) {
             localeRex = new RegExp("^([a-zA-Z]{2})(?:$|-.*| .*)");
@@ -185,11 +182,11 @@ CSL.Transform = function (state) {
             ret = ret.toLowerCase();
         }
         return ret;
-    };
+    }
 
     // Internal functions
     function getTextSubField (Item, field, locale_type, use_default, stopOrig) {
-        var m, lst, opt, o, oo, pos, key, ret, len, myret, opts;
+        var opt, o, ret, opts;
         var usedOrig = stopOrig;
         var usingOrig = false;
 
@@ -204,7 +201,6 @@ CSL.Transform = function (state) {
 
         opts = state.opt[locale_type];
         var hasVal = false;
-        var jurisdictionName = false;
         if (locale_type === 'locale-orig') {
             if (stopOrig) {
                 ret = {name:"", usedOrig:stopOrig};
@@ -258,12 +254,12 @@ CSL.Transform = function (state) {
         }
         return ret;
     }
-
+    this.getTextSubField = getTextSubField;
+    
     // Setter for abbreviation lists
     // This initializes a single abbreviation based on known
     // data.
     function loadAbbreviation(jurisdiction, category, orig, itemType) {
-        var pos, len;
         if (!jurisdiction) {
             jurisdiction = "default";
         }
@@ -318,8 +314,27 @@ CSL.Transform = function (state) {
         return false;
     }
 
+
+    // The name transform code is placed here to keep similar things
+    // in one place.  Obviously this module could do with a little
+    // tidying up.
+    function quashCheck(value) {
+        var m = value.match(/^!([-,_a-z]+)>>>/);
+        if (m) {
+            var fields = m[1].split(",");
+            value = value.slice(m[0].length);
+            for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
+                if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
+                    state.tmp.done_vars.push(fields[i]);
+                }
+            }
+        }
+        return value;
+    }
+    this.quashCheck = quashCheck;
+
     // Return function appropriate to selected options
-    function getOutputFunction(variables, family_var, abbreviation_fallback, alternative_varname, transform_fallback) {
+    function getOutputFunction(variables, family_var, abbreviation_fallback, alternative_varname) {
         // var mytoken;
 
         // Set the primary_locale and secondary_locale lists appropriately.
@@ -334,8 +349,8 @@ CSL.Transform = function (state) {
             localesets = state.opt['cite-lang-prefs'][langPrefs];
         }
 
-        return function (state, Item, item, usedOrig) {
-            var primary, primary_locale, secondary, secondary_locale, tertiary, tertiary_locale, primary_tok, group_tok, key;
+        return function (state, Item, item) {
+            var primary, primary_locale, secondary, secondary_locale, tertiary, tertiary_locale, primary_tok;
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
@@ -449,7 +464,7 @@ CSL.Transform = function (state) {
                     }
                 }
                 if (!hasItalic) {
-                    primary_tok.decorations.push(["@font-style", "italic"])
+                    primary_tok.decorations.push(["@font-style", "italic"]);
                 }
             }
 
@@ -480,7 +495,7 @@ CSL.Transform = function (state) {
                     // Remove quotes
                     for (var i = secondary_tok.decorations.length - 1; i > -1; i += -1) {
                         if (['@quotes/true', '@font-style/italic', '@font-style/oblique', '@font-weight/bold'].indexOf(secondary_tok.decorations[i].join('/')) > -1) {
-                            secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1))
+                            secondary_tok.decorations = secondary_tok.decorations.slice(0, i).concat(secondary_tok.decorations.slice(i + 1));
                         }
                     }
                     if (secondary_locale !== "en" && secondary_tok.strings["text-case"] === "title") {
@@ -515,7 +530,7 @@ CSL.Transform = function (state) {
                     // Remove quotes
                     for (var i = tertiary_tok.decorations.length - 1; i > -1; i += -1) {
                         if (['@quotes/true', '@font-style/italic', '@font-style/oblique', '@font-weight/bold'].indexOf(tertiary_tok.decorations[i].join('/')) > -1) {
-                            tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1))
+                            tertiary_tok.decorations = tertiary_tok.decorations.slice(0, i).concat(tertiary_tok.decorations.slice(i + 1));
                         }
                     }
                     if (tertiary_locale !== "en" && tertiary_tok.strings["text-case"] === "title") {
@@ -546,23 +561,4 @@ CSL.Transform = function (state) {
         };
     }
     this.getOutputFunction = getOutputFunction;
-
-    // The name transform code is placed here to keep similar things
-    // in one place.  Obviously this module could do with a little
-    // tidying up.
-
-    function quashCheck(value) {
-        var m = value.match(/^!([-,_a-z]+)>>>/);
-        if (m) {
-            var fields = m[1].split(",");
-            value = value.slice(m[0].length);
-            for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
-                if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
-                    state.tmp.done_vars.push(fields[i]);
-                }
-            }
-        }
-        return value;
-    }
-    this.quashCheck = quashCheck;
 };

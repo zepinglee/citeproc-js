@@ -20,7 +20,7 @@ CSL.tokenExec = function (token, Item, item) {
             this.tmp.jump.replace("fail");
             return token.fail;
         }
-    }
+    };
     if (token.test) {
         next = record.call(this,token.test(Item, item));
     }
@@ -44,7 +44,7 @@ CSL.tokenExec = function (token, Item, item) {
  * <p>Called on the state object.</p>
  */
 CSL.expandMacro = function (macro_key_token, target) {
-    var mkey, start_token, key, end_token, navi, macro_nodes, newoutput, mergeoutput, end_of_macro, func;
+    var mkey, macro_nodes, end_of_macro, func;
 
     mkey = macro_key_token.postponed_macro;
 
@@ -60,7 +60,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     }
     if (hasDate) {
         mkey = mkey + "@" + this.build.current_default_locale;
-        func = function (state, Item) {
+        func = function (state) {
             if (state.tmp.extension) {
                 state.tmp["doing-macro-with-date"] = true;
             }
@@ -95,14 +95,14 @@ CSL.expandMacro = function (macro_key_token, target) {
         CSL.configureMacro.call(this, mytarget);
     }
     if (!this.build.extension) {
-        var func = function(macro_name) {
+        var func = (function(macro_name) {
             return function (state, Item, item) {
                 var next = 0;
                 while (next < state.macros[macro_name].length) {
                     next = CSL.tokenExec.call(state, state.macros[macro_name][next], Item, item);
                 }
-            }
-        }(mkey);
+            };
+        }(mkey));
         var text_node = new CSL.Token("text", CSL.SINGLETON);
         text_node.execs.push(func);
         target.push(text_node);
@@ -112,7 +112,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     end_of_macro = new CSL.Token("group", CSL.END);
     
     if (hasDate) {
-        func = function (state, Item) {
+        func = function (state) {
             if (state.tmp.extension) {
                 state.tmp["doing-macro-with-date"] = false;
             }
@@ -137,7 +137,7 @@ CSL.getMacroTarget = function (mkey) {
         this.macros[mkey] = mytarget;
     }
     return mytarget;
-}
+};
 
 CSL.buildMacro = function (mytarget, macro_nodes) {
     var builder = CSL.makeBuilder(this, mytarget);
@@ -148,13 +148,13 @@ CSL.buildMacro = function (mytarget, macro_nodes) {
         mynode = macro_nodes[0];
     }
     builder(mynode);
-}
+};
 
 CSL.configureMacro = function (mytarget) {
     if (!this.build.extension) {
         this.configureTokenList(mytarget);
     }
-}
+};
 
 
 /**

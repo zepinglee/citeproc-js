@@ -57,7 +57,6 @@ CSL.NameOutput.prototype._compareNamesets = function (base_nameset, nameset) {
         return false;
     }
     for (var i = 0, ilen = nameset.length; i < ilen; i += 1) {
-        var name = nameset[i];
         for (var j = 0, jlen = CSL.NAME_PARTS.length; j < jlen; j += 1) {
             var part = CSL.NAME_PARTS[j];
             if (!base_nameset[i] || base_nameset[i][part] != nameset[i][part]) {
