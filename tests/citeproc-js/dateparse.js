@@ -212,15 +212,13 @@ doh.register("tests.dateparse", [
         doh.assertEqual(6, keycount(res) );
 	},
     function test_dateparse030() {
-        citeproc.fun.dateparser.returnAsArray();
-        var res = citeproc.fun.dateparser.parse("May 1 2000");
+        var res = citeproc.fun.dateparser.parseDateToArray("May 1 2000");
         doh.assertEqual("2000", res["date-parts"][0][0]);
         doh.assertEqual("5", res["date-parts"][0][1]);
         doh.assertEqual("1", res["date-parts"][0][2]);
     },
     function test_dateparse030() {
-        citeproc.fun.dateparser.returnAsArray();
-        var res = citeproc.fun.dateparser.parse("June 3 1998 - 1999");
+        var res = citeproc.fun.dateparser.parseDateToArray("June 3 1998 - 1999");
         doh.assertEqual("1998", res["date-parts"][0][0]);
         doh.assertEqual("6", res["date-parts"][0][1]);
         doh.assertEqual("3", res["date-parts"][0][2]);
@@ -230,7 +228,7 @@ doh.register("tests.dateparse", [
     },
     function test_dateparse031() {
         var res = {year:2000,month:7,day:21,year_end:2001};
-        citeproc.fun.dateparser.toArray(res);
+        res = citeproc.fun.dateparser.convertDateObjectToArray(res);
         doh.assertEqual("2000", res["date-parts"][0][0]);
         doh.assertEqual("7", res["date-parts"][0][1]);
         doh.assertEqual("21", res["date-parts"][0][2]);
