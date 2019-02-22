@@ -1,0 +1,117 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+
+
+>>===== RESULT =====>>
+>>[0] Aalto; Álvarez
+<<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
+
+
+>>===== CSL =====>>
+<style 
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0"
+      default-locale="en">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <macro name="translation">
+    <translation delimiter=", " prefix="(" suffix=".)">
+      <names variable="translator">
+        <label form="short" suffix=" "/>
+        <name initialize-with=". "/>
+      </names>
+      <translation-text/>
+    </translation>
+  </macro>
+  <macro name="bib-entry">
+    <group delimiter=". ">
+      <group delimiter=", ">
+        <names variable="editor">
+          <name initialize-with=". "/>
+          <label form="short" prefix=", "/>
+        </names>
+        <date variable="issued" form="text" date-parts="year"/>        
+        <text variable="title" text-case="title"/>
+        <group delimiter=": ">
+          <text variable="publisher-place"/>
+          <text variable="publisher"/>
+        </group>
+      </group>
+      <text macro="translation"/>
+    </group>
+  </macro>
+  <citation>
+    <layout>
+      <text value="bogus" />
+    </layout>
+  </citation>
+  <bibliography>
+    <layout locale="de">
+      <text macro="bib-entry"/>
+    </layout>
+    <layout>
+      <text macro="bib-entry"/>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "editor": [
+            {
+                "family": "Locke", 
+                "given": "Issac"
+            }
+        ], 
+        "note": "alt-translator: Aalto||Alan\nalt-issued:2001\nalt-publisher:Ex Post Press\nalt-publisher-place:Tokyo",
+        "title": "Das erste Buch",
+        "publisher": "Ex Ante Press",
+        "publisher-place": "Geneva",
+        "language": "en<de",
+        "multi": {
+           "title": {
+             "en": "First book"
+             }
+        },
+        "issued": {
+          "date-parts": [
+            [
+              1895
+            ]
+          ]
+        },
+        "id": "ITEM-1", 
+        "type": "book"
+    }
+]
+<<===== INPUT =====<<
