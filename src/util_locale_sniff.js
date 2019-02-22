@@ -4,7 +4,7 @@ CSL.getLocaleNames = function (myxml, preferredLocale) {
     function extendLocaleList(localeList, locale) {
         var forms = ["base", "best"];
         if (locale) {
-            normalizedLocale = CSL.localeResolve(locale);
+            var normalizedLocale = CSL.localeResolve(locale);
             for (var i=0,ilen=forms.length;i<ilen;i++) {
                 if (normalizedLocale[forms[i]] && localeList.indexOf(normalizedLocale[forms[i]]) === -1) {
                     localeList.push(normalizedLocale[forms[i]]);
@@ -12,7 +12,9 @@ CSL.getLocaleNames = function (myxml, preferredLocale) {
             }
         }
     }
-
+    
+    var localeIDs = ["en-US"];
+    
     function sniffLocaleOnOneNodeName(nodeName) {
         var nodes = stylexml.getNodesByName(stylexml.dataObj, nodeName);
         for (var i=0,ilen=nodes.length;i<ilen;i++) {
@@ -26,7 +28,6 @@ CSL.getLocaleNames = function (myxml, preferredLocale) {
         }
     }
 
-    var localeIDs = ["en-US"];
     extendLocaleList(localeIDs, preferredLocale);
 
     var styleNode = stylexml.getNodesByName(stylexml.dataObj, "style")[0];

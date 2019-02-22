@@ -2,7 +2,7 @@
 
 CSL.Node.name = {
     build: function (state, target) {
-        var func, pos, len, attrname;
+        var func;
         if ([CSL.SINGLETON, CSL.START].indexOf(this.tokentype) > -1) {
             var oldTmpRoot;
             if ("undefined" === typeof state.tmp.root) {
@@ -31,7 +31,7 @@ CSL.Node.name = {
 
             state.tmp.root = oldTmpRoot;
 
-            func = function (state, Item) {
+            func = function (state) {
                 // Et-al (onward processing in node_etal.js and node_names.js)
                 // XXXXX Why is this necessary? This is available on this.name, right?
                 state.tmp.etal_term = "et-al";

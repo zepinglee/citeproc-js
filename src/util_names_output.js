@@ -1,6 +1,6 @@
 /*global CSL: true */
 
-CSL.NameOutput = function(state, Item, item, variables) {
+CSL.NameOutput = function(state, Item, item) {
     this.debug = false;
     //SNIP-START
     if (this.debug) {

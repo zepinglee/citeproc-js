@@ -1,7 +1,7 @@
 /*global CSL: true */
 
 CSL.Engine = function (sys, style, lang, forceLang) {
-    var attrs, langspec, localexml, locale;
+    var attrs, langspec;
     this.processor_version = CSL.PROCESSOR_VERSION;
     this.csl_version = "1.0";
     this.sys = sys;
@@ -9,7 +9,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     if (typeof Object.assign != 'function') {
         // Must be writable: true, enumerable: false, configurable: true
         Object.defineProperty(Object, "assign", {
-            value: function assign(target, varArgs) { // .length of function is 2
+            value: function assign(target) { // .length of function is 2
                 'use strict';
                 if (target == null) { // TypeError if undefined or null
                     throw new TypeError('Cannot convert undefined or null to object');
@@ -308,15 +308,15 @@ CSL.makeBuilder = function (me, target) {
     var var_stack = [];
     function enterFunc (node) {
         CSL.XmlToToken.call(node, me, CSL.START, target, var_stack);
-    };
+    }
     function leaveFunc (node) {
         CSL.XmlToToken.call(node, me, CSL.END, target, var_stack);
-    };
+    }
     function singletonFunc (node) {
         CSL.XmlToToken.call(node, me, CSL.SINGLETON, target, var_stack);
-    };
+    }
     function buildStyle (node) {
-        var starttag, origparent;
+        var origparent;
         if (me.cslXml.numberofnodes(me.cslXml.children(node))) {
             origparent = node;
             enterFunc(origparent);
@@ -326,7 +326,7 @@ CSL.makeBuilder = function (me, target) {
                     continue;
                 }
                 if (me.cslXml.nodename(node) === "date") {
-                    CSL.Util.fixDateNode.call(me, origparent, i, node)
+                    CSL.Util.fixDateNode.call(me, origparent, i, node);
                     node = me.cslXml.children(origparent)[i];
                 }
                 buildStyle(node, enterFunc, leaveFunc, singletonFunc);
@@ -341,7 +341,9 @@ CSL.makeBuilder = function (me, target) {
 
 
 CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
-    if (!this.cslXml.getNodeValue(area_nodes)) return;
+    if (!this.cslXml.getNodeValue(area_nodes)) {
+        return;
+    }
     var builder = CSL.makeBuilder(this, target);
     var mynode;
     if ("undefined" === typeof area_nodes.length) {
@@ -354,7 +356,7 @@ CSL.Engine.prototype.buildTokenLists = function (area_nodes, target) {
 
 
 CSL.Engine.prototype.setStyleAttributes = function () {
-    var dummy, attr, key, attributes, attrname;
+    var dummy, attributes, attrname;
     // Protect against DOM engines that deliver a top-level document
     // (needed for createElement) that does not contain our top-level node.
     // 
@@ -508,7 +510,7 @@ CSL.Engine.getField = function (mode, hash, term, form, plural, gender) {
 };
 
 CSL.Engine.prototype.configureTokenLists = function () {
-    var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
+    var area, pos, len;
     //for each (var area in ["citation", "citation_sort", "bibliography","bibliography_sort"]) {
     len = CSL.AREAS.length;
     for (pos = 0; pos < len; pos += 1) {
@@ -522,7 +524,7 @@ CSL.Engine.prototype.configureTokenLists = function () {
 };
 
 CSL.Engine.prototype.configureTokenList = function (tokens) {
-    var dateparts_master, area, pos, token, dateparts, part, ppos, pppos, len, llen, lllen;
+    var dateparts_master, token, dateparts, part, ppos, pppos, llen, lllen;
     dateparts_master = ["year", "month", "day"];
     llen = tokens.length - 1;
     for (ppos = llen; ppos > -1; ppos += -1) {
@@ -550,11 +552,10 @@ CSL.Engine.prototype.configureTokenList = function (tokens) {
             CSL.Node[token.name].configure.call(token, this, ppos);
         }
     }
-}
+};
 
 CSL.Engine.prototype.refetchItems = function (ids) {
-    var ret, pos, len;
-    ret = [];
+    var ret = [];
     for (var i = 0, ilen = ids.length; i < ilen; i += 1) {
         ret.push(this.refetchItem("" + ids[i]));
     }
@@ -567,7 +568,7 @@ CSL.ITERATION = 0;
 // Adds experimental fields embedded in the note field for
 // style development trial and testing purposes.
 CSL.Engine.prototype.retrieveItem = function (id) {
-    var Item, m, pos, len, mm, i;
+    var Item, m, i;
 
     if (!this.tmp.loadedItemIDs[id]) {
         this.tmp.loadedItemIDs[id] = true;
@@ -709,13 +710,13 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                         _key: {}
                     }
                 }
-            ]
+            ];
             if (Item.multi && Item.multi._keys && Item.multi._keys.authority) {
                 Item.authority[0].multi._key = {};
                 for (var key in Item.multi._keys.authority) {
                     Item.authority[0].multi._key[key] = {
                         literal: Item.multi._keys.authority[key]
-                    }
+                    };
                 }
             }
         }
@@ -746,9 +747,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             normalizedKey = Item.title;
         }
         var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", normalizedKey, Item.type);
-        if (this.transform.abbrevs[jurisdiction]["title"]) {
-            if (this.transform.abbrevs[jurisdiction]["title"][normalizedKey]) {
-                Item["title-short"] = this.transform.abbrevs[jurisdiction]["title"][normalizedKey];
+        if (this.transform.abbrevs[jurisdiction].title) {
+            if (this.transform.abbrevs[jurisdiction].title[normalizedKey]) {
+                Item["title-short"] = this.transform.abbrevs[jurisdiction].title[normalizedKey];
             }
         }
     }
@@ -768,8 +769,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    if (Item["jurisdiction"]) {
-        Item["country"] = Item["jurisdiction"].split(":")[0];
+    if (Item.jurisdiction) {
+        Item.country = Item.jurisdiction.split(":")[0];
     }
     if (this.registry.refhash[id]) {
         if (JSON.stringify(this.registry.refhash[id]) != JSON.stringify(Item)) {
@@ -787,7 +788,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 
 CSL.Engine.prototype.refetchItem = function (id) {
     return this.registry.refhash[id];
-}
+};
 
 // Executed during style build
 CSL.Engine.prototype.setOpt = function (token, name, value) {

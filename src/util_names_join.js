@@ -87,7 +87,7 @@ CSL.NameOutput.prototype._joinAnd = function (blobs, tokenname) {
 };
 
 
-CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple, tokenname) {
+CSL.NameOutput.prototype._join = function (blobs, delimiter, single, multiple) {
     var i, ilen;
     if (!blobs) {
         return false;

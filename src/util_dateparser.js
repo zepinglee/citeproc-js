@@ -1,7 +1,7 @@
 /*global CSL: true */
 
 
-CSL.DateParser = new function () {
+CSL.DateParser = function () {
 
     /*
      * Fixed values
@@ -24,9 +24,12 @@ CSL.DateParser = new function () {
     }
     
     var epochMatchStrings = [];
+    var epochMap = {};
     for (var i=0,ilen=epochPairs.length; i<ilen; i++) {
-        var val = epochPairs[i][0];
+        var pair = epochPairs[i];
+        var val = pair[0];
         epochMatchStrings.push(val);
+        epochMap[pair[0]] = pair[1];
     }
     var epochMatchString = epochMatchStrings.join("|");
 
@@ -117,8 +120,6 @@ CSL.DateParser = new function () {
         }
 
         // Extend as necessary to resolve ambiguities
-        var otherMatch = [];
-        var thisMatch = [];
         // For each new month string ...
         for (var i=0,ilen=lst.length; i<ilen; i++) {
             var abbrevLength = null;
@@ -156,7 +157,7 @@ CSL.DateParser = new function () {
                     }
                 }
                 for (var jKey in extendedSets) {
-                    for (kKey in extendedSets[jKey]) {
+                    for (var kKey in extendedSets[jKey]) {
                         abbrevLength = extendedSets[jKey][kKey];
                         jKey = parseInt(jKey, 10);
                         kKey = parseInt(kKey, 10);
@@ -225,21 +226,23 @@ CSL.DateParser = new function () {
         // Returns string
         var ret = [];
         for (var i = 0, ilen = 3; i < ilen; i += 1) {
-            if (thedate[DATE_PARTS_ALL[i]]) {
-                ret.push(thedate[DATE_PARTS_ALL[i]]);
+            if (thedate[CSL.DATE_PARTS_ALL[i]]) {
+                ret.push(thedate[CSL.DATE_PARTS_ALL[i]]);
             } else {
                 break;
             }
         }
         return ret.join("-");
-    }
+    };
 
     /*
      * Utility function
      */
 
     this._parseNumericDate = function (ret, delim, suff, txt) {
-        if (!suff) suff = "";
+        if (!suff) {
+            suff = "";
+        }
         var lst = txt.split(delim);
         
         for (var i=0, ilen=lst.length; i<ilen; i++) {
@@ -320,8 +323,9 @@ CSL.DateParser = new function () {
                     }
                     for (var i=0,ilen=slst.length; i<ilen; i++) {
                         lst.push(slst[i]);
-                        if (i !== (len - 1)) {
-                            var mmpos = (pos * 2);
+                        if (i !== (ilen - 1)) {
+                            // pos is undeclared, and multiplying by 2 here is insane.
+                            var mmpos = (i * 2);
                             lst.push(mmx[mmpos]);
                             lst.push(mmx[mmpos + 1]);
                         }
@@ -331,7 +335,7 @@ CSL.DateParser = new function () {
                 }
                 // workaround duly applied, this now works
                 for (var i=1,ilen=lst.length; i<ilen; i+=3) {
-                    lst[i + 1] = jiy[lst[i]] + parseInt(lst[i + 1], 10);
+                    lst[i + 1] = epochMap[lst[i]] + parseInt(lst[i + 1], 10);
                     lst[i] = "";
                 }
                 txt = lst.join("");
@@ -429,6 +433,12 @@ CSL.DateParser = new function () {
                     continue;
                 }
                 //
+                // If it's a fuzzy marker, record it.
+                //
+                if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
+                    thedate.circa = "" + 1;
+                }
+                //
                 // If it's a month, record it.
                 //
                 for (var k=0,klen=this.monthRexes.length; k<klen; k++) {
@@ -459,13 +469,6 @@ CSL.DateParser = new function () {
                     continue;
                 }
                 //
-                // If it's a fuzzy marker, record it.
-                //
-                if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
-                    thedate.circa = "" + 1;
-                    continue;
-                }
-                //
                 // If it's cruft, make a note of it
                 //
                 if (element.toLocaleLowerCase().match(/(?:mic|tri|hil|eas)/) && !thedate[("season" + suff)]) {
@@ -487,7 +490,7 @@ CSL.DateParser = new function () {
             // cruft there.
             //
             if (note && !thedate[("season" + suff)]) {
-                thedate[("season" + suff)] = note;
+                thedate[("season" + suff)] = note.trim();
                 note = "";
             }
             suff = "_end";
@@ -528,15 +531,15 @@ CSL.DateParser = new function () {
 
     this.parseDateToArray = function(txt) {
         return this.convertDateObjectToArray(this.parseDateToObject(txt));            
-    }
+    };
 
     this.parseDateToString = function(txt) {
         return this.convertDateObjectToString(this.parseDateToObject(txt));
-    }
+    };
     
     this.parse = function(txt) {
         return this.parseDateToObject(txt);
-    }
+    };
     
     /*
 
@@ -546,3 +549,4 @@ CSL.DateParser = new function () {
     this.setOrderMonthDay();
     this.resetDateParserMonths();
 };
+CSL.DateParser = new CSL.DateParser();

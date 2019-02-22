@@ -1,14 +1,6 @@
 /*global CSL: true */
 
-CSL.Output.Formatters = new function () {
-    this.passthrough = passthrough;
-    this.lowercase = lowercase;
-    this.uppercase = uppercase;
-    this.sentence = sentence;
-    this.title = title;
-    this["capitalize-first"] = capitalizeFirst;
-    this["capitalize-all"] = capitalizeAll;
-
+CSL.Output.Formatters = (function () {
     var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\u2013\u2014\/.,;?!:]|\\[|\\]|\\(|\\)|<span style=\"font-variant: small-caps;\">|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
     var tagDoppel = new CSL.Doppeler(rexStr, function(str) {
         return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3").replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?(\")[^>]*(>)/g, "$1 $2 $3;$4$5");
@@ -27,9 +19,9 @@ CSL.Output.Formatters = new function () {
         "<sc>": "</sc>",
         "<sub>": "</sub>",
         "<sup>": "</sup>"
-    }
+    };
 
-    function _capitalise (word, force) {
+    function _capitalise (word) {
         // Weird stuff is (.) transpiled with regexpu
         //   https://github.com/mathiasbynens/regexpu
         var m = word.match(/(^\s*)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
@@ -63,21 +55,7 @@ CSL.Output.Formatters = new function () {
                 opener: "\u201C",
                 closer: "\u201D"
             },
-        }
-        function quoteFix (tag, positions) {
-            var m = tag.match(/(^(?:\u2018|\u2019|\u201C|\u201D|\"|\')|(?: \"| \')$)/);
-            if (m) {
-                return pushQuoteState(m[1], positions);
-            }
-        }
-        function pushQuoteState(tag, pos) {
-            var isOpener = ["\u201C", "\u2018", " \"", " \'"].indexOf(tag) > -1 ? true : false;
-            if (isOpener) {
-                return tryOpen(tag, pos);
-            } else {
-                return tryClose(tag, pos);
-            }
-        }
+        };
         function tryOpen(tag, pos) {
             if (config.quoteState.length === 0 || tag === config.quoteState[config.quoteState.length - 1].opener) {
                 config.quoteState.push({
@@ -88,7 +66,7 @@ CSL.Output.Formatters = new function () {
                 return false;
             } else {
                 var prevPos = config.quoteState[config.quoteState.length-1].pos;
-                config.quoteState.pop()
+                config.quoteState.pop();
                 config.quoteState.push({
                     opener: quoteParams[tag].opener,
                     closer: quoteParams[tag].closer,
@@ -99,9 +77,23 @@ CSL.Output.Formatters = new function () {
         }
         function tryClose(tag, pos) {
             if (config.quoteState.length > 0 && tag === config.quoteState[config.quoteState.length - 1].closer) {
-                config.quoteState.pop()
+                config.quoteState.pop();
             } else {
                 return pos;
+            }
+        }
+        function pushQuoteState(tag, pos) {
+            var isOpener = ["\u201C", "\u2018", " \"", " \'"].indexOf(tag) > -1 ? true : false;
+            if (isOpener) {
+                return tryOpen(tag, pos);
+            } else {
+                return tryClose(tag, pos);
+            }
+        }
+        function quoteFix (tag, positions) {
+            var m = tag.match(/(^(?:\u2018|\u2019|\u201C|\u201D|\"|\')|(?: \"| \')$)/);
+            if (m) {
+                return pushQuoteState(m[1], positions);
             }
         }
         // Run state machine
@@ -216,7 +208,7 @@ CSL.Output.Formatters = new function () {
             tagState: [],
             afterPunct: null,
             isFirst: null
-        }
+        };
         return _textcaseEngine(config, string);
     }
 
@@ -240,7 +232,7 @@ CSL.Output.Formatters = new function () {
             tagState: [],
             afterPunct: null,
             isFirst: null
-        }
+        };
         return _textcaseEngine(config, string);
     }
 
@@ -270,7 +262,7 @@ CSL.Output.Formatters = new function () {
             tagState: [],
             afterPunct: null,
             isFirst: true
-        }
+        };
         return _textcaseEngine(config, string);
     }
 
@@ -284,7 +276,9 @@ CSL.Output.Formatters = new function () {
                     var words = wordle.strings;
                     for (var j=0,jlen=words.length;j<jlen;j++) {
                         var word = words[j];
-                        if (!word) continue;
+                        if (!word) {
+                            continue;
+                        }
                         if (word.length > 1 && !word.toLowerCase().match(config.skipWordsRex)) {
                             // Capitalize every word that is not a stop-word
                             words[j] = _capitalise(words[j]);
@@ -302,7 +296,7 @@ CSL.Output.Formatters = new function () {
                         config.lastWordPos = {
                             strings: i,
                             words: j
-                        }
+                        };
                     }
                     str = wordDoppel.join(wordle);
                 }
@@ -312,7 +306,7 @@ CSL.Output.Formatters = new function () {
             tagState: [],
             afterPunct: false,
             isFirst: true
-        }
+        };
         return _textcaseEngine(config, string);
     }
     
@@ -342,7 +336,7 @@ CSL.Output.Formatters = new function () {
             tagState: [],
             afterPunct: null,
             isFirst: true
-        }
+        };
         return _textcaseEngine(config, string);
     }
 
@@ -369,7 +363,16 @@ CSL.Output.Formatters = new function () {
             tagState: [],
             afterPunct: null,
             isFirst: null
-        }
+        };
         return _textcaseEngine(config, string);
     }
-}
+    return {
+        passthrough: passthrough,
+        lowercase: lowercase,
+        uppercase: uppercase,
+        sentence: sentence,
+        title: title,
+        "capitalize-first": capitalizeFirst,
+        "capitalize-all": capitalizeAll
+    };
+}());

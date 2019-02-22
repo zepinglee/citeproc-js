@@ -408,7 +408,7 @@ CSL.XmlDOM.prototype.addMissingNameNodes = function(myxml) {
 
 
 CSL.XmlDOM.prototype.addInstitutionNodes = function(myxml) {
-    var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
+    var names, thenames, institution, theinstitution, theinstitutionpart, name, thename, xml, pos, len;
     names = myxml.getElementsByTagName("names");
     for (pos = 0, len = names.length; pos < len; pos += 1) {
         thenames = names.item(pos);
@@ -448,7 +448,7 @@ CSL.XmlDOM.prototype.addInstitutionNodes = function(myxml) {
 
 CSL.XmlDOM.prototype.flagDateMacros = function(myxml) {
     var pos, len, thenode, thedate;
-    nodes = myxml.getElementsByTagName("macro");
+    var nodes = myxml.getElementsByTagName("macro");
     for (pos = 0, len = nodes.length; pos < len; pos += 1) {
         thenode = nodes.item(pos);
         thedate = thenode.getElementsByTagName("date");

@@ -30,7 +30,7 @@
 // under; along; out; between; among; outside; inside; amid; amidst; against; toward; towards.
 // See https://forums.zotero.org/discussion/30484/?Focus=159613#Comment_159613
 
-'use strict'
+'use strict';
 
 
 var CSL = {
@@ -164,24 +164,24 @@ var CSL = {
                 for (var i=1,ilen=lst.length;i<ilen;i += 2) {
                     if (lst[i] === '(') {
                         if (1 === (this.depth % 2)) {
-                            lst[i] = '['
+                            lst[i] = '[';
                         }
                         this.depth += 1;
                     } else if (lst[i] === ')') {
                         if (0 === (this.depth % 2)) {
-                            lst[i] = ']'
+                            lst[i] = ']';
                         }
                         this.depth -= 1;
                     }
                 }
                 var ret = lst.join("");
                 return ret;
-            }
+            };
         } else {
             this.update = function(str) {
                 return str;
-            }
-        };
+            };
+        }
     },
 
     MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","country","jurisdiction","archive","archive-place"],
@@ -280,7 +280,9 @@ var CSL = {
     },
 
     normalizeLocaleStr: function(str) {
-        if (!str) return;
+        if (!str) {
+            return;
+        }
         var lst = str.split('-');
         lst[0] = lst[0].toLowerCase();
         if (lst[1]) {
@@ -291,14 +293,16 @@ var CSL = {
 
     isDatePart: function(str, less, more) {
         if (str.length > less && str.length < more && parseInt(str)) {
-            return true
+            return true;
         } else {
             return false;
         }
     },
 
     isDateString: function(str) {
-        if (!str) return false;
+        if (!str) {
+            return false;
+        }
         var strLst = str.split("-");
         if (strLst.length > 0) {
             if (!this.isDatePart(strLst[0], 3, 5)) {
@@ -307,12 +311,12 @@ var CSL = {
         }
         if (strLst.length > 1) {
             if (!this.isDatePart(strLst[1], 0, 3)) {
-                return false
+                return false;
             }
         }
         if (strLst.length > 2) {
             if (!this.isDatePart(strLst[2], 0, 3)) {
-                return false
+                return false;
             }
         }
         if (strLst.length > 3) {
@@ -322,10 +326,11 @@ var CSL = {
     },
     
     parseNoteFieldHacks: function(Item, validFieldsForType, allowDateOverride) {
-        if ("string" !== typeof Item.note) return;
+        if ("string" !== typeof Item.note) {
+            return;
+        }
         var elems = [];
         var lines = Item.note.split('\n');
-        var lastline = "";
         // Normalize entries
         for (var i=0, ilen=lines.length; i<ilen; i++) {
             var line = lines[i];
@@ -337,11 +342,11 @@ var CSL = {
                     elems.push(splt[j]);
                     elems.push(m[j]);
                 }
-                elems.push(splt[splt.length-1])
+                elems.push(splt[splt.length-1]);
                 for (var j=1,jlen=elems.length;j<jlen;j += 2) {
                     // Abort conversions if preceded by unparseable text
                     if (elems[j-1].trim() && (i>0 || j>1) && !elems[j-1].match(CSL.NOTE_FIELD_REGEXP)) {
-                        break
+                        break;
                     } else {
                         elems[j] = '\n' + elems[j].slice(2,-1).trim() + '\n';
                     }
@@ -405,7 +410,7 @@ var CSL = {
         // Final cleanup for validCslFields only: eliminate blank lines, add blank line to text
         if (validFieldsForType) {
             if (lines[offset].trim()) {
-                lines[offset] = '\n' + lines[offset]
+                lines[offset] = '\n' + lines[offset];
             }
             for (var i=offset-1;i>-1;i--) {
                 if (!lines[i].trim()) {
@@ -538,7 +543,7 @@ var CSL = {
 
 
 
-    NAME_INITIAL_REGEXP: /^([A-Z\u0e01-\u0e5b\u00c0-\u017f\u0400-\u042f\u0590-\u05d4\u05d6-\u05ff\u0600-\u06ff\u0370\u0372\u0376\u0386\u0388-\u03ab\u03e2\u03e4\u03e6\u03e8\u03ea\u03ec\u03ee\u03f4\u03f7\u03fd-\u03ff])([a-zA-Z\u0e01-\u0e5b\u00c0-\u017f\u0400-\u052f\u0600-\u06ff\u0370-\u03ff\u1f00-\u1fff]*|)/,
+    NAME_INITIAL_REGEXP: /^([A-Z\u0e01-\u0e5b\u00c0-\u017f\u0400-\u042f\u0590-\u05d4\u05d6-\u05ff\u0600-\u06ff\u0370\u0372\u0376\u0386\u0388-\u03ab\u03e2\u03e4\u03e6\u03e8\u03ea\u03ec\u03ee\u03f4\u03f7\u03fd-\u03ff])([a-zA-Z\u0e01-\u0e5b\u00c0-\u017f\u0400-\u052f\u0600-\u06ff\u0370-\u03ff\u1f00-\u1fff]*|)(\.)*/,
     ROMANESQUE_REGEXP: /[-0-9a-zA-Z\u0e01-\u0e5b\u00c0-\u017f\u0370-\u03ff\u0400-\u052f\u0590-\u05d4\u05d6-\u05ff\u1f00-\u1fff\u0600-\u06ff\u200c\u200d\u200e\u0218\u0219\u021a\u021b\u202a-\u202e]/,
     ROMANESQUE_NOT_REGEXP: /[^a-zA-Z\u0e01-\u0e5b\u00c0-\u017f\u0370-\u03ff\u0400-\u052f\u0590-\u05d4\u05d6-\u05ff\u1f00-\u1fff\u0600-\u06ff\u200c\u200d\u200e\u0218\u0219\u021a\u021b\u202a-\u202e]/g,
     STARTSWITH_ROMANESQUE_REGEXP: /^[&a-zA-Z\u0e01-\u0e5b\u00c0-\u017f\u0370-\u03ff\u0400-\u052f\u0590-\u05d4\u05d6-\u05ff\u1f00-\u1fff\u0600-\u06ff\u200c\u200d\u200e\u0218\u0219\u021a\u021b\u202a-\u202e]/,
@@ -693,7 +698,7 @@ var CSL = {
                     langs.push(lang);
                 }
             }
-            for (var j=0,jlen=langs.length;j<ilen;j++) {
+            for (var j=0,jlen=langs.length;j<jlen;j++) {
                 var lang = langs[j];
                 var vals = {};
                 if (lang) {
@@ -786,7 +791,7 @@ var CSL = {
                         txt = callbacks[i](txt);
                     }
                     return CSL.Output.Formats[state.opt.mode].text_escape(txt);
-                }
+                };
             } else {
                 return CSL.Output.Formats[state.opt.mode].text_escape;
             }
@@ -1086,7 +1091,6 @@ var CSL = {
 
 // For citeproc-node
 if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports" in module) {
-    var CSL_IS_NODEJS = true;
     exports.CSL = CSL;
 }
 
@@ -1106,41 +1110,27 @@ if (!CSL.XmlJSON) {
 if (!CSL.XmlDOM) {
     load("./src/xmldom.js");
 }
-if (!CSL.XmlE4X && "undefined" !== typeof XML) {
-    load("./src/xmle4x.js");
-}
 if (!CSL.System) {
     load("./src/system.js");
 }
 if (!CSL.getSortCompare) {
     load("./src/sort.js");
 }
-//if (!CSL.System.Xml.E4X) {
-//    load("./src/xmle4x.js");
-//}
-//if (!CSL.System.Xml.DOM) {
-//    load("./src/xmldom.js");
-//}
-// jslint OK
 if (!CSL.cloneAmbigConfig) {
     load("./src/util_disambig.js");
 }
-// jslint OK
 if (!CSL.XmlToToken) {
     load("./src/util_nodes.js");
 }
-// jslint OK
 if (!CSL.DateParser) {
     load("./src/util_dateparser.js");
 }
-// jslint OK
 if (!CSL.Engine) {
     load("./src/build.js");
     load("./src/util_static_locator.js");
     load("./src/util_modules.js");
     load("./src/util_name_particles.js");
 }
-// jslint OK
 if (!CSL.Mode) {
     load("./src/util_processor.js");
 }
@@ -1151,27 +1141,21 @@ if (!CSL.Engine.prototype.setOutputFormat) {
     load("./src/api_control.js");
 }
 
-// jslint OK
 if (!CSL.Output) {
     load("./src/queue.js");
 }
-// jslint OK
 if (!CSL.Engine.Opt) {
     load("./src/state.js");
 }
-// jslint OK
 if (!CSL.makeCitationCluster) {
     load("./src/api_cite.js");
 }
-// jslint OK
 if (!CSL.makeBibliography) {
     load("./src/api_bibliography.js");
 }
-// jslint OK
 if (!CSL.setCitationId) {
     load("./src/util_integration.js");
 }
-// jslint OK
 if (!CSL.updateItems) {
     load("./src/api_update.js");
 }
@@ -1179,44 +1163,26 @@ if (!CSL.localeResolve) {
     load("./src/util_locale.js");
 }
 if (!CSL.Node) {
-    // jslint OK
     load("./src/node_bibliography.js");
-    // jslint OK
     load("./src/node_choose.js");
-    // jslint OK
     load("./src/node_citation.js");
     load("./src/node_comment.js");
-    // jslint OK
-    // jslint OK
     load("./src/node_date.js");
-    // jslint OK
     load("./src/node_datepart.js");
-    // jslint OK
     load("./src/node_elseif.js");
-    // jslint OK
     load("./src/node_else.js");
-    // jslint OK
     load("./src/node_etal.js");
-    // jslint OK
     load("./src/node_group.js");
-    // jslint OK
     load("./src/node_if.js");
     load("./src/node_conditions.js");
     load("./src/node_condition.js");
     load("./src/util_conditions.js");
-    // jslint OK
     load("./src/node_info.js");
-    // jslint OK
     load("./src/node_institution.js");
-    // jslint OK
     load("./src/node_institutionpart.js");
-    // jslint OK
     load("./src/node_key.js");
-    // jslint OK
     load("./src/node_label.js");
-    // jslint OK
     load("./src/node_layout.js");
-    // jslint OK
     load("./src/node_macro.js");
 
     load("./src/util_names_output.js");
@@ -1234,58 +1200,41 @@ if (!CSL.Node) {
 
     load("./src/util_label.js");
 
-    // jslint OK
     load("./src/node_name.js");
-    // jslint OK
     load("./src/node_namepart.js");
-    // jslint OK
     load("./src/node_names.js");
-    // jslint OK
     load("./src/node_number.js");
-    // jslint OK
     load("./src/node_sort.js");
-    // jslint OK
     load("./src/node_substitute.js");
-    // jslint OK
     load("./src/node_text.js");
 }
-// jslint OK
 if (!CSL.Attributes) {
     load("./src/attributes.js");
 }
-// jslint OK
 if (!CSL.Stack) {
     load("./src/stack.js");
 }
-// jslint OK
 if (!CSL.Parallel) {
     load("./src/util_parallel.js");
 }
-// jslint OK
 if (!CSL.Util) {
     load("./src/util.js");
 }
-// jslint OK
 if (!CSL.Transform) {
     load("./src/util_transform.js");
 }
-// jslint OK
 if (!CSL.Token) {
     load("./src/obj_token.js");
 }
-// jslint OK
 if (!CSL.AmbigConfig) {
     load("./src/obj_ambigconfig.js");
 }
-// jslint OK
 if (!CSL.Blob) {
     load("./src/obj_blob.js");
 }
-// jslint OK
 if (!CSL.NumericBlob) {
     load("./src/obj_number.js");
 }
-// jslint OK
 if (!CSL.Util.fixDateNode) {
     load("./src/util_datenode.js");
 }
@@ -1293,7 +1242,6 @@ if (!CSL.Util.fixDateNode) {
 if (!CSL.dateAsSortKey) {
     load("./src/util_date.js");
 }
-// jslint OK
 if (!CSL.Util.Names) {
     load("./src/util_names.js");
 }
@@ -1303,15 +1251,12 @@ if (!CSL.Util.Names) {
 if (!CSL.Util.Dates) {
     load("./src/util_dates.js");
 }
-// jslint OK
 if (!CSL.Util.Sort) {
     load("./src/util_sort.js");
 }
-// jslint OK
 if (!CSL.Util.substituteStart) {
     load("./src/util_substitute.js");
 }
-// jslint OK
 if (!CSL.Util.Suffixator) {
     load("./src/util_number.js");
 }
@@ -1319,31 +1264,24 @@ if (!CSL.Util.Suffixator) {
 if (!CSL.Util.PageRangeMangler) {
     load("./src/util_page.js");
 }
-// jslint OK
 if (!CSL.Util.FlipFlopper) {
     load("./src/util_flipflop.js");
 }
-// jslint OK
 if (!CSL.Output.Formatters) {
     load("./src/formatters.js");
 }
-// jslint OK
 if (!CSL.Output.Formats) {
     load("./src/formats.js");
 }
-// jslint OK
 if (!CSL.Registry) {
     load("./src/registry.js");
 }
-// jslint OK
 if (!CSL.Registry.NameReg) {
     load("./src/disambig_names.js");
 }
-// jslint OK
 if (!CSL.Registry.CitationReg) {
     load("./src/disambig_citations.js");
 }
-// jslint OK
 if (!CSL.Registry.prototype.disambiguateCites) {
     load("./src/disambig_cites.js");
 }

@@ -7,8 +7,7 @@ CSL.Node.layout = {
         function setSuffix() {
             if (state.build.area === "bibliography") {
                 suffix_token = new CSL.Token("text", CSL.SINGLETON);
-                func = function(state, Item, item) {
-                    var last_locale = state.tmp.cite_locales[state.tmp.cite_locales.length - 1];
+                func = function(state) {
                     var suffix;
                     if (state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale]) {
                         suffix = state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale].suffix;
@@ -50,7 +49,7 @@ CSL.Node.layout = {
                     && Item.system_id 
                     && state.tmp.area === "citation") { 
 
-                    cite_entry = new CSL.Token("group", CSL.START);
+                    var cite_entry = new CSL.Token("group", CSL.START);
                     cite_entry.decorations = [["@cite", "entry"]];
                     state.output.startTag("cite_entry", cite_entry);
                     state.output.current.value().item_id = Item.system_id;
@@ -59,7 +58,7 @@ CSL.Node.layout = {
                         state.output.current.value().suffix_txt = item.suffix_txt;
                     }
                 }
-            }
+            };
             this.execs.push(func);
         }
 
@@ -87,14 +86,14 @@ CSL.Node.layout = {
             };
             this.execs.push(func);
             // set opt delimiter
-            func = function (state, Item) {
+            func = function (state) {
                 // just in case
                 state.tmp.sort_key_flag = false;
             };
             this.execs.push(func);
             
             // reset nameset counter [all nodes]
-            func = function (state, Item) {
+            func = function (state) {
                 state.tmp.nameset_counter = 0;
             };
             this.execs.push(func);
@@ -111,7 +110,7 @@ CSL.Node.layout = {
                     }
                 }
                 state.output.openLevel(tok);
-            }
+            };
             this.execs.push(func);
             target.push(this);
 
@@ -284,7 +283,7 @@ CSL.Node.layout = {
                 }
 
                 // Closes the RTL token
-                func = function (state, Item) {
+                func = function (state) {
                     state.output.closeLevel();
                 };
                 this.execs.push(func);
@@ -297,7 +296,7 @@ CSL.Node.layout = {
                         
                         state.output.endTag(); // closes citation link wrapper
                     }
-                }
+                };
                 this.execs.push(func);
                 target.push(this);
                 state.build.layout_flag = false;

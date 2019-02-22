@@ -1,7 +1,7 @@
 /*global CSL: true */
 
 CSL.Util.fixDateNode = function (parent, pos, node) {
-    var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, key, subchildren, kkey, display, cslid;
+    var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, subchildren, display, cslid;
     
     var lingo = this.cslXml.getAttributeValue(node, "lingo");
 

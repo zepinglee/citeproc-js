@@ -76,7 +76,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
  *
  */
 CSL.Parallel.prototype.StartCite = function (Item, item, prevItemID) {
-    var position, len, pos, x, curr, master, last_id, prev_locator, curr_locator, is_master, parallel;
+    var position, len, pos, curr, master, last_id, prev_locator, curr_locator;
     if (this.use_parallels) {
         if (this.sets.value().length && this.sets.value()[0].itemId == Item.id) {
             this.ComposeSet();
@@ -311,7 +311,7 @@ CSL.Parallel.prototype.AppendBlobPointer = function (blob) {
  * Adds string data to the current variable
  * in the variables tracking object.
  */
-CSL.Parallel.prototype.AppendToVariable = function (str, varname) {
+CSL.Parallel.prototype.AppendToVariable = function (str) {
     if (this.use_parallels) {
         if (this.ignoreVars.indexOf(this.variable) > -1) {
             return;
@@ -415,7 +415,7 @@ CSL.Parallel.prototype.CloseVariable = function () {
  * tracking array, and evaluate maybe.
  */
 CSL.Parallel.prototype.CloseCite = function () {
-    var x, pos, len, has_issued, use_journal_info, volume_pos, container_title_pos, section_pos;
+    var x, pos, len, use_journal_info, volume_pos, container_title_pos, section_pos;
     if (this.use_parallels && (this.force_collapse || this.try_cite)) {
         use_journal_info = false;
         if (!this.cite.front_collapse["container-title"]) {
@@ -505,8 +505,8 @@ CSL.Parallel.prototype.CloseCite = function () {
  * Move variables tracking array into the array of
  * composed sets.
  */
-CSL.Parallel.prototype.ComposeSet = function (next_output_in_progress) {
-    var cite, pos, master, len;
+CSL.Parallel.prototype.ComposeSet = function () {
+    var cite, pos, len;
     if (this.use_parallels && (this.force_collapse || this.try_cite)) {
         // a bit loose here: zero-length sets relate to one cite,
         // apparently.
@@ -675,4 +675,4 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function (original_condition) {
         }
         this.parallel_conditional_blobs_list.pop();
     }
-}
+};
