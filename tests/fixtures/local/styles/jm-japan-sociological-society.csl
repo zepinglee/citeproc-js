@@ -229,9 +229,7 @@
             </date>
           </else-if>
         </choose>
-        <choose>
-          <text variable="URL"/>
-        </choose>
+        <text variable="URL"/>
       </group>
     </group>
   </macro>
@@ -282,9 +280,7 @@
           </date>
         </else-if>
       </choose>
-      <choose>
-        <text variable="URL"/>
-      </choose>
+      <text variable="URL"/>
     </group>
   </macro>
   <macro name="title-半角">
@@ -623,8 +619,8 @@
             <conditions match="all">
               <condition variable="original-date"/>
               <condition variable="alt-issued" match="none"/>
-              <date variable="issued" form="text" date-parts="year"/>
             </conditions>
+            <date variable="issued" form="text" date-parts="year"/>
           </if>
           <else>
             <date variable="alt-issued" form="text" date-parts="year"/>
