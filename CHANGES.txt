@@ -2,6 +2,33 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.217
+==========================
+
+- Add support for new CSL-M elements cs:alternative and cs:alternative-text,
+  useful for citing translated works and reprints.
+
+- Test fixtures for a Japan Sociological Society style that makes use
+  of the cs:alternative element.
+
+==========================
+Changes in version 1.1.216
+==========================
+
+- Fix bugs in name initialization
+  https://forums.zotero.org/discussion/75969/apa-style-initials-cut-out
+
+- Remove legacy e4x support. Processor is capable of string-parsing
+  serialized XML directly, this layer is no longer needed.
+
+- Permit empty values in CSL fields added via the note field hack.
+
+- Add support for cs:alternative and cs:alternative-text elements,
+  for use in citing translated or reprinted materials in CSL-M.
+
+- Clean up syntax somewhat. HT to jshint.
+
+==========================
 Changes in version 1.1.215
 ==========================
 
