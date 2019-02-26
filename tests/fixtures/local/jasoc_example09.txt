@@ -47,12 +47,12 @@ jm-japan-sociological-society.csl
       { "family": "Simpson", "given": "George Eaton" },
       { "family": "Yinger", "given": "J. Milton" }
      ],
-    "original-date": { "date-parts": [[1953]]},
     "issued": { "date-parts": [[1972]]},
     "title": "Racial and Cultural Minorities: An Analysis of Prejudice and Discrimination",
     "edition": "4",
     "publisher-place": "New York",
-    "publisher": "Harper & Row"
+    "publisher": "Harper & Row",
+    "note": "original-date: 1953"
 }
 ]
 <<===== INPUT =====<<
