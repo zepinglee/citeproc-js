@@ -721,7 +721,7 @@
   <bibliography hanging-indent="true" et-al-min="11" et-al-use-first="7" subsequent-author-substitute="&#8212;&#8212;&#8212;" entry-spacing="0" name-delimiter=", ">
     <sort>
       <key macro="contributors-半角"/>
-      <key variable="year-sort"/>
+      <key macro="year-sort"/>
     </sort>
     <layout locale="ja">
       <group>
