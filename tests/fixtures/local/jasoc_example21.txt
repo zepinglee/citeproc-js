@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">総務省統計局，2007，「平成17年国勢調査第1表 労働力状態（8区分）・年齢（各歳）・男女別15歳以上人口――全国（第2次基本集計）」，(2009年1月10日取得，http://www.e-stat.go.jp/SG1/estat/)．</div>
+  <div class="csl-entry">神原文子，1999，『同和地区における子育ての現状と課題に関する実証研究』1996-1998年度科学研究費補助金研究成果報告書（08451041），相愛大学．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -44,12 +44,13 @@ jm-japan-sociological-society.csl
         "type": "report",
         "language": "ja",
         "author": [
-            {"literal": "総務省統計局"}
+            {"family": "神原", "given": "文子"}
         ],
-        "issued": {"date-parts": [[2007]]},
-        "title": "平成17年国勢調査第1表 労働力状態（8区分）・年齢（各歳）・男女別15歳以上人口――全国（第2次基本集計）",
-        "accessed": {"date-parts": [[2009,1,10]]},
-        "URL": "http://www.e-stat.go.jp/SG1/estat/"
+        "issued": {"date-parts": [[1999]]},
+        "title": "同和地区における子育ての現状と課題に関する実証研究",
+        "genre": "1996-1998年度科学研究費補助金研究成果報告書",
+        "number": "08451041",
+        "publisher": "相愛大学"
     }
 ]
 <<===== INPUT =====<<

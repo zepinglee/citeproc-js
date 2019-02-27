@@ -6,8 +6,12 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">McCarthy, John D. and Mayer N. Zald, 1977, “Resource Mobilization and Social Movements: A Partial Theory,” <i>American Journal of Sociology</i>, 82(6): 1212–41. Reprinted in: Mayer N. Zald and John D. McCarthy, eds., 1987, <i>Social Movements in an Organizational Society: Collected Essays</i>, New Brunswick: Transaction Publishers, 15–42.</div>
+  <div class="csl-entry">稲上毅，1981，『労使関係の社会学』東京大学出版会．</div>
+  <div class="csl-entry">真木悠介，1977a，『現代社会の存立構造』筑摩書房．</div>
+  <div class="csl-entry">———，1977b，『気流の鳴る音』筑摩書房．</div>
+  <div class="csl-entry">小熊英二，1995，『単一民族神話の起源――〈日本人〉の自画像の系譜』新曜社．</div>
 </div>
+
 <<===== RESULT =====<<
 
 
@@ -19,6 +23,15 @@ bibliography
             "citationItems": [
                 {
                     "id": "Item-1"
+                }, 
+                {
+                    "id": "Item-2"
+                }, 
+                {
+                    "id": "Item-3"
+                }, 
+                {
+                    "id": "Item-4"
                 }
             ], 
             "properties": {
@@ -39,21 +52,81 @@ jm-japan-sociological-society.csl
 
 >>===== INPUT =====>>
 [
-{
-    "id": "Item-1",
-    "type": "article-journal",
-    "language": "en>en",
-    "author": [
-      { "family": "McCarthy", "given": "John D." },
-      { "family": "Zald", "given": "Mayer N." }
-     ],
-    "issued": { "date-parts": [[1977]]},
-    "title": "Resource Mobilization and Social Movements: A Partial Theory",
-    "container-title": "American Journal of Sociology",
-    "volume": "82",
-    "issue": "6",
-    "page": "1212-1241",
-    "note": "alt-type: chapter\nalt-editor: Zald||Mayer N.\nalt-editor: McCarthy||John D.\nalt-issued: 1987\nalt-container-title: Social Movements in an Organizational Society: Collected Essays\nalt-publisher-place: New Brunswick\nalt-publisher: Transaction Publishers\nalt-page: 15-42"
-}
+    {
+        "id": "Item-1",
+        "type": "book",
+        "language": "ja",
+        "author": [
+            {
+              "family": "稲上",
+              "given": "毅",
+              "multi": {
+                  "_key": {
+                      "en": {"family": "Inakami", "given": "" }
+                  }
+              }
+            }
+        ],
+        "issued": {"date-parts": [[1981]]},
+        "title": "労使関係の社会学",
+        "publisher": "東京大学出版会"
+    },
+    {
+        "id": "Item-2",
+        "type": "book",
+        "language": "ja",
+        "author": [
+            {
+              "family": "真木",
+              "given": "悠介",
+              "multi": {
+                  "_key": {
+                      "en": {"family": "Maki", "given": "" }
+                  }
+              }
+            }
+        ],
+        "issued": {"date-parts": [[1977]]},
+        "title": "現代社会の存立構造",
+        "publisher": "筑摩書房"
+    },
+    {
+        "id": "Item-3",
+        "type": "book",
+        "language": "ja",
+        "author": [
+            {
+              "family": "真木",
+              "given": "悠介",
+              "multi": {
+                  "_key": {
+                      "en": {"family": "Maki", "given": "" }
+                  }
+              }
+            }
+        ],
+        "issued": {"date-parts": [[1977]]},
+        "title": "気流の鳴る音",
+        "publisher": "筑摩書房"
+    },
+    {
+        "id": "Item-4",
+        "type": "book",
+        "language": "ja",
+        "author": [
+            {
+              "family": "小熊",
+              "given": "英二",
+              "multi": {
+                  "_key": {
+                      "en": {"family": "Oguma", "given": "" }
+                  }
+              }
+            }
+        ],
+        "issued": {"date-parts": [[1995]]},
+        "title": "単一民族神話の起源――〈日本人〉の自画像の系譜",
+        "publisher": "新曜社"
+    }
 ]
 <<===== INPUT =====<<

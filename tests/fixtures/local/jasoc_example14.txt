@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">高坂健次・厚東洋輔編，1998，『講座社会学 1 理論と方法』東京大学出版会．</div>
+  <div class="csl-entry">舩橋晴俊，1998，『環境問題の未来と社会変動――社会の自己破壊性と自己組織性』舩橋晴俊・飯島伸子編『講座社会学 12 環境』東京大学出版会．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -44,13 +44,18 @@ jm-japan-sociological-society.csl
         "type": "book",
         "language": "ja",
         "author": [
-            {"family": "高坂", "given": "健次"},
-            {"family": "厚東", "given": "洋輔編"}
+            {"family": "舩橋", "given": "晴俊"}
         ],
         "issued": {"date-parts": [[1998]]},
-        "title": "講座社会学 1 理論と方法",
-        "publisher": "東京大学出版会"
+        "title": "環境問題の未来と社会変動――社会の自己破壊性と自己組織性",
+        "editor": [
+            {"family": "舩橋", "given": "晴俊"},
+            {"family": "飯島", "given": "伸子"}
+        ],
+        "container-title": "講座社会学 12 環境",
+        "publisher": "東京大学出版会",
+        "page": "191-224"
     }
-]
-
+ ]
+ 
 <<===== INPUT =====<<

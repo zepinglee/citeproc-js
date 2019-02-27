@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">桜井厚，1993，「ライフヒストリー調査雑感」『三色旗』慶應通信，549: 11–14．</div>
+  <div class="csl-entry">Fromm, Erich, 1941, <i>Escape from Freedom</i>, New York: Reinehart and Winston. (日高六郎訳，1951，『自由からの逃走』東京創元社．)</div>
 </div>
 <<===== RESULT =====<<
 
@@ -39,19 +39,25 @@ jm-japan-sociological-society.csl
 
 >>===== INPUT =====>>
 [
-    {
-        "id": "Item-1",
-        "type": "article-journal",
-        "language": "ja",
-        "author": [
-            {"family": "桜井", "given": "厚"}
-        ],
-        "issued": {"date-parts": [[1993]]},
-        "title": "ライフヒストリー調査雑感",
-        "container-title": "三色旗",
-        "publisher": "慶應通信",
-        "volume": "549",
-        "page": "11-4"
-    }
+{
+    "id": "Item-1",
+    "type": "book",
+    "language": "en>ja",
+    "author": [
+      { "family": "Fromm", "given": "Erich" }
+     ],
+    "issued": { "date-parts": [[1941]]},
+    "title": "Escape from Freedom",
+    "publisher-place": "New York",
+    "publisher": "Reinehart and Winston",
+    "multi": {
+      "_keys": {
+        "title": {
+          "ja": "自由からの逃走"
+        }
+      }
+    },
+    "note": "alt-translator: 日高||六郎\nalt-issued: 1951\nalt-publisher: 東京創元社"
+}
 ]
 <<===== INPUT =====<<

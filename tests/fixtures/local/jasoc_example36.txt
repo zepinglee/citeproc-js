@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">総務省統計局，2007，「平成17年国勢調査第1表 労働力状態（8区分）・年齢（各歳）・男女別15歳以上人口――全国（第2次基本集計）」，(2009年1月10日取得，http://www.e-stat.go.jp/SG1/estat/)．</div>
+  <div class="csl-entry">大阪商業大学比較地域研究所・東京大学社会科学研究所，2003，『日本版General Social Surveys〈JGSS-2003〉面接票0350』[MRDF]，大阪商業大学比較地域研究所・東京大学社会科学研究所，東京大学社会科学研究所附属日本社会研究情報センターより入手．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -44,12 +44,14 @@ jm-japan-sociological-society.csl
         "type": "report",
         "language": "ja",
         "author": [
-            {"literal": "総務省統計局"}
+            {"literal": "大阪商業大学比較地域研究所"},
+            {"literal": "東京大学社会科学研究所"}
         ],
-        "issued": {"date-parts": [[2007]]},
-        "title": "平成17年国勢調査第1表 労働力状態（8区分）・年齢（各歳）・男女別15歳以上人口――全国（第2次基本集計）",
-        "accessed": {"date-parts": [[2009,1,10]]},
-        "URL": "http://www.e-stat.go.jp/SG1/estat/"
+        "issued": {"date-parts": [[2003]]},
+        "title": "日本版General Social Surveys〈JGSS-2003〉面接票0350",
+        "medium": "MRDF",
+        "publisher": "大阪商業大学比較地域研究所・東京大学社会科学研究所",
+        "URL": "東京大学社会科学研究所附属日本社会研究情報センターより入手"
     }
 ]
 <<===== INPUT =====<<

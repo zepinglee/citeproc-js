@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">神原文子，1999，『同和地区における子育ての現状と課題に関する実証研究』1996-1998年度科学研究費補助金研究成果報告書（08451041），相愛大学．</div>
+  <div class="csl-entry">鈴木二郎，1999，「社会学と社会の比較研究」丸々大学大学院一々学研究科1998年度修士論文．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -41,16 +41,17 @@ jm-japan-sociological-society.csl
 [
     {
         "id": "Item-1",
-        "type": "report",
+        "type": "thesis",
         "language": "ja",
         "author": [
-            {"family": "神原", "given": "文子"}
+            {"family": "鈴木", "given": "二郎"}
         ],
         "issued": {"date-parts": [[1999]]},
-        "title": "同和地区における子育ての現状と課題に関する実証研究",
-        "genre": "1996-1998年度科学研究費補助金研究成果報告書",
-        "number": "08451041",
-        "publisher": "相愛大学"
+        "title": "社会学と社会の比較研究",
+        "publisher": "丸々大学大学院一々学研究科",
+        "note": "event-date: 1998",
+        "genre": "修士論文"
     }
 ]
+
 <<===== INPUT =====<<

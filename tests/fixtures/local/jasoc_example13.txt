@@ -6,8 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">宮島喬・梶田孝道・伊藤るり，1985，『先進社会のジレンマ』有斐閣．</div>
-  <div class="csl-entry">杉本良夫・ロスマオア，1995，『日本人論の方程式』筑摩書房．</div>
+  <div class="csl-entry">高坂健次・厚東洋輔編，1998，『講座社会学 1 理論と方法』東京大学出版会．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -20,9 +19,6 @@ bibliography
             "citationItems": [
                 {
                     "id": "Item-1"
-                }, 
-                {
-                    "id": "Item-2"
                 }
             ], 
             "properties": {
@@ -48,26 +44,13 @@ jm-japan-sociological-society.csl
         "type": "book",
         "language": "ja",
         "author": [
-            {"family": "宮島", "given": "喬"},
-            {"family": "梶田", "given": "孝道"},
-            {"family": "伊藤", "given": "るり"}
+            {"family": "高坂", "given": "健次"},
+            {"family": "厚東", "given": "洋輔編"}
         ],
-        "issued": {"date-parts": [[1985]]},
-        "title": "先進社会のジレンマ",
-        "publisher": "有斐閣"
-    },
-    {
-        "id": "Item-2",
-        "type": "book",
-        "language": "ja",
-        "author": [
-            {"family": "杉本", "given": "良夫"},
-            {"family": "ロス", "given": "マオア"}
-        ],
-        "issued": {"date-parts": [[1995]]},
-        "title": "日本人論の方程式",
-        "publisher": "筑摩書房"
+        "issued": {"date-parts": [[1998]]},
+        "title": "講座社会学 1 理論と方法",
+        "publisher": "東京大学出版会"
     }
 ]
-    
+
 <<===== INPUT =====<<

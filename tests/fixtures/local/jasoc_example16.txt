@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">高橋徹，1965，「日本における社会心理学の形成」高橋徹・富永健一と佐藤毅『今日の社会心理学 1 社会心理学の形成』培風館，317–505．</div>
+  <div class="csl-entry">佐藤嘉倫，1998，「合理的選択理論批判の論理構造とその問題点」『社会学評論』49(2): 188–205．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -41,21 +41,17 @@ jm-japan-sociological-society.csl
 [
     {
         "id": "Item-1",
-        "type": "chapter",
+        "type": "article-journal",
         "language": "ja",
         "author": [
-            {"family": "高橋", "given": "徹"}
+            {"family": "佐藤", "given": "嘉倫"}
         ],
-        "issued": {"date-parts": [[1965]]},
-        "title": "日本における社会心理学の形成",
-        "container-author": [
-            {"family": "高橋", "given": "徹"},
-            {"family": "富永", "given": "健一"},
-            {"family": "佐藤", "given": "毅"}
-        ],
-        "container-title": "今日の社会心理学 1 社会心理学の形成",
-        "publisher": "培風館",
-        "page": "317-505"
+        "issued": {"date-parts": [[1998]]},
+        "title": "合理的選択理論批判の論理構造とその問題点",
+        "container-title": "社会学評論",
+        "volume": "49",
+        "issue": "2",
+        "page": "188-205"
     }
 ]
 <<===== INPUT =====<<

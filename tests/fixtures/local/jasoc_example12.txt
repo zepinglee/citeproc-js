@@ -6,12 +6,9 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">稲上毅，1981，『労使関係の社会学』東京大学出版会．</div>
-  <div class="csl-entry">真木悠介，1977a，『現代社会の存立構造』筑摩書房．</div>
-  <div class="csl-entry">———，1977b，『気流の鳴る音』筑摩書房．</div>
-  <div class="csl-entry">小熊英二，1995，『単一民族神話の起源――〈日本人〉の自画像の系譜』新曜社．</div>
+  <div class="csl-entry">宮島喬・梶田孝道・伊藤るり，1985，『先進社会のジレンマ』有斐閣．</div>
+  <div class="csl-entry">杉本良夫・ロスマオア，1995，『日本人論の方程式』筑摩書房．</div>
 </div>
-
 <<===== RESULT =====<<
 
 
@@ -26,12 +23,6 @@ bibliography
                 }, 
                 {
                     "id": "Item-2"
-                }, 
-                {
-                    "id": "Item-3"
-                }, 
-                {
-                    "id": "Item-4"
                 }
             ], 
             "properties": {
@@ -57,76 +48,26 @@ jm-japan-sociological-society.csl
         "type": "book",
         "language": "ja",
         "author": [
-            {
-              "family": "稲上",
-              "given": "毅",
-              "multi": {
-                  "_key": {
-                      "en": {"family": "Inakami", "given": "" }
-                  }
-              }
-            }
+            {"family": "宮島", "given": "喬"},
+            {"family": "梶田", "given": "孝道"},
+            {"family": "伊藤", "given": "るり"}
         ],
-        "issued": {"date-parts": [[1981]]},
-        "title": "労使関係の社会学",
-        "publisher": "東京大学出版会"
+        "issued": {"date-parts": [[1985]]},
+        "title": "先進社会のジレンマ",
+        "publisher": "有斐閣"
     },
     {
         "id": "Item-2",
         "type": "book",
         "language": "ja",
         "author": [
-            {
-              "family": "真木",
-              "given": "悠介",
-              "multi": {
-                  "_key": {
-                      "en": {"family": "Maki", "given": "" }
-                  }
-              }
-            }
-        ],
-        "issued": {"date-parts": [[1977]]},
-        "title": "現代社会の存立構造",
-        "publisher": "筑摩書房"
-    },
-    {
-        "id": "Item-3",
-        "type": "book",
-        "language": "ja",
-        "author": [
-            {
-              "family": "真木",
-              "given": "悠介",
-              "multi": {
-                  "_key": {
-                      "en": {"family": "Maki", "given": "" }
-                  }
-              }
-            }
-        ],
-        "issued": {"date-parts": [[1977]]},
-        "title": "気流の鳴る音",
-        "publisher": "筑摩書房"
-    },
-    {
-        "id": "Item-4",
-        "type": "book",
-        "language": "ja",
-        "author": [
-            {
-              "family": "小熊",
-              "given": "英二",
-              "multi": {
-                  "_key": {
-                      "en": {"family": "Oguma", "given": "" }
-                  }
-              }
-            }
+            {"family": "杉本", "given": "良夫"},
+            {"family": "ロス", "given": "マオア"}
         ],
         "issued": {"date-parts": [[1995]]},
-        "title": "単一民族神話の起源――〈日本人〉の自画像の系譜",
-        "publisher": "新曜社"
+        "title": "日本人論の方程式",
+        "publisher": "筑摩書房"
     }
 ]
+    
 <<===== INPUT =====<<

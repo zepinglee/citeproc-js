@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">DeLong, Brad, 2007, “Thomas Piketty and Emmanuel Saez Give Their Current View on American Income Inequality,” The Brad DeLong Blog, January 7, 2007, (Retrieved January 9, 2007, http://econ161.berkeley.edu/movable_type).</div>
+  <div class="csl-entry">National Center for Health Statistics, 2007, “Faststats, A to Z,” (Retrieved February 2, 2007, http://www.cdc.gov/).</div>
 </div>
 <<===== RESULT =====<<
 
@@ -41,17 +41,13 @@ jm-japan-sociological-society.csl
 [
 {
     "id": "Item-1",
-    "type": "post",
+    "type": "report",
     "language": "en",
-    "author": [
-      { "family": "DeLong", "given": "Brad" }
-     ],
+    "author": [ { "literal": "National Center for Health Statistics" } ],
     "issued": { "date-parts": [[2007]]},
-    "title": "Thomas Piketty and Emmanuel Saez Give Their Current View on American Income Inequality",
-    "container-title": "The Brad DeLong Blog",
-    "issued": {"date-parts": [[2007,1,7]]},
-    "accessed": {"date-parts": [[2007,1,9]]},
-    "URL": "http://econ161.berkeley.edu/movable_type"
+    "title": "Faststats, A to Z",
+    "accessed": {"date-parts": [[2007,2,2]]},
+    "URL": "http://www.cdc.gov/"
 }
 ]
 <<===== INPUT =====<<

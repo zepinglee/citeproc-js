@@ -6,8 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">内閣府国民生活局，2009，『平成20年版国民生活白書』．</div>
-  <div class="csl-entry">静岡県，1972，『第8次静岡県総合開発計画』．</div>
+  <div class="csl-entry">田中一郎，2000，「社会学とは何か」第一回日本社会学会大会報告原稿．</div>
 </div>
 <<===== RESULT =====<<
 
@@ -20,9 +19,6 @@ bibliography
             "citationItems": [
                 {
                     "id": "Item-1"
-                }, 
-                {
-                    "id": "Item-2"
                 }
             ], 
             "properties": {
@@ -45,23 +41,14 @@ jm-japan-sociological-society.csl
 [
     {
         "id": "Item-1",
-        "type": "report",
+        "type": "paper-conference",
         "language": "ja",
         "author": [
-            {"literal": "内閣府国民生活局"}
+            {"family": "田中", "given": "一郎"}
         ],
-        "issued": {"date-parts": [[2009]]},
-        "title": "平成20年版国民生活白書"
-},
-{
-        "id": "Item-2",
-        "type": "report",
-        "language": "ja",
-        "author": [
-            {"literal": "静岡県"}
-        ],
-        "issued": {"date-parts": [[1972]]},
-        "title": "第8次静岡県総合開発計画"
+        "event": "第一回日本社会学会大会報告原稿",
+        "event-date": {"date-parts": [[2000]]},
+        "title": "社会学とは何か"
     }
 ]
 
