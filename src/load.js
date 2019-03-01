@@ -619,11 +619,12 @@ var CSL = {
         "issued", 
         "event-date", 
         "accessed", 
-        "container", 
         "original-date",
         "publication-date",
         "available-date",
-        "submitted"
+        "submitted",
+        "alt-issued",
+        "alt-event"
     ],
     TITLE_FIELD_SPLITS: function(seg) {
         var keys = ["title", "short", "main", "sub"];
