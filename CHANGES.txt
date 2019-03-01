@@ -2,6 +2,15 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.218
+==========================
+
+- Fix nesting error triggered by call to alt-issued or alt-event-date date variables
+  when the have a value. Calling these variables directly, outside of cs:alternative,
+  may be necessary in citations for styles that make use of cs:alternative in the
+  bibliography.
+
+==========================
 Changes in version 1.1.217
 ==========================
 
