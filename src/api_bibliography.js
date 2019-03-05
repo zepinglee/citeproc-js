@@ -3,6 +3,9 @@
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
     var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
     debug = false;
+    if (!bibsection && this.opt.bib_mode != CSL.NUMERIC && this.opt.bib_mode != CSL.TRIGRAPH)) {
+        bibsection = {exclude: [{value: "classic", field: "type"}]};
+    }
     // API change: added in version 1.0.51
     if (!this.bibliography.tokens.length) {
         return false;
