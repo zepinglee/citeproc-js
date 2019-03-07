@@ -1256,6 +1256,13 @@ CSL.Attributes["@require-match"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@exclude-types"] = function (state, arg) {
+    state.bibliography.opt.exclude_types = arg.split(/\s+/);
+};
+
+CSL.Attributes["@exclude-with-fields"] = function (state, arg) {
+    state.bibliography.opt.exclude_with_fields = arg.split(/\s+/);
+};
 
 
 CSL.Attributes["@year-suffix-delimiter"] = function (state, arg) {

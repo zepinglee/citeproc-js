@@ -3,8 +3,27 @@
 CSL.Engine.prototype.makeBibliography = function (bibsection) {
     var debug, ret, params, maxoffset, item, len, pos, tok, tokk, tokkk, entry_ids, entry_strings;
     debug = false;
-    if (!bibsection && this.opt.bib_mode != CSL.NUMERIC && this.opt.bib_mode != CSL.TRIGRAPH) {
-        bibsection = {exclude: [{value: "classic", field: "type"}]};
+    if (!bibsection && (this.bibliography.opt.exclude_types || this.bibliography.opt.exclude_with_fields)) {
+        bibsection = {
+            exclude: []
+        };
+        if (this.bibliography.opt.exclude_types) {
+            for (var i in this.bibliography.opt.exclude_types) {
+                var val = this.bibliography.opt.exclude_types[i];
+                bibsection.exclude.push({
+                    field: "type",
+                    value: val
+                });
+            }
+        }
+        if (this.bibliography.opt.exclude_with_fields) {
+            for (var i in this.bibliography.opt.exclude_with_fields) {
+                var field = this.bibliography.opt.exclude_with_fields[i];
+                bibsection.exclude.push({
+                    field: field, value: true
+                });
+            }
+        }
     }
     // API change: added in version 1.0.51
     if (!this.bibliography.tokens.length) {
@@ -113,15 +132,20 @@ CSL.getBibliographyEntries = function (bibsection) {
         return false;
     }
     function eval_spec(a, b) {
-        if ((a === "none" || !a) && !b) {
-            return true;
-        }
-        if ("string" === typeof b) {
-            return eval_string(a, b);
-        } else if (!b) {
-            return false;
+        if ("boolean" === typeof a || !a) {
+            if (a) {
+                return !!b;
+            } else {
+                return !b;
+            }
         } else {
-            return eval_list(a, b);
+            if ("string" === typeof b) {
+                return eval_string(a, b);
+            } else if (!b) {
+                return false;
+            } else {
+                return eval_list(a, b);
+            }
         }
     }
 
