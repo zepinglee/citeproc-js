@@ -2,6 +2,26 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.219
+==========================
+
+
+- Fix a bug that caused labels to be dropped where a variable rendered
+  via cs:substitute was later called as the primary variable, and
+  a separate variable was rendered via cs:substitute.
+
+- Fix a bug that caused labels to be lost on a singleton cs:names
+  that followed a start/end cs:names element inside cs:substitute.
+
+- Add support for require-match on cs:names.
+
+- Amend test fixtures where processor output in now correct.
+
+- Add a test for the require-match attribute.
+
+
+
+==========================
 Changes in version 1.1.218
 ==========================
 
