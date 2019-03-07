@@ -47,22 +47,20 @@ CSL.Node.label = {
             }
             // Names labels
             // Picked up in names END
-            var namevars = state.build.names_variables.slice(-1)[0];
-            if (!state.build.name_label) {
-                state.build.name_label = {};
-            }
+            var namevars = state.build.names_variables[state.build.names_variables.length-1];
+            var namelabels = state.build.name_label[state.build.name_label.length-1];
             for (var i = 0, ilen = namevars.length; i < ilen; i += 1) {
-                if (!state.build.name_label[namevars[i]]) {
-                    state.build.name_label[namevars[i]] = {};
+                if (!namelabels[namevars[i]]) {
+                    namelabels[namevars[i]] = {};
                 }
             }
             if (!state.build.name_flag) {
                 for (var i = 0, ilen = namevars.length; i < ilen; i += 1) {
-                    state.build.name_label[namevars[i]].before = this;
+                    namelabels[namevars[i]].before = this;
                 }
             } else {
                 for (var i = 0, ilen = namevars.length; i < ilen; i += 1) {
-                    state.build.name_label[namevars[i]].after = this;
+                    namelabels[namevars[i]].after = this;
                 }
             }
         }

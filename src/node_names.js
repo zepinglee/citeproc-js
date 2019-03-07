@@ -11,10 +11,16 @@ CSL.Node.names = {
         }
         
         if (this.tokentype === CSL.SINGLETON) {
-            state.build.names_variables.push(this.variables);
+            state.build.names_variables[state.build.names_variables.length-1].concat(this.variables);
+            for (var i in this.variables) {
+                var variable = this.variables[i];
+                var name_labels = state.build.name_label[state.build.name_label.length-1];
+                if (Object.keys(name_labels).length) {
+                    name_labels[variable] = name_labels[Object.keys(name_labels)[0]];
+                }
+            }
             func = function (state) {
-                var labelVariable = state.nameOutput.labelVariable;
-                state.nameOutput.reinit(this, labelVariable);
+                state.nameOutput.reinit(this, this.variables_real[0]);
             };
             this.execs.push(func);
         }
@@ -24,12 +30,8 @@ CSL.Node.names = {
             state.build.names_flag = true;
             state.build.name_flag = false;
             state.build.names_level += 1;
-            if (state.build.names_level === 1) {
-                state.build.names_variables = [];
-                state.build.name_label = {};
-            }
             state.build.names_variables.push(this.variables);
-
+            state.build.name_label.push({});
             // init can substitute
             // init names
             func = function (state) {
@@ -43,6 +45,8 @@ CSL.Node.names = {
         
         if (this.tokentype === CSL.END) {
 
+            // Set/reset name blobs if they exist, for processing
+            // by namesOutput()
             for (var i = 0, ilen = 3; i < ilen; i += 1) {
                 var key = ["family", "given", "et-al"][i];
                 this[key] = state.build[key];
@@ -51,14 +55,10 @@ CSL.Node.names = {
                 }
             }
             // Labels, if any
-            // (XXX should set label format for target variables of this node only)
-            // (XXX segmented assignment is performed inside node_label.js)
-            this.label = state.build.name_label;
-            if (state.build.names_level === 1) {
-                state.build.name_label = {};
-            }
+            this.label = state.build.name_label[state.build.name_label.length-1];
             state.build.names_level += -1;
             state.build.names_variables.pop();
+            state.build.name_label.pop();
 
             // The with term. This isn't the right place
             // for this, but it's all hard-wired at the

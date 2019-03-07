@@ -7,9 +7,10 @@ CSL.Node.substitute = {
             // set conditional
             func = function (state) {
                 state.tmp.can_block_substitute = true;
-                if (state.tmp.value.length) {
+                if (state.tmp.value.length && !state.tmp.common_term_match_fail) {
                     state.tmp.can_substitute.replace(false, CSL.LITERAL);
                 }
+                state.tmp.common_term_match_fail = false;
             };
             this.execs.push(func);
         }

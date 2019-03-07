@@ -1250,6 +1250,12 @@ CSL.Attributes["@sort-separator"] = function (state, arg) {
     state.setOpt(this, "sort-separator", arg);
 };
 
+CSL.Attributes["@require-match"] = function (state, arg) {
+    if (arg === "true") {
+        this.requireMatch = true;
+    }
+};
+
 
 
 CSL.Attributes["@year-suffix-delimiter"] = function (state, arg) {

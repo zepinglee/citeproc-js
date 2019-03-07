@@ -304,36 +304,47 @@ CSL.Engine.prototype.setCloseQuotesArray = function () {
     this.opt.close_quotes_array = ret;
 };
 
+// Walker for preparsed XML input
 CSL.makeBuilder = function (me, target) {
     var var_stack = [];
-    function enterFunc (node) {
+    var node_stack = [];
+    function runStart (node) {
+        node_stack.push(node);
         CSL.XmlToToken.call(node, me, CSL.START, target, var_stack);
     }
-    function leaveFunc (node) {
+    function runEnd () {
+        var node = node_stack.pop();
         CSL.XmlToToken.call(node, me, CSL.END, target, var_stack);
     }
-    function singletonFunc (node) {
+    function runSingle (node) {
         CSL.XmlToToken.call(node, me, CSL.SINGLETON, target, var_stack);
     }
-    function buildStyle (node) {
-        var origparent;
-        if (me.cslXml.numberofnodes(me.cslXml.children(node))) {
-            origparent = node;
-            enterFunc(origparent);
-            for (var i=0;i<me.cslXml.numberofnodes(me.cslXml.children(origparent));i+=1) {
-                node = me.cslXml.children(origparent)[i];
-                if (me.cslXml.nodename(node) === null) {
-                    continue;
-                }
-                if (me.cslXml.nodename(node) === "date") {
-                    CSL.Util.fixDateNode.call(me, origparent, i, node);
-                    node = me.cslXml.children(origparent)[i];
-                }
-                buildStyle(node, enterFunc, leaveFunc, singletonFunc);
+    function buildStyle (nodes, parent, node_stack) {
+        if (!node_stack) {
+            node_stack = [];
+        }
+        if (!nodes) {
+            nodes = [];
+        }
+        if ("undefined" === typeof nodes.length) {
+            nodes = [nodes];
+        }
+        for (var i=0; i<nodes.length; i++) {
+            var node = nodes[i];
+            if (me.cslXml.nodename(node) === null) {
+                continue;
             }
-            leaveFunc(origparent);
-        } else {
-            singletonFunc(node);
+            if (parent && me.cslXml.nodename(node) === "date") {
+                CSL.Util.fixDateNode.call(me, parent, i, node);
+                node = me.cslXml.children(parent)[i];
+            }
+            if (me.cslXml.numberofnodes(me.cslXml.children(node))) {
+                runStart(node);
+                buildStyle(me.cslXml.children(node), node, node_stack);
+                runEnd();
+            } else {
+                runSingle(node);
+            }
         }
     }
     return buildStyle;
@@ -639,9 +650,9 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
 
     // Normalize language field into "language" and "language-original"
-    if (Item.language && Item.language.match(/[\>\<]/)) {
+    if (Item.language && Item.language.match(/[><]/)) {
         // Attempt to split field in two
-        var m = Item.language.match(/(.*?)([\<\>])(.*)/);
+        var m = Item.language.match(/(.*?)([<>])(.*)/);
         if (m[2] === "<") {
             Item["language-name"] = m[1];
             Item["language-name-original"] = m[3];

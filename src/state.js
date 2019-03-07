@@ -385,6 +385,8 @@ CSL.Engine.Build = function () {
     // scratch variable to hold the name of a macro
     // or a term until its children have been collected.
     this.name = false;
+    this.names_variables = [[]];
+    this.name_label = [{}];
     //
     // scratch variable to hold the value of a form
     // attribute until other attributes needed for

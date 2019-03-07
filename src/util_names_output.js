@@ -17,7 +17,7 @@ CSL.NameOutput = function(state, Item, item) {
 };
 
 CSL.NameOutput.prototype.init = function (names) {
-
+    this.requireMatch = names.requireMatch;
     if (this.state.tmp.term_predecessor) {
         this.state.tmp.subsequent_author_substitute_ok = false;
     }
@@ -57,11 +57,27 @@ CSL.NameOutput.prototype.init = function (names) {
     if (!this.state.tmp.value.length) {
         return;
     }
+    // Abort and proceed to the next substitution if a match is required,
+    // two variables are called, and they do not match.
+    var checkCommonTerm = this.checkCommonAuthor(this.requireMatch);
+    if (checkCommonTerm) {
+        this.state.tmp.can_substitute.pop();
+        this.state.tmp.can_substitute.push(true);
+        //this.state.tmp.group_context.mystack[this.state.tmp.group_context.mystack.length-1].variable_success = false;
+        for (var i in this.variables) {
+            var idx = this.state.tmp.done_vars.indexOf(this.variables[i]);
+            if (idx > -1) {
+                this.state.tmp.done_vars = this.state.tmp.done_vars.slice(0, idx).concat(this.state.tmp.done_vars.slice(i+1));
+            }
+        }
+        this.state.tmp.common_term_match_fail = true;
+        this.variables = [];
+    }
 };
 
 
 CSL.NameOutput.prototype.reinit = function (names, labelVariable) {
-
+    this.requireMatch = names.requireMatch;
     this.labelVariable = labelVariable;
 
     if (this.state.tmp.can_substitute.value()) {
@@ -86,6 +102,20 @@ CSL.NameOutput.prototype.reinit = function (names, labelVariable) {
 
         this.state.tmp.value = oldval;
 
+    }
+    // Abort and proceed to the next substitution if a match is required,
+    // two variables are called, and they do not match.
+    var checkCommonTerm = this.checkCommonAuthor(this.requireMatch);
+    if (checkCommonTerm) {
+        this.state.tmp.can_substitute.pop();
+        this.state.tmp.can_substitute.push(true);
+        for (var i in this.variables) {
+            var idx = this.state.tmp.done_vars.indexOf(this.variables[i]);
+            if (idx > -1) {
+                this.state.tmp.done_vars = this.state.tmp.done_vars.slice(0, idx).concat(this.state.tmp.done_vars.slice(i+1));
+            }
+        }
+        this.variables = [];
     }
 };
 
@@ -191,7 +221,7 @@ CSL.NameOutput.prototype.outputNames = function () {
         print("(9)");
     }
     //SNIP-END
-    this.setCommonTerm();
+    this.setCommonTerm(this.requireMatch);
     //SNIP-START
     if (this.debug) {
         print("(10)");

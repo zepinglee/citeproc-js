@@ -6,7 +6,7 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">McCarthy, John D. and Mayer N. Zald, 1977, “Resource Mobilization and Social Movements: A Partial Theory,” <i>American Journal of Sociology</i>, 82(6): 1212–41. Reprinted in: Mayer N. Zald and John D. McCarthy, eds., 1987, <i>Social Movements in an Organizational Society: Collected Essays</i>, New Brunswick: Transaction Publishers, 15–42.</div>
+  <div class="csl-entry">McCarthy, John D. and Mayer N. Zald, 1977, “Resource Mobilization and Social Movements: A Partial Theory,” <i>American Journal of Sociology</i>, 82(6): 1212–41. Reprinted in: Mayer N. Zald and John D. McCarthy eds., 1987, <i>Social Movements in an Organizational Society: Collected Essays</i>, New Brunswick: Transaction Publishers, 15–42.</div>
 </div>
 <<===== RESULT =====<<
 
