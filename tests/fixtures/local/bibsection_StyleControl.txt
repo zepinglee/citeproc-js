@@ -7,7 +7,7 @@ bibliography
 <div class="csl-bib-body">
   <div class="csl-entry">Item One</div>
   <div class="csl-entry">Item Two</div>
-  <div class="csl-entry">Item Six</div>
+  <div class="csl-entry">Item Seven</div>
 </div>
 <<===== RESULT =====<<
 
@@ -16,18 +16,22 @@ bibliography
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <citation>
     <layout>
       <text value="Oops"/>
     </layout>
   </citation>
-  <bibliography exclude-types="chapter" exclude-with-fields="jurisdiction court">
+  <bibliography exclude-types="chapter paper-conference" exclude-with-fields="jurisdiction translator">
     <layout>
       <text variable="title" />
     </layout>
@@ -55,19 +59,29 @@ bibliography
     }, 
     {
         "id": "ITEM-4", 
-        "jurisdiction": "us:ca", 
         "title": "Item Four", 
-        "type": "article-newspaper"
+        "type": "paper-conference"
     }, 
     {
-        "court": "District Court", 
         "id": "ITEM-5", 
+        "jurisdiction": "us:ca", 
         "title": "Item Five", 
         "type": "article-newspaper"
     }, 
     {
         "id": "ITEM-6", 
         "title": "Item Six", 
+        "translator": [
+            {
+                "family": "Tracey", 
+                "given": "Dick"
+            }
+        ], 
+        "type": "article-newspaper"
+    }, 
+    {
+        "id": "ITEM-7", 
+        "title": "Item Seven", 
         "type": "article-newspaper"
     }
 ]
