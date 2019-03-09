@@ -5,7 +5,12 @@ bibliography
 
 
 >>===== RESULT =====>>
-???
+<div class="csl-bib-body">
+  <div class="csl-entry">[J. Smith] John Smith, Title One</div>
+  <div class="csl-entry">[R. Smith] Robert Smith, Title Two</div>
+  <div class="csl-entry">[G. Jones Two] Gary Jones, Title Three</div>
+  <div class="csl-entry">[G. Jones Four] Gary Jones, Title Four</div>
+</div>
 <<===== RESULT =====<<
 
 >>===== ABBREVIATIONS =====>>
