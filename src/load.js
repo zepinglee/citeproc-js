@@ -377,6 +377,46 @@ var CSL = {
         Item.note = lines.join("\n").trim();
     },
 
+    checkPrefixSpaceAppend: function (state, prefix) {
+        if (!prefix) {
+            prefix = "";
+        }
+        var sp = "";
+        // We need the raw string, without decorations
+        // of any kind. Markup scheme is known, though, so
+        // markup can be safely stripped at string level.
+        //
+        // U+201d = right double quotation mark
+        // U+2019 = right single quotation mark
+        // U+00bb = right double angle bracket (guillemet)
+        // U+202f = non-breaking thin space
+        // U+00a0 = non-breaking space
+        var test_prefix = prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g,"");
+        var test_char = test_prefix.slice(-1);
+        if (test_prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
+            sp = " ";
+        } else if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1) {
+            sp = " ";
+        } else if (test_char.match(/[\)\],0-9]/)) {
+            sp = " ";
+        }
+        // Protect against double spaces, which would trigger an extra,
+        // explicit, non-breaking space.
+        var prefix = (prefix + sp).replace(/\s+/g, " ");
+        return prefix;
+    },
+
+    checkIgnorePredecessor: function(state, prefix) {
+        var ignorePredecessor = false;
+        var test_prefix = prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g,"");
+        var test_char = test_prefix.slice(-1);
+        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1 && prefix.trim().indexOf(" ") > -1) {
+            state.tmp.term_predecessor = false;
+            return true;
+        }
+        return false;
+    },
+    
     GENDERS: ["masculine", "feminine"],
     
     ERROR_NO_RENDERED_FORM: 1,

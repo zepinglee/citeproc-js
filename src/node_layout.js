@@ -123,38 +123,13 @@ CSL.Node.layout = {
             if (state.build.area === "citation") {
                 prefix_token = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item, item) {
-                    var sp;
                     if (item && item.prefix) {
-                        sp = "";
-                        // We need the raw string, without decorations
-                        // of any kind. Markup scheme is known, though, so
-                        // markup can be safely stripped at string level.
-                        //
-                        // U+201d = right double quotation mark
-                        // U+2019 = right single quotation mark
-                        // U+00bb = right double angle bracket (guillemet)
-                        // U+202f = non-breaking thin space
-                        // U+00a0 = non-breaking space
-                        var test_prefix = item.prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g,"");
-                        var test_char = test_prefix.slice(-1);
-                        if (test_prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
-                            sp = " ";
-                        } else if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1) {
-                            sp = " ";
-                        } else if (test_char.match(/[\)\],0-9]/)) {
-                            sp = " ";
-                        }
-                        var ignorePredecessor = false;
-                        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1 && item.prefix.trim().indexOf(" ") > -1) {
-                            state.tmp.term_predecessor = false;
-                            ignorePredecessor = true;
-                        }
-                        // Protect against double spaces, which would trigger an extra,
-                        // explicit, non-breaking space.
-                        var prefix = (item.prefix + sp).replace(/\s+/g, " ");
+                        var prefix = CSL.checkPrefixSpaceAppend(state, item.prefix);
                         if (!state.tmp.just_looking) {
                             prefix = state.output.checkNestedBrace.update(prefix);
                         }
+                        print("-- join ITEM PREFIX: [" + prefix + "]");
+                        var ignorePredecessor = CSL.checkIgnorePredecessor(state, prefix);
                         state.output.append(prefix, this, false, ignorePredecessor);
                     }
                 };
@@ -275,6 +250,7 @@ CSL.Node.layout = {
                             if (!state.tmp.just_looking) {
                                 suffix = state.output.checkNestedBrace.update(suffix);
                             }
+                            print("-- join ITEM SUFFIX: [" + suffix + "]");
                             state.output.append((sp + suffix), this);
                         }
                     };

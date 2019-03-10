@@ -976,13 +976,19 @@ CSL.getSpliceDelimiter = function (last_locator, last_collapsed, pos) {
  */
 CSL.getCitationCluster = function (inputList, citation) {
     var result, objects, myparams, len, pos, item, last_collapsed, params, empties, composite, compie, myblobs, Item, llen, ppos, obj, preceding_item, txt_esc, error_object, citationID, authorOnly, suppressAuthor;
+    var citation_prefix = "";
+    this.output.checkNestedBrace = new CSL.checkNestedBrace(this);
     if (citation) {
         citationID = citation.citationID;
         authorOnly = citation.properties["author-only"];
         if (this.opt.xclass !== "note" && this.opt.bib_mode !== CSL.NUMERIC) {
             suppressAuthor = citation.properties["suppress-author"];
         }
+        if (citation.properties.prefix) {
+            citation_prefix = CSL.checkPrefixSpaceAppend(this, citation.properties.prefix);
+        }
     }
+    print("-- set CITATION PREFIX: [" + citation_prefix + "]");
     inputList = inputList ? inputList : [];
     this.tmp.last_primary_names_string = false;
     txt_esc = CSL.getSafeEscape(this);
@@ -996,9 +1002,8 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
 
-    this.output.checkNestedBrace = new CSL.checkNestedBrace(this);
-
-    var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix);
+    var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix + citation_prefix);
+    print("-- setting LAYOUT PREFIX: [" + use_layout_prefix + "]");
     //var use_layout_prefix = this.citation.opt.layout_prefix;
 
     var suppressTrailingPunctuation = false;
@@ -1170,15 +1175,9 @@ CSL.getCitationCluster = function (inputList, citation) {
     if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(suffix.slice(0, 1)) > -1) {
         suffix = suffix.slice(0, 1);
     }
-    var delimiter = this.citation.opt.layout_delimiter;
-    if (!delimiter) {
-        delimiter = "";
-    }
-    if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(delimiter.slice(0, 1)) > -1) {
-        delimiter = delimiter.slice(0, 1);
-    }
     //print("=== FROM CITE ===");
     suffix = this.output.checkNestedBrace.update(suffix);
+    print("-- setting LAYOUT SUFFIX: ["+suffix+"]");
 
 
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {

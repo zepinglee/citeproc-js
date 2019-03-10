@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] John Smith (1999)
+>>[0] John Smith prepared (1999)
 <<===== RESULT =====<<
 
 
@@ -17,10 +17,14 @@ citation
             "citationItems": [
                 {
                     "id": "ITEM-1"
+                }, 
+                {
+                    "id": "ITEM-2"
                 }
             ], 
             "properties": {
                 "composite": true, 
+                "infix": "prepared", 
                 "noteIndex": 0
             }
         }, 
@@ -41,7 +45,7 @@ citation
     <title />
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
-  <citation>
+  <citation collapse="year">
     <layout delimiter="; " prefix="(" suffix=")">
       <group delimiter=", ">
         <names variable="author">
@@ -87,6 +91,22 @@ citation
         "issued": {
             "date-parts": [
                [1999]
+            ]
+        }
+    },
+    {
+        "id": "ITEM-2", 
+        "type": "book",
+        "title": "My Other Title",
+        "author": [
+            {
+                "family": "Smith", 
+                "given": "John"
+            }
+        ],
+        "issued": {
+            "date-parts": [
+               [2000]
             ]
         }
     }
