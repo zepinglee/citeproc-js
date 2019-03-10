@@ -37,15 +37,8 @@ var CSL = {
 
     PROCESSOR_VERSION: "1.1.220",
 
-    CONDITION_LEVEL_TOP: 1,
-
-    CONDITION_LEVEL_BOTTOM: 2,
-
-    PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
-
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
-    STATUTE_SUBDIV_GROUPED_REGEX: /((?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/g,
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_STRINGS: {
@@ -148,10 +141,6 @@ var CSL = {
         "regulation": true,
         "standard": true
     },
-    NestedBraces: [
-        ["(", "["],
-        [")", "]"]
-    ],
     checkNestedBrace: function(state) {
         if (state.opt.xclass === "note") {
             this.depth = 0;
@@ -159,17 +148,17 @@ var CSL = {
                 
                 // Receives affix string, returns with flipped parens.
                 
-                var str = str ? str : '';
+                var str = str ? str : "";
                 var lst = str.split(/([\(\)])/);
                 for (var i=1,ilen=lst.length;i<ilen;i += 2) {
-                    if (lst[i] === '(') {
+                    if (lst[i] === "(") {
                         if (1 === (this.depth % 2)) {
-                            lst[i] = '[';
+                            lst[i] = "[";
                         }
                         this.depth += 1;
-                    } else if (lst[i] === ')') {
+                    } else if (lst[i] === ")") {
                         if (0 === (this.depth % 2)) {
-                            lst[i] = ']';
+                            lst[i] = "]";
                         }
                         this.depth -= 1;
                     }
@@ -292,40 +281,6 @@ var CSL = {
         return lst.join("-");
     },
 
-    isDatePart: function(str, less, more) {
-        if (str.length > less && str.length < more && parseInt(str)) {
-            return true;
-        } else {
-            return false;
-        }
-    },
-
-    isDateString: function(str) {
-        if (!str) {
-            return false;
-        }
-        var strLst = str.split("-");
-        if (strLst.length > 0) {
-            if (!this.isDatePart(strLst[0], 3, 5)) {
-                return false;
-            }
-        }
-        if (strLst.length > 1) {
-            if (!this.isDatePart(strLst[1], 0, 3)) {
-                return false;
-            }
-        }
-        if (strLst.length > 2) {
-            if (!this.isDatePart(strLst[2], 0, 3)) {
-                return false;
-            }
-        }
-        if (strLst.length > 3) {
-            return false;
-        }
-        return true;
-    },
-    
     parseNoteFieldHacks: function(Item, validFieldsForType, allowDateOverride) {
         if ("string" !== typeof Item.note) {
             return;
@@ -449,26 +404,16 @@ var CSL = {
     DESCENDING: 1,
     ASCENDING: 2,
 
-    ONLY_FIRST: 1,
-    ALWAYS: 2,
-    ONLY_LAST: 3,
-
-    FINISH: 1,
-
     POSITION_FIRST: 0,
     POSITION_SUBSEQUENT: 1,
     POSITION_IBID: 2,
     POSITION_IBID_WITH_LOCATOR: 3,
-
-    MARK_TRAILING_NAMES: true,
 
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort", "intext"],
 
     CITE_FIELDS: ["first-reference-note-number", "locator", "locator-extra"],
-
-    MINIMAL_NAME_FIELDS: ["literal", "family"],
 
     SWAPPING_PUNCTUATION: [".", "!", "?", ":", ","],
     TERMINAL_PUNCTUATION: [":", ".", ";", "!", "?", " "],
@@ -479,14 +424,11 @@ var CSL = {
     POSITION: 2,
     TRIGRAPH: 3,
 
-    COLLAPSE_VALUES: ["citation-number", "year", "year-suffix"],
-
     DATE_PARTS: ["year", "month", "day"],
     DATE_PARTS_ALL: ["year", "month", "day", "season"],
     DATE_PARTS_INTERNAL: ["year", "month", "day", "year_end", "month_end", "day_end"],
 
     NAME_PARTS: ["non-dropping-particle", "family", "given", "dropping-particle", "suffix", "literal"],
-    DECORABLE_NAME_PARTS: ["given", "family", "suffix"],
 
     DISAMBIGUATE_OPTIONS: [
         "disambiguate-add-names",
@@ -636,34 +578,6 @@ var CSL = {
         return ret;
     },
     
-    // TAG_USEALL: /(<[^>]+>)/,
-    TAG_USEALL: function (str) {
-        var ret, open, close, end;
-        ret = [""];
-        open = str.indexOf("<");
-        close = str.indexOf(">");
-        while (open > -1 && close > -1) {
-            if (open > close) {
-                end = open + 1;
-            } else {
-                end = close + 1;
-            }
-            if (open < close && str.slice(open + 1, close).indexOf("<") === -1) {
-                ret[ret.length - 1] += str.slice(0, open);
-                ret.push(str.slice(open, close + 1));
-                ret.push("");
-                str = str.slice(end);
-            } else {
-                ret[ret.length - 1] += str.slice(0, close + 1);
-                str = str.slice(end);
-            }
-            open = str.indexOf("<");
-            close = str.indexOf(">");
-        }
-        ret[ret.length - 1] += str;
-        return ret;
-    },
-
     demoteNoiseWords: function (state, fld, drop_or_demote) {
         var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
         if (fld && drop_or_demote) {
@@ -1095,10 +1009,6 @@ var CSL = {
 if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports" in module) {
     exports.CSL = CSL;
 }
-
-CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
-CSL.CLOSURES = new RegExp(".*[\\]\\)]");
-
 
 //SNIP-START
 
