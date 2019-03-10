@@ -72,6 +72,7 @@ CSL.Node.text = {
                         if (!state.tmp.just_looking) {
                             if (item && item["author-only"]) {
                                 state.tmp.element_trace.replace("do-not-suppress-me");
+                                /*
                                 var reference_term = state.getTerm("reference", "long", "singular");
                                 if ("undefined" === typeof reference_term) {
                                     reference_term = "reference";
@@ -79,6 +80,7 @@ CSL.Node.text = {
                                 term = CSL.Output.Formatters["capitalize-first"](state, reference_term);
                                 state.output.append(term + " ");
                                 state.tmp.last_element_trace = true;
+                                */
                             }
                             if (item && item["suppress-author"]) {
                                 if (state.tmp.last_element_trace) {

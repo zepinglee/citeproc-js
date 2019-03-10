@@ -5,7 +5,8 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] (Comment. [Inside parens (Smith), 2000; and (Jones), 2001, ending parens].)
+..[0] (BEFORE: Comment. [Inside parens (Smith), 2000; and (Jones), 2001, ending parens]. AFTER)
+>>[1] (BEFORE: Comment. [Inside parens (Smith), 2000; and (Jones), 2001, ending parens]. AFTER)
 <<===== RESULT =====<<
 
 
@@ -26,10 +27,40 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 1
+                "noteIndex": 1, 
+                "prefix": "BEFORE:", 
+                "suffix": "AFTER"
             }
         }, 
         [], 
+        []
+    ], 
+    [
+        {
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1", 
+                    "prefix": "Comment. (Inside parens "
+                }, 
+                {
+                    "id": "ITEM-2", 
+                    "prefix": "and", 
+                    "suffix": ", ending parens)."
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2, 
+                "prefix": "BEFORE:", 
+                "suffix": "AFTER"
+            }
+        }, 
+        [
+            [
+                "CITATION-1", 
+                1
+            ]
+        ], 
         []
     ]
 ]

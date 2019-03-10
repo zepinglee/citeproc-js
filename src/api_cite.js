@@ -414,7 +414,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     }
                     var oldlastid;
 
-                    if ("undefined" === typeof first_ref[myid] && !onecitation.properties["author-only"]) {
+                    if ("undefined" === typeof first_ref[myid] && onecitation.properties.mode !== "author-only") {
                         first_ref[myid] = onecitation.properties.noteIndex;
                         if (this.registry.registry[myid]) {
                             this.registry.registry[myid]['first-reference-note-number'] = onecitation.properties.noteIndex;
@@ -433,7 +433,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         if (j > 0) {
                             try {
                                 var old_last_id_offset = 1;
-                                if (citations[j-1].properties["author-only"] && j > 1) {
+                                if (citations[j-1].properties.mode === "author-only" && j > 1) {
                                     old_last_id_offset = 2;
                                 }
                                 oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
@@ -572,7 +572,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             item[1].position = CSL.POSITION_SUBSEQUENT;
                         }
                         if (suprame || ibidme) {
-                            if (onecitation.properties["author-only"]) {
+                            if (onecitation.properties.mode === "author-only") {
                                 item[1].position = CSL.POSITION_FIRST;
                             }
                             if (first_ref[myid] != onecitation.properties.noteIndex) {
@@ -768,9 +768,25 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 };
 
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) {
-    var str;
+    var str = "";
     this.parallel.StartCitation(sortedItems);
-    str = CSL.getCitationCluster.call(this, sortedItems, citation);
+    if (citation && citation.properties && citation.properties.mode === "composite") {
+        citation.properties.mode = "author-only";
+        var firstChunk = CSL.getCitationCluster.call(this, sortedItems, citation);
+        citation.properties.mode = "suppress-author";
+        var secondChunk = "";
+        if (citation.properties.infix) {
+            this.output.append(citation.properties.infix);
+            secondChunk = this.output.string(this, this.output.queue);
+        }
+        var thirdChunk = CSL.getCitationCluster.call(this, sortedItems, citation);
+        citation.properties.mode = "composite";
+        str = [firstChunk, secondChunk, thirdChunk].filter(function(obj) {
+            return obj;
+        }).join(" ");
+    } else {
+        str = CSL.getCitationCluster.call(this, sortedItems, citation);
+    }
     return str;
 };
 
@@ -815,7 +831,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
     }
     this.tmp.citation_errors = [];
     this.parallel.StartCitation(inputList);
-    str = CSL.getCitationCluster.call(this, inputList);
+    var str = CSL.getCitationCluster.call(this, inputList);
     return str;
 };
 
@@ -980,15 +996,14 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.output.checkNestedBrace = new CSL.checkNestedBrace(this);
     if (citation) {
         citationID = citation.citationID;
-        authorOnly = citation.properties["author-only"];
-        if (this.opt.xclass !== "note" && this.opt.bib_mode !== CSL.NUMERIC) {
-            suppressAuthor = citation.properties["suppress-author"];
+        authorOnly = citation.properties.mode === "author-only" ? !!citation.properties.mode : false;
+        if (this.opt.xclass !== "note") {
+            suppressAuthor = citation.properties.mode === "suppress-author" ? !!citation.properties.mode : false;
         }
         if (citation.properties.prefix) {
             citation_prefix = CSL.checkPrefixSpaceAppend(this, citation.properties.prefix);
         }
     }
-    print("-- set CITATION PREFIX: [" + citation_prefix + "]");
     inputList = inputList ? inputList : [];
     this.tmp.last_primary_names_string = false;
     txt_esc = CSL.getSafeEscape(this);
@@ -1003,7 +1018,6 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.cite_locales = [];
 
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix + citation_prefix);
-    print("-- setting LAYOUT PREFIX: [" + use_layout_prefix + "]");
     //var use_layout_prefix = this.citation.opt.layout_prefix;
 
     var suppressTrailingPunctuation = false;
@@ -1072,10 +1086,12 @@ CSL.getCitationCluster = function (inputList, citation) {
     len = inputList.length;
     if (inputList[0] && inputList[0][1]) {
         if (authorOnly) {
+            delete inputList[0][1]["suppress-author"];
             inputList[0][1]["author-only"] = true;
-            len = 1;
         } else if (suppressAuthor) {
+            delete inputList[0][1]["author-only"];
             inputList[0][1]["suppress-author"] = true;
+            print("Suppress author on " + inputList[0][0].id);
         }
     }
     for (pos = 0; pos < len; pos += 1) {
@@ -1153,6 +1169,9 @@ CSL.getCitationCluster = function (inputList, citation) {
         // corresponding to each element.
         //
         myparams.push(params);
+        if (item["author-only"]) {
+            break;
+        }
     }
 
     this.tmp.has_purged_parallel = false;
@@ -1165,6 +1184,10 @@ CSL.getCitationCluster = function (inputList, citation) {
     empties = 0;
     myblobs = this.output.queue.slice();
 
+    var citation_suffix = "";
+    if (citation) {
+        citation_suffix = CSL.checkSuffixSpacePrepend(this, citation.properties.suffix);
+    }
     var suffix = this.citation.opt.layout_suffix;
     var last_locale = this.tmp.cite_locales[this.tmp.cite_locales.length - 1];
     //
@@ -1176,8 +1199,7 @@ CSL.getCitationCluster = function (inputList, citation) {
         suffix = suffix.slice(0, 1);
     }
     //print("=== FROM CITE ===");
-    suffix = this.output.checkNestedBrace.update(suffix);
-    print("-- setting LAYOUT SUFFIX: ["+suffix+"]");
+    suffix = this.output.checkNestedBrace.update(citation_suffix + suffix);
 
 
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
@@ -1225,7 +1247,6 @@ CSL.getCitationCluster = function (inputList, citation) {
 
         composite = this.output.string(this, this.output.queue);
 
-       
         this.tmp.suppress_decorations = false;
         // meaningless assignment
         // this.tmp.handle_ranges = false;

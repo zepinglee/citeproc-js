@@ -5,7 +5,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] John Smith prepared (1999)
+>>[0] John Smith prepared (1999; Brown, 2000)
 <<===== RESULT =====<<
 
 
@@ -23,8 +23,8 @@ citation
                 }
             ], 
             "properties": {
-                "composite": true, 
                 "infix": "prepared", 
+                "mode": "composite", 
                 "noteIndex": 0
             }
         }, 
@@ -100,8 +100,8 @@ citation
         "title": "My Other Title",
         "author": [
             {
-                "family": "Smith", 
-                "given": "John"
+                "family": "Brown", 
+                "given": "Gigi"
             }
         ],
         "issued": {

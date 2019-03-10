@@ -22,7 +22,7 @@ citation
                 }
             ], 
             "properties": {
-                "author-only": true, 
+                "mode": "author-only", 
                 "noteIndex": 0
             }
         }, 
@@ -38,8 +38,8 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 0, 
-                "suppress-author": true
+                "mode": "suppress-author", 
+                "noteIndex": 0
             }
         }, 
         [

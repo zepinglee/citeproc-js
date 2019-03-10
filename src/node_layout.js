@@ -128,7 +128,6 @@ CSL.Node.layout = {
                         if (!state.tmp.just_looking) {
                             prefix = state.output.checkNestedBrace.update(prefix);
                         }
-                        print("-- join ITEM PREFIX: [" + prefix + "]");
                         var ignorePredecessor = CSL.checkIgnorePredecessor(state, prefix);
                         state.output.append(prefix, this, false, ignorePredecessor);
                     }
@@ -240,18 +239,11 @@ CSL.Node.layout = {
                     func = function (state, Item, item) {
                         var sp;
                         if (item && item.suffix) {
-                            sp = "";
-                            if (item.suffix.match(CSL.STARTSWITH_ROMANESQUE_REGEXP)
-                                || ['[','('].indexOf(item.suffix.slice(0,1)) > -1) {
-
-                                sp = " ";
-                            }
-                            var suffix = item.suffix;
+                            var suffix = CSL.checkSuffixSpacePrepend(state, item.suffix);
                             if (!state.tmp.just_looking) {
                                 suffix = state.output.checkNestedBrace.update(suffix);
                             }
-                            print("-- join ITEM SUFFIX: [" + suffix + "]");
-                            state.output.append((sp + suffix), this);
+                            state.output.append((suffix), this);
                         }
                     };
                     suffix_token.execs.push(func);

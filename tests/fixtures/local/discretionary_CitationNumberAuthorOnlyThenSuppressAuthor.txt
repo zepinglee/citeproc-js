@@ -6,7 +6,7 @@ citation
 
 
 >>== RESULT ==>>
-..[0] Reference [1]
+..[0] [1]
 ..[1] <i>[1]</i>
 >>[2] <i>[2]</i>
 <<== RESULT ==<<
@@ -18,11 +18,11 @@ citation
             "citationID": "CITATION-1", 
             "citationItems": [
                 {
+                    "author-only": true, 
                     "id": "ITEM-1"
                 }
             ], 
             "properties": {
-                "author-only": true, 
                 "noteIndex": 0
             }
         }, 
@@ -34,12 +34,12 @@ citation
             "citationID": "CITATION-2", 
             "citationItems": [
                 {
-                    "id": "ITEM-1"
+                    "id": "ITEM-1", 
+                    "suppress-author": true
                 }
             ], 
             "properties": {
-                "noteIndex": 0, 
-                "suppress-author": true
+                "noteIndex": 0
             }
         }, 
         [

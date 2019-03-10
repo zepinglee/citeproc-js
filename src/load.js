@@ -416,6 +416,16 @@ var CSL = {
         }
         return false;
     },
+
+    checkSuffixSpacePrepend: function(state, suffix) {
+        if (!suffix) {
+            return "";
+        }
+        if (suffix.match(CSL.STARTSWITH_ROMANESQUE_REGEXP) || ['[','('].indexOf(suffix.slice(0,1)) > -1) {
+            suffix = " " + suffix;
+        }
+        return suffix;
+    },
     
     GENDERS: ["masculine", "feminine"],
     

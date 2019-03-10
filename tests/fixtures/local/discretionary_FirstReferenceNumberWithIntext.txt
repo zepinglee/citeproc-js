@@ -39,7 +39,7 @@ citation
                 }
             ], 
             "properties": {
-                "author-only": true, 
+                "mode": "author-only", 
                 "noteIndex": 0
             }
         }, 
@@ -60,8 +60,8 @@ citation
                 }
             ], 
             "properties": {
-                "noteIndex": 2, 
-                "suppress-author": true
+                "mode": "suppress-author", 
+                "noteIndex": 2
             }
         }, 
         [
