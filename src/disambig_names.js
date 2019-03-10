@@ -1,7 +1,7 @@
 /*global CSL: true */
 
 CSL.Registry.NameReg = function (state) {
-    var pkey, ikey, skey, floor, ceiling, dagopt, gdropt, ret, pos, items, strip_periods, set_keys, evalname, delitems, addname, key, myitems, i, ilen;
+    var pkey, ikey, skey, dagopt, gdropt, items, strip_periods, set_keys, evalname, delitems, addname, myitems;
     this.state = state;
     this.namereg = {};
     this.nameind = {};
@@ -38,7 +38,7 @@ CSL.Registry.NameReg = function (state) {
     };
 
     evalname = function (item_id, nameobj, namenum, request_base, form, initials) {
-        var pos, len, items, param;
+        var param;
         // XXX THIS CAN NO LONGER HAPPEN
         if (state.tmp.area.slice(0, 12) === "bibliography" && !form) {
             if ("string" === typeof initials) {
@@ -132,7 +132,7 @@ CSL.Registry.NameReg = function (state) {
     // a print trace, and seems to work okay.
     //
     delitems = function (ids) {
-        var item, pos, len, posA, posB, id, fullkey, llen, ppos, otherid;
+        var pos, len, posB, id, fullkey;
         if ("string" === typeof ids || "number" === typeof ids) {
             ids = ["" + ids];
         }

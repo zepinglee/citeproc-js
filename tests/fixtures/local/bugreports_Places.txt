@@ -1037,7 +1037,7 @@ bibliography
             <text macro="event"/>
           </group>
           <text macro="publisher"/>
-          <text variable="locator-extra"/>
+          <number variable="locator-extra"/>
           <text macro="issued"/>
         </group>
       </else-if>

@@ -5,17 +5,37 @@ citation
 
 
 >>===== RESULT =====>>
-Marcus Ts. J. W. Blaggyfuddle
+>>[0] 162a–169d
 <<===== RESULT =====<<
+
+
+>>===== CITATIONS =====>>
+[
+    [
+        {
+            "citationID": "CITATION-1", 
+            "citationItems": [
+                {
+                    "id": "ITEM-1", 
+                    "locator": "162a-169d"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 1
+            }
+        }, 
+        [], 
+        []
+    ]
+]
+<<===== CITATIONS =====<<
 
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.1mlz1"
-      initialize="false"
-      initialize-with=". ">
+      version="1.1mlz1">
   <info>
     <title>Test fixture</title>
     <id>http://citationstyles.org/tests/fixture</id>
@@ -27,9 +47,7 @@ Marcus Ts. J. W. Blaggyfuddle
   </info>
   <citation>
     <layout>
-      <names variable="author">
-        <name/>
-      </names>
+      <number variable="locator"/>
     </layout>
   </citation>
 </style>
@@ -39,12 +57,6 @@ Marcus Ts. J. W. Blaggyfuddle
 >>===== INPUT =====>>
 [
     {
-        "author": [
-            {
-                "family": "Blaggyfuddle", 
-                "given": "Marcus Ts. J.W."
-            }
-        ], 
         "id": "ITEM-1", 
         "type": "book"
     }

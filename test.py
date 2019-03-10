@@ -44,7 +44,7 @@ def path(name):
     if name == "std":
         return os.path.join("tests", "fixtures", "std", "processor-tests", "humans")
     elif name == "styles":
-        return os.path.join("tests", "fixtures", "std", "styles")
+        return os.path.join("tests", "fixtures", "local", "styles")
     elif name == "run":
         return os.path.join("tests", "fixtures", "run")
     elif name == "bundled":
@@ -103,33 +103,25 @@ class Bundle:
         self.citeprocs = [
             {
                 "bundle_name": "citeproc.js", 
-                "e4x": False,
                 "as-module": False,
-                "note": "without e4x support"
-            },
-            {
-                "bundle_name": "citeproc_with_e4x.js",
-                "e4x": True,
-                "as-module": False,
-                "note": "with e4x support"
+                "note": "vanilla javascript object"
             },
             {
                 "bundle_name": "citeproc_commonjs.js",
-                "e4x": False,
                 "as-module": True,
                 "note": "as a module for use with nodejs"
             }
         ]
         f = ["load"]
         f.extend(["print"])
-        f.extend(["xmljson","xmldom","xmle4xLoad","system","sort","util_disambig","util_nodes","util_dateparser","build"]);
+        f.extend(["xmljson","xmldom","system","sort","util_disambig","util_nodes","util_dateparser","build"]);
         f.extend(["util_static_locator","util_processor","util_citationlabel","api_control"]);
         f.extend(["queue","state","api_cite","api_bibliography","util_integration","api_update"]);
         f.extend(["util_locale","util_locale_sniff","node_bibliography","node_choose","node_citation","node_intext","node_comment"]);
         f.extend(["node_date","node_datepart","node_elseif","node_else","node_etal","node_group"]);
         f.extend(["node_if","node_conditions","node_condition","util_conditions","node_info"]);
         f.extend(["node_institution","node_institutionpart","node_key"]);
-        f.extend(["node_label","node_layout","node_macro","util_names_output","util_names_tests"]);
+        f.extend(["node_label","node_layout","node_macro","node_alternative","node_alternativetext","util_names_output","util_names_tests"]);
         f.extend(["util_names_truncate","util_names_divide","util_names_join","util_names_common"]);
         f.extend(["util_names_constraints","util_names_disambig","util_names_etalconfig","util_names_etal"]);
         f.extend(["util_names_render","util_publishers","util_label","node_name","node_namepart"]);
@@ -146,14 +138,12 @@ class Bundle:
             if os.path.exists(citeproc["bundle_name"]):
                 os.unlink(citeproc["bundle_name"])
                 
-    def cleanFile(self, subfile, e4xSupport, asModule):
+    def cleanFile(self, subfile, asModule):
         subfile = fixEndings(subfile)
         subfile = re.sub("(?m)^(\/\*.*?\*\/)$", "", subfile)
         subfile = re.sub("(?sm)^\s*\/\*.*?^\s*\*\/","",subfile)
         subfile = re.sub("(?sm)^\s*//SNIP-START.*?^\s*//SNIP-END","",subfile)
         subfile = re.sub("(?sm)^\s*//.*?$","",subfile)
-        if not e4xSupport:
-            subfile = re.sub("(?sm)^\s*load.*?$","",subfile)
         if asModule:
             subfile += '\nmodule.exports = CSL;\n'
             m = re.match("(?sm)^.*PROCESSOR_VERSION:[\s\'\"]*([\.0-9]+)", subfile)
@@ -174,7 +164,7 @@ class Bundle:
             for f in self.files:
                 filename = os.path.join( "src", "%s.js" % f)
                 ifh = open(filename, "rb")
-                file += self.cleanFile(ifh.read(), citeproc["e4x"], citeproc["as-module"])
+                file += self.cleanFile(ifh.read(), citeproc["as-module"])
             open(citeproc["bundle_name"],"w+b").write(file)
             print "Wrote %s (processor %s)" % (citeproc["bundle_name"], citeproc["note"])
     def unStrictify(self):

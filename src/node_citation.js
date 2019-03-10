@@ -9,11 +9,11 @@ CSL.Node.citation = {
             state.build.extension = "";
 
 
-            var func = function(state, Item) {
+            var func = function(state) {
                 state.tmp.area = "citation";
                 state.tmp.root = "citation";
                 state.tmp.extension = "";
-            }
+            };
             this.execs.push(func);
 
 /*

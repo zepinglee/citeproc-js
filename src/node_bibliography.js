@@ -10,11 +10,11 @@ CSL.Node.bibliography = {
             state.build.root = "bibliography";
             state.build.extension = "";
 
-            var func = function(state, Item) {
+            var func = function(state) {
                 state.tmp.area = "bibliography";
                 state.tmp.root = "bibliography";
                 state.tmp.extension = "";
-            }
+            };
             this.execs.push(func);
 
             //state.parallel.use_parallels = false;

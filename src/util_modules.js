@@ -8,7 +8,7 @@ CSL.Engine.prototype.getJurisdictionList = function (jurisdiction) {
         jurisdictionList.push("us");
     }
     return jurisdictionList;
-}
+};
 
 CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
     var ret = {};
@@ -20,7 +20,9 @@ CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
         for (var j=0,jlen=jurisdictionList.length;j<jlen;j++) {
             var jurisdiction = jurisdictionList[j];
             // If we've "seen" it, we have it already, or we're not going to get it.
-            if (this.opt.jurisdictions_seen[jurisdiction]) continue;
+            if (this.opt.jurisdictions_seen[jurisdiction]) {
+                continue;
+            }
             // Try to get the module
             var res = this.sys.retrieveStyleModule(jurisdiction, preference);
             // If we fail and we've run out of preferences, mark as "seen"
@@ -29,10 +31,12 @@ CSL.Engine.prototype.retrieveAllStyleModules = function (jurisdictionList) {
                 this.opt.jurisdictions_seen[jurisdiction] = true;
             }
             // Don't memo unless get got style code.
-            if (!res) continue;
+            if (!res) {
+                continue;
+            }
             ret[jurisdiction] = res;
         }
     }
     // Give 'em what we got.
     return ret;
-}
+};

@@ -14,7 +14,7 @@ CSL.Node.group = {
             }
 
             // newoutput
-            func = function (state, Item) {
+            func = function (state) {
                 state.output.startTag("group", this);
                 
                 if (this.strings.label_form_override) {
@@ -56,14 +56,14 @@ CSL.Node.group = {
                         condition = {
                             test: this.strings.reject,
                             not: true
-                        }
+                        };
                         force_suppress = true;
                         done_vars = [];
                     } else if (this.strings.require) {
                         condition = {
                             test: this.strings.require,
                             not: false
-                        }
+                        };
                         done_vars = [];
                     }
                     // CONDITION
@@ -105,26 +105,27 @@ CSL.Node.group = {
             // will be parsed out and properly joined, piggybacking on
             // join parameters set on cs:citation or cs:bibliography.
             if (this.strings["has-publisher-and-publisher-place"]) {
-                // Set the handling function only if name-delimiter
-                // is set on the parent cs:citation or cs:bibliography
-                // node.
-                state.build["publisher-special"] = true;
                 // Pass variable string values to the closing
                 // tag via a global, iff they conform to expectations.
-                func = function (state, Item) {
-                    if (this.strings["subgroup-delimiter"]
-                        && Item.publisher && Item["publisher-place"]) {
-                        var publisher_lst = Item.publisher.split(/;\s*/);
-                        var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
-                        if (publisher_lst.length > 1
-                            && publisher_lst.length === publisher_place_lst.length) {
-                            state.publisherOutput = new CSL.PublisherOutput(state, this);
-                            state.publisherOutput["publisher-list"] = publisher_lst;
-                            state.publisherOutput["publisher-place-list"] = publisher_place_lst;
+                state.build["publisher-special"] = true;
+                if (this.strings["subgroup-delimiter"]) {
+                    // Set the handling function only if name-delimiter
+                    // is set on the parent cs:citation or cs:bibliography
+                    // node.
+                    func = function (state, Item) {
+                        if (Item.publisher && Item["publisher-place"]) {
+                            var publisher_lst = Item.publisher.split(/;\s*/);
+                            var publisher_place_lst = Item["publisher-place"].split(/;\s*/);
+                            if (publisher_lst.length > 1
+                                && publisher_lst.length === publisher_place_lst.length) {
+                                state.publisherOutput = new CSL.PublisherOutput(state, this);
+                                state.publisherOutput["publisher-list"] = publisher_lst;
+                                state.publisherOutput["publisher-place-list"] = publisher_place_lst;
+                            }
                         }
-                    }
-                };
-                this.execs.push(func);
+                    };
+                    this.execs.push(func);
+                }
             }
 
             if (this.juris) {
@@ -152,19 +153,16 @@ CSL.Node.group = {
                 
                 // Code for fetching an instantiating?
 
-
-                for (var x=0,xlen=target.length;x<xlen;x++) {
-                    var token = target[x];
-                }
-
                 var choose_start = new CSL.Token("choose", CSL.START);
                 CSL.Node.choose.build.call(choose_start, state, target);
                 
                 var if_start = new CSL.Token("if", CSL.START);
 
-                func = function (macroName) {
+                func = (function (macroName) {
                     return function (Item) {
-                        if (!state.sys.retrieveStyleModule || !CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) return false;
+                        if (!state.sys.retrieveStyleModule || !CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) {
+                            return false;
+                        }
                         var jurisdictionList = state.getJurisdictionList(Item.jurisdiction);
                         // Set up a list of jurisdictions here, we will reuse it
                         if (!state.opt.jurisdictions_seen[jurisdictionList[0]]) {
@@ -195,7 +193,7 @@ CSL.Node.group = {
                                     if (!CSL.MODULE_MACROS[myName]) {
                                         CSL.debug("CSL: skipping non-modular macro name \"" + myName + "\" in module context");
                                         continue;
-                                    };
+                                    }
                                     macroCount++;
                                     state.juris[jurisdiction][myName] = [];
                                     // Must use the same XML parser for style and modules.
@@ -218,7 +216,7 @@ CSL.Node.group = {
                         }
                         return false;
                     };
-                }(this.juris);
+                }(this.juris));
                 
                 if_start.tests.push(func);
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
@@ -232,7 +230,7 @@ CSL.Node.group = {
                             next = CSL.tokenExec.call(state, state.juris[Item["best-jurisdiction"]][this.juris][next], Item, item);
                         }
                     }
-                }
+                };
                 text_node.juris = this.juris;
                 text_node.execs.push(func);
                 target.push(text_node);
@@ -253,15 +251,13 @@ CSL.Node.group = {
             // hence the global flag on state.build.
             if (state.build["publisher-special"]) {
                 state.build["publisher-special"] = false;
-                if ("string" === typeof state[state.build.root].opt["name-delimiter"]) {
-                    func = function (state, Item) {
-                        if (state.publisherOutput) {
-                            state.publisherOutput.render();
-                            state.publisherOutput = false;
-                        }
-                    };
-                    this.execs.push(func);
-                }
+                func = function (state) {
+                    if (state.publisherOutput) {
+                        state.publisherOutput.render();
+                        state.publisherOutput = false;
+                    }
+                };
+                this.execs.push(func);
             }
             
             // quashnonfields

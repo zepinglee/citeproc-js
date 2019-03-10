@@ -2,7 +2,7 @@
 
 CSL.Node.date = {
     build: function (state, target) {
-        var func, date_obj, tok, len, pos, part, dpx, parts, mypos, start, end;
+        var func, date_obj, len, pos, part, dpx, parts, mypos, start, end;
         if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
             // used to collect rendered date part names in node_datepart,
             // for passing through to node_key, for use in dates embedded
@@ -16,7 +16,7 @@ CSL.Node.date = {
                 func = CSL.dateMacroAsSortKey;
             } else {
                 func = function (state, Item, item) {
-                    var key, dp;
+                    var dp;
                     state.tmp.element_rendered_ok = false;
                     state.tmp.donesies = [];
                     state.tmp.dateparts = [];
@@ -114,7 +114,9 @@ CSL.Node.date = {
 
             // newoutput
             func = function (state, Item) {
-                if (!Item[this.variables[0]]) return;
+                if (!Item[this.variables[0]]) {
+                    return;
+                }
                 state.parallel.StartVariable(this.variables[0]);
                 state.output.startTag("date", this);
                 if (this.variables[0] === "issued"
@@ -150,7 +152,9 @@ CSL.Node.date = {
         if (!state.build.extension && (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON)) {
             // mergeoutput
             func = function (state, Item) {
-                if (!Item[this.variables[0]]) return;
+                if (!Item[this.variables[0]]) {
+                    return;
+                }
                 state.output.endTag();
                 state.parallel.CloseVariable(this.variables[0]);
             };

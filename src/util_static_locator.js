@@ -70,7 +70,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             // And that's it. Pre-parse complete.
         }
     }
-}
+};
 
 
 CSL.Engine.prototype.setNumberLabels = function (Item) {
@@ -93,13 +93,11 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
         var firstlabel = CSL.STATUTE_SUBDIV_STRINGS[firstword];
         if (firstlabel) {
             // Get list and match
-            var m = value.match(CSL.STATUTE_SUBDIV_GROUPED_REGEX);
             var splt = value.split(CSL.STATUTE_SUBDIV_PLAIN_REGEX);
             if (splt.length > 1) {
                 // Convert matches to localized form
                 var lst = [];
                 for (var j=1, jlen=splt.length; j < jlen; j += 1) {
-                    var subdiv = m[j - 1].replace(/^\s*/, "");
                     lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
                 }
                 // Preemptively save to shadow_numbers
@@ -115,4 +113,4 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
             this.tmp.shadow_numbers["number"].numeric = true;
         }
     }
-}
+};

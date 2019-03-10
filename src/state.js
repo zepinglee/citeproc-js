@@ -333,7 +333,7 @@ CSL.Engine.Tmp = function () {
 CSL.Engine.Fun = function (state) {
     //
     // matcher
-    this.match = new CSL.Util.Match;
+    this.match = new CSL.Util.Match();
     //
     // utility to get standard suffixes for disambiguation
     this.suffixator = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
@@ -385,6 +385,8 @@ CSL.Engine.Build = function () {
     // scratch variable to hold the name of a macro
     // or a term until its children have been collected.
     this.name = false;
+    this.names_variables = [[]];
+    this.name_label = [{}];
     //
     // scratch variable to hold the value of a form
     // attribute until other attributes needed for

@@ -1,7 +1,6 @@
-CSL.ParticleList = function() {
+CSL.ParticleList = (function() {
 	var always_dropping_1 = [[[0,1], null]];
-	var always_dropping_2 = [[[0,2], null]];
-	var always_dropping_3 = [[[0,3], null]]
+	var always_dropping_3 = [[[0,3], null]];
 	var always_non_dropping_1 = [[null, [0,1]]];
 	var always_non_dropping_2 = [[null, [0,2]]];
 	var always_non_dropping_3 = [[null, [0,3]]];
@@ -236,9 +235,9 @@ CSL.ParticleList = function() {
 		["zur", either_1]
 	];
     return PARTICLES;
-}();
+}());
 
-CSL.parseParticles = function(){
+CSL.parseParticles = (function(){
     function splitParticles(nameValue, firstNameFlag, caseOverride) {
 		// Parse particles out from name fields.
 		// * nameValue (string) is the field content to be parsed.
@@ -254,7 +253,6 @@ CSL.parseParticles = function(){
 		var origNameValue = nameValue;
 		nameValue = caseOverride ? nameValue.toLowerCase() : nameValue;
 		var particleList = [];
-		var apostrophe;
 		var rex;
         var hasParticle;
 		if (firstNameFlag) {
@@ -269,7 +267,9 @@ CSL.parseParticles = function(){
 			var firstChar = m ? m1 : false;
 			var firstChar = firstChar ? m1.replace(/^[-\'\u02bb\u2019\s]*(.).*$/, "$1") : false;
 			hasParticle = firstChar ? firstChar.toUpperCase() !== firstChar : false;
-			if (!hasParticle) break;
+			if (!hasParticle) {
+                break;
+            }
 			if (firstNameFlag) {
 				particleList.push(origNameValue.slice(m1.length * -1));
 				origNameValue = origNameValue.slice(0,m1.length * -1);
@@ -333,7 +333,6 @@ CSL.parseParticles = function(){
     return function(nameObj) {
         // Extract and set non-dropping particle(s) from family name field
         var res = splitParticles(nameObj.family);
-        var hasLastParticle = res[0];
         var lastNameValue = res[1];
         var lastParticleList = res[2];
         nameObj.family = lastNameValue;
@@ -345,7 +344,6 @@ CSL.parseParticles = function(){
         parseSuffix(nameObj);
         // Extract and set dropping particle(s) from given name field
         var res = splitParticles(nameObj.given, true);
-        var hasFirstParticle = res[0];
         var firstNameValue = res[1];
         var firstParticleList = res[2];
         nameObj.given = firstNameValue;
@@ -353,5 +351,5 @@ CSL.parseParticles = function(){
         if (droppingParticle) {
             nameObj['dropping-particle'] = droppingParticle;
         }
-    }
-}();
+    };
+}());

@@ -2,6 +2,109 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.220
+==========================
+
+Bibliograhy options to exclude items
+
+- exclude_types: omit items matching one or more specified types.
+
+- exclude_with_fields: omit items that have a value in one or more
+  specified fields.
+
+- A test that exercises the new options.
+
+==========================
+Changes in version 1.1.219
+==========================
+
+- Fix a bug that caused labels to be dropped where a variable rendered
+  via cs:substitute was later called as the primary variable, and
+  a separate variable was rendered via cs:substitute.
+
+- Fix a bug that caused labels to be lost on a singleton cs:names
+  that followed a start/end cs:names element inside cs:substitute.
+
+- Add support for require-match on cs:names.
+
+- Amend test fixtures where processor output in now correct.
+
+- Add a test for the require-match attribute.
+
+
+
+==========================
+Changes in version 1.1.218
+==========================
+
+- Fix nesting error triggered by call to alt-issued or alt-event-date date variables
+  when the have a value. Calling these variables directly, outside of cs:alternative,
+  may be necessary in citations for styles that make use of cs:alternative in the
+  bibliography.
+
+==========================
+Changes in version 1.1.217
+==========================
+
+- Add support for new CSL-M elements cs:alternative and cs:alternative-text,
+  useful for citing translated works and reprints.
+
+- Test fixtures for a Japan Sociological Society style that makes use
+  of the cs:alternative element.
+
+==========================
+Changes in version 1.1.216
+==========================
+
+- Fix bugs in name initialization
+  https://forums.zotero.org/discussion/75969/apa-style-initials-cut-out
+
+- Remove legacy e4x support. Processor is capable of string-parsing
+  serialized XML directly, this layer is no longer needed.
+
+- Permit empty values in CSL fields added via the note field hack.
+
+- Add support for cs:alternative and cs:alternative-text elements,
+  for use in citing translated or reprinted materials in CSL-M.
+
+- Clean up syntax somewhat. HT to jshint.
+
+==========================
+Changes in version 1.1.215
+==========================
+
+- Address a memory leak
+  * Modify item objects stored in registry.refhash in place
+  * Call registry copy of item data when safe to do so
+  * Taint items for which input changes on update
+  * Quash some side effects that unnecessarily altered data after input
+
+==========================
+Changes in version 1.1.214
+==========================
+
+- Fix potential array-underrun crash in ibid evaluation
+
+==========================
+Changes in version 1.1.213
+==========================
+
+- Clean up test runner
+
+- Fix memory leak in citationById object (IDs were never removed)
+
+- Remove declarations of unused variables in api_bibliography
+
+- Protect against erronenous numeric value in string split array
+  HT to Emiliano Heyns for identifying the fault in i386 systems
+  and crafting a patch.
+
+- Add tests for non-CSL collection-title-short variable
+
+- Recognize -short form of any variable rendered via cs:text
+
+
+==========================
 Changes in version 1.1.212
 ==========================
 

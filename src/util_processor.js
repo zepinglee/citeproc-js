@@ -115,12 +115,9 @@ CSL.setDecorations = function (state, attributes) {
 };
 
 CSL.Doppeler = function(rexStr, stringMangler) {
-    var mx, lst, len, pos, m, buf1, buf2, idx, ret, myret;
-    this.split = split;
-    this.join = join;
     var matchRex = new RegExp("(" + rexStr + ")", "g");
     var splitRex = new RegExp(rexStr, "g");
-    function split(str) {
+    this.split = function (str) {
         // Normalize markup
         if (stringMangler) {
             str = stringMangler(str);
@@ -134,6 +131,9 @@ CSL.Doppeler = function(rexStr, stringMangler) {
         }
         var split = str.split(splitRex);
         for (var i=match.length-1; i> -1; i--) {
+            if (typeof match[i] === "number") {
+                match[i] = "";
+            }
             var tag = match[i];
             if (tag === "\'" && split[i+1].length > 0) {
                 // Fixes https://forums.zotero.org/discussion/comment/294317
@@ -145,9 +145,9 @@ CSL.Doppeler = function(rexStr, stringMangler) {
             tags: match,
             strings: split,
             origStrings: split.slice()
-        }
-    }
-    function join(obj) {
+        };
+    };
+    this.join = function (obj) {
         var lst = obj.strings.slice(-1);
         for (var i=obj.tags.length-1; i>-1; i--) {
             lst.push(obj.tags[i]);
@@ -155,8 +155,8 @@ CSL.Doppeler = function(rexStr, stringMangler) {
         }
         lst.reverse();
         return lst.join("");
-    }
-}
+    };
+};
 
 CSL.Engine.prototype.normalDecorIsOrphan = function (blob, params) {
     //print("params: "+JSON.stringify(params));

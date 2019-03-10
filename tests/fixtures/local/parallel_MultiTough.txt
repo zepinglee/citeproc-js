@@ -995,7 +995,7 @@ reversion though, like this:
             </choose>
             <choose>
               <if variable="locator-extra">
-                <text variable="locator-extra"/>
+                <number variable="locator-extra"/>
                 <text macro="us-issued-date"/>
               </if>
             </choose>

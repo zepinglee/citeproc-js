@@ -101,7 +101,7 @@ CSL.Output.Queue.prototype.pushFormats = function (tokenstore) {
 };
 
 
-CSL.Output.Queue.prototype.popFormats = function (tokenstore) {
+CSL.Output.Queue.prototype.popFormats = function () {
     //SNIP-START
     CSL.debug("XXX popFormats()");
     //SNIP-END
@@ -129,8 +129,8 @@ CSL.Output.Queue.prototype.endTag = function (name) {
 // list, and adjusts the current pointer so that subsequent
 // appends are made to blob list of the new object.
 
-CSL.Output.Queue.prototype.openLevel = function (token, ephemeral) {
-    var blob, curr, x, has_ephemeral;
+CSL.Output.Queue.prototype.openLevel = function (token) {
+    var blob, curr;
     if ("object" === typeof token) {
         // delimiter, prefix, suffix, decorations from token
         blob = new CSL.Blob(undefined, token);
@@ -560,7 +560,7 @@ CSL.Output.Queue.prototype.clearlevel = function () {
 };
 
 CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent) {
-    var state, ret, ret_last_char, use_delim, i, blob, pos, len, ppos, llen, pppos, lllen, res, str, params, txt_esc;
+    var state, ret, ret_last_char, use_delim, blob, pos, len, ppos, llen, str, params, txt_esc;
     txt_esc = CSL.getSafeEscape(this.state);
     if (!delim) {
         delim = "";
@@ -643,8 +643,6 @@ CSL.Output.Queue.prototype.renderBlobs = function (blobs, delim, in_cite, parent
             if (blob.strings["text-case"]) {
                 str = CSL.Output.Formatters[blob.strings["text-case"]](this.state, str);
             }
-            // jshint picked up that noStripPeriods is undefined
-            //if (str && this.state.tmp.strip_periods && !noStripPeriods) {
             if (str && this.state.tmp.strip_periods) {
                 str = str.replace(/\.([^a-z]|$)/g, "$1");
             }
@@ -723,18 +721,13 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
     var NO_SWAP_IN = {
         ";": true,
         ":": true
-    }
+    };
 
     var NO_SWAP_OUT = {
         ".": true,
         "!": true,
         "?": true
-    }
-
-    this.upward = upward;
-    this.leftward = leftward;
-    this.downward = downward;
-    this.fix = fix;
+    };
 
     var LtoR_MAP = {
         "!": {
@@ -779,7 +772,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             ",": ";,",
             ".": ";"
         }
-    }
+    };
 
     var SWAP_IN = {};
     var SWAP_OUT = {};
@@ -810,14 +803,18 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
 
     function blobIsNumber(blob) {
         return ("number" === typeof blob.num || (blob.blobs && blob.blobs.length === 1 && "number" === typeof blob.blobs[0].num));
-    };
+    }
 
     function blobEndsInNumber(blob) {
         if ("number" === typeof blob.num) {
             return true;
         }
-        if (!blob.blobs || "object" !==  typeof blob.blobs) return false;
-        if (blobEndsInNumber(blob.blobs[blob.blobs.length-1])) return true;
+        if (!blob.blobs || "object" !==  typeof blob.blobs) {
+            return false;
+        }
+        if (blobEndsInNumber(blob.blobs[blob.blobs.length-1])) {
+            return true;
+        }
     }
     
     function blobHasDecorations(blob,includeQuotes) {
@@ -835,7 +832,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             }
         }
         return ret;
-    };
+    }
     
     function blobHasDescendantQuotes(blob) {
         if (blob.decorations) {
@@ -846,8 +843,8 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             }
         }
         if ("object" !== typeof blob.blobs) {
-            return false
-        };
+            return false;
+        }
         return blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1]);
         //if (blobHasDescendantQuotes(blob.blobs[blob.blobs.length-1])) {
         //    return true
@@ -864,8 +861,12 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         if (mergedChars && mergedChars.length === 1) {
             return true;
         }
-        if ("object" !== typeof blob.blobs) return false;
-        if (blobHasDescendantMergingPunctuation(parentChar,blob.blobs[blob.blobs.length-1])) return true;
+        if ("object" !== typeof blob.blobs) {
+            return false;
+        }
+        if (blobHasDescendantMergingPunctuation(parentChar,blob.blobs[blob.blobs.length-1])) {
+            return true;
+        }
         return false;
     }
     
@@ -895,7 +896,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 return false;
             }
         }
-    };
+    }
     
     function mergeChars (First, first, Second, second, merge_right) {
         var FirstStrings = "blobs" === first ? First : First.strings;
@@ -904,10 +905,10 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         var secondChar = SecondStrings[second].slice(0,1);
         function cullRight () {
             SecondStrings[second] = SecondStrings[second].slice(1);
-        };
+        }
         function cullLeft () {
             FirstStrings[first] = FirstStrings[first].slice(0,-1);
-        };
+        }
         function addRight (chr) {
             SecondStrings[second] = chr + SecondStrings[second];
         }
@@ -954,7 +955,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 merge();
             }
         }
-    };
+    }
 
     function upward (parent) {
         //print("START2");
@@ -973,7 +974,6 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
         // back-to-front, bottom-first
         var parentDecorations = blobHasDecorations(parent,true);
         for (var i=parent.blobs.length-1;i>-1;i--) {
-            var endFlag = i === (parent.blobs.length-1);
             this.upward(parent.blobs[i]);
             var parentStrings = parent.strings;
             var childStrings = parent.blobs[i].strings;
@@ -1011,7 +1011,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             // Siblings are handled in adjustNearsideSuffixes()
         }
         //print("   end");
-    };
+    }
 
     function leftward (parent) {
         // Terminus if no blobs
@@ -1054,9 +1054,9 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
                 }
             }
         }
-    };
+    }
 
-    function downward (parent, top) {
+    function downward (parent) {
         //print("START3");
         // Terminus if no blobs
         if (parent.blobs && "string" == typeof parent.blobs) {
@@ -1096,8 +1096,6 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             }
         }
         // back-to-front, top-first
-        var parentDecorations = blobHasDecorations(parent, true);
-        var parentIsNumber = blobIsNumber(parent);
         for (var i=parent.blobs.length-1;i>-1;i--) {
             var child = parent.blobs[i];
             var childStrings = parent.blobs[i].strings;
@@ -1185,7 +1183,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             if (!childIsNumber && !childDecorations && PUNCT[childStrings.suffix.slice(0,1)]
                 && "string" === typeof child.blobs) {
                 
-                mergeChars(child, 'blobs', child, 'suffix')
+                mergeChars(child, 'blobs', child, 'suffix');
             }
             this.downward(parent.blobs[i]);
         }
@@ -1206,7 +1204,7 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
 */
 
         //print("  end");
-    };
+    }
     // Abstract out a couple of utility functions, used in fix() below.
     function swapToTheLeft (child) {
         var childChar = child.strings.suffix.slice(0,1);
@@ -1274,5 +1272,9 @@ CSL.Output.Queue.adjust = function (punctInQuote) {
             }
         }
         return lastChar;
-    };
-}
+    }
+    this.upward = upward;
+    this.leftward = leftward;
+    this.downward = downward;
+    this.fix = fix;
+};

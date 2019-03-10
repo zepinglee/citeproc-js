@@ -6,7 +6,7 @@ CSL.dateMacroAsSortKey = function (state, Item) {
 
 
 CSL.dateAsSortKey = function (state, Item, isMacro) {
-    var dp, elem, value, e, yr, prefix, i, ilen, num;
+    var dp, elem, value, e, yr, prefix, i, ilen;
     var variable = this.variables[0];
     var macroFlag = "empty";
     if (isMacro && state.tmp.extension) {
@@ -61,7 +61,7 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
 };
 
 CSL.Engine.prototype.dateParseArray = function (date_obj) {
-    var ret, field, dpos, ppos, dp, exts, llen, pos, len, pppos, lllen;
+    var ret, field, dp, exts;
     ret = {};
     for (field in date_obj) {
         if (field === "date-parts") {
