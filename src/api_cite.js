@@ -1091,7 +1091,6 @@ CSL.getCitationCluster = function (inputList, citation) {
         } else if (suppressAuthor) {
             delete inputList[0][1]["author-only"];
             inputList[0][1]["suppress-author"] = true;
-            print("Suppress author on " + inputList[0][0].id);
         }
     }
     for (pos = 0; pos < len; pos += 1) {
