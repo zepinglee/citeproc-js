@@ -1,10 +1,10 @@
 >>===== MODE =====>>
 citation
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 >>[0] My 11-Oxygenated Steroids. “Maybe’s” ’ts XIII. Synthesis and “Proof” of Structure of Δ1;4-Pregnadiene-17α;21-Diol-3;11;20-Trione and Δ1;4-Pregnadiene-11β;17α;21-triol-3;20-dione <i>Xx</i>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
 [
@@ -25,7 +25,7 @@ citation
         []
     ]
 ]
-<<===== CITATIONS===== <<
+<<===== CITATIONS =====<<
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" page-range-format="chicago" version="1.1mlz1" year-range-format="expanded" default-locale="en-US">
@@ -45,7 +45,8 @@ citation
     </layout>
   </citation>  
 </style>
-<<===== CSL===== <<
+<<===== CSL =====<<
+
 >>===== INPUT =====>>
 [
   {
@@ -54,4 +55,4 @@ citation
     "title": "my <span class=\"nocase\">11-Oxygenated Steroids</span>. \"Maybe's\" 'ts <span class=\"nocase\">XIII</span>. <span class=\"nocase\">Synthesis</span> and \"proof\" of structure of <span class=\"nocase\">Δ1</span>;<span class=\"nocase\">4-Pregnadiene-17α</span>;21-diol-3;11;20-trione and <span class=\"nocase\">Δ1</span>;<span class=\"nocase\">4-Pregnadiene-11β</span>;17α;<span class=\"nocase\">21-triol-3;20-dione</span> <i>xx</i>"
   }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

@@ -1,12 +1,12 @@
 >>===== MODE =====>>
 bibliography
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
   <div class="csl-entry"><span style="font-variant:small-caps;">Barrett</span>, <span style="font-variant:small-caps;">P.J.</span>, <span style="font-variant:small-caps;">Payne</span>, <span style="font-variant:small-caps;">A.R.</span> &#38; <span style="font-variant:small-caps;">Ward</span>, <span style="font-variant:small-caps;">B.L.</span> 1983. Modern sedimentation in McMurdo Sound, Antarctica. <i>In</i> Oliver, R.L., James, P.R. &#38; Jago, J.B., <i>eds.</i> <i>Antarctic earth science</i>. Cambridge: Cambridge University Press, 550–554.</div>
 </div>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
@@ -309,7 +309,7 @@ bibliography
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -361,4 +361,4 @@ bibliography
         "type": "chapter"
     }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

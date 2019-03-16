@@ -2,7 +2,7 @@
 citation
 <<== MODE ==<<
 
->>=====  CITATIONS =====>>
+>>===== CITATIONS =====>>
 [
     [
         {
@@ -27,7 +27,7 @@ citation
         []
     ]
 ]
-<<=====  CITATIONS =====<<
+<<===== CITATIONS =====<<
 
 
 >>== RESULT ==>>

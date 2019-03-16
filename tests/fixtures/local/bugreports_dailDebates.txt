@@ -1,10 +1,10 @@
 >>===== MODE =====>>
 citation
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 >>[0] Select Committee on Enterprise and Small Business Deb Oct. 5, 2005, vol. 606, col. 1690.
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
 [
@@ -27,7 +27,7 @@ citation
         []
     ]
 ]
-<<===== CITATIONS===== <<
+<<===== CITATIONS =====<<
 
 >>===== CSL =====>>
 <?xml version="1.1mlz1" encoding="utf-8"?>
@@ -3066,7 +3066,7 @@ citation
     </layout>
   </bibliography>
 </style>
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -3091,4 +3091,4 @@ citation
     }
   }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

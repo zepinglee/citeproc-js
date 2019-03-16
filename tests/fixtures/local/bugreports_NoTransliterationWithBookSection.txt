@@ -1,10 +1,10 @@
 >>===== MODE =====>>
 citation
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 >>[0] “Hello,” in <i>This is a pen.</i>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
 [
@@ -26,7 +26,7 @@ citation
         []
     ]
 ]
-<<===== CITATIONS===== <<
+<<===== CITATIONS =====<<
 
 >>===== CSL =====>>
 <style 
@@ -724,7 +724,7 @@ citation
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -742,4 +742,4 @@ citation
     "container-title": "This is a pen."
   }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

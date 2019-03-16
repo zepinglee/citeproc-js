@@ -207,7 +207,7 @@ the "and" attribute on cs:institution (and="text" by default) has no effect.
 
 <<===== CSL =====<<
 
->>===== INPUT =====>
+>>===== INPUT =====>>
 [
     {
         "author": [
@@ -226,4 +226,4 @@ the "and" attribute on cs:institution (and="text" by default) has no effect.
         "type": "article-journal"
     }
 ]
-<<====== INPUT =====
+<<====== INPUT =====<<

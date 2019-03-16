@@ -16,7 +16,11 @@ bibliography
 
 
 >>== RESULT ==>>
-Bl Comm; Bankton <span style="font-variant:small-caps;">Institute</span> II.
+<div class="csl-bib-body">
+  <div class="csl-entry">Bl Comm</div>
+  <div class="csl-entry">Bankton <span style="font-variant:small-caps;">Institute</span> II</div>
+  <div class="csl-entry">Karphlat Zoggs Book of things</div>
+</div>
 <<== RESULT ==<<
 
 >>===== CSL =====>>

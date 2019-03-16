@@ -1,12 +1,12 @@
 >>===== MODE =====>>
 bibliography
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
   <div class="csl-entry"><span style="font-variant:small-caps;">Smith</span>, <span style="font-variant:small-caps;">M.J.</span> 1983. <i>The microbial ecology of sub-Antarctic tundra soils</i>. PhD thesis, University of Surrey, 256 pp. [Unpublished].</div>
 </div>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
@@ -304,7 +304,7 @@ bibliography
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -334,4 +334,4 @@ bibliography
         "type": "thesis"
     }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

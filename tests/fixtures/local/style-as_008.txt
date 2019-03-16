@@ -1,12 +1,12 @@
 >>===== MODE =====>>
 bibliography
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
   <div class="csl-entry"><span style="font-variant:small-caps;">CCAMLR</span>. 1995. <i>Report of the Fourteenth Meeting of the Commission</i> (CCAMLR-XIV). Hobart: CCAMLR, 153 pp.</div>
 </div>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
@@ -304,7 +304,7 @@ bibliography
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -335,4 +335,4 @@ bibliography
         "type": "report"
     }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

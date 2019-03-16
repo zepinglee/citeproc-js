@@ -1,12 +1,12 @@
 >>===== MODE =====>>
 bibliography
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
   <div class="csl-entry"><span style="font-variant:small-caps;">Stanley</span>, <span style="font-variant:small-caps;">S.M.</span> 1979. <i>Macroevolution, pattern and process</i>. San Francisco, CA: Freeman, 573 pp.</div>
 </div>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
@@ -304,7 +304,7 @@ bibliography
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -334,4 +334,4 @@ bibliography
         "type": "book"
     }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

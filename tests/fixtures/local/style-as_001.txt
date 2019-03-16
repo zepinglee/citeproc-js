@@ -1,12 +1,12 @@
 >>===== MODE =====>>
 bibliography
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
   <div class="csl-entry"><span style="font-variant:small-caps;">Cantrill</span>, <span style="font-variant:small-caps;">D.J.</span> 2000. A new macroflora from the South Orkney Islands, Antarctica: evidence of an Early to Middle Jurassic age for the Powell Island Conglomerate. <i>Antarctic Science</i>, <b>12</b>:02, 185–195.</div>
 </div>
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CSL =====>>
 <?xml version="1.0" encoding="utf-8"?>
@@ -304,7 +304,7 @@ bibliography
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -335,4 +335,4 @@ bibliography
         "volume": "12"
     }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<
