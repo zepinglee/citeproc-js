@@ -1,0 +1,8 @@
+path:
+    local: fixtures/local
+    std: fixtures/std/processor-tests/humans
+    src: ../src
+    locale: ../locale
+    styles: fixtures/local/styles
+    modules: fixtures/local/styles
+    
