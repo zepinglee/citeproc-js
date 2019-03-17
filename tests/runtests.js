@@ -324,31 +324,22 @@ function Stripper(fn, noStrip) {
 /* Options */
 
 const usage = "Usage: " + path.basename(process.argv[1])
-      + " [-s testName|-g groupName|-a] <-c> <-v|-q>\n"
+      + " [-s testName|-g groupName|-a]\n"
       + "  -s testName, --single=testName\n"
       + "    Run a single local or standard test fixture\n"
       + "  -g groupName, --group=groupName\n"
       + "    Run a group of tests with the specified prefix\n"
       + "  -a, --all\n"
-      + "    Run all tests\n"
-      + "  -c, --cranky\n"
-      + "    Validate CSL in selected fixtures\n"
-      + "  -v, --verbose\n"
-      + "    Add console chatter to output\n"
-      + "  -q, --quiet\n"
-      + "    Be quiet"
+      + "    Run all tests\n";
 
 const optParams = {
     alias: {
         s: "single",
         g: "group",
-        a: "all",
-        c: "cranky",
-        v: "verbose",
-        q: "quiet"
+        a: "all"
     },
     string: ["s", "g"],
-    boolean: ["c", "v", "b", "a"],
+    boolean: ["a"],
     unknown: option => {
         throw Error("Unknown option \"" +option + "\"");
     }
@@ -362,9 +353,6 @@ function checkSanity() {
     }
     if (["s", "g", "a"].filter(o => options[o]).length === 0) {
         throw new Error("Exactly one of -s, -g, or -a must be invoked. No option found.");
-    }
-    if (["v", "q"].filter(o => options[o]).length > 1) {
-        throw new Error("Only one of -v or -q may be specified.");
     }
 }
 
@@ -464,6 +452,8 @@ try {
 function Bundle(noStrip) {
     // The markup of the code is weird, so we do weird things to strip
     // comments.
+    // The noStrip option is not yet used, but will dump the processor
+    // with comments and skipped blocks intact when set to a value.
     var ret = "";
     for (var fn of sourceFiles) {
         var txt = fs.readFileSync(path.join(config.path.srcAbs, fn + ".js")).toString();
@@ -480,7 +470,7 @@ function Bundle(noStrip) {
 }
 
 // Always bundle and load
-Bundle(options.v);
+Bundle();
 
 // Build the tests
 var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString();
@@ -503,8 +493,3 @@ mocha.stderr.on('data', (data) => {
 mocha.on('close', (code) => {
     console.log(`mocha exited with code ${code}`);
 });
-
-// If we ran verbose, rebundle without comments
-if (options.v) {
-    Bundle();
-}
