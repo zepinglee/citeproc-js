@@ -22,33 +22,34 @@ style. A `CSL processor
 that generates citations and bibliographies by applying style rules
 described in CSL to bibliographic data.
 
-Development of the `citeproc-js` processor began in 2009, a fact that
-shows through in ways both good and bad. On the down side, the code
-base is not pretty, and could in fact serve as a solid illustration of
-the burden technical debt if you need one of those for your computer
-science class. On the up side, though, `citeproc-js` passes a suite of
-`1,400 integration tests <https://github.com/juris-m/citeproc-js>`_
-with flying colors, it has been very heavily field-tested, [2]_ and
-when run in CSL-M mode, [1]_ it can handle multilingual and legal
-content with a flexibility and precision unrivaled by any other tool
-at any price.
+The ``citeproc-js`` CSL processor is over a decade in service, a fact
+that shows through in ways both good and bad. On the downside, the
+code base is not pretty, and could in fact serve as a solid
+illustration of the burden technical debt (in case you need one of
+those for your computer science class). On the upside, though,
+``citeproc-js`` passes a suite of 1,400 integration tests with flying
+colors. When run in CSL-M mode [1]_ it can handle multilingual and
+legal content with a flexibility and precision unrivaled by any other
+tool at any price. And it has been quite heavily field-tested, as the
+citation formatter driving word processor integration in both
+`Mendeley <https://www.mendeley.com/>`_ and `Zotero
+<https://www.zotero.org/>`_.
 
-More important than badges of popularity, though, is the underlying
-CSL standard. Developers can take comfort in the technical strength of
-the `CSL Specification
+More important than badges of popularity, though, is the CSL
+standard. Developers can take comfort in the technical strength of the
+`CSL Specification
 <http://docs.citationstyles.org/en/1.0.1/specification.html>`_, and
 the existence of `other processors
 <https://citationstyles.org/developers/#csl-processors>`_ under active
 development.  CSL is the modern way to handle bibliographic projects,
-and `citeproc-js` is one way to take advantage of it.
+and ``citeproc-js`` is a convenient way to take advantage of it.
 
 -----------
 Quick Setup
 -----------
 
-The quickest way to install the processor is for use with Node.js, via `npm`:
+The quickest way to install the processor is for use with Node.js, via `npm`::
 
-::
     npm install citeproc
 
 If you are working with the processor for the first time, running the
@@ -85,10 +86,6 @@ This will return a help text about the test runner::
 .. [1] CSL-M is set of private extensions to official CSL used by the
        `Jurism <https://juris-m.github.io>`_ reference manager, a
        variant of Zotero.
-
-.. [2] In addition to numerous Web deployments, `citeproc-js` is the
-       citation formatter behind document integration in both Zotero
-       and Mendeley.
 
 | 2019.03.17
 | FB
