@@ -1,4 +1,4 @@
-## citeproc-js 
+## citeproc-js [![Build Status](https://travis-ci.org/Juris-M/citeproc-js.svg?branch=master)](https://travis-ci.org/Juris-M/citeproc-js)
 
 by Frank Bennett
 
