@@ -1,6 +1,4 @@
-# README
-
-## citeproc-js
+## citeproc-js 
 
 by Frank Bennett
 
