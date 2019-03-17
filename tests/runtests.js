@@ -324,22 +324,25 @@ function Stripper(fn, noStrip) {
 /* Options */
 
 const usage = "Usage: " + path.basename(process.argv[1])
-      + " [-s testName|-g groupName|-a]\n"
+      + " [-s testName|-g groupName|-a|-l]\n"
       + "  -s testName, --single=testName\n"
       + "    Run a single local or standard test fixture\n"
       + "  -g groupName, --group=groupName\n"
       + "    Run a group of tests with the specified prefix\n"
       + "  -a, --all\n"
+      + "  -l, --list\n"
+      + "    List available groups\n"
       + "    Run all tests\n";
 
 const optParams = {
     alias: {
         s: "single",
         g: "group",
-        a: "all"
+        a: "all",
+        l: "list"
     },
     string: ["s", "g"],
-    boolean: ["a"],
+    boolean: ["a", "l"],
     unknown: option => {
         throw Error("Unknown option \"" +option + "\"");
     }
@@ -348,11 +351,11 @@ const optParams = {
 const options = getopts(process.argv.slice(2), optParams);
 
 function checkSanity() {
-    if (["s", "g", "a"].filter(o => options[o]).length > 1) {
-        throw new Error("Only one of -s, -g, or -a may be invoked.");
+    if (["s", "g", "a", "l"].filter(o => options[o]).length > 1) {
+        throw new Error("Only one of -s, -g, -a, or -l may be invoked.");
     }
-    if (["s", "g", "a"].filter(o => options[o]).length === 0) {
-        throw new Error("Exactly one of -s, -g, or -a must be invoked. No option found.");
+    if (["s", "g", "a", "l"].filter(o => options[o]).length === 0) {
+        throw new Error("Exactly one of -s, -g, -a, or -l must be invoked. No option found.");
     }
 }
 
@@ -429,6 +432,28 @@ function checkAll() {
     }
 }
 
+function listGroups() {
+    var rex = new RegExp("^([^_]+)_.*\.txt$");
+    for (var line of fs.readdirSync(config.path.localAbs)) {
+        if (rex.test(line)) {
+            var m = rex.exec(line);
+            if (!config.testData[m[1]]) {
+                config.testData[m[1]] = [];
+            }
+            config.testData[m[1]].push(line);
+        }
+    }
+    for (var line of fs.readdirSync(config.path.stdAbs)) {
+        if (rex.test(line)) {
+            var m = rex.exec(line);
+            if (!config.testData[m[1]]) {
+                config.testData[m[1]] = [];
+            }
+            config.testData[m[1]].push(line);
+        }
+    }
+}
+
 try {
     checkSanity();
     if (options.single) {
@@ -439,6 +464,9 @@ try {
     }
     if (options.all) {
         checkAll();
+    }
+    if (options.list) {
+        listGroups();
     }
 } catch (err) {
     console.log("Error: " + err.message + "\n");
@@ -469,27 +497,36 @@ function Bundle(noStrip) {
     fs.writeFileSync(path.join(scriptDir, "..", "citeproc_commonjs.js"), license + ret + "\nmodule.exports = CSL");
 }
 
-// Always bundle and load
-Bundle();
+// Bundle, load, and run tests if -s, -g, or -a
+if (options.single || options.group || options.all) {
+    Bundle();
 
-// Build the tests
-var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString();
-var testData = Object.keys(config.testData).map(k => config.testData[k]).filter(o => o);
-fixtures = fixtures.replace("%%SCRIPT_PATH%%", scriptDir);
-fixtures = fixtures.replace("%%TEST_DATA%%", JSON.stringify(testData, null, 2));
-if (!fs.existsSync(path.join(scriptDir, "..", "test"))) {
-    fs.mkdirSync(path.join(scriptDir, "..", "test"));
+    // Build the tests
+    var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString();
+    var testData = Object.keys(config.testData).map(k => config.testData[k]).filter(o => o);
+    fixtures = fixtures.replace("%%SCRIPT_PATH%%", scriptDir);
+    fixtures = fixtures.replace("%%TEST_DATA%%", JSON.stringify(testData, null, 2));
+    if (!fs.existsSync(path.join(scriptDir, "..", "test"))) {
+        fs.mkdirSync(path.join(scriptDir, "..", "test"));
+    }
+    fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
+
+    // Run the tests
+    var mocha = spawn("mocha", ["--color"], {cwd: path.join(scriptDir, "..")});
+    mocha.stdout.on('data', (data) => {
+        console.log(data.toString().replace(/\s+$/, ""));
+    });
+    mocha.stderr.on('data', (data) => {
+        console.log(data.toString().replace(/\s+$/, ""));
+    });
+    mocha.on('close', (code) => {
+        console.log(`mocha exited with code ${code}`);
+    });
+} else {
+    // Otherwise we were listing
+    var ret = Object.keys(config.testData);
+    ret.sort();
+    for (var key of ret) {
+        console.log(key + " (" + config.testData[key].length + ")");
+    }
 }
-fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
-
-// Run the tests
-var mocha = spawn("mocha", ["--color"], {cwd: path.join(scriptDir, "..")});
-mocha.stdout.on('data', (data) => {
-    console.log(data.toString().replace(/\s+$/, ""));
-});
-mocha.stderr.on('data', (data) => {
-    console.log(data.toString().replace(/\s+$/, ""));
-});
-mocha.on('close', (code) => {
-    console.log(`mocha exited with code ${code}`);
-});
