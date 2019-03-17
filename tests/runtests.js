@@ -473,8 +473,10 @@ function Bundle(noStrip) {
         }
         ret += stripper.dumpArr() + "\n";
     }
-    fs.writeFileSync(path.join(scriptDir, "..", "citeproc.js"), ret);
-    fs.writeFileSync(path.join(scriptDir, "..", "citeproc_commonjs.js"), ret + "\nmodule.exports = CSL");
+    var license = fs.readFileSync(path.join(scriptDir, "..", "LICENSE")).toString().trim();
+    license = "/*\n" + license + "\n*/\n";
+    fs.writeFileSync(path.join(scriptDir, "..", "citeproc.js"), license + ret);
+    fs.writeFileSync(path.join(scriptDir, "..", "citeproc_commonjs.js"), license + ret + "\nmodule.exports = CSL");
 }
 
 // Always bundle and load
@@ -485,6 +487,9 @@ var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString(
 var testData = Object.keys(config.testData).map(k => config.testData[k]).filter(o => o);
 fixtures = fixtures.replace("%%SCRIPT_PATH%%", scriptDir);
 fixtures = fixtures.replace("%%TEST_DATA%%", JSON.stringify(testData, null, 2));
+if (!fs.existsSync(path.join(scriptDir, "..", "test"))) {
+    fs.mkdirSync(path.join(scriptDir, "..", "test"));
+}
 fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
 
 // Run the tests
