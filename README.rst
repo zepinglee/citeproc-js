@@ -33,9 +33,9 @@ when run in CSL-M mode, [1]_ it can handle multilingual and legal
 content with a flexibility and precision unrivaled by any other tool
 at any price.
 
-More important than the badges of popularity, though, is the
-underlying CSL standard. Developers can take comfort in the technical
-strength of the `CSL Specification
+More important than badges of popularity, though, is the underlying
+CSL standard. Developers can take comfort in the technical strength of
+the `CSL Specification
 <http://docs.citationstyles.org/en/1.0.1/specification.html>`_, and
 the existence of `other processors
 <https://citationstyles.org/developers/#csl-processors>`_ under active
@@ -46,14 +46,40 @@ and `citeproc-js` is one way to take advantage of it.
 Quick Setup
 -----------
 
-The quickest way to get started is to 
+The quickest way to install the processor is for use with Node.js, via `npm`:
 
-Documentation is available on `ReadTheDocs
-<https://citeproc-js.readthedocs.org/en/latest/index.html>`_.
+::
+    npm install citeproc
 
+If you are working with the processor for the first time, running the
+test suite is a good way to build confidence and begin exploring the
+`documentation <https://citeproc-js.readthedocs.org/en/latest/index.html>`_.
+Start by cloning the repo and its submodules::
 
-hello
+    git clone --recursive https://github.com/Juris-M/citeproc-js.git
 
+Then set up the test framework::
+
+    cd citeproc-js
+    npm install
+
+You can now run the test script::
+      
+    node ./tests/runtests.js
+  
+This will return a help text about the test runner::
+
+    Error: Exactly one of -s, -g, or -a must be invoked. No option found.
+    
+    Usage: runtests.js [-s testName|-g groupName|-a] <-c> <-v|-q>
+      -s testName, --single=testName
+        Run a single local or standard test fixture
+      -g groupName, --group=groupName
+        Run a group of tests with the specified prefix
+      -a, --all
+        Run all tests
+
+    
 ---------------------------
 
 .. [1] CSL-M is set of private extensions to official CSL used by the
@@ -64,5 +90,5 @@ hello
        citation formatter behind document integration in both Zotero
        and Mendeley.
 
-| 2016.03.08
+| 2019.03.17
 | FB
