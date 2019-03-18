@@ -18,8 +18,10 @@
     "dependencies": {},
     "devDependencies": {
         "chai": "^4.2.0",
+        "cross-clear": "^1.0.0",
         "getopts": "^2.2.4",
         "mocha": "^6.0.2",
+        "tmp": "0.0.33",
         "yaml": "^1.4.0"
     },
     "scripts": {

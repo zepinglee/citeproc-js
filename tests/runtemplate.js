@@ -8,7 +8,7 @@ describe('Integration tests', function() {
         it('should pass ' + test.NAME, function() {
             var sys = new Sys(test);
             var ret = sys.run();
-            assert.equal(ret, test.RESULT, test.PATH);
+            assert.equal(ret, test.RESULT, "FILE: " + test.PATH);
         });
     });
 });

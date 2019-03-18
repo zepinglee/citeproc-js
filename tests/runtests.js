@@ -3,10 +3,30 @@ const path = require("path");
 const yaml = require("yaml");
 const getopts = require("getopts");
 const spawn = require("child_process").spawn;
+const spawnSync = require("child_process").spawnSync;
+const tmp = require("tmp");
+const clear = require("cross-clear");
+
+var ksTimeout;
+var fsTimeout
+
+var skipNames = {};
+
+process.stdin.setRawMode(true);
+process.stdin.resume();
+process.stdin.setEncoding( 'utf8' );
+process.stdin.on('data', function( key ){
+// ctrl-c ( end of text )
+  if ( key === '\u0003' ) {
+    process.exit();
+  }
+});
 
 /* Configuration */
 
 const scriptDir = path.dirname(require.main.filename);
+
+const Sys = require(path.join(scriptDir, "runprep.js"));
 
 const defaultConfig =
       "path:"
@@ -25,6 +45,12 @@ var config = yaml.parse(fs.readFileSync(configFile).toString());
 config.path.localAbs = path.join(scriptDir, config.path.local);
 config.path.stdAbs = path.join(scriptDir, config.path.std);
 config.path.srcAbs = path.join(scriptDir, config.path.src);
+
+function errorHandler(err) {
+    console.log("Error: " + err.message + "\n");
+    console.log(usage);
+    process.exit(1);
+}
 
 const sourceFiles = [
     "load",
@@ -189,7 +215,8 @@ const sections = {
     }
 }
 
-function Parser(tn, fpth) {
+function Parser(options, tn, fpth) {
+    this.options = options;
     this.fpth = fpth;
     this.obj = {
         NAME: [tn],
@@ -199,7 +226,7 @@ function Parser(tn, fpth) {
     this.state = null;
     this.openRex = new RegExp("^.*>>===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=>>.*$");
     this.closeRex = new RegExp("^.*<<===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=<<.*$");
-    this.dumpObj = function() {
+    this.dumpObj = function(options) {
         for (var key in this.obj) {
             this.obj[key] = this.obj[key].join("\n");
             if (sections[key].type === "json") {
@@ -212,6 +239,9 @@ function Parser(tn, fpth) {
             }
         }
         for (var key of Object.keys(sections).filter(key => sections[key].required)) {
+            if (this.options.watch && key === "CSL") {
+                this.obj[key] = fs.readFileSync(this.options.watch).toString();
+            }
             if ("undefined" === typeof this.obj[key]) {
                 console.log(this.fpth);
                 throw new Error("Missing required tag \"" + key + "\"")
@@ -264,7 +294,7 @@ function Parser(tn, fpth) {
 
 function parseFixture(tn, fpth) {
     var raw = fs.readFileSync(fpth).toString();
-    var parser = new Parser(tn, fpth);
+    var parser = new Parser(options, tn, fpth);
     for (var line of raw.split("\n")) {
         parser.checkLine(line);
     }
@@ -324,25 +354,47 @@ function Stripper(fn, noStrip) {
 /* Options */
 
 const usage = "Usage: " + path.basename(process.argv[1])
-      + " [-s testName|-g groupName|-a|-l]\n"
+      + " <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath|-k]\n"
       + "  -s testName, --single=testName\n"
-      + "    Run a single local or standard test fixture\n"
+      + "      Run a single local or standard test fixture.\n"
       + "  -g groupName, --group=groupName\n"
-      + "    Run a group of tests with the specified prefix\n"
+      + "      Run a group of tests with the specified prefix.\n"
       + "  -a, --all\n"
+      + "      Run all tests.\n"
       + "  -l, --list\n"
-      + "    List available groups\n"
-      + "    Run all tests\n";
+      + "      List available groups and styles.\n"
+      + "  -c, --cranky\n"
+      + "      Validate CSL in selected fixtures\n"
+      + "  For style development (may be used with -s, -g, or -a):\n"
+      + "    -S, --style\n"
+      + "        Style name. Requires also -w.\n"
+      + "    -w, --watch\n"
+      + "        Path to CSL source file to watch for changes. Requires also -S.\n"
+      + "    -C, --compose-tests\n"
+      + "        Path to CSL JSON file containing item data. Requires also -S.\n"
+      + "        Creates boilerplate test fixtures in -S style test directory.\n"
+      + "        Existing files will be overwritten: be sure to rename files\n"
+      + "        after generating boilerplate.\n"
+      + "    -k, --key-query\n"
+      + "        When tests fail, stop processeing and ask whether to adopt\n"
+      + "        the processor output as the RESULT. Useful for rapidly\n"
+      + "        back-fitting tests to existing styles."
 
 const optParams = {
     alias: {
         s: "single",
         g: "group",
         a: "all",
-        l: "list"
+        l: "list",
+        c: "cranky",
+        w: "watch",
+        S: "style",
+        k: "key-query",
+        C: "compose-tests",
+        q: "quieter"
     },
-    string: ["s", "g"],
-    boolean: ["a", "l"],
+    string: ["s", "g", "S", "w", "C"],
+    boolean: ["a", "l", "c", "k"],
     unknown: option => {
         throw Error("Unknown option \"" +option + "\"");
     }
@@ -351,15 +403,61 @@ const optParams = {
 const options = getopts(process.argv.slice(2), optParams);
 
 function checkSanity() {
-    if (["s", "g", "a", "l"].filter(o => options[o]).length > 1) {
-        throw new Error("Only one of -s, -g, -a, or -l may be invoked.");
+    if (!options.C) {
+        if (["s", "g", "a", "l"].filter(o => options[o]).length > 1) {
+            throw new Error("Only one of -s, -g, -a, or -l may be invoked.");
+        }
+        if (["s", "g", "a", "l"].filter(o => options[o]).length === 0) {
+            throw new Error("Exactly one of -s, -g, -a, or -l must be invoked. No option found.");
+        }
     }
-    if (["s", "g", "a", "l"].filter(o => options[o]).length === 0) {
-        throw new Error("Exactly one of -s, -g, -a, or -l must be invoked. No option found.");
+    if ((options.watch && !options.style) || (!options.watch && options.style)) {
+        throw new Error("The -w and -S options must be set together.");
+    }
+    if (options.C && !options.style) {
+        throw new Error("The -C option requires -S and -w.");
+    }
+    if (options.k && !options.style) {
+        throw new Error("The -k option requires -S and -w.");
+    }
+    if (options.quieter && !options.watch) {
+        throw new Error("The -q option can only be used with -w and -S.");
     }
 }
 
-config.testData = {};
+function setLocalPathToStyleTestPath(styleName) {
+    try {
+        var testDirPth = path.join(scriptDir, config.path.styletests);
+        if (!fs.existsSync(testDirPth)) {
+            fs.mkdirSync(testDirPth);
+        }
+        var styleTestsPth = path.join(testDirPth, options.S);
+        if (!fs.existsSync(styleTestsPth)) {
+            fs.mkdirSync(styleTestsPth);
+        }
+        config.path.local = path.join(config.path.styletests, options.S);
+        config.path.localAbs = styleTestsPth;
+    } catch (err) {
+        throw new Error("Unable to create style tests directory: " + styleTestsPth);
+    }
+}
+
+function setWatchFile(options) {
+    var pth = options.watch;
+    if (!path.isAbsolute(pth)) {
+        pth = path.join(scriptDir, "..", pth);
+    }
+    if (fs.existsSync(pth)) {
+        options.watch = pth;
+        options.w = pth;
+    } else {
+        throw new Error("CSL file or directory to be watched does not exist: " + options.watch);
+    }
+}
+
+function checkValidity() {
+    // 
+}
 
 function checkOverlap(tn) {
     if (config.testData[tn]) {
@@ -375,7 +473,7 @@ function checkSingle() {
     }
     var lpth = path.join(config.path.localAbs, fn)
     var spth = path.join(config.path.stdAbs, fn)
-    if (!fs.existsSync(lpth) && !fs.existsSync(spth)) {
+    if (!fs.existsSync(lpth) && (options.style || !fs.existsSync(spth))) {
         console.log("Looking for " + lpth);
         console.log("Looking for " + spth);
         throw new Error("Test fixture \"" + options.single + "\" not found.");
@@ -383,9 +481,11 @@ function checkSingle() {
     if (fs.existsSync(lpth)) {
         config.testData[tn] = parseFixture(tn, lpth);
     }
-    if (fs.existsSync(spth)) {
-        checkOverlap(tn);
-        config.testData[tn] = parseFixture(tn, spth);
+    if (!options.style) {
+        if (fs.existsSync(spth)) {
+            checkOverlap(tn);
+            config.testData[tn] = parseFixture(tn, spth);
+        }
     }
 }
 
@@ -397,15 +497,21 @@ function checkGroup() {
             fail = false;
             var lpth = path.join(config.path.localAbs, line);
             var tn = line.replace(/.txt$/, "");
-            config.testData[tn] = parseFixture(tn, lpth);
+            if (!skipNames[tn]) {
+                config.testData[tn] = parseFixture(tn, lpth);
+            }
         }
     }
-    for (var line of fs.readdirSync(config.path.localAbs)) {
-        if (rex.test(line)) {
-            fail = false;
-            var spth = path.join(config.path.stdAbs, line);
-            var tn = line.replace(/.txt$/, "");
-            config.testData[tn] = parseFixture(tn, spth);
+    if (!options.style) {
+        for (var line of fs.readdirSync(config.path.stdAbs)) {
+            if (rex.test(line)) {
+                fail = false;
+                var spth = path.join(config.path.stdAbs, line);
+                var tn = line.replace(/.txt$/, "");
+                if (!skipNames[tn]) {
+                    config.testData[tn] = parseFixture(tn, spth);
+                }
+            }
         }
     }
     if (fail) {
@@ -420,19 +526,25 @@ function checkAll() {
         if (rex.test(line)) {
             var lpth = path.join(config.path.localAbs, line);
             var tn = line.replace(/.txt$/, "");
-            config.testData[tn] = parseFixture(tn, lpth);
+            if (!skipNames[tn]) {
+                config.testData[tn] = parseFixture(tn, lpth);
+            }
         }
     }
-    for (var line of fs.readdirSync(config.path.stdAbs)) {
-        if (rex.test(line)) {
-            var spth = path.join(config.path.stdAbs, line);
-            var tn = line.replace(/.txt$/, "");
-            config.testData[tn] = parseFixture(tn, spth);
+    if (!options.style) {
+        for (var line of fs.readdirSync(config.path.stdAbs)) {
+            if (rex.test(line)) {
+                var spth = path.join(config.path.stdAbs, line);
+                var tn = line.replace(/.txt$/, "");
+                if (!skipNames[tn]) {
+                    config.testData[tn] = parseFixture(tn, spth);
+                }
+            }
         }
     }
 }
 
-function listGroups() {
+function setGroupList() {
     var rex = new RegExp("^([^_]+)_.*\.txt$");
     for (var line of fs.readdirSync(config.path.localAbs)) {
         if (rex.test(line)) {
@@ -454,24 +566,39 @@ function listGroups() {
     }
 }
 
+// Is this initialization needed?
+config.testData = {};
+
+function fetchTestData() {
+    try {
+        config.testData = {};
+        if (options.single) {
+            checkSingle();
+        }
+        if (options.group) {
+            checkGroup();
+        }
+        if (options.all) {
+            checkAll();
+        }
+    } catch (err) {
+        errorHandler(err);
+    }
+}
+
 try {
     checkSanity();
-    if (options.single) {
-        checkSingle();
+    if (options.style) {
+        setLocalPathToStyleTestPath(options.style);
     }
-    if (options.group) {
-        checkGroup();
-    }
-    if (options.all) {
-        checkAll();
+    if (options.watch) {
+        setWatchFile(options);
     }
     if (options.list) {
-        listGroups();
+        setGroupList();
     }
 } catch (err) {
-    console.log("Error: " + err.message + "\n");
-    console.log(usage);
-    process.exit(1);
+    errorHandler(err);
 }
 
 
@@ -497,11 +624,126 @@ function Bundle(noStrip) {
     fs.writeFileSync(path.join(scriptDir, "..", "citeproc_commonjs.js"), license + ret + "\nmodule.exports = CSL");
 }
 
-// Bundle, load, and run tests if -s, -g, or -a
-if (options.single || options.group || options.all) {
-    Bundle();
+var tmpobj = tmp.fileSync();
 
-    // Build the tests
+async function runValidations() {
+    var validationCount = 0;
+    var validationGoal = Object.keys(config.testData).length;
+    console.log("Validating CSL in " + validationGoal + " fixtures.");
+    for (var key in config.testData) {
+        var test = config.testData[key];
+        var schema = config.path.cslschema;
+        var m = test.CSL.match(/version=[\"\']([^\"]+)[\"\']/);
+        if (m) {
+            if (m[1].indexOf("mlz") > -1) {
+                schema = config.path.cslmschema;
+            }
+        }
+        fs.writeFileSync(tmpobj.name, test.CSL);
+        var buf = [];
+        var jing = await spawn(
+            "java",
+            [
+                "-client",
+                "-jar",
+                path.join(scriptDir, config.path.jing),
+                "-c",
+                path.join(scriptDir, schema),
+                tmpobj.name
+            ],
+            {
+                cwd: path.join(scriptDir, "..")
+            });
+        jing.stderr.on('data', (data) => {
+            //
+        });
+        jing.stdout.on('data', (data) => {
+            buf.push(data);
+            //console.log(data.toString().replace(/^.*?:([0-9]+):([0-9]+):\s*(.*)$/m, "[$1] : $3"));
+        });
+        jing.on('close', (code) => {
+            validationCount++;
+            // If we are watching and code is 0, chain to integration tests.
+            // Otherwise stop here.
+            if (code == 0 && options.watch) {
+                runFixtures();
+            } else if (code == 0) {
+                process.stdout.write(".");
+                if (validationCount === validationGoal) {
+                    console.log("\nDone.")
+                    process.exit(0);
+                }
+            } else {
+                var txt = Buffer.concat(buf).toString();
+                var lines = txt.split("\n");
+                for (var line of lines) {
+                    console.log(line.toString().replace(/^.*?:([0-9]+):([0-9]+):\s*(.*)$/m, "[$1] : $3"));
+                }
+                console.log("\nValidation failure for " + test.NAME);
+                if (!options.watch) {
+                    process.exit(0);
+                }
+            }
+        });
+        if (options.watch) {
+            // If in watch mode, all validations will be of the
+            // same CSL, so break after launching the first.
+            break;
+        }
+    }
+}
+
+
+function runFixtures() {
+    var args = ["--color"];
+    if (options.k) {
+        args.push("--bail");
+    }
+    var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, "..")});
+    mocha.stdout.on('data', (data) => {
+        console.log(data.toString().replace(/\s+$/, ""));
+        if (options.w && options.k) {
+            var line = data.toString();
+            var m = line.match(/.*FILE:([^\n]+)\.txt:/m);
+            if (m) {
+                console.log("Adopt this output as correct test RESULT? (y/n)");
+                process.stdin.once('data', function (key) {
+                    if (!ksTimeout) {
+                        ksTimeout = setTimeout(function() { ksTimeout=null }, 2000) // block for 2 seconds to avoid stutter
+                        
+                        var fn = path.basename(m[1]);
+                        var test = config.testData[fn];
+                        
+                        if (key == "y" || key == "Y") {
+                            var sys = new Sys(test);
+                            var result = sys.run();
+                            var input = JSON.stringify(test.INPUT, null, 2);
+                            var txt = fs.readFileSync(path.join(scriptDir, "testtemplate.txt")).toString();
+                            txt = txt.replace("%%INPUT_DATA%%", input);
+                            txt = txt.replace("%%RESULT%%", result)
+                            fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, fn + ".txt"), txt);
+                            spawn("touch", [options.watch])
+                        }
+                        if (key == "n" || key == "N") {
+                            skipNames[test.NAME] = true;
+                            spawn("touch", [options.watch])
+                        }
+                    }
+                });
+            }
+        }
+    });
+    mocha.stderr.on('data', (data) => {
+        console.log(data.toString().replace(/\s+$/, ""));
+    });
+    mocha.on('close', (code) => {
+        if (!options.watch) {
+            process.exit();
+        }
+    });
+}
+
+function buildTests() {
     var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString();
     var testData = Object.keys(config.testData).map(k => config.testData[k]).filter(o => o);
     fixtures = fixtures.replace("%%SCRIPT_PATH%%", scriptDir);
@@ -510,23 +752,77 @@ if (options.single || options.group || options.all) {
         fs.mkdirSync(path.join(scriptDir, "..", "test"));
     }
     fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
+}
 
-    // Run the tests
-    var mocha = spawn("mocha", ["--color"], {cwd: path.join(scriptDir, "..")});
-    mocha.stdout.on('data', (data) => {
-        console.log(data.toString().replace(/\s+$/, ""));
-    });
-    mocha.stderr.on('data', (data) => {
-        console.log(data.toString().replace(/\s+$/, ""));
-    });
-    mocha.on('close', (code) => {
-        console.log(`mocha exited with code ${code}`);
-    });
-} else {
-    // Otherwise we were listing
+if (options.C) {
+    // If composing, just to that and quit.
+    try {
+        var pth = path.join(scriptDir, "..", options.C);
+        if (fs.existsSync(pth)) {
+            var json = fs.readFileSync(pth);
+            var arr = JSON.parse(json);
+            for (var i in arr) {
+                arr[i].id = "ITEM-1";
+                var item = JSON.stringify([arr[i]], null, 2);
+                var txt = fs.readFileSync(path.join(scriptDir, "testtemplate.txt")).toString();
+                txt = txt.replace("%%INPUT_DATA%%", item);
+                var pos = "" + (parseInt(i, 10)+1);
+                while (pos.length < 3) {
+                    pos = "0" + pos;
+                }
+                fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, "draft_example" + pos + ".txt"), txt);
+            }
+            process.exit(0);
+        } else {
+            throw new Error("CSL JSON source file not found: " + pth);
+        }
+    } catch (err) {
+        errorHandler(err);
+    }
+} else if (options.single || options.group || options.all) {
+    // Bundle, load, and run tests if -s, -g, or -a
+    
+    // Bundle the processor code.
+    Bundle();
+
+    // Build and run tests
+    if (options.cranky || options.watch) {
+        if (options.watch) {
+            clear();
+            fetchTestData();
+            buildTests();
+            runValidations();
+            fs.watch(options.watch, function(eventType, filename) {
+                if (eventType === "change") {
+                    if (!fsTimeout) {
+                        fsTimeout = setTimeout(function() { fsTimeout=null }, 2000) // block for 2 seconds to avoid stutter
+                        clear();
+                        fetchTestData();
+                        buildTests();
+                        runValidations();
+                    }
+                }
+            });
+        } else {
+            fetchTestData();
+            buildTests();
+            runValidations();
+        }
+    } else {
+        fetchTestData();
+        buildTests();
+        runFixtures();
+    }
+} else if (options.l) {
+    // Otherwise we've collected a list of group names.
     var ret = Object.keys(config.testData);
     ret.sort();
     for (var key of ret) {
         console.log(key + " (" + config.testData[key].length + ")");
     }
+    process.exit(0);
+}
+
+if (options.watch) {
+    console.log("Watching: " + options.watch);
 }

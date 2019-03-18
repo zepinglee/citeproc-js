@@ -68,19 +68,126 @@ You can now run the test script::
       
     node ./tests/runtests.js
   
-This will return a help text about the test runner::
+This will return a help text about the test runner. Options``-a``, ``-g``, ``-s``, and ``-l`` should work out of the box::
 
-    Error: Exactly one of -s, -g, or -a must be invoked. No option found.
+    Error: Exactly one of -s, -g, -a, or -l must be invoked. No option found.
     
-    Usage: runtests.js [-s testName|-g groupName|-a] <-c> <-v|-q>
+    Usage: runtests.js <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath]
       -s testName, --single=testName
-        Run a single local or standard test fixture
+          Run a single local or standard test fixture.
       -g groupName, --group=groupName
-        Run a group of tests with the specified prefix
+          Run a group of tests with the specified prefix.
       -a, --all
-        Run all tests
+          Run all tests.
+      -l, --list
+          List available groups and styles.
+      -c, --cranky
+          Validate CSL in selected fixtures
+      For style development (may be used with -s, -g, or -a):
+        -S, --style
+            Style name (without spaces). Requires also -w.
+        -w, --watch
+            Path to CSL source file watch for changes. Requires also -S.
+        -C, --compose-tests
+            Path to CSL JSON file containing item data. Requires also -S.
+            Creates boilerplate test fixtures in -S style test directory.
+            Existing files will be overwritten: be sure to rename files
+            after generating boilerplate.
+        -k, --key-query
+            When tests fail, stop processeing and ask whether to adopt
+            the processor output as the RESULT. Useful for rapidly
+            back-fitting tests to existing styles.
+        
 
-    
+----------
+Watch mode
+----------
+
+The ``runtests.js`` script supports a simple but powerful "watch" mode
+to support style development. In the scenario below, we will prepare
+tests for the Journal Irreproducible Results (JIR). The journal
+`exists <http://www.jir.com/>`_, but as there is no CSL style for it
+in the CSL Repository, our tutorial will be largely devoid of
+screenshots. The steps, however, can be applied to any style that
+actually does exist.
+
+I'll begin by forking the ``citeproc-js`` GitHub repository. This
+will make it easy to fold my tests back into the main project ...
+
+
+    .. image:: https://juris-m.github.io/citeproc-js/fork.png
+
+... and then I will clone a local copy of my forked ``citeproc-js``
+repository (not the Juris-M original)::
+
+    git clone --recursive git://github.com/fbennett/citeproc-js.git
+
+I will do three things in preparation for work on the JIR style:
+
+  * Prepare a rough copy of the style (if it resembles another
+    style, I might just fetch a copy of that, and change its
+    title and ID);
+  * Prepare a small collection of items in Zotero for use in
+    testing the style, and export the full set of items
+    to a file, in CSL JSON format.
+  * Create a subdirectory under ``./tests/styletests``
+    in my ``citeproc-js`` repo. (In this tutorial, I will
+    name the directory for the style's URL name, ``journal-of-irreproducible-results``.
+
+I am now ready to begin working with the ``runtests.js`` script.
+The first step is to generate ``citeproc`` test fixtures for
+each of the exported library items. ``runtests.js`` can do
+this for me, with options like the following::
+
+  node ./tests/runtests.js \
+       -C path/to/exported-items.json \
+       -S journal-of-irreproducible-results
+  
+I now have a set of boilerplate tests that will fail miserably,
+but those that pass can be quickly converted to passing
+tests, using the ``-k`` option like this::
+
+  node ./tests/runtests.js \
+       -S journal-of-irreproducible-results \
+       -w ../jm-styles/apa.csl \
+       -a \
+       -k
+
+The output will look something like this:
+
+..image:: https://juris-m.github.io/citeproc-js/style-fail.png
+
+If I respond to the prompt with ``Y``, the output of the style
+will be adopted as the RESULT of the test fixture. If I respond
+with ``N``, the fixture will be skipped, and the next test will
+be shown, until the test set is exhausted.
+
+The test fixtures are located in plain text files in a ``styletests``
+subdirectory, and can be edited directly. Unlike the fixtures used
+to test the processor, style fixtures do not contain a ``CSL``
+section, because the CSL code of the target style will be used.
+Once I have prepared a full set of passing tests, I can set the
+script to watch them when making further changes to the style.
+The command for that is the same as for rapid editing, but
+without the ``-k`` option.::
+  
+  node ./tests/runtests.js \
+       -S journal-of-irreproducible-results \
+       -w ../jm-styles/apa.csl \
+       -a
+ 
+Each time I save the CSL file, the style code will be validated
+before tests are run. Validation failures look like this:
+
+.. image:: https://juris-m.github.io/citeproc-js/validation-fail.png
+
+When I am happy with my tests, I can check them in to my local
+``git``, push them to my GitHub repository, and file a pull request
+to the ``Juris-M/citeproc-js`` master for general use by others
+editing the style.
+           
+Done.
+
 ---------------------------
 
 .. [1] CSL-M is set of private extensions to official CSL used by the
