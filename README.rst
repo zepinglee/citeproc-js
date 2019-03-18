@@ -120,7 +120,7 @@ I'll begin by forking the ``citeproc-js`` GitHub repository. This
 will make it easy to fold my tests back into the main project ...
 
 
-    .. image:: https://juris-m.github.io/citeproc-js/fork.png
+.. image:: https://juris-m.github.io/citeproc-js/fork.png
 
 ... and then I will clone a local copy of my forked ``citeproc-js``
 repository (not the Juris-M original)::
@@ -129,12 +129,12 @@ repository (not the Juris-M original)::
 
 I will do two things in preparation for work on the JIR style:
 
-  * Prepare a rough copy of the style (if it resembles another
-    style, I might just fetch a copy of that, and change its
-    title and ID);
-  * Prepare a small collection of items in Zotero for use in
-    testing the style, and export the full set of items
-    to a file, in CSL JSON format.
+* Prepare a rough copy of the style (if it resembles another
+  style, I might just fetch a copy of that, and change its
+  title and ID);
+* Prepare a small collection of items in Zotero for use in
+  testing the style, and export the full set of items
+  to a file, in CSL JSON format.
 
 I am now ready to begin working with the ``runtests.js`` script.
 The first step is to generate ``citeproc`` test fixtures for
