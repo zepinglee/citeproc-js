@@ -103,7 +103,7 @@ This will return a help text about the test runner. Options``-a``, ``-g``, ``-s`
 Watch mode
 ----------
 
-The ``runtests.js`` script supports a simple but powerful "watch" mode
+The ``runtests.js`` script supports a simple but powerful “watch” mode
 to support style development. In the scenario below, we will prepare
 tests for the Journal Irreproducible Results (JIR). The journal
 `exists <http://www.jir.com/>`_, but as there is no CSL style for it
@@ -180,7 +180,7 @@ is always used.
 
 Once I have prepared a full set of passing tests, I can set the script
 to watch the style file when I am making changes to it. The command
-for that is the same as for rapid "editing" of the fixtures, but
+for that is the same as for rapid “editing” of the fixtures, but
 without the ``-k`` option.::
   
   node ./tests/runtests.js \
