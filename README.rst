@@ -111,6 +111,10 @@ in the CSL Repository, our tutorial will be largely devoid of
 screenshots. The steps, however, can be applied to any style that
 actually does exist.
 
+**Requirements**
+    * A recent-ish version of ``node.js``
+    * Java (a basic command-line install, needed for validation)
+    
 I'll begin by forking the ``citeproc-js`` GitHub repository. This
 will make it easy to fold my tests back into the main project ...
 
@@ -160,13 +164,20 @@ with ``N``, the fixture will be skipped, and the next test will
 be shown, until the test set is exhausted.
 
 The test fixtures are located in plain text files in a ``styletests``
-subdirectory, and can be edited directly. Unlike the fixtures used
-to test the processor, style fixtures do not contain a ``CSL``
-section, because the CSL code of the target style will be used.
-Once I have prepared a full set of passing tests, I can set the
-script to watch them when making further changes to the style.
-The command for that is the same as for rapid editing, but
-without the ``-k`` option.::
+subdirectory, where they can be edited directly::
+
+  ./tests/styletests/journal-of-irreproducible-results
+  
+The ``-C`` option that generates the boilerplate is destructive—it
+will overwrite existing files—so be sure to rename the files after
+populating the directory.
+
+Unlike the fixtures used to test the processor, style fixtures do not
+contain a ``CSL`` section, because the CSL code of the target style
+will be used.  Once I have prepared a full set of passing tests, I can
+set the script to watch them when making further changes to the style.
+The command for that is the same as for rapid editing, but without the
+``-k`` option.::
   
   node ./tests/runtests.js \
        -S journal-of-irreproducible-results \
