@@ -112,6 +112,7 @@ screenshots. The steps, however, can be applied to any style that
 actually does exist.
 
 **Requirements**
+    * ``git``
     * A recent-ish version of ``node.js``
     * Java (a basic command-line install, needed for validation)
     
