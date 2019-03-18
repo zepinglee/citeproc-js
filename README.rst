@@ -24,8 +24,8 @@ described in CSL to bibliographic data.
 
 The ``citeproc-js`` CSL processor is over a decade in service, a fact
 that shows through in ways both good and bad. On the downside, the
-code base is not pretty, and could in fact serve as a solid
-illustration of the burden technical debt (in case you need one of
+code base is not pretty, and can serve as a solid
+illustration of the burden of technical debt (in case you need one of
 those for your computer science class). On the upside, though,
 ``citeproc-js`` passes a suite of 1,400 integration tests with flying
 colors. When run in CSL-M mode [1]_ it can handle multilingual and
