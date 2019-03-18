@@ -155,7 +155,7 @@ tests, using the ``-k`` option like this::
 
 The output will look something like this:
 
-..image:: https://juris-m.github.io/citeproc-js/style-fail.png
+.. image:: https://juris-m.github.io/citeproc-js/style-fail.png
 
 If I respond to the prompt with ``Y``, the output of the style
 will be adopted as the RESULT of the test fixture. If I respond
