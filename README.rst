@@ -122,7 +122,7 @@ repository (not the Juris-M original)::
 
     git clone --recursive git://github.com/fbennett/citeproc-js.git
 
-I will do three things in preparation for work on the JIR style:
+I will do two things in preparation for work on the JIR style:
 
   * Prepare a rough copy of the style (if it resembles another
     style, I might just fetch a copy of that, and change its
@@ -130,9 +130,6 @@ I will do three things in preparation for work on the JIR style:
   * Prepare a small collection of items in Zotero for use in
     testing the style, and export the full set of items
     to a file, in CSL JSON format.
-  * Create a subdirectory under ``./tests/styletests``
-    in my ``citeproc-js`` repo. (In this tutorial, I will
-    name the directory for the style's URL name, ``journal-of-irreproducible-results``.
 
 I am now ready to begin working with the ``runtests.js`` script.
 The first step is to generate ``citeproc`` test fixtures for
