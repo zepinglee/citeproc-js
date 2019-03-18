@@ -171,14 +171,17 @@ subdirectory, where they can be edited directly::
   
 The ``-C`` option that generates the boilerplate is destructive—it
 will overwrite existing files—so be sure to rename the files after
-populating the directory.
+populating the directory. In test fixture filenames, the underscore
+(``_``) is required. The first portion of the name is the group to
+which the test belongs. You will notice that, unlike the fixtures used
+to test the processor, style fixtures do not contain a ``CSL``
+section, for the obvious reason that the CSL code of the target style
+is always used.
 
-Unlike the fixtures used to test the processor, style fixtures do not
-contain a ``CSL`` section, because the CSL code of the target style
-will be used.  Once I have prepared a full set of passing tests, I can
-set the script to watch them when making further changes to the style.
-The command for that is the same as for rapid editing, but without the
-``-k`` option.::
+Once I have prepared a full set of passing tests, I can set the script
+to watch the style file when I am making changes to it. The command
+for that is the same as for rapid "editing" of the fixtures, but
+without the ``-k`` option.::
   
   node ./tests/runtests.js \
        -S journal-of-irreproducible-results \
