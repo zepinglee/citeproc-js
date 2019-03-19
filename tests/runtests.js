@@ -16,10 +16,11 @@ process.stdin.setRawMode(true);
 process.stdin.resume();
 process.stdin.setEncoding( 'utf8' );
 process.stdin.on('data', function( key ){
-// ctrl-c ( end of text )
-  if ( key === '\u0003' ) {
-    process.exit();
-  }
+    // ctrl-c ( end of text )
+    if ( key === '\u0003' ) {
+        console.log("\n");
+        process.exit();
+    }
 });
 
 /* Configuration */
@@ -780,6 +781,7 @@ function runFixtures() {
     });
     mocha.on('close', (code) => {
         if (!options.watch) {
+            console.log("\n");
             process.exit();
         }
     });
