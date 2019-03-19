@@ -47,8 +47,7 @@ config.path.stdAbs = path.join(scriptDir, config.path.std);
 config.path.srcAbs = path.join(scriptDir, config.path.src);
 
 function errorHandler(err) {
-    console.log("Error: " + err.message + "\n");
-    console.log(usage);
+    console.log("\nError: " + err.message + "\n");
     process.exit(1);
 }
 
@@ -413,7 +412,8 @@ function checkSanity() {
             throw new Error("Only one of -s, -g, -a, or -l may be invoked.");
         }
         if (["s", "g", "a", "l"].filter(o => options[o]).length === 0) {
-            throw new Error("Exactly one of -s, -g, -a, or -l must be invoked. No option found.");
+            console.log(usage);
+            throw new Error("Use one of -s, -g, -a, or -l.");
         }
     }
     if (!options.C && ((options.watch && !options.style) || (!options.watch && options.style))) {
@@ -511,7 +511,10 @@ function checkGroup() {
                 var spth = path.join(config.path.stdAbs, line);
                 var tn = line.replace(/.txt$/, "");
                 if (!skipNames[tn]) {
-                    config.testData[tn] = parseFixture(tn, spth);
+                    if (fs.existsSync(spth)) {
+                        checkOverlap(tn);
+                        config.testData[tn] = parseFixture(tn, spth);
+                    }
                 }
             }
         }
@@ -531,6 +534,8 @@ function checkAll() {
             if (!skipNames[tn]) {
                 config.testData[tn] = parseFixture(tn, lpth);
             }
+        } else {
+            console.log("Rejected in local: " + line);
         }
     }
     if (!options.style) {
@@ -539,8 +544,13 @@ function checkAll() {
                 var spth = path.join(config.path.stdAbs, line);
                 var tn = line.replace(/.txt$/, "");
                 if (!skipNames[tn]) {
-                    config.testData[tn] = parseFixture(tn, spth);
+                    if (fs.existsSync(spth)) {
+                        checkOverlap(tn);
+                        config.testData[tn] = parseFixture(tn, spth);
+                    }
                 }
+            } else {
+                console.log("Rejected in std: " + line);
             }
         }
     }
@@ -626,24 +636,12 @@ function Bundle(noStrip) {
     fs.writeFileSync(path.join(scriptDir, "..", "citeproc_commonjs.js"), license + ret + "\nmodule.exports = CSL");
 }
 
-var tmpobj = tmp.fileSync();
-
-async function runValidations() {
-    var validationCount = 0;
-    var validationGoal = Object.keys(config.testData).length;
-    console.log("Validating CSL in " + validationGoal + " fixtures.");
-    for (var key in config.testData) {
-        var test = config.testData[key];
-        var schema = config.path.cslschema;
-        var m = test.CSL.match(/version=[\"\']([^\"]+)[\"\']/);
-        if (m) {
-            if (m[1].indexOf("mlz") > -1) {
-                schema = config.path.cslmschema;
-            }
-        }
+function runJing(validationCount, validationGoal, schema, test) {
+    var jingPromise = new Promise((resolve, reject) => {
+        var tmpobj = tmp.fileSync();
         fs.writeFileSync(tmpobj.name, test.CSL);
         var buf = [];
-        var jing = await spawn(
+        var jing = spawn(
             "java",
             [
                 "-client",
@@ -657,11 +655,10 @@ async function runValidations() {
                 cwd: path.join(scriptDir, "..")
             });
         jing.stderr.on('data', (data) => {
-            //
+            reject();
         });
         jing.stdout.on('data', (data) => {
             buf.push(data);
-            //console.log(data.toString().replace(/^.*?:([0-9]+):([0-9]+):\s*(.*)$/m, "[$1] : $3"));
         });
         jing.on('close', (code) => {
             validationCount++;
@@ -670,11 +667,12 @@ async function runValidations() {
             if (code == 0 && options.watch) {
                 runFixtures();
             } else if (code == 0) {
-                process.stdout.write(".");
+                process.stdout.write("+");
                 if (validationCount === validationGoal) {
                     console.log("\nDone.")
                     process.exit(0);
                 }
+                resolve();
             } else {
                 var txt = Buffer.concat(buf).toString();
                 var lines = txt.split("\n");
@@ -683,10 +681,52 @@ async function runValidations() {
                 }
                 console.log("\nValidation failure for " + test.NAME);
                 if (!options.watch) {
+                    validationCount--;
+                    fs.writeFileSync(path.join(scriptDir, "..", ".cslValidationPos"), "" + validationCount);
                     process.exit(0);
                 }
+                reject();
             }
         });
+    });
+    jingPromise.catch(function(err){
+        errorHandler(err);
+    });
+    return jingPromise;
+}
+
+
+async function runValidations() {
+    var validationCount = 0;
+    var validationGoal = Object.keys(config.testData).length;
+    var startPos = 0;
+    console.log("Validating CSL in " + validationGoal + " fixtures.");
+    if (!options.w && !options.l && !options.C) {
+        if (options.a && fs.existsSync(path.join(scriptDir, "..", ".cslValidationPos"))) {
+            startPos = fs.readFileSync(path.join(scriptDir, "..", ".cslValidationPos")).toString();
+            startPos = parseInt(startPos, 10);
+        } else {
+            fs.writeFileSync(path.join(scriptDir, "..", ".cslValidationPos"), "0");
+        }
+    }
+    for (var key in config.testData) {
+        if (startPos > validationCount) {
+            process.stdout.write(".");
+            validationCount++;
+            continue;
+        }
+        var test = config.testData[key];
+        var schema = config.path.cslschema;
+        var m = test.CSL.match(/version=[\"\']([^\"\']+)[\"\']/m);
+        if (m) {
+            if (m[1].indexOf("mlz") > -1) {
+                schema = config.path.cslmschema;
+            }
+        } else {
+            throw new Error("Version not found in CSL for fixture: " + key);
+        }
+        await runJing(validationCount, validationGoal, schema, test);
+        validationCount++;
         if (options.watch) {
             // If in watch mode, all validations will be of the
             // same CSL, so break after launching the first.
