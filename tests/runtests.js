@@ -240,7 +240,26 @@ function Parser(options, tn, fpth) {
         }
         for (var key of Object.keys(sections).filter(key => sections[key].required)) {
             if (this.options.watch && key === "CSL") {
+                var inStyle = false;
                 this.obj[key] = fs.readFileSync(this.options.watch).toString();
+                var cslList = this.obj[key].split("\n");
+                for (var i in cslList) {
+                    var line = cslList[i];
+                    if (line.indexOf("<style") > -1) {
+                        inStyle = true;
+                    }
+                    if (inStyle) {
+                        var m = line.match(/default-locale=[\"\']([^\"\']+)[\"\']/);
+                        if (m && m[1].indexOf("-x-") === -1) {
+                            var defaultLocale = m[1] + "-x-sort-en";
+                            cslList[i] = cslList[i].replace(/default-locale=[\"\']([^\"\']+)[\"\']/, "default-locale=\"" + defaultLocale + "\"");
+                            this.obj.CSL = cslList.join("\n");
+                        }
+                    }
+                    if (inStyle && line.indexOf(">") > -1) {
+                        break;
+                    }
+                }
             }
             if ("undefined" === typeof this.obj[key]) {
                 console.log(this.fpth);
@@ -718,7 +737,20 @@ async function runValidations() {
         }
         var test = config.testData[key];
         var schema = config.path.cslschema;
-        var m = test.CSL.match(/version=[\"\']([^\"\']+)[\"\']/m);
+        var lineList = test.CSL.split("\n");
+        var inStyle = false;
+        var m = null;  // for version match
+        for (var line of lineList) {
+            if (line.indexOf("<style") > -1) {
+                inStyle = true;
+            }
+            if (inStyle && !m) {
+                m = line.match(/version=[\"\']([^\"\']+)[\"\']/);
+            }
+            if (inStyle && line.indexOf(">") > -1) {
+                break;
+            }
+        }
         if (m) {
             if (m[1].indexOf("mlz") > -1) {
                 schema = config.path.cslmschema;
