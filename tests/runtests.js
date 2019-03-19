@@ -862,7 +862,7 @@ async function bundleValidateTest() {
             clear();
             fetchTestData();
             buildTests();
-            await runValidationsAsync();
+            await runValidationsAsync().catch(err => errorHandlerNonFatal(err));
             var watcher = chokidar.watch(options.watch[0]);
             watcher.on("change", (event, filename) => {
                 clear();
@@ -876,7 +876,7 @@ async function bundleValidateTest() {
         } else {
             fetchTestData();
             buildTests();
-            await runValidationsAsync();
+            await runValidationsAsync().catch(err => errorHandlerNonFatal(err));
         }
     } else {
         fetchTestData();
