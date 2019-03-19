@@ -48,10 +48,12 @@ config.path.stdAbs = path.join(scriptDir, config.path.std);
 config.path.srcAbs = path.join(scriptDir, config.path.src);
 
 function errorHandler(err) {
-    console.log("typeof err=" + typeof err);
-    console.log("err=" + err);
     console.log("\nError: " + err.message + "\n");
     process.exit(1);
+}
+
+function errorHandlerNonFatal(err) {
+    console.log("\nError: " + err.message + "\n");
 }
 
 const sourceFiles = [
@@ -866,7 +868,7 @@ async function bundleValidateTest() {
                 clear();
                 fetchTestData();
                 buildTests();
-                runValidationsAsync();
+                runValidationsAsync().catch(err => errorHandlerNonFatal(err));
             });
             for (var pth of options.watch.slice(1)) {
                 watcher.add(pth);
