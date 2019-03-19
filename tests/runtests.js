@@ -354,31 +354,37 @@ function Stripper(fn, noStrip) {
 /* Options */
 
 const usage = "Usage: " + path.basename(process.argv[1])
-      + " <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath|-k]\n"
+      + "Usage: runtests.js <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath]\n"
       + "  -s testName, --single=testName\n"
       + "      Run a single local or standard test fixture.\n"
       + "  -g groupName, --group=groupName\n"
       + "      Run a group of tests with the specified prefix.\n"
       + "  -a, --all\n"
       + "      Run all tests.\n"
-      + "  -l, --list\n"
-      + "      List available groups and styles.\n"
-      + "  -c, --cranky\n"
-      + "      Validate CSL in selected fixtures\n"
-      + "  For style development (may be used with -s, -g, or -a):\n"
-      + "    -S, --style\n"
-      + "        Style name. Requires also -w.\n"
-      + "    -w, --watch\n"
-      + "        Path to CSL source file to watch for changes. Requires also -S.\n"
-      + "    -C, --compose-tests\n"
-      + "        Path to CSL JSON file containing item data. Requires also -S.\n"
-      + "        Creates boilerplate test fixtures in -S style test directory.\n"
-      + "        Existing files will be overwritten: be sure to rename files\n"
-      + "        after generating boilerplate.\n"
-      + "    -k, --key-query\n"
-      + "        When tests fail, stop processeing and ask whether to adopt\n"
-      + "        the processor output as the RESULT. Useful for rapidly\n"
-      + "        back-fitting tests to existing styles."
+      + "  Option for use with -s, -g, or -a:\n"
+      + "      -c, --cranky\n"
+      + "          Validate CSL in selected fixtures\n"
+      + "  Options for style development with -s, -g, or -a:\n"
+      + "      -S, --style\n"
+      + "          Style name (without spaces). Without -C, requires -w.\n"
+      + "      -w, --watch\n"
+      + "          Path to CSL source file watch for changes, relative to\n"
+      + "          repository root. Without -C, requires -S.\n"
+      + "      Option for use with -s, -g, or -a with -S and -w:\n"
+      + "          -k, --key-query\n"
+      + "              When tests fail, stop processing and ask whether to\n"
+      + "              adopt the processor output as the RESULT. Useful for\n"
+      + "              rapidly back-fitting tests to existing styles.\n"
+      + "      Option for use with -S:\n"
+      + "          -C, --compose-tests\n"
+      + "              Path to CSL JSON file containing item data, relative\n"
+      + "              to repository root. Requires also -S. Creates draft\n"
+      + "              test fixtures in -S style test directory. Existing\n"
+      + "              files will be overwritten: be sure to rename files\n"
+      + "              after generating draft fixtures.\n"
+      + "  Option for use on its own, or with -S  \n"
+      + "          -l, --list\n"
+      + "              List available groups and styles.";
 
 const optParams = {
     alias: {
@@ -390,8 +396,7 @@ const optParams = {
         w: "watch",
         S: "style",
         k: "key-query",
-        C: "compose-tests",
-        q: "quieter"
+        C: "compose-tests"
     },
     string: ["s", "g", "S", "w", "C"],
     boolean: ["a", "l", "c", "k"],
@@ -411,17 +416,14 @@ function checkSanity() {
             throw new Error("Exactly one of -s, -g, -a, or -l must be invoked. No option found.");
         }
     }
-    if ((options.watch && !options.style) || (!options.watch && options.style)) {
-        throw new Error("The -w and -S options must be set together.");
+    if (!options.C && ((options.watch && !options.style) || (!options.watch && options.style))) {
+        throw new Error("Without -C, the -w and -S options must be set together.");
     }
     if (options.C && !options.style) {
-        throw new Error("The -C option requires -S and -w.");
+        throw new Error("The -C option requires -S.");
     }
     if (options.k && !options.style) {
         throw new Error("The -k option requires -S and -w.");
-    }
-    if (options.quieter && !options.watch) {
-        throw new Error("The -q option can only be used with -w and -S.");
     }
 }
 

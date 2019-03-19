@@ -79,25 +79,30 @@ This will return a help text about the test runner. Options``-a``, ``-g``, ``-s`
           Run a group of tests with the specified prefix.
       -a, --all
           Run all tests.
-      -l, --list
-          List available groups and styles.
-      -c, --cranky
-          Validate CSL in selected fixtures
-      For style development (may be used with -s, -g, or -a):
-        -S, --style
-            Style name (without spaces). Requires also -w.
-        -w, --watch
-            Path to CSL source file watch for changes. Requires also -S.
-        -C, --compose-tests
-            Path to CSL JSON file containing item data. Requires also -S.
-            Creates boilerplate test fixtures in -S style test directory.
-            Existing files will be overwritten: be sure to rename files
-            after generating boilerplate.
-        -k, --key-query
-            When tests fail, stop processeing and ask whether to adopt
-            the processor output as the RESULT. Useful for rapidly
-            back-fitting tests to existing styles.
-        
+      Option for use with -s, -g, or -a:
+          -c, --cranky
+              Validate CSL in selected fixtures
+      Options for style development with -s, -g, or -a:
+          -S, --style
+              Style name (without spaces). Without -C, requires -w.
+          -w, --watch
+              Path to CSL source file watch for changes, relative to
+              repository root. Without -C, requires -S.
+          Option for use with -s, -g, or -a with -S and -w:
+              -k, --key-query
+                  When tests fail, stop processing and ask whether to
+                  adopt the processor output as the RESULT. Useful for
+                  rapidly back-fitting tests to existing styles.
+          Option for use with -S:
+              -C, --compose-tests
+                  Path to CSL JSON file containing item data, relative
+                  to repository root. Requires also -S. Creates draft
+                  test fixtures in -S style test directory. Existing
+                  files will be overwritten: be sure to rename files
+                  after generating draft fixtures.
+      Option for use on its own, or with -S  
+          -l, --list
+              List available groups and styles.
 
 ----------
 Watch mode
@@ -151,7 +156,7 @@ tests, using the ``-k`` option like this::
 
   node ./tests/runtests.js \
        -S journal-of-irreproducible-results \
-       -w ../jm-styles/apa.csl \
+       -w ../somepath/journal-of-irreproducible-results.csl \
        -a \
        -k
 
@@ -185,7 +190,7 @@ without the ``-k`` option.::
   
   node ./tests/runtests.js \
        -S journal-of-irreproducible-results \
-       -w ../jm-styles/apa.csl \
+       -w ../somepath/journal-of-irreproducible-results.csl \
        -a
  
 Each time I save the CSL file, the style code will be validated
