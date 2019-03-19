@@ -426,6 +426,10 @@ const optParams = {
 
 const options = getopts(process.argv.slice(2), optParams);
 
+// First things first
+if (options.watch) {
+    console.log("Watching: " + options.watch);
+}
 function checkSanity() {
     if (!options.C) {
         if (["s", "g", "a", "l"].filter(o => options[o]).length > 1) {
@@ -685,7 +689,7 @@ function runJing(validationCount, validationGoal, schema, test) {
             // If we are watching and code is 0, chain to integration tests.
             // Otherwise stop here.
             if (code == 0 && options.watch) {
-                runFixtures();
+                return runFixtures().then(resolve()).catch(err => errorHandler(err));
             } else if (code == 0) {
                 process.stdout.write("+");
                 if (validationCount === validationGoal) {
@@ -765,58 +769,67 @@ async function runValidations() {
             // same CSL, so break after launching the first.
             break;
         }
+        console.log("boof");
     }
 }
 
 
 function runFixtures() {
-    var args = ["--color"];
-    if (options.k) {
-        args.push("--bail");
-    }
-    var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, "..")});
-    mocha.stdout.on('data', (data) => {
-        console.log(data.toString().replace(/\s+$/, ""));
-        if (options.w && options.k) {
-            var line = data.toString();
-            var m = line.match(/.*FILE:([^\n]+)\.txt:/m);
-            if (m) {
-                console.log("Adopt this output as correct test RESULT? (y/n)");
-                process.stdin.once('data', function (key) {
-                    if (!ksTimeout) {
-                        ksTimeout = setTimeout(function() { ksTimeout=null }, 2000) // block for 2 seconds to avoid stutter
-                        
-                        var fn = path.basename(m[1]);
-                        var test = config.testData[fn];
-                        
-                        if (key == "y" || key == "Y") {
-                            var sys = new Sys(test);
-                            var result = sys.run();
-                            var input = JSON.stringify(test.INPUT, null, 2);
-                            var txt = fs.readFileSync(path.join(scriptDir, "testtemplate.txt")).toString();
-                            txt = txt.replace("%%INPUT_DATA%%", input);
-                            txt = txt.replace("%%RESULT%%", result)
-                            fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, fn + ".txt"), txt);
-                            spawn("touch", [options.watch])
+    var fixturesPromise = new Promise((resolve, reject) => {
+        var args = ["--color"];
+        if (options.k) {
+            args.push("--bail");
+        }
+        var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, "..")});
+        mocha.stdout.on('data', (data) => {
+            console.log(data.toString().replace(/\s+$/, ""));
+            if (options.w && options.k) {
+                var line = data.toString();
+                var m = line.match(/.*FILE:([^\n]+)\.txt:/m);
+                if (m) {
+                    console.log("Adopt this output as correct test RESULT? (y/n)");
+                    process.stdin.once('data', function (key) {
+                        if (!ksTimeout) {
+                            ksTimeout = setTimeout(function() { ksTimeout=null }, 2000) // block for 2 seconds to avoid stutter
+                            
+                            var fn = path.basename(m[1]);
+                            var test = config.testData[fn];
+                            
+                            if (key == "y" || key == "Y") {
+                                var sys = new Sys(test);
+                                var result = sys.run();
+                                var input = JSON.stringify(test.INPUT, null, 2);
+                                var txt = fs.readFileSync(path.join(scriptDir, "testtemplate.txt")).toString();
+                                txt = txt.replace("%%INPUT_DATA%%", input);
+                                txt = txt.replace("%%RESULT%%", result)
+                                fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, fn + ".txt"), txt);
+                                spawn("touch", [options.watch])
+                            }
+                            if (key == "n" || key == "N") {
+                                skipNames[test.NAME] = true;
+                                spawn("touch", [options.watch])
+                            }
                         }
-                        if (key == "n" || key == "N") {
-                            skipNames[test.NAME] = true;
-                            spawn("touch", [options.watch])
-                        }
-                    }
-                });
+                    });
+                }
             }
-        }
+        });
+        mocha.stderr.on('data', (data) => {
+            console.log(data.toString().replace(/\s+$/, ""));
+            reject();
+        });
+        mocha.on('close', (code) => {
+            resolve(true);
+            if (!options.watch) {
+                console.log("\n");
+                process.exit();
+            }
+        });
     });
-    mocha.stderr.on('data', (data) => {
-        console.log(data.toString().replace(/\s+$/, ""));
+    fixturesPromise.catch(function(err){
+        errorHandler(err);
     });
-    mocha.on('close', (code) => {
-        if (!options.watch) {
-            console.log("\n");
-            process.exit();
-        }
-    });
+    return fixturesPromise;
 }
 
 function buildTests() {
@@ -828,6 +841,42 @@ function buildTests() {
         fs.mkdirSync(path.join(scriptDir, "..", "test"));
     }
     fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
+}
+
+async function bundleValidateTest() {
+    // Bundle, load, and run tests if -s, -g, or -a
+    
+    // Bundle the processor code.
+    Bundle();
+
+    // Build and run tests
+    if (options.cranky || options.watch) {
+        if (options.watch) {
+            clear();
+            fetchTestData();
+            buildTests();
+            await runValidations().catch(err => errorHandler(err));
+            fs.watch(options.watch, function(eventType, filename) {
+                if (eventType === "change") {
+                    if (!fsTimeout) {
+                        fsTimeout = setTimeout(function() { fsTimeout=null }, 2000) // block for 2 seconds to avoid stutter
+                        clear();
+                        fetchTestData();
+                        buildTests();
+                        runValidations().catch(err => errorHandler(err));
+                    }
+                }
+            });
+        } else {
+            fetchTestData();
+            buildTests();
+            await runValidations().catch(err => errorHandler(err));
+        }
+    } else {
+        fetchTestData();
+        buildTests();
+        await runFixtures().catch(err => errorHandler(err));
+    }
 }
 
 if (options.C) {
@@ -856,39 +905,7 @@ if (options.C) {
         errorHandler(err);
     }
 } else if (options.single || options.group || options.all) {
-    // Bundle, load, and run tests if -s, -g, or -a
-    
-    // Bundle the processor code.
-    Bundle();
-
-    // Build and run tests
-    if (options.cranky || options.watch) {
-        if (options.watch) {
-            clear();
-            fetchTestData();
-            buildTests();
-            runValidations();
-            fs.watch(options.watch, function(eventType, filename) {
-                if (eventType === "change") {
-                    if (!fsTimeout) {
-                        fsTimeout = setTimeout(function() { fsTimeout=null }, 2000) // block for 2 seconds to avoid stutter
-                        clear();
-                        fetchTestData();
-                        buildTests();
-                        runValidations();
-                    }
-                }
-            });
-        } else {
-            fetchTestData();
-            buildTests();
-            runValidations();
-        }
-    } else {
-        fetchTestData();
-        buildTests();
-        runFixtures();
-    }
+    bundleValidateTest();
 } else if (options.l) {
     // Otherwise we've collected a list of group names.
     var ret = Object.keys(config.testData);
@@ -897,8 +914,4 @@ if (options.C) {
         console.log(key + " (" + config.testData[key].length + ")");
     }
     process.exit(0);
-}
-
-if (options.watch) {
-    console.log("Watching: " + options.watch);
 }
