@@ -4,7 +4,7 @@ path:
     src: ../src
     locale: ../locale
     styles: fixtures/local/styles
-    modules: fixtures/local/styles
+    modules: ../juris-modules
     styletests: styletests
     jing: ../jing/jing-20131210.jar
     cslschema: ../csl-schemata/csl/csl.rnc
