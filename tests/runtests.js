@@ -3,12 +3,11 @@ const path = require("path");
 const yaml = require("yaml");
 const getopts = require("getopts");
 const spawn = require("child_process").spawn;
-const spawnSync = require("child_process").spawnSync;
 const tmp = require("tmp");
 const clear = require("cross-clear");
 
 var ksTimeout;
-var fsTimeout
+var fsTimeout;
 
 var skipNames = {};
 
@@ -36,7 +35,7 @@ const defaultConfig =
       + "    src: ../src"
       + "    locale: ../locale"
       + "    styles: fixtures/local/styles"
-      + "    modules: fixtures/local/styles"
+      + "    modules: fixtures/local/styles";
 
 const configFile = process.argv[1].replace(/.js$/, ".yaml");
 if (!fs.existsSync(configFile)) {
@@ -48,6 +47,8 @@ config.path.stdAbs = path.join(scriptDir, config.path.std);
 config.path.srcAbs = path.join(scriptDir, config.path.src);
 
 function errorHandler(err) {
+    console.log("typeof err=" + typeof err);
+    console.log("err=" + err);
     console.log("\nError: " + err.message + "\n");
     process.exit(1);
 }
@@ -213,7 +214,28 @@ const sections = {
         required: true,
         type: "string"
     }
-}
+};
+
+const optParams = {
+    alias: {
+        s: "single",
+        g: "group",
+        a: "all",
+        l: "list",
+        c: "cranky",
+        w: "watch",
+        S: "style",
+        k: "key-query",
+        C: "compose-tests"
+    },
+    string: ["s", "g", "S", "w", "C"],
+    boolean: ["a", "l", "c", "k"],
+    unknown: option => {
+        throw Error("Unknown option \"" +option + "\"");
+    }
+};
+
+const options = getopts(process.argv.slice(2), optParams);
 
 function Parser(options, tn, fpth) {
     this.options = options;
@@ -226,7 +248,7 @@ function Parser(options, tn, fpth) {
     this.state = null;
     this.openRex = new RegExp("^.*>>===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=>>.*$");
     this.closeRex = new RegExp("^.*<<===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=<<.*$");
-    this.dumpObj = function(options) {
+    this.dumpObj = function() {
         for (var key in this.obj) {
             this.obj[key] = this.obj[key].join("\n");
             if (sections[key].type === "json") {
@@ -263,7 +285,7 @@ function Parser(options, tn, fpth) {
             }
             if ("undefined" === typeof this.obj[key]) {
                 console.log(this.fpth);
-                throw new Error("Missing required tag \"" + key + "\"")
+                throw new Error("Missing required tag \"" + key + "\"");
             }
         }
         if (this.obj.CSL.trim().slice(-4) === ".csl") {
@@ -275,7 +297,7 @@ function Parser(options, tn, fpth) {
             }
         }
         return this.obj;
-    }
+    };
     this.checkLine = function (line) {
         var m = null;
         if (this.openRex.test(line)) {
@@ -308,7 +330,7 @@ function Parser(options, tn, fpth) {
         if (this.state === "reading") {
             this.obj[this.section].push(line);
         }
-    }
+    };
 }
 
 function parseFixture(tn, fpth) {
@@ -333,7 +355,7 @@ function Stripper(fn, noStrip) {
     this.checkRex = new RegExp("");
     this.dumpArr = function() {
         return this.arr.join("\n");
-    }
+    };
     this.checkLine = function (line) {
         if (line.match(/^.use strict.;?$/)) {
             return;
@@ -367,7 +389,7 @@ function Stripper(fn, noStrip) {
                 }
             }
         }
-    }
+    };
 }
 
 /* Options */
@@ -405,27 +427,6 @@ const usage = "Usage: " + path.basename(process.argv[1])
       + "          -l, --list\n"
       + "              List available groups and styles.";
 
-const optParams = {
-    alias: {
-        s: "single",
-        g: "group",
-        a: "all",
-        l: "list",
-        c: "cranky",
-        w: "watch",
-        S: "style",
-        k: "key-query",
-        C: "compose-tests"
-    },
-    string: ["s", "g", "S", "w", "C"],
-    boolean: ["a", "l", "c", "k"],
-    unknown: option => {
-        throw Error("Unknown option \"" +option + "\"");
-    }
-}
-
-const options = getopts(process.argv.slice(2), optParams);
-
 // First things first
 if (options.watch) {
     console.log("Watching: " + options.watch);
@@ -451,13 +452,14 @@ function checkSanity() {
     }
 }
 
-function setLocalPathToStyleTestPath(styleName) {
+function setLocalPathToStyleTestPath() {
+    var styleTestsPth = null;
     try {
         var testDirPth = path.join(scriptDir, config.path.styletests);
         if (!fs.existsSync(testDirPth)) {
             fs.mkdirSync(testDirPth);
         }
-        var styleTestsPth = path.join(testDirPth, options.S);
+        styleTestsPth = path.join(testDirPth, options.S);
         if (!fs.existsSync(styleTestsPth)) {
             fs.mkdirSync(styleTestsPth);
         }
@@ -481,10 +483,6 @@ function setWatchFile(options) {
     }
 }
 
-function checkValidity() {
-    // 
-}
-
 function checkOverlap(tn) {
     if (config.testData[tn]) {
         throw new Error("Fixture name exists in local and std: " + tn);
@@ -497,8 +495,8 @@ function checkSingle() {
     if (fn.split("_").length !== 2) {
         throw new Error("Single test fixture must be specified as [group]_[name]");
     }
-    var lpth = path.join(config.path.localAbs, fn)
-    var spth = path.join(config.path.stdAbs, fn)
+    var lpth = path.join(config.path.localAbs, fn);
+    var spth = path.join(config.path.stdAbs, fn);
     if (!fs.existsSync(lpth) && (options.style || !fs.existsSync(spth))) {
         console.log("Looking for " + lpth);
         console.log("Looking for " + spth);
@@ -660,7 +658,7 @@ function Bundle(noStrip) {
     fs.writeFileSync(path.join(scriptDir, "..", "citeproc_commonjs.js"), license + ret + "\nmodule.exports = CSL");
 }
 
-function runJing(validationCount, validationGoal, schema, test) {
+function runJingAsync(validationCount, validationGoal, schema, test) {
     var jingPromise = new Promise((resolve, reject) => {
         var tmpobj = tmp.fileSync();
         fs.writeFileSync(tmpobj.name, test.CSL);
@@ -679,21 +677,22 @@ function runJing(validationCount, validationGoal, schema, test) {
                 cwd: path.join(scriptDir, "..")
             });
         jing.stderr.on('data', (data) => {
-            reject();
+            reject(data.toString());
         });
         jing.stdout.on('data', (data) => {
             buf.push(data);
         });
-        jing.on('close', (code) => {
+        jing.on('close', async function(code) {
             validationCount++;
             // If we are watching and code is 0, chain to integration tests.
             // Otherwise stop here.
             if (code == 0 && options.watch) {
-                return runFixtures().then(resolve()).catch(err => errorHandler(err));
+                await runFixturesAsync();
+                resolve();
             } else if (code == 0) {
                 process.stdout.write("+");
                 if (validationCount === validationGoal) {
-                    console.log("\nDone.")
+                    console.log("\nDone.");
                     process.exit(0);
                 }
                 resolve();
@@ -709,22 +708,23 @@ function runJing(validationCount, validationGoal, schema, test) {
                     fs.writeFileSync(path.join(scriptDir, "..", ".cslValidationPos"), "" + validationCount);
                     process.exit(0);
                 }
-                reject();
+                resolve();
             }
         });
-    });
-    jingPromise.catch(function(err){
-        errorHandler(err);
     });
     return jingPromise;
 }
 
 
-async function runValidations() {
+async function runValidationsAsync() {
     var validationCount = 0;
     var validationGoal = Object.keys(config.testData).length;
     var startPos = 0;
-    console.log("Validating CSL in " + validationGoal + " fixtures.");
+    if (options.w) {
+        console.log("Validating CSL.");
+    } else {
+        console.log("Validating CSL in " + validationGoal + " fixtures.");
+    }
     if (!options.w && !options.l && !options.C) {
         if (options.a && fs.existsSync(path.join(scriptDir, "..", ".cslValidationPos"))) {
             startPos = fs.readFileSync(path.join(scriptDir, "..", ".cslValidationPos")).toString();
@@ -762,19 +762,18 @@ async function runValidations() {
         } else {
             throw new Error("Version not found in CSL for fixture: " + key);
         }
-        await runJing(validationCount, validationGoal, schema, test);
+        await runJingAsync(validationCount, validationGoal, schema, test);
         validationCount++;
         if (options.watch) {
             // If in watch mode, all validations will be of the
             // same CSL, so break after launching the first.
             break;
         }
-        console.log("boof");
     }
 }
 
 
-function runFixtures() {
+function runFixturesAsync() {
     var fixturesPromise = new Promise((resolve, reject) => {
         var args = ["--color"];
         if (options.k) {
@@ -826,9 +825,6 @@ function runFixtures() {
             }
         });
     });
-    fixturesPromise.catch(function(err){
-        errorHandler(err);
-    });
     return fixturesPromise;
 }
 
@@ -855,27 +851,27 @@ async function bundleValidateTest() {
             clear();
             fetchTestData();
             buildTests();
-            await runValidations().catch(err => errorHandler(err));
-            fs.watch(options.watch, function(eventType, filename) {
+            await runValidationsAsync();
+            fs.watch(options.watch, async function(eventType, filename) {
                 if (eventType === "change") {
                     if (!fsTimeout) {
                         fsTimeout = setTimeout(function() { fsTimeout=null }, 2000) // block for 2 seconds to avoid stutter
                         clear();
                         fetchTestData();
                         buildTests();
-                        runValidations().catch(err => errorHandler(err));
+                        await runValidationsAsync();
                     }
                 }
             });
         } else {
             fetchTestData();
             buildTests();
-            await runValidations().catch(err => errorHandler(err));
+            await runValidationsAsync();
         }
     } else {
         fetchTestData();
         buildTests();
-        await runFixtures().catch(err => errorHandler(err));
+        await runFixturesAsync();
     }
 }
 
@@ -905,7 +901,11 @@ if (options.C) {
         errorHandler(err);
     }
 } else if (options.single || options.group || options.all) {
-    bundleValidateTest();
+    bundleValidateTest().catch(err => {
+        if (err) {
+            console.log(err);
+        }
+    });
 } else if (options.l) {
     // Otherwise we've collected a list of group names.
     var ret = Object.keys(config.testData);
