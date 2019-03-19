@@ -5,6 +5,7 @@ const getopts = require("getopts");
 const spawn = require("child_process").spawn;
 const tmp = require("tmp");
 const clear = require("cross-clear");
+const chokidar = require("chokidar");
 
 var ksTimeout;
 var fsTimeout;
@@ -263,7 +264,7 @@ function Parser(options, tn, fpth) {
         for (var key of Object.keys(sections).filter(key => sections[key].required)) {
             if (this.options.watch && key === "CSL") {
                 var inStyle = false;
-                this.obj[key] = fs.readFileSync(this.options.watch).toString();
+                this.obj[key] = fs.readFileSync(this.options.watch[0]).toString();
                 var cslList = this.obj[key].split("\n");
                 for (var i in cslList) {
                     var line = cslList[i];
@@ -470,17 +471,21 @@ function setLocalPathToStyleTestPath() {
     }
 }
 
-function setWatchFile(options) {
-    var pth = options.watch;
-    if (!path.isAbsolute(pth)) {
-        pth = path.join(scriptDir, "..", pth);
+function setWatchFiles(options) {
+    var arr = options.watch;
+    if ("string" === typeof arr) {
+        arr = [arr];
     }
-    if (fs.existsSync(pth)) {
-        options.watch = pth;
-        options.w = pth;
-    } else {
-        throw new Error("CSL file or directory to be watched does not exist: " + options.watch);
+    for (var i in arr) {
+        if (!path.isAbsolute(arr[i])) {
+            arr[i] = path.join(scriptDir, "..", arr[i]);
+        }
+        if (!fs.existsSync(arr[i])) {
+            throw new Error("CSL file or directory to be watched does not exist: " + arr[i]);
+        }
     }
+    options.watch = arr;
+    options.w = arr;
 }
 
 function checkOverlap(tn) {
@@ -626,7 +631,7 @@ try {
         setLocalPathToStyleTestPath(options.style);
     }
     if (options.watch) {
-        setWatchFile(options);
+        setWatchFiles(options);
     }
     if (options.list) {
         setGroupList();
@@ -775,7 +780,7 @@ async function runValidationsAsync() {
 
 function runFixturesAsync() {
     var fixturesPromise = new Promise((resolve, reject) => {
-        var args = ["--color"];
+        var args = ["--color","-R", "spec"];
         if (options.k) {
             args.push("--bail");
         }
@@ -802,11 +807,15 @@ function runFixturesAsync() {
                                 txt = txt.replace("%%INPUT_DATA%%", input);
                                 txt = txt.replace("%%RESULT%%", result)
                                 fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, fn + ".txt"), txt);
-                                spawn("touch", [options.watch])
+                                // Should this be promisified?
+                                spawn("touch", [options.watch[0]]);
+                                resolve();
                             }
                             if (key == "n" || key == "N") {
                                 skipNames[test.NAME] = true;
-                                spawn("touch", [options.watch])
+                                // Should this be promisified?
+                                spawn("touch", [options.watch[0]]);
+                                resolve();
                             }
                         }
                     });
@@ -818,7 +827,7 @@ function runFixturesAsync() {
             reject();
         });
         mocha.on('close', (code) => {
-            resolve(true);
+            resolve();
             if (!options.watch) {
                 console.log("\n");
                 process.exit();
@@ -852,17 +861,16 @@ async function bundleValidateTest() {
             fetchTestData();
             buildTests();
             await runValidationsAsync();
-            fs.watch(options.watch, async function(eventType, filename) {
-                if (eventType === "change") {
-                    if (!fsTimeout) {
-                        fsTimeout = setTimeout(function() { fsTimeout=null }, 2000) // block for 2 seconds to avoid stutter
-                        clear();
-                        fetchTestData();
-                        buildTests();
-                        await runValidationsAsync();
-                    }
-                }
+            var watcher = chokidar.watch(options.watch[0]);
+            watcher.on("change", (event, filename) => {
+                clear();
+                fetchTestData();
+                buildTests();
+                runValidationsAsync();
             });
+            for (var pth of options.watch.slice(1)) {
+                watcher.add(pth);
+            }
         } else {
             fetchTestData();
             buildTests();
