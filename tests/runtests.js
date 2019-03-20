@@ -229,10 +229,11 @@ const optParams = {
         w: "watch",
         S: "style",
         k: "key-query",
-        C: "compose-tests"
+        C: "compose-tests",
+        b: "black-and-white"
     },
     string: ["s", "g", "S", "w", "C"],
-    boolean: ["a", "l", "c", "k"],
+    boolean: ["a", "l", "c", "k", "b"],
     unknown: option => {
         throw Error("Unknown option \"" +option + "\"");
     }
@@ -259,6 +260,7 @@ function Parser(options, tn, fpth) {
                     this.obj[key] = JSON.parse(this.obj[key]);
                 } catch (err) {
                     console.log(this.fpth);
+                    console.log(this.obj[key])
                     throw new Error("JSON parse fail for tag \"" + key + "\"");
                 }
             }
@@ -408,6 +410,8 @@ const usage = "Usage: " + path.basename(process.argv[1])
       + "  Option for use with -s, -g, or -a:\n"
       + "      -c, --cranky\n"
       + "          Validate CSL in selected fixtures\n"
+      + "      -b, --black-and-white\n"
+      + "          Disable color output\n"
       + "  Options for style development with -s, -g, or -a:\n"
       + "      -S, --style\n"
       + "          Style name (without spaces). Without -C, requires -w.\n"
@@ -564,7 +568,7 @@ function checkAll() {
                 config.testData[tn] = parseFixture(tn, lpth);
             }
         } else {
-            console.log("Rejected in local: " + line);
+            console.log("Skipping file in local: " + line);
         }
     }
     if (!options.style) {
@@ -579,7 +583,7 @@ function checkAll() {
                     }
                 }
             } else {
-                console.log("Rejected in std: " + line);
+                console.log("Skipping file in std: " + line);
             }
         }
     }
@@ -782,13 +786,21 @@ async function runValidationsAsync() {
 
 function runFixturesAsync() {
     var fixturesPromise = new Promise((resolve, reject) => {
-        var args = ["--color","-R", "spec"];
+        var args = [];
+        if (options.b) {
+            args.push("--no-color");
+        } else {
+            args.push("--color");
+        }
+        args.push("-R");
+        args.push("landing");
         if (options.k) {
             args.push("--bail");
         }
         var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, "..")});
         mocha.stdout.on('data', (data) => {
-            console.log(data.toString().replace(/\s+$/, ""));
+            process.stdout.write(data.toString());
+            //console.log(data.toString().replace(/\s+$/, ""));
             if (options.w && options.k) {
                 var line = data.toString();
                 var m = line.match(/.*FILE:([^\n]+)\.txt:/m);
