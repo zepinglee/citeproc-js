@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.221",
+    PROCESSOR_VERSION: "1.1.222",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -6885,6 +6885,11 @@ CSL.Node.date = {
     build: function (state, target) {
         var func, date_obj, len, pos, part, dpx, parts, mypos, start, end;
         if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+            state.dateput.string(state, state.dateput.queue);
+            state.tmp.date_token = CSL.Util.cloneToken(this);
+            state.tmp.date_token.strings.prefix = "";
+            state.tmp.date_token.strings.suffix = "";
+            state.dateput.openLevel(this);
             state.build.date_parts = [];
             state.build.date_variables = this.variables;
             if (!state.build.extension) {
@@ -7127,16 +7132,22 @@ CSL.Node["date-part"] = {
                             }
                             state.dateput.append(value_end, this);
                             if (first_date) {
-                                state.dateput.current.value()[0].strings.prefix = "";
+                                state.dateput.current.value().blobs[0].strings.prefix = "";
                             }
                         }
                         state.output.append(value, this);
                         curr = state.output.current.value();
                         curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
-                        state.output.append(state.getTerm("year-range-delimiter"), "empty");
+                        if (this.strings["range-delimiter"]) {
+                            state.output.append(this.strings["range-delimiter"]);
+                        } else {
+                            state.output.append(state.getTerm("year-range-delimiter"), "empty");
+                        }
+                        state.dateput.closeLevel();
                         dcurr = state.dateput.current.value();
                         curr.blobs = curr.blobs.concat(dcurr);
                         state.dateput.string(state, state.dateput.queue);
+                        state.dateput.openLevel(state.tmp.date_token);
                         state.tmp.date_collapse_at = [];
                     } else {
                         state.output.append(value, this);
