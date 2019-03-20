@@ -7,6 +7,11 @@ CSL.Node.date = {
             // used to collect rendered date part names in node_datepart,
             // for passing through to node_key, for use in dates embedded
             // in macros
+            state.dateput.string(state, state.dateput.queue);
+            state.tmp.date_token = CSL.Util.cloneToken(this);
+            state.tmp.date_token.strings.prefix = "";
+            state.tmp.date_token.strings.suffix = "";
+            state.dateput.openLevel(this);
             state.build.date_parts = [];
             state.build.date_variables = this.variables;
             if (!state.build.extension) {
