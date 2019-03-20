@@ -40,6 +40,11 @@ page 54-57; pages 65–67
         "id": "ITEM-2", 
         "page": "65-67", 
         "type": "book"
+    }, 
+    {
+        "id": "ITEM-3", 
+        "page": "70\\-72-83\\-84", 
+        "type": "book"
     }
 ]
 <<===== INPUT =====<<
