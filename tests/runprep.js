@@ -1,6 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 var yaml = require("yaml");
+var normalizeNewline = require("normalize-newline");
 var config = yaml.parse(fs.readFileSync(path.join(__dirname, "runtests.yaml")).toString());
 var CSL = require(path.join(__dirname, "..", "citeproc_commonjs.js"));
 
@@ -310,6 +311,7 @@ Sys.prototype.run = function(){
     if (this.test.MODE !== "bibliography" && this.test.MODE !== "citation") {
         throw "Invalid mode in test file " + this.NAME + ": " + this.test.MODE;
     }
+    ret = normalizeNewline(ret);
     return ret;
 };
 module.exports = Sys;

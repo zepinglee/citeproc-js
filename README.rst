@@ -48,6 +48,12 @@ and ``citeproc-js`` is a convenient way to take advantage of it.
 Quick Setup
 -----------
 
+**Requirements**
+    * ``git``
+    * A recent-ish version of ``node.js``
+    * Mocha (installed globally with ``npm install --global mocha``)
+    * Java (a basic command-line install, needed for validation)
+    
 The quickest way to install the processor is for use with Node.js, via `npm`::
 
     npm install citeproc
@@ -116,11 +122,6 @@ in the CSL Repository, our tutorial will be largely devoid of
 screenshots. The steps, however, can be applied to any style that
 actually does exist.
 
-**Requirements**
-    * ``git``
-    * A recent-ish version of ``node.js``
-    * Java (a basic command-line install, needed for validation)
-    
 I'll begin by forking the ``citeproc-js`` GitHub repository. This
 will make it easy to fold my tests back into the main project ...
 

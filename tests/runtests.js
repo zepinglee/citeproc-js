@@ -2,10 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const yaml = require("yaml");
 const getopts = require("getopts");
-const spawn = require("child_process").spawn;
+const { spawn } = require("child_process");
 const tmp = require("tmp");
 const clear = require("cross-clear");
 const chokidar = require("chokidar");
+const normalizeNewline = require("normalize-newline");
 
 var ksTimeout;
 var fsTimeout;
@@ -40,7 +41,7 @@ const defaultConfig =
       + "    styles: fixtures/local/styles"
       + "    modules: fixtures/local/styles";
 
-const configFile = process.argv[1].replace(/.js$/, ".yaml");
+const configFile = process.argv[1].replace(/.js\r?$/, ".yaml");
 if (!fs.existsSync(configFile)) {
     fs.writeFileSync(configFile, defaultConfig);
 }
@@ -252,8 +253,8 @@ function Parser(options, tn, fpth) {
     };
     this.section = false;
     this.state = null;
-    this.openRex = new RegExp("^.*>>===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=>>.*$");
-    this.closeRex = new RegExp("^.*<<===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=<<.*$");
+    this.openRex = new RegExp("^.*>>===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=>>.*");
+    this.closeRex = new RegExp("^.*<<===*\\s(" + Object.keys(sections).join("|") + ")\\s.*=<<.*");
     this.dumpObj = function() {
         for (var key in this.obj) {
             this.obj[key] = this.obj[key].join("\n");
@@ -271,7 +272,7 @@ function Parser(options, tn, fpth) {
             if (this.options.watch && key === "CSL") {
                 var inStyle = false;
                 this.obj[key] = fs.readFileSync(this.options.watch[0]).toString();
-                var cslList = this.obj[key].split("\n");
+                var cslList = this.obj[key].split(/(?:\r\n|\n)/);
                 for (var i in cslList) {
                     var line = cslList[i];
                     if (line.indexOf("<style") > -1) {
@@ -343,7 +344,7 @@ function Parser(options, tn, fpth) {
 function parseFixture(tn, fpth) {
     var raw = fs.readFileSync(fpth).toString();
     var parser = new Parser(options, tn, fpth);
-    for (var line of raw.split("\n")) {
+    for (var line of raw.split(/(?:\r\n|\n)/)) {
         parser.checkLine(line);
     }
     return parser.dumpObj();
@@ -355,16 +356,16 @@ function Stripper(fn, noStrip) {
     this.arr = [];
     this.area = "code";
     this.state = "reading";
-    this.skipStarRex = new RegExp("^\\s*(\\/\\*.*\\*\\/\\s*)$");
-    this.skipSlashRex = new RegExp("^\\s*(\\/\\/.*)$");
+    this.skipStarRex = new RegExp("^\\s*(\\/\\*.*\\*\\/\\s*)\\r?$");
+    this.skipSlashRex = new RegExp("^\\s*(\\/\\/.*)\\r?$");
     this.openRex = new RegExp("^\\s*(\\/\\*|\\/\\/SNIP-START)");
-    this.closeRex = new RegExp("^\\s*(\\*\\/|\\/\\/SNIP-END)\\s*$");
+    this.closeRex = new RegExp("^\\s*(\\*\\/|\\/\\/SNIP-END)\\s*\\r?$");
     this.checkRex = new RegExp("");
     this.dumpArr = function() {
         return this.arr.join("\n");
     };
     this.checkLine = function (line) {
-        if (line.match(/^.use strict.;?$/)) {
+        if (line.match(/^.use strict.;?\r?$/)) {
             return;
         }
         if (this.noStrip) {
@@ -503,7 +504,7 @@ function checkOverlap(tn) {
 }
 
 function checkSingle() {
-    var tn = options.single.replace(/.txt~?$/, "");
+    var tn = options.single.replace(/.txt~?\r?$/, "");
     var fn = tn + ".txt";
     if (fn.split("_").length !== 2) {
         throw new Error("Single test fixture must be specified as [group]_[name]");
@@ -528,12 +529,12 @@ function checkSingle() {
 
 function checkGroup() {
     var fail = true;
-    var rex = new RegExp("^" + options.group + "_.*\.txt$");
+    var rex = new RegExp("^" + options.group + "_.*\.txt\\r?$");
     for (var line of fs.readdirSync(config.path.localAbs)) {
         if (rex.test(line)) {
             fail = false;
             var lpth = path.join(config.path.localAbs, line);
-            var tn = line.replace(/.txt$/, "");
+            var tn = line.replace(/.txt\r?$/, "");
             if (!skipNames[tn]) {
                 config.testData[tn] = parseFixture(tn, lpth);
             }
@@ -544,7 +545,7 @@ function checkGroup() {
             if (rex.test(line)) {
                 fail = false;
                 var spth = path.join(config.path.stdAbs, line);
-                var tn = line.replace(/.txt$/, "");
+                var tn = line.replace(/.txt\r?$/, "");
                 if (!skipNames[tn]) {
                     if (fs.existsSync(spth)) {
                         checkOverlap(tn);
@@ -561,11 +562,11 @@ function checkGroup() {
 }
 
 function checkAll() {
-    var rex = new RegExp("^.*_.*\.txt$");
+    var rex = new RegExp("^.*_.*\.txt\\r?$");
     for (var line of fs.readdirSync(config.path.localAbs)) {
         if (rex.test(line)) {
             var lpth = path.join(config.path.localAbs, line);
-            var tn = line.replace(/.txt$/, "");
+            var tn = line.replace(/.txt\r?$/, "");
             if (!skipNames[tn]) {
                 config.testData[tn] = parseFixture(tn, lpth);
             }
@@ -577,7 +578,7 @@ function checkAll() {
         for (var line of fs.readdirSync(config.path.stdAbs)) {
             if (rex.test(line)) {
                 var spth = path.join(config.path.stdAbs, line);
-                var tn = line.replace(/.txt$/, "");
+                var tn = line.replace(/.txt\r?$/, "");
                 if (!skipNames[tn]) {
                     if (fs.existsSync(spth)) {
                         checkOverlap(tn);
@@ -592,7 +593,7 @@ function checkAll() {
 }
 
 function setGroupList() {
-    var rex = new RegExp("^([^_]+)_.*\.txt$");
+    var rex = new RegExp("^([^_]+)_.*\.txt\\r?$");
     for (var line of fs.readdirSync(config.path.localAbs)) {
         if (rex.test(line)) {
             var m = rex.exec(line);
@@ -660,7 +661,7 @@ function Bundle(noStrip) {
     for (var fn of sourceFiles) {
         var txt = fs.readFileSync(path.join(config.path.srcAbs, fn + ".js")).toString();
         var stripper = new Stripper(fn, noStrip);
-        for (var line of txt.split("\n")) {
+        for (var line of txt.split(/(?:\r\n|\n)/)) {
             stripper.checkLine(line);
         }
         ret += stripper.dumpArr() + "\n";
@@ -711,7 +712,7 @@ function runJingAsync(validationCount, validationGoal, schema, test) {
                 resolve();
             } else {
                 var txt = Buffer.concat(buf).toString();
-                var lines = txt.split("\n");
+                var lines = txt.split(/(?:\r\n|\n)/);
                 for (var line of lines) {
                     console.log(line.toString().replace(/^.*?:([0-9]+):([0-9]+):\s*(.*)$/m, "[$1] : $3"));
                 }
@@ -754,7 +755,7 @@ async function runValidationsAsync() {
         }
         var test = config.testData[key];
         var schema = config.path.cslschema;
-        var lineList = test.CSL.split("\n");
+        var lineList = test.CSL.split(/(?:\r\n|\n)/);
         var inStyle = false;
         var m = null;  // for version match
         for (var line of lineList) {
@@ -801,7 +802,7 @@ function runFixturesAsync() {
         if (options.k) {
             args.push("--bail");
         }
-        var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, "..")});
+        var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, ".."), shell: process.platform == 'win32'});
         mocha.stdout.on('data', (data) => {
             process.stdout.write(data.toString());
             //console.log(data.toString().replace(/\s+$/, ""));
@@ -841,7 +842,7 @@ function runFixturesAsync() {
             }
         });
         mocha.stderr.on('data', (data) => {
-            console.log(data.toString().replace(/\s+$/, ""));
+            console.log(data.toString().replace(/\s+\r?$/, ""));
             reject();
         });
         mocha.on('close', (code) => {
@@ -858,11 +859,12 @@ function runFixturesAsync() {
 function buildTests() {
     var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString();
     var testData = Object.keys(config.testData).map(k => config.testData[k]).filter(o => o);
-    fixtures = fixtures.replace("%%SCRIPT_PATH%%", scriptDir);
+    fixtures = fixtures.replace("%%RUNPREP_PATH%%", JSON.stringify(path.join(scriptDir, "runprep.js")));
     fixtures = fixtures.replace("%%TEST_DATA%%", JSON.stringify(testData, null, 2));
     if (!fs.existsSync(path.join(scriptDir, "..", "test"))) {
         fs.mkdirSync(path.join(scriptDir, "..", "test"));
     }
+    fixtures = normalizeNewline(fixtures);
     fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
 }
 
