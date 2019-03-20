@@ -2542,7 +2542,7 @@ citation
     "container-title": "UNTS",
     "page": "13",
     "volume": "1",
-    "shortTitle": "CEDAW",
+    "title-short": "CEDAW",
     "event-date": {
       "date-parts": [
         [
@@ -2564,7 +2564,7 @@ citation
     "container-title": "Canadian TS",
     "page": "2222",
     "volume": "1111",
-    "shortTitle": "CEDAW",
+    "title-short": "CEDAW",
     "event-date": {
       "date-parts": [
         [
@@ -2579,4 +2579,4 @@ citation
 <<===== INPUT =====<<
 
 
-#    "shortTitle": "CEDAW",
+#    "title-short": "CEDAW",

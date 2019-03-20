@@ -147,25 +147,25 @@ citation
         "id": "ITEM-1", 
         "type": "book",
 		"title": "Main title (1): Subtitle",
-		"shortTitle": "Main title (1)"
+		"title-short": "Main title (1)"
     },
     {
         "id": "ITEM-2", 
         "type": "book",
 		"title": "Main title (2) : Subtitle",
-		"shortTitle": "Main title (2)"
+		"title-short": "Main title (2)"
     },
     {
         "id": "ITEM-3", 
         "type": "book",
 		"title": "Main title (3) -- Subtitle",
-		"shortTitle": "Main title (3)"
+		"title-short": "Main title (3)"
     },
     {
         "id": "ITEM-4", 
         "type": "book",
 		"title": "Main title (X): Subtitle",
-		"shortTitle": "Main title (4)"
+		"title-short": "Main title (4)"
     }
 ]
 <<===== INPUT =====<<

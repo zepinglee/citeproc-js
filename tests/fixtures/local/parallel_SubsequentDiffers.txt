@@ -233,7 +233,7 @@ citation
 		"container-title": "ALR",
 		"page": "464",
 		"volume": "282",
-		"shortTitle": "Metcash I",
+		"title-short": "Metcash I",
 		"jurisdiction": "us",
 		"issued": {
 			"raw": "2011"
@@ -251,7 +251,7 @@ citation
 		"container-title": "FCR",
 		"page": "297",
 		"volume": "198",
-		"shortTitle": "Metcash I",
+		"title-short": "Metcash I",
 		"jurisdiction": "us",
 		"issued": {
 			"raw": "2011"

@@ -57,7 +57,7 @@ citation
 [
     {
         "title": "Smith Incorporated v. Jones",
-        "shortTitle": "Smith Incorporated",
+        "title-short": "Smith Incorporated",
         "id": "ITEM-1", 
         "type": "legal_case"
     },
