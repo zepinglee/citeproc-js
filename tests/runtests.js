@@ -12,6 +12,8 @@ var fsTimeout;
 
 var skipNames = {};
 
+var TRAVIS = process.env.TRAVIS;
+
 process.stdin.setRawMode(true);
 process.stdin.resume();
 process.stdin.setEncoding( 'utf8' );
@@ -792,8 +794,10 @@ function runFixturesAsync() {
         } else {
             args.push("--color");
         }
-        args.push("-R");
-        args.push("landing");
+        if (!TRAVIS) {
+            args.push("-R");
+            args.push("landing");
+        }
         if (options.k) {
             args.push("--bail");
         }
