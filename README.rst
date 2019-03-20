@@ -19,15 +19,15 @@ The `Citation Style Language <https://citationstyles.org/>`_ (CSL) is
 an XML grammar for expressing the detailed requirements of a citation
 style. A `CSL processor
 <https://citationstyles.org/developers/#csl-processors>`_ is a tool
-that generates citations and bibliographies by applying style rules
-described in CSL to bibliographic data.
+that generates citations and bibliographies by applying CSL style rules
+to bibliographic data.
 
 The ``citeproc-js`` CSL processor is over a decade in service, a fact
 that shows through in ways both good and bad. On the downside, the
 code base is not pretty, and can serve as a solid
 illustration of the burden of technical debt (in case you need one of
 those for your computer science class). On the upside, though,
-``citeproc-js`` passes a suite of 1,400 integration tests with flying
+``citeproc-js`` passes a suite of over 1,300 integration tests with flying
 colors. When run in CSL-M mode [1]_ it can handle multilingual and
 legal content with a flexibility and precision unrivaled by any other
 tool at any price. And it has been quite heavily field-tested, as the
@@ -70,8 +70,6 @@ You can now run the test script::
   
 This will return a help text about the test runner. Options``-a``, ``-g``, ``-s``, and ``-l`` should work out of the box::
 
-    Error: Exactly one of -s, -g, -a, or -l must be invoked. No option found.
-    
     Usage: runtests.js <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath]
       -s testName, --single=testName
           Run a single local or standard test fixture.
@@ -82,6 +80,8 @@ This will return a help text about the test runner. Options``-a``, ``-g``, ``-s`
       Option for use with -s, -g, or -a:
           -c, --cranky
               Validate CSL in selected fixtures
+          -b, --black-and-white
+              Black-and-white mode
       Options for style development with -s, -g, or -a:
           -S, --style
               Style name (without spaces). Without -C, requires -w.
@@ -109,7 +109,7 @@ Watch mode
 ----------
 
 The ``runtests.js`` script supports a simple but powerful “watch” mode
-to support style development. In the scenario below, we will prepare
+for use in style development. In the scenario below, we will prepare
 tests for the Journal Irreproducible Results (JIR). The journal
 `exists <http://www.jir.com/>`_, but as there is no CSL style for it
 in the CSL Repository, our tutorial will be largely devoid of
