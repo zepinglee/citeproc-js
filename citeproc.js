@@ -971,16 +971,8 @@ var CSL = {
                 state.tmp.just_did_number = false;
             }
         }
-    },
-    locale: {},
-    locale_opts: {},
-    locale_dates: {}
+    }
 };
-if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports" in module) {
-    exports.CSL = CSL;
-}
-CSL.TERMINAL_PUNCTUATION_REGEXP = new RegExp("^([" + CSL.TERMINAL_PUNCTUATION.slice(0, -1).join("") + "])(.*)");
-CSL.CLOSURES = new RegExp(".*[\\]\\)]");
 if ("undefined" === typeof console) {
     CSL.debug = function (str) {
         dump("CSL: " + str + "\n");
