@@ -56,6 +56,16 @@ config.path.localAbs = path.join(scriptDir, config.path.local);
 config.path.stdAbs = path.join(scriptDir, config.path.std);
 config.path.srcAbs = path.join(scriptDir, config.path.src);
 
+const reporters = {
+    "landing": "landing",
+    "spec": "spec",
+    "spectrum": "node_modules/mocha-spectrum-reporter/index",
+    "nyan": "node_modules/nyanplusreporter/src/nyanPlus",
+    "dot": "dot",
+    "min": "min",
+    "progress": "progress"
+};
+
 const Sys = require(path.join(scriptDir, "testlib.js"));
 
 function errorHandler(err) {
@@ -241,9 +251,10 @@ const optParams = {
         S: "style",
         k: "key-query",
         C: "compose-tests",
-        b: "black-and-white"
+        b: "black-and-white",
+        r: "reporter"
     },
-    string: ["s", "g", "S", "w", "C"],
+    string: ["s", "g", "S", "w", "C", "r"],
     boolean: ["a", "l", "c", "k", "b"],
     unknown: option => {
         throw Error("Unknown option \"" +option + "\"");
@@ -423,6 +434,10 @@ const usage = "Usage: " + path.basename(process.argv[1])
       + "          Validate CSL in selected fixtures\n"
       + "      -b, --black-and-white\n"
       + "          Disable color output\n"
+      + "      -r, --reporter\n"
+      + "          Set the report style. Default is \"landing.\"\n"
+      + "          Valid options are: spec, spectrum, nyan, dot, min\n"
+      + "          and progress.\n"
       + "  Options for style development with -s, -g, or -a:\n"
       + "      -S, --style\n"
       + "          Style name (without spaces). Without -C, requires -w.\n"
@@ -450,6 +465,18 @@ if (options.watch) {
     console.log("Watching: " + options.watch);
 }
 function checkSanity() {
+    if (options.r) {
+        if (reporters[options.r]) {
+            options.r = reporters[options.r];
+        } else {
+            console.log("Unknown reporter \"" + options.r + ",\" defaulting to \"landing.\"");
+            options.r = "landing";
+        }
+    } else if (TRAVIS) {
+        options.r = "spec";
+    } else {
+        options.r = "landing";
+    }
     if (!options.C) {
         if (["s", "g", "a", "l"].filter(o => options[o]).length > 1) {
             throw new Error("Only one of -s, -g, -a, or -l may be invoked.");
@@ -803,10 +830,8 @@ function runFixturesAsync() {
         } else {
             args.push("--color");
         }
-        if (!TRAVIS) {
-            args.push("-R");
-            args.push("landing");
-        }
+        args.push("-R");
+        args.push(options.r);
         if (options.k) {
             args.push("--bail");
         }
