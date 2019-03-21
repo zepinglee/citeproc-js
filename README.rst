@@ -87,7 +87,11 @@ This will return a help text about the test runner. Options``-a``, ``-g``, ``-s`
           -c, --cranky
               Validate CSL in selected fixtures
           -b, --black-and-white
-              Black-and-white mode
+              Disable color output
+          -r, --reporter
+              Set the report style. Default is "landing."
+              Valid options are: spec, spectrum, nyan, dot, min
+              and progress.
       Options for style development with -s, -g, or -a:
           -S, --style
               Style name (without spaces). Without -C, requires -w.
@@ -107,8 +111,8 @@ This will return a help text about the test runner. Options``-a``, ``-g``, ``-s`
                   files will be overwritten: be sure to rename files
                   after generating draft fixtures.
       Option for use on its own, or with -S  
-          -l, --list
-              List available groups and styles.
+              -l, --list
+                  List available groups and styles.
 
 ----------
 Watch mode
