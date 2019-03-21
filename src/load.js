@@ -1070,9 +1070,6 @@ var CSL = {
                     state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
                 }
             }
-            //if (!state.tmp.just_looking) {
-            //    print("  condition seen");
-            //}
         } else {
             // If not inside a conditional group, raise numeric flag
             // if and only if the current term string ends in a number.
@@ -1082,11 +1079,6 @@ var CSL = {
                 state.tmp.just_did_number = false;
             }
         }
-    },
-
-    locale: {},
-    locale_opts: {},
-    locale_dates: {}
-
+    }
 };
 
