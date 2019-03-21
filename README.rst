@@ -82,7 +82,7 @@ You can now run the test script::
       
     node ./tests/runtests.js
   
-This will return a help text about the test runner. Options``-a``, ``-g``, ``-s``, and ``-l`` should work out of the box::
+This will return a help text about the test runner. Options ``-a``, ``-g``, ``-s``, and ``-l`` should work out of the box::
 
     Usage: runtests.js <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath]
       -s testName, --single=testName
