@@ -49,7 +49,7 @@ Requirements
 ------------
 
     ``git``
-        A GitHub clone needed to run tests.
+        A GitHub clone is needed to run tests.
     ``node.js``
         Any recent-ish version should work. Version 7 is used for automated testing.
     ``mocha``
