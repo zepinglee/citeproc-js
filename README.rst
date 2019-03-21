@@ -44,12 +44,20 @@ the existence of `other processors
 development.  CSL is the modern way to handle bibliographic projects,
 and ``citeproc-js`` is a convenient way to take advantage of it.
 
-------------
-Requirements
-------------
+--------------------
+Testing Requirements
+--------------------
+
+The processor itself is contained in a single file. Two copies are in
+the repostitory: ``citeproc_commonjs.js`` is an ES6 module;
+``citeproc.js`` is just a raw bundle of JavaScript code. The former is
+probably what you will want for most purposes today. To test the
+processor (good fun and highly recommended), you will need the following
+in your environment:
+
 
     ``git``
-        A GitHub clone is needed to run tests.
+        A GitHub clone is needed to clone the code repository.
     ``node.js``
         Any recent-ish version should work. Version 7 is used for automated testing.
     ``mocha``
@@ -62,11 +70,11 @@ Requirements
 Quick Setup
 -----------
 
-The quickest way to install the processor is for use with Node.js, via `npm`::
+The quickest way to grab the processor is via ``npm``, for use in Node.js::
 
     npm install citeproc
 
-If you are working with the processor for the first time, running the
+If you are working with the processor for the first time, though, running the
 test suite is a good way to build confidence and begin exploring the
 `documentation <https://citeproc-js.readthedocs.org/en/latest/index.html>`_.
 Start by cloning the repo and its submodules::
