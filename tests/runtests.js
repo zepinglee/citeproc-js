@@ -252,10 +252,11 @@ const optParams = {
         k: "key-query",
         C: "compose-tests",
         b: "black-and-white",
-        r: "reporter"
+        r: "reporter",
+        h: "help"
     },
     string: ["s", "g", "S", "w", "C", "r"],
-    boolean: ["a", "l", "c", "k", "b"],
+    boolean: ["a", "l", "c", "k", "b", "h"],
     unknown: option => {
         throw Error("Unknown option \"" +option + "\"");
     }
@@ -465,6 +466,10 @@ if (options.watch) {
     console.log("Watching: " + options.watch);
 }
 function checkSanity() {
+    if (options.h) {
+        console.log(usage);
+        process.exit();
+    }
     if (options.r) {
         if (reporters[options.r]) {
             options.r = reporters[options.r];
