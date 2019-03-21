@@ -147,6 +147,7 @@ const sourceFiles = [
     "node_sort",
     "node_substitute",
     "node_text",
+    "node_intext",
     "attributes",
     "stack",
     "util_parallel",
