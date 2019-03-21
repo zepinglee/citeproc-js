@@ -17,10 +17,14 @@ var TRAVIS = process.env.TRAVIS;
 
 process.stdin.setRawMode(true);
 process.stdin.resume();
-process.stdin.setEncoding( 'utf8' );
+
+// The console needs to run in binary mode, to give the fancy reporters
+// control over the terminal
+//process.stdin.setEncoding( 'utf8' );
+
 process.stdin.on('data', function( key ){
     // ctrl-c ( end of text )
-    if ( key === '\u0003' ) {
+    if ( key.toString("hex") === "03" ) {
         console.log("\n");
         process.exit();
     }
@@ -865,13 +869,13 @@ function runFixturesAsync() {
                                 txt = txt.replace("%%RESULT%%", result)
                                 fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, fn + ".txt"), txt);
                                 // Should this be promisified?
-                                spawn("touch", [options.watch[0]]);
+                                bundleValidateTest();
                                 resolve();
                             }
                             if (key == "n" || key == "N") {
                                 skipNames[test.NAME] = true;
                                 // Should this be promisified?
-                                spawn("touch", [options.watch[0]]);
+                                bundleValidateTest();
                                 resolve();
                             }
                         }
