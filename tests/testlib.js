@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 var yaml = require("yaml");
 var normalizeNewline = require("normalize-newline");
-var config = yaml.parse(fs.readFileSync(path.join(__dirname, "runtests.yaml")).toString());
+var config = yaml.parse(fs.readFileSync(path.join(__dirname, ".runtests.yaml")).toString());
 var CSL = require(path.join(__dirname, "..", "citeproc_commonjs.js"));
 
 var Sys = function(test){

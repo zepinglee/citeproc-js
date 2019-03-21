@@ -30,18 +30,24 @@ process.stdin.on('data', function( key ){
 
 const scriptDir = path.dirname(require.main.filename);
 
-const Sys = require(path.join(scriptDir, "runprep.js"));
-
 const defaultConfig =
-      "path:"
-      + "    local: fixtures/local"
-      + "    std: fixtures/std/processor-tests/humans"
-      + "    src: ../src"
-      + "    locale: ../locale"
-      + "    styles: fixtures/local/styles"
-      + "    modules: fixtures/local/styles";
+      "path:\n"
+      + "    local: fixtures/local\n"
+      + "    std: fixtures/std/processor-tests/humans\n"
+      + "    src: ../src\n"
+      + "    locale: ../locale\n"
+      + "    styles: fixtures/local/styles\n"
+      + "    modules: ../juris-modules\n"
+      + "    styletests: styletests\n"
+      + "    jing: ../jing/jing-20131210.jar\n"
+      + "    cslschema: ../csl-schemata/csl/csl.rnc\n"
+      + "    cslmschema: ../csl-schemata/csl-m/csl-mlz.rnc";
 
-const configFile = process.argv[1].replace(/.js\r?$/, ".yaml");
+var configFile = process.argv[1].replace(/.js\r?$/, ".yaml");
+var baseName = "." + path.basename(configFile);
+var dirName = path.dirname(configFile);
+configFile = path.join(dirName, baseName);
+console.log(configFile)
 if (!fs.existsSync(configFile)) {
     fs.writeFileSync(configFile, defaultConfig);
 }
@@ -49,6 +55,8 @@ var config = yaml.parse(fs.readFileSync(configFile).toString());
 config.path.localAbs = path.join(scriptDir, config.path.local);
 config.path.stdAbs = path.join(scriptDir, config.path.std);
 config.path.srcAbs = path.join(scriptDir, config.path.src);
+
+const Sys = require(path.join(scriptDir, "testlib.js"));
 
 function errorHandler(err) {
     console.log("\nError: " + err.message + "\n");
@@ -822,7 +830,7 @@ function runFixturesAsync() {
                                 var sys = new Sys(test);
                                 var result = sys.run();
                                 var input = JSON.stringify(test.INPUT, null, 2);
-                                var txt = fs.readFileSync(path.join(scriptDir, "testtemplate.txt")).toString();
+                                var txt = fs.readFileSync(path.join(scriptDir, "templateTXT.txt")).toString();
                                 txt = txt.replace("%%INPUT_DATA%%", input);
                                 txt = txt.replace("%%RESULT%%", result)
                                 fs.writeFileSync(path.join(scriptDir, config.path.styletests, options.S, fn + ".txt"), txt);
@@ -857,9 +865,9 @@ function runFixturesAsync() {
 }
 
 function buildTests() {
-    var fixtures = fs.readFileSync(path.join(scriptDir, "runtemplate.js")).toString();
+    var fixtures = fs.readFileSync(path.join(scriptDir, "templateJS.js")).toString();
     var testData = Object.keys(config.testData).map(k => config.testData[k]).filter(o => o);
-    fixtures = fixtures.replace("%%RUNPREP_PATH%%", JSON.stringify(path.join(scriptDir, "runprep.js")));
+    fixtures = fixtures.replace("%%RUNPREP_PATH%%", JSON.stringify(path.join(scriptDir, "testlib.js")));
     fixtures = fixtures.replace("%%TEST_DATA%%", JSON.stringify(testData, null, 2));
     if (!fs.existsSync(path.join(scriptDir, "..", "test"))) {
         fs.mkdirSync(path.join(scriptDir, "..", "test"));
@@ -913,7 +921,7 @@ if (options.C) {
             for (var i in arr) {
                 arr[i].id = "ITEM-1";
                 var item = JSON.stringify([arr[i]], null, 2);
-                var txt = fs.readFileSync(path.join(scriptDir, "testtemplate.txt")).toString();
+                var txt = fs.readFileSync(path.join(scriptDir, "templateTXT.txt")).toString();
                 txt = txt.replace("%%INPUT_DATA%%", item);
                 var pos = "" + (parseInt(i, 10)+1);
                 while (pos.length < 3) {
