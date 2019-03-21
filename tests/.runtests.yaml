@@ -1,0 +1,11 @@
+path:
+    local: fixtures/local
+    std: fixtures/std/processor-tests/humans
+    src: ../src
+    locale: ../locale
+    styles: fixtures/local/styles
+    modules: ../juris-modules
+    styletests: styletests
+    jing: ../jing/jing-20131210.jar
+    cslschema: ../csl-schemata/csl/csl.rnc
+    cslmschema: ../csl-schemata/csl-m/csl-mlz.rnc

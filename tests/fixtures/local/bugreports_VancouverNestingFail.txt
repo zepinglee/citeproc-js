@@ -416,7 +416,7 @@ bibliography
 		"URL": "http://dx.doi.org/10.1080/01972240490507974",
 		"DOI": "10.1080/01972240490507974",
 		"ISSN": "0197-2243",
-		"shortTitle": "The Concept of Information Overload",
+		"title-short": "The Concept of Information Overload",
 		"author": [
 			{
 				"family": "Eppler",
@@ -451,7 +451,7 @@ bibliography
 		"source": "Google Scholar",
 		"event": "EDUCAUSE Australasia",
 		"URL": "http://epublications.bond.edu.au/library_pubs/21/",
-		"shortTitle": "Engaging with'Web 2.0'technologies",
+		"title-short": "Engaging with'Web 2.0'technologies",
 		"author": [
 			{
 				"family": "Hopkins",

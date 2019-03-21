@@ -1,19 +1,19 @@
 >>===== MODE =====>>
 citation
-<<===== MODE ===== <<
+<<===== MODE =====<<
 
 >>===== OPTIONS =====>>
 {
   "main_title_from_short_title": true,
   "uppercase_subtitles": true
 }
-<<===== OPTIONS ===== <<
+<<===== OPTIONS =====<<
 
 
 
 >>===== RESULT =====>>
 >>[0] <i>Salmonella</i> in (Quality) Pork (SALINPORK): <b>And</b> Pre-harvest and Harvest Control Options Based  on Epidemiologic, Diagnostic and Economic Research: Final Report For
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
 [
@@ -34,7 +34,7 @@ citation
         []
     ]
 ]
-<<===== CITATIONS===== <<
+<<===== CITATIONS =====<<
 
 >>===== CSL =====>>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" page-range-format="chicago" version="1.1mlz1" year-range-format="expanded" default-locale="en-US">
@@ -54,7 +54,7 @@ citation
     </layout>
   </citation>  
 </style>
-<<===== CSL===== <<
+<<===== CSL =====<<
 
 >>===== INPUT =====>>
 [
@@ -65,4 +65,4 @@ citation
     "title-short": "<i><span class=\"nocase\">Salmonella</span></i> in (quality) <span class=\"nocase\">Pork</span> (<span class=\"nocase\">SALINPORK</span>)"
   }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<

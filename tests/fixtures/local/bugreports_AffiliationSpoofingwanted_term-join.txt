@@ -213,7 +213,7 @@ and the "isInstitution" flag as institutional authors
 
 <<===== CSL =====<<
 
->>===== INPUT =====>
+>>===== INPUT =====>>
 [
 	{
 		"id":"ITEM-1",
@@ -224,4 +224,4 @@ and the "isInstitution" flag as institutional authors
 		]
 	}
 ]
-<<====== INPUT =====
+<<====== INPUT =====<<

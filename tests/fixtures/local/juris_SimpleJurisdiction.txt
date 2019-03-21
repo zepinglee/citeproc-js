@@ -5,8 +5,8 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] From module: Frank MY CASE TITLE
->>[1] From module: MY STATUTE TITLE
+..[0] Not a warning message, module ok
+>>[1] Not a warning message, module ok
 <<===== RESULT =====<<
 
 
@@ -136,20 +136,26 @@ citation
    {
         "id": "ITEM-1", 
         "jurisdiction": "us:ak",
-        "title": "My Case Title",
+        "title": "Not a warning message, module ok",
         "type": "legal_case",
         "author": [
             {
                "family": "Frank",
                "given": "Bennett"
             }
-        ]
-    },
+        ],
+  	    "issued": {
+	        "date-parts": [[2011]]
+	    }
+   },
    {
         "id": "ITEM-2", 
         "jurisdiction": "us:ak",
-        "title": "My Statute Title",
-        "type": "legislation"
+        "title": "Not a warning message, module ok",
+        "type": "legislation",
+	    "issued": {
+	       "date-parts": [[1990]]
+	    }
     }
 ]
 <<===== INPUT =====<<

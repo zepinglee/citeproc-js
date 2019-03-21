@@ -78,7 +78,7 @@ citation
 		"title": "Beyond varieties of capitalism : Conflict, contradiction, and complementarities in the European economy",
 		"publisher": "Oxford University Press",
 		"ISBN": "978-0-19-920648-3",
-		"shortTitle": "Beyond varieties of capitalism",
+		"title-short": "Beyond varieties of capitalism",
 		"language": "en",
 		"editor": [
 			{

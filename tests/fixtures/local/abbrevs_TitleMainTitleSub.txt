@@ -11,10 +11,24 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] title="Main title (1): Subtitle"; shortTitle="Main title (1)"; title-main="Main title (1)"; title-sub="Subtitle"
-..[1] title="Main title (2) : Subtitle"; shortTitle="Main title (2)"; title-main="Main title (2)"; title-sub="Subtitle"
-..[2] title="Main title (3) -- Subtitle"; shortTitle="Main title (3)"; title-main="Main title (3) -- Subtitle"; title-sub=
->>[3] title="Main title (X): Subtitle"; shortTitle="Main title (4)"; title-main="Main title (X): Subtitle"; title-sub=
+..[0] full: First main title: First subtitle
+short: First main title
+main: First main title
+sub: First subtitle
+
+..[1] full: Second main title : Second subtitle
+short: Second main title
+main: Second main title
+sub: Second subtitle
+
+..[2] full: Third main title -- Third subtitle
+short: Third main title
+main: Third main title -- Third subtitle
+
+>>[3] full: Fourth main title? Fourth subtitle
+short: Fourth main title?
+main: Fourth main title? Fourth subtitle
+
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
@@ -127,14 +141,11 @@ citation
   </info>
   <citation>
     <layout>
-      <text value="title="/>
-      <text variable="title" prefix="&quot;" suffix="&quot;"/>
-      <text value="; shortTitle="/>
-      <text variable="title" form="short" prefix="&quot;" suffix="&quot;"/>
-      <text value="; title-main="/>
-      <text variable="title-main" prefix="&quot;" suffix="&quot;"/>
-      <text value="; title-sub="/>
-      <text variable="title-sub" prefix="&quot;" suffix="&quot;"/>
+      <group delimiter="&#x0A;" suffix="&#x0A;">
+      <text variable="title" prefix="full: "/>
+      <text variable="title" form="short" prefix="short: "/>
+      <text variable="title-main" prefix="main: "/>
+      <text variable="title-sub" prefix="sub: "/>
     </layout>
   </citation>
 </style>
@@ -146,26 +157,26 @@ citation
     {
         "id": "ITEM-1", 
         "type": "book",
-		"title": "Main title (1): Subtitle",
-		"shortTitle": "Main title (1)"
+		"title": "First main title: First subtitle",
+		"title-short": "First main title"
     },
     {
         "id": "ITEM-2", 
         "type": "book",
-		"title": "Main title (2) : Subtitle",
-		"shortTitle": "Main title (2)"
+		"title": "Second main title : Second subtitle",
+		"title-short": "Second main title"
     },
     {
         "id": "ITEM-3", 
         "type": "book",
-		"title": "Main title (3) -- Subtitle",
-		"shortTitle": "Main title (3)"
+		"title": "Third main title -- Third subtitle",
+		"title-short": "Third main title"
     },
     {
         "id": "ITEM-4", 
         "type": "book",
-		"title": "Main title (X): Subtitle",
-		"shortTitle": "Main title (4)"
+		"title": "Fourth main title? Fourth subtitle",
+		"title-short": "Fourth main title?"
     }
 ]
 <<===== INPUT =====<<

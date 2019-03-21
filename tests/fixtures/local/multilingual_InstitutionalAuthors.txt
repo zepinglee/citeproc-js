@@ -80,7 +80,7 @@ Huang Huaixin 黄懷信, Tian Xudong 田旭東, Zhang Maorong 張懋鎔
 		"event-place": "Shanghai",
 		"archive-place": "Shanghai",
 		"ISBN": "9787532543915",
-		"shortTitle": "Huijiao jizhu",
+		"title-short": "Huijiao jizhu",
 		"editor": [
 			{
 				"family": "黄懷信",

@@ -1,10 +1,10 @@
 >>===== MODE =====>>
 citation
-<<===== MODE===== <<
+<<===== MODE =====<<
 
 >>===== RESULT =====>>
 >>[0] Convention on the Elimination of All Forms of Discrimination against Women, 1 March 1980, 1 UNTS 13, 1111 Canadian TS 2222.
-<<===== RESULT===== <<
+<<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
 [
@@ -30,7 +30,8 @@ citation
         []
     ]
 ]
-<<===== CITATIONS===== <<
+<<===== CITATIONS =====<<
+
 >>===== CSL =====>>
 <?xml version="1.1mlz1" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="note" default-locale="en" version="1.1mlz1">
@@ -2521,7 +2522,7 @@ citation
   </bibliography>
 </style>
 
-<<===== CSL===== <<
+<<===== CSL =====<<
 
     "references": "Entered into force 03 September 1981, ratification by Canada 10 Dec 1981",
 
@@ -2541,7 +2542,7 @@ citation
     "container-title": "UNTS",
     "page": "13",
     "volume": "1",
-    "shortTitle": "CEDAW",
+    "title-short": "CEDAW",
     "event-date": {
       "date-parts": [
         [
@@ -2563,7 +2564,7 @@ citation
     "container-title": "Canadian TS",
     "page": "2222",
     "volume": "1111",
-    "shortTitle": "CEDAW",
+    "title-short": "CEDAW",
     "event-date": {
       "date-parts": [
         [
@@ -2575,7 +2576,7 @@ citation
     }
   }
 ]
-<<===== INPUT===== <<
+<<===== INPUT =====<<
 
 
-#    "shortTitle": "CEDAW",
+#    "title-short": "CEDAW",

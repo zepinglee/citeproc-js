@@ -136,14 +136,16 @@ CSL.Util.Dates.normalizeMonth = function (num, useSeason) {
     num = parseInt(num, 10);
     if (useSeason) {
         var res = {stub: "month-", num: num};
-        if (res.num < 1 || res.num > 20) {
+        if (res.num < 1 || res.num > 24) {
             res.num = 0;
-        } else if (res.num > 16) {
-            res.stub = "season-";
-            res.num = res.num - 16;
-        } else if (res.num > 12) {
-            res.stub = "season-";
-            res.num = res.num - 12;
+        } else {
+            while (res.num > 16) {
+                res.num = res.num - 4;
+            }
+            if (res.num > 12) {
+                res.stub = "season-";
+                res.num = res.num - 12;
+            }
         }
         ret = res;
     } else {

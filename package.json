@@ -1,20 +1,36 @@
 {
-  "name": "citeproc",
-  "version": "2.1.220",
-  "description": "The citeproc-js citation formatting module, in CommonJS format. This version is based on citeproc-js 1.1.220.",
-  "main": "citeproc_commonjs.js",
-  "repository": {
-    "type" : "git",
-    "url" : "https://github.com/juris-m/citeproc-js.git"
-  },
-  "files": [
-    "citeproc_commonjs.js"
-  ],
-  "author": "Michael McMillan <email@michaelmcmillan.net> (http://michaelmcmillan.net/)",
-  "contributors": [
-      "Frank Bennett <biercenator@gmail.com> (https://juris-m.github.io)"
-  ],
-  "license": "CPAL-1.0 OR AGPL-1.0",
-  "dependencies": {},
-  "devDependencies": {}
+    "name": "citeproc",
+    "version": "2.1.223",
+    "description": "The citeproc-js citation formatting module, in CommonJS format. This version is based on citeproc-js 1.1.223",
+    "main": "citeproc_commonjs.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/juris-m/citeproc-js.git"
+    },
+    "files": [
+        "citeproc_commonjs.js"
+    ],
+    "author": "Michael McMillan <email@michaelmcmillan.net> (http://michaelmcmillan.net/)",
+    "contributors": [
+        "Frank Bennett <biercenator@gmail.com> (https://juris-m.github.io)"
+    ],
+    "license": "CPAL-1.0 OR AGPL-1.0",
+    "dependencies": {
+        "crlf": "^1.1.1"
+    },
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "chokidar": "^2.1.2",
+        "cross-clear": "^1.0.0",
+        "getopts": "^2.2.4",
+        "mocha": "^6.0.2",
+        "mocha-spectrum-reporter": "^1.0.3",
+        "normalize-newline": "^3.0.0",
+        "nyanplusreporter": "^0.10.4",
+        "tmp": "0.0.33",
+        "yaml": "^1.4.0"
+    },
+    "scripts": {
+        "test": "node ./tests/runtests.js -a"
+    }
 }

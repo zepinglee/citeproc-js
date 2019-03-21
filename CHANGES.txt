@@ -2,6 +2,35 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.223
+==========================
+
+- Recognize EDTF values for seasons (21-24) on input.
+
+==========================
+Changes in version 1.1.222
+==========================
+
+- Implement range-delimiter attribute on cs:date-part
+  Many thanks to Cormac Relf for pointing out this omission!
+
+- Implement watch mode in build/test script for style development
+
+==========================
+Changes in version 1.1.221
+==========================
+
+Continuous integration
+
+- Rewrite of the build/test script
+
+- Retirement of the previous test framework
+
+- Deployment of Travis CI on the GitHub repository
+
+- README notes on install/test steps
+
+==========================
 Changes in version 1.1.220
 ==========================
 

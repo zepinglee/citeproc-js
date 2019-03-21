@@ -167,16 +167,25 @@ CSL.Node["date-part"] = {
                             }
                             state.dateput.append(value_end, this);
                             if (first_date) {
-                                state.dateput.current.value()[0].strings.prefix = "";
+                                state.dateput.current.value().blobs[0].strings.prefix = "";
                             }
                         }
                         state.output.append(value, this);
                         curr = state.output.current.value();
                         curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
-                        state.output.append(state.getTerm("year-range-delimiter"), "empty");
+                        if (this.strings["range-delimiter"]) {
+                            state.output.append(this.strings["range-delimiter"]);
+                        } else {
+                            state.output.append(state.getTerm("year-range-delimiter"), "empty");
+                        }
+                        state.dateput.closeLevel();
                         dcurr = state.dateput.current.value();
                         curr.blobs = curr.blobs.concat(dcurr);
+                        // This may leave the stack pointer on a lower level.
+                        // It's not a problem because the stack will be clobbered
+                        // when the queue is initialized by the next cs:date node.
                         state.dateput.string(state, state.dateput.queue);
+                        state.dateput.openLevel(state.tmp.date_token);
                         state.tmp.date_collapse_at = [];
                     } else {
                         state.output.append(value, this);

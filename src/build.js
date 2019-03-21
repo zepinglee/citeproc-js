@@ -104,69 +104,19 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         };
         this.setCslNodeIds(this.cslXml.dataObj, "style");
     }
+    // Preprocessing ops for the XML input
     this.cslXml.addMissingNameNodes(this.cslXml.dataObj);
     this.cslXml.addInstitutionNodes(this.cslXml.dataObj);
     this.cslXml.insertPublisherAndPlace(this.cslXml.dataObj);
     this.cslXml.flagDateMacros(this.cslXml.dataObj);
-    //
-    // Note for posterity: tried manipulating the XML here to insert
-    // a list of the upcoming date-part names.  The object is apparently
-    // read-only.  Don't know why, can't find any reference to this
-    // problem on the Net (other than casual mentions that it works,
-    // which it doesn't, at least in Rhino).  Turning to add this info
-    // in the compile phase, in the flattened version of the style,
-    // which should be simpler anyway.
-    //
-
     attrs = this.cslXml.attributes(this.cslXml.dataObj);
     if ("undefined" === typeof attrs["@sort-separator"]) {
         this.cslXml.setAttribute(this.cslXml.dataObj, "sort-separator", ", ");
     }
-
-    //if ("undefined" === typeof attrs["@name-delimiter"]) {
-    //    this.sys.xml.setAttribute(this.cslXml, "name-delimiter", ", ");
-    //}
-
+    // This setting does the right thing and seems not to be side-effects
     this.opt["initialize-with-hyphen"] = true;
 
-    //
-    // implicit default, "en"
-    //
-    // We need to take this in layered functions.  This function goes
-    // once, right here, with the lang argument.  It calls a function
-    // that resolves the lang argument into a full two-part language
-    // entry.  It calls a function that (1) checks to see if
-    // the two-part target language is available on the CSL.locale
-    // branch, and (2) if not, sets from ultimate default, then (3) from
-    // single-term language (if available), then (4) from two-term language.
-    // It does this all twice, once for locale files, then for locales inside
-    // the style file.
-    //
-    // So functions needed are ... ?
-    //
-    // setLocale(rawLang) [top-level]
-    //   localeResolve(rawLang)
-    //   [function below is not run for external locales
-    //   if two-part lang exists in CSL.locale; it is always
-    //   run for in-CSL locale data, if it exists.]
-    //   localeSetFromXml(lang,localeHandler)
-    //
-    // (getHandler arg is a function with two methods, one to
-    // get XML from disk file, or from CSL, and another to store
-    // locale data on CSL.locale or on state.locale, depending
-    // on its source.)
-    //
-    // (note that getLocale must fail gracefully
-    // if no locale of the exact lang in the first
-    // arg is available.)
-    //
-    // (note that this will require that the hard-coded locale
-    // be recorded on CSL.locale, and that ephemeral locale
-    // overlay data bet recorded on state.locale, and that
-    // getTerm implement overlay behavior.)
-    //
-
-    // Refactored locale resolution
+    // Locale resolution
     //
     // (1) Get three locale strings 
     //     -- default-locale (stripped)
@@ -381,29 +331,7 @@ CSL.Engine.prototype.setStyleAttributes = function () {
     //   (1) typeof this.cslXml.tagName === "undefined"; and
     //   (2) !this.cslXml.tagName === false
     // Coerced, it becomes an empty string.
-    
-
-    // Some releases of citeproc-node call the top-level node "cslstyle":
-    //   https://bitbucket.org/fbennett/citeproc-js/issue/165/citeproc-now-failing-to-run-on-nodejs
-
-
-    // XXXXX
-    // This was all VERY WRONG.
-    // We can't call DOM functions outside of the parsing instance!!!
-    // May need to come back here if commenting this out breaks things,
-    // and it could be tough slog to get it fixed.
-    // XXXXX
-
     var dummy = {};
-
-    //var cslXml = this.cslXml;
-	//var tagName = this.cslXml.tagName ? ("" + this.cslXml.tagName).toLowerCase() : "";
-    //if (tagName !== 'style' && tagName !== 'cslstyle') {
-    //    if (this.cslXml.getElementsByTagName) {
-    //        var cslXml = this.cslXml.getElementsByTagName('style')[0];
-    //    }
-    //}
-    //dummy.name = this.sys.xml.nodename(cslXml);
     dummy.name = this.cslXml.nodename(this.cslXml.dataObj);
     attributes = this.cslXml.attributes(this.cslXml.dataObj);
     for (attrname in attributes) {
@@ -430,7 +358,7 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, force
     if (!ret && term === "range-delimiter") {
         ret = "\u2013";
     }
-    // XXXXX Not so good: can be neither strict nor tolerant
+    // XXXXX Not so good if mode is neither strict nor tolerant ...
     if (typeof ret === "undefined") {
         if (mode === CSL.STRICT) {
             throw "Error in getTerm: term \"" + term + "\" does not exist.";
