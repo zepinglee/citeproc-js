@@ -44,16 +44,24 @@ the existence of `other processors
 development.  CSL is the modern way to handle bibliographic projects,
 and ``citeproc-js`` is a convenient way to take advantage of it.
 
+------------
+Requirements
+------------
+
+    ``git``
+        A GitHub clone needed to run tests.
+    ``node.js``
+        Any recent-ish version should work. Version 7 is used for automated testing.
+    ``mocha``
+        Install Mocha globally with ``npm install --global mocha``.
+    ``java``
+        This is used to perform schema validation. Browser extension is not
+        required, a basic command-line install is all you need.
+
 -----------
 Quick Setup
 -----------
 
-**Requirements**
-    * ``git``
-    * A recent-ish version of ``node.js``
-    * Mocha (installed globally with ``npm install --global mocha``)
-    * Java (a basic command-line install, needed for validation)
-    
 The quickest way to install the processor is for use with Node.js, via `npm`::
 
     npm install citeproc
