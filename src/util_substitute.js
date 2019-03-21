@@ -24,14 +24,16 @@ CSL.Util.substituteStart = function (state, target) {
     if (("text" === this.name && !this.postponed_macro) || nodetypes.indexOf(this.name) > -1) {
         element_trace = function (state, Item, item) {
             if (state.tmp.element_trace.value() === "author" || "names" === this.name) {
-                if (item && item["author-only"]) {
+                if (item && item["author-only"] && state.tmp.area !== "intext") {
                     state.tmp.element_trace.push("do-not-suppress-me");
                 }
                 // The counterpart, suppress-author, is better handled by namesOutput()
                 //state.tmp.element_trace.push("suppress-me");
             } else {
                 if (item && item["author-only"]) {
-                    state.tmp.element_trace.push("suppress-me");
+                    if (state.tmp.area !== "intext") {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
                 } else if (item && item["suppress-author"]) {
                     state.tmp.element_trace.push("do-not-suppress-me");
                 }
