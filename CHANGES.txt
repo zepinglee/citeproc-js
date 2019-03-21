@@ -2,6 +2,12 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.223
+==========================
+
+- Recognize EDTF values for seasons (21-24) on input.
+
+==========================
 Changes in version 1.1.222
 ==========================
 

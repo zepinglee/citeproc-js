@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.222",
+    PROCESSOR_VERSION: "1.1.223",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -13732,14 +13732,16 @@ CSL.Util.Dates.normalizeMonth = function (num, useSeason) {
     num = parseInt(num, 10);
     if (useSeason) {
         var res = {stub: "month-", num: num};
-        if (res.num < 1 || res.num > 20) {
+        if (res.num < 1 || res.num > 24) {
             res.num = 0;
-        } else if (res.num > 16) {
-            res.stub = "season-";
-            res.num = res.num - 16;
-        } else if (res.num > 12) {
-            res.stub = "season-";
-            res.num = res.num - 12;
+        } else {
+            while (res.num > 16) {
+                res.num = res.num - 4;
+            }
+            if (res.num > 12) {
+                res.stub = "season-";
+                res.num = res.num - 12;
+            }
         }
         ret = res;
     } else {
