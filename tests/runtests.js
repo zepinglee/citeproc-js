@@ -846,8 +846,7 @@ function runFixturesAsync() {
         }
         var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, ".."), shell: process.platform == 'win32'});
         mocha.stdout.on('data', (data) => {
-            process.stdout.write(data.toString());
-            //console.log(data.toString().replace(/\s+$/, ""));
+            process.stdout.write(data.toString().replace(/[^\n]*FILE:\s*(.*): expected [^\n]*(?:\r\n|\r|\n)/m, ""));
             if (options.w && options.k) {
                 var line = data.toString();
                 var m = line.match(/.*FILE:([^\n]+)\.txt:/m);
@@ -855,7 +854,7 @@ function runFixturesAsync() {
                     console.log("Adopt this output as correct test RESULT? (y/n)");
                     process.stdin.once('data', function (key) {
                         if (!ksTimeout) {
-                            ksTimeout = setTimeout(function() { ksTimeout=null }, 2000) // block for 2 seconds to avoid stutter
+                            ksTimeout = setTimeout(function() { ksTimeout=null }, 100) // block for 0.1 second to avoid stutter
                             
                             var fn = path.basename(m[1]);
                             var test = config.testData[fn];
