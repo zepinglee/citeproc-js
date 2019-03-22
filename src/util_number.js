@@ -490,14 +490,17 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var masterNode = CSL.Util.cloneToken(node);
         var masterStyling = new CSL.Token();
         if (!me.tmp.just_looking) {
-            for (var j=masterNode.decorations.length-1;j>-1;j--) {
-                if (masterNode.decorations[j][0] === "@quotes") {
-                    // Add to styling
-                    masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
-                    // Remove from node
-                    masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1));
-                }
-            }
+            // Per discussion @ https://discourse.citationstyles.org/t/formatting-attributes-and-hyphen/1518
+            masterStyling.decorations = masterNode.decorations;
+            masterNode.decorations = [];
+            //for (var j=masterNode.decorations.length-1;j>-1;j--) {
+            //    if (masterNode.decorations[j][0] === "@quotes") {
+            //        // Add to styling
+            //        masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
+            //        // Remove from node
+            //        masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1));
+            //    }
+            //}
             masterStyling.strings.prefix = masterNode.strings.prefix;
             masterNode.strings.prefix = "";
             masterStyling.strings.suffix = masterNode.strings.suffix;
