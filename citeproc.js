@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.223",
+    PROCESSOR_VERSION: "1.1.224",
     CONDITION_LEVEL_TOP: 1,
     CONDITION_LEVEL_BOTTOM: 2,
     PLAIN_HYPHEN_REGEX: /(?:[^\\]-|\u2013)/,
@@ -14475,12 +14475,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var masterNode = CSL.Util.cloneToken(node);
         var masterStyling = new CSL.Token();
         if (!me.tmp.just_looking) {
-            for (var j=masterNode.decorations.length-1;j>-1;j--) {
-                if (masterNode.decorations[j][0] === "@quotes") {
-                    masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
-                    masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1));
-                }
-            }
+            masterStyling.decorations = masterNode.decorations;
+            masterNode.decorations = [];
             masterStyling.strings.prefix = masterNode.strings.prefix;
             masterNode.strings.prefix = "";
             masterStyling.strings.suffix = masterNode.strings.suffix;
@@ -16217,6 +16213,72 @@ CSL.Output.Formats.prototype.fo = {
             doiurl = "https://doi.org/" + str;
         }
         return "<fo:basic-link external-destination=\"url('" + doiurl + "')\">" + str + "</fo:basic-link>";
+    }
+};
+CSL.Output.Formats.prototype.latex = {
+    "text_escape": function (text) {
+        if (!text) {
+            text = "";
+        }
+        return text;
+    },
+    "bibstart": "\\begin{thebibliography}{4}",
+    "bibend": "\end{thebibliography}",
+    "@font-style/italic": "{\\em %%STRING%%}",
+    "@font-style/oblique": false,
+    "@font-style/normal": false,
+    "@font-variant/small-caps": false,
+    "@passthrough/true": CSL.Output.Formatters.passthrough,
+    "@font-variant/normal": false,
+    "@font-weight/bold": "{\\bf %%STRING%%}",
+    "@font-weight/normal": false,
+    "@font-weight/light": false,
+    "@text-decoration/none": false,
+    "@text-decoration/underline": false,
+    "@vertical-align/baseline": false,
+    "@vertical-align/sup": false,
+    "@vertical-align/sub": false,
+    "@strip-periods/true": CSL.Output.Formatters.passthrough,
+    "@strip-periods/false": CSL.Output.Formatters.passthrough,
+    "@quotes/true": function (state, str) {
+        if ("undefined" === typeof str) {
+            return state.getTerm("open-quote");
+        }
+        return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+    },
+    "@quotes/inner": function (state, str) {
+        if ("undefined" === typeof str) {
+            return "\u2019";
+        }
+        return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+    },
+    "@quotes/false": false,
+    "@cite/entry": function (state, str) {
+		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+	},
+    "@bibliography/entry": function (state, str) {
+        return "\\bibitem{" + state.sys.embedBibliographyEntry(this.item_id) + "}\n";
+    },
+    "@display/block": function (state, str) {
+        return "\n"+str;
+    },
+    "@display/left-margin": function (state, str) {
+        return str;
+    },
+    "@display/right-inline": function (state, str) {
+        return str;
+    },
+    "@display/indent": function (state, str) {
+        return "\n    "+str;
+    },
+    "@showid/true": function (state, str, cslid) {
+        return str;
+    },
+    "@URL/true": function (state, str) {
+        return str;
+    },
+    "@DOI/true": function (state, str) {
+        return str;
     }
 };
 CSL.Output.Formats = new CSL.Output.Formats();
