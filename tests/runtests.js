@@ -379,7 +379,7 @@ function Stripper(fn, noStrip) {
     this.arr = [];
     this.area = "code";
     this.state = "reading";
-    this.skipStarRex = new RegExp("^\\s*(\\/\\*.*\\*\\/\\s*)\\r?$");
+    this.skipStarRex = new RegExp("^\\s*(\\/\\*.*?\\*\\/)\\r?$", "m");
     this.skipSlashRex = new RegExp("^\\s*(\\/\\/.*)\\r?$");
     this.openRex = new RegExp("^\\s*(\\/\\*|\\/\\/SNIP-START)");
     this.closeRex = new RegExp("^\\s*(\\*\\/|\\/\\/SNIP-END)\\s*\\r?$");
