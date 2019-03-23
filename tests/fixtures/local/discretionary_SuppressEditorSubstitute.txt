@@ -11,7 +11,6 @@ citation
 (Book C, 2003)
 (2004, [Susan Jenkins tran.])
 (Book E, 2005, [Vincent Herbert tran.])
-(Book D, 2004, [Vincent Herbert tran.])
 <<== RESULT ==<<
 
 >>== CITATION-ITEMS ==>>
