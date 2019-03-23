@@ -5,19 +5,19 @@ var normalizeNewline = require("normalize-newline");
 var config = yaml.parse(fs.readFileSync(path.join(__dirname, ".runtests.yaml")).toString());
 var CSL = require(path.join(__dirname, "..", "citeproc_commonjs.js"));
 
-CSL.print = function(txt) {
-    setTimeout(function(){
-        console.log(txt);
-    }, 100);
-}
-
-var Sys = function(test){
+var Sys = function(test, logger_queue){
     this.test = test;
     this.localePath = path.join(__dirname, config.path.locale);
     this.modulesPath = path.join(__dirname, config.path.modules);
     this._acache = {};
     this._acache["default"] = new CSL.AbbreviationSegments();
     this._setCache();
+    this.logger_queue = logger_queue;
+}
+
+Sys.prototype.print = function(txt) {
+    var name = this.test.NAME;
+    this.logger_queue.push("[" + name + "] " + txt);
 }
 
 Sys.prototype._setCache = function() {
