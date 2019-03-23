@@ -469,12 +469,14 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
     if (this.nameset_base === 0 && this.Item[this.variables[0]] && !this._first_creator_variable) {
         this._first_creator_variable = this.variables[0];
     }
-    if ((this.item && this.item["suppress-author"] && this._first_creator_variable == this.variables[0])
+    if ((this.item && this.item["suppress-author"] && !this.state.tmp.probably_rendered_something && this._first_creator_variable == this.variables[0])
         || (this.state[this.state.tmp.area].opt.collapse 
             && this.state[this.state.tmp.area].opt.collapse.length)
         || (this.state[this.state.tmp.area].opt.cite_group_delimiter 
             && this.state[this.state.tmp.area].opt.cite_group_delimiter.length)) {
 
+        this.state.tmp.probably_rendered_something = true;
+        
         if (this.state.tmp.authorstring_request) {
             // Avoid running this on every call to getAmbiguousCite()?
             mystr = "";
@@ -513,7 +515,6 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             } else {
                 // XX1 print("remembering: "+mystr);
                 this.state.tmp.last_primary_names_string = mystr;
-
                 // XXXXX A little more precision would be nice.
                 // This will clobber variable="author editor" as well as variable="author".
                 if (this.variables.indexOf(this._first_creator_variable) > -1 && this.item && this.item["suppress-author"] && this.Item.type !== "legal_case") {

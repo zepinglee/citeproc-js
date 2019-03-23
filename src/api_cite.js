@@ -1320,6 +1320,7 @@ CSL.getCitationCluster = function (inputList, citationID) {
 CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     var next, error_object;
     this.tmp.cite_renders_content = false;
+    this.tmp.probably_rendered_something = false;
     this.parallel.StartCite(Item, item, prevItemID);
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);

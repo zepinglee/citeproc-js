@@ -489,7 +489,8 @@ CSL.Transform = function (state) {
                 // A little too aggressive maybe.
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
-
+                state.tmp.probably_rendered_something = true;
+                
                 if (secondary) {
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
@@ -561,6 +562,7 @@ CSL.Transform = function (state) {
                 state.output.closeLevel();
             } else {
                 state.output.append(primary, primary_tok);
+                state.tmp.probably_rendered_something = true;
             }
             return null;
         };

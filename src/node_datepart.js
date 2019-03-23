@@ -19,6 +19,8 @@ CSL.Node["date-part"] = {
 
             if (!state.tmp.date_object) {
                 return;
+            } else {
+                state.tmp.probably_rendered_something = true;
             }
 
             first_date = true;
