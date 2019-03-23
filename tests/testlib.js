@@ -5,6 +5,12 @@ var normalizeNewline = require("normalize-newline");
 var config = yaml.parse(fs.readFileSync(path.join(__dirname, ".runtests.yaml")).toString());
 var CSL = require(path.join(__dirname, "..", "citeproc_commonjs.js"));
 
+CSL.print = function(txt) {
+    setTimeout(function(){
+        console.log(txt);
+    }, 100);
+}
+
 var Sys = function(test){
     this.test = test;
     this.localePath = path.join(__dirname, config.path.locale);
