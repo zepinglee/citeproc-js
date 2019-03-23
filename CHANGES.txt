@@ -2,6 +2,27 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.225
+==========================
+
+- Implement cs:intext element and composite form with infix for narrative citations.
+
+- Implement citation-level user-supplied affixes.
+
+- Smooth out implementation of author-only and suppress-author in the
+  absence of cs:intext. Should function reasonably well without cs:intext
+  for all but numeric/trigraph styles and styles like APA with differing
+  requirements for names in text and names in citations.
+
+- Move all author-only/suppress-author tests to the citeproc-js test suite.
+
+- Fix some bugs and cosmetic issues in runtests.js.
+
+- For some reason the test suite shows about a 20% speed increase with recent
+  changes. Not sure if performance in production will improve, but I must have
+  done something right.
+
+==========================
 Changes in version 1.1.224
 ==========================
 

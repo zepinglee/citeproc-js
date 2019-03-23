@@ -1,30 +1,29 @@
 /*
- * Copyright (c) 2009-2019 Frank Bennett
- * 
- * 	This program is free software: you can redistribute it and/or
- * 	modify it under EITHER
- * 
- *       * the terms of the Common Public Attribution License (CPAL) as
- * 	    published by the Open Source Initiative, either version 1 of
- * 	    the CPAL, or (at your option) any later version; OR
- * 
- *       * the terms of the GNU Affero General Public License (AGPL)
- *         as published by the Free Software Foundation, either version
- *         3 of the AGPL, or (at your option) any later version.
- * 
- * 	This program is distributed in the hope that it will be useful,
- * 	but WITHOUT ANY WARRANTY; without even the implied warranty of
- * 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * 	Affero General Public License for more details.
- * 
- * 	You should have received copies of the Common Public Attribution
- *     License and of the GNU Affero General Public License along with
- *     this program.  If not, see <https://opensource.org/licenses/> or
- *     <http://www.gnu.org/licenses/> respectively.
- */
-;
+Copyright (c) 2009-2019 Frank Bennett
+
+	This program is free software: you can redistribute it and/or
+	modify it under EITHER
+
+      * the terms of the Common Public Attribution License (CPAL) as
+	    published by the Open Source Initiative, either version 1 of
+	    the CPAL, or (at your option) any later version; OR
+
+      * the terms of the GNU Affero General Public License (AGPL)
+        as published by the Free Software Foundation, either version
+        3 of the AGPL, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Affero General Public License for more details.
+
+	You should have received copies of the Common Public Attribution
+    License and of the GNU Affero General Public License along with
+    this program.  If not, see <https://opensource.org/licenses/> or
+    <http://www.gnu.org/licenses/> respectively.
+*/
 var CSL = {
-    PROCESSOR_VERSION: "1.1.220.intext.1",
+    PROCESSOR_VERSION: "1.1.225",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -935,14 +934,8 @@ var CSL = {
                 state.tmp.just_did_number = false;
             }
         }
-    },
-    locale: {},
-    locale_opts: {},
-    locale_dates: {}
+    }
 };
-if (typeof require !== "undefined" && typeof module !== 'undefined' && "exports" in module) {
-    exports.CSL = CSL;
-}
 if ("undefined" === typeof console) {
     CSL.debug = function (str) {
         dump("CSL: " + str + "\n");
@@ -4794,6 +4787,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.spoof_institutional_affiliations = false;
     this.development_extensions.force_jurisdiction = false;
     this.development_extensions.parse_names = true;
+    this.development_extensions.hanging_indent_legacy_number = true;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -5714,7 +5708,6 @@ CSL.getCitationCluster = function (inputList, citation) {
         } else if (suppressAuthor) {
             delete inputList[0][1]["author-only"];
             inputList[0][1]["suppress-author"] = true;
-            print("Suppress author on " + inputList[0][0].id);
         }
     }
     for (pos = 0; pos < len; pos += 1) {
@@ -5832,6 +5825,9 @@ CSL.getCitationCluster = function (inputList, citation) {
         this.tmp.suppress_decorations = false;
         if ("string" === typeof composite) {
             this.tmp.suppress_decorations = false;
+            if (!composite) {
+                composite = "[NO_PRINTED_FORM]"
+            }
             return composite;
         }
         if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
@@ -5913,6 +5909,9 @@ CSL.getCitationCluster = function (inputList, citation) {
         }
     }
     this.tmp.suppress_decorations = false;
+    if (!result) {
+        result = "[NO_PRINTED_FORM]";
+    }
     return result;
 };
 CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
@@ -5922,6 +5921,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
             this.tmp.area = "intext";
     }
     this.tmp.cite_renders_content = false;
+    this.tmp.probably_rendered_something = false;
     this.parallel.StartCite(Item, item, prevItemID);
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
@@ -6916,36 +6916,6 @@ CSL.Node.citation = {
         target.push(this);
     }
 };
-CSL.Node.intext = {
-    build: function (state, target) {
-        if (this.tokentype === CSL.START) {
-            state.build.area = "intext";
-            state.build.root = "intext";
-            state.build.extension = "";
-            var func = function(state, Item) {
-                state.tmp.area = "intext";
-                state.tmp.root = "intext";
-                state.tmp.extension = "";
-            }
-            this.execs.push(func);
-        }
-        if (this.tokentype === CSL.END) {
-            state.opt.grouped_sort = state.opt.xclass === "in-text" 
-                && (state.citation.opt.collapse 
-                    && state.citation.opt.collapse.length)
-                || (state.citation.opt.cite_group_delimiter
-                    && state.citation.opt.cite_group_delimiter.length)
-                && state.opt.update_mode !== CSL.POSITION
-                && state.opt.update_mode !== CSL.NUMERIC;
-            if (state.opt.grouped_sort 
-                && state.citation_sort.opt.sort_directions.length) {
-                state.intext_sort.opt.sort_directions = state.citation_sort.opt.sort_directions;
-            }
-            state.intext.srt = state.citation.srt;
-        }
-        target.push(this);
-    }
-};
 CSL.Node["#comment"] = {
        build: function () {
        }
@@ -6954,6 +6924,11 @@ CSL.Node.date = {
     build: function (state, target) {
         var func, date_obj, len, pos, part, dpx, parts, mypos, start, end;
         if (this.tokentype === CSL.START || this.tokentype === CSL.SINGLETON) {
+            state.dateput.string(state, state.dateput.queue);
+            state.tmp.date_token = CSL.Util.cloneToken(this);
+            state.tmp.date_token.strings.prefix = "";
+            state.tmp.date_token.strings.suffix = "";
+            state.dateput.openLevel(this);
             state.build.date_parts = [];
             state.build.date_variables = this.variables;
             if (!state.build.extension) {
@@ -7072,6 +7047,8 @@ CSL.Node["date-part"] = {
         func = function (state, Item) {
             if (!state.tmp.date_object) {
                 return;
+            } else {
+                state.tmp.probably_rendered_something = true;
             }
             first_date = true;
             value = "";
@@ -7196,16 +7173,22 @@ CSL.Node["date-part"] = {
                             }
                             state.dateput.append(value_end, this);
                             if (first_date) {
-                                state.dateput.current.value()[0].strings.prefix = "";
+                                state.dateput.current.value().blobs[0].strings.prefix = "";
                             }
                         }
                         state.output.append(value, this);
                         curr = state.output.current.value();
                         curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
-                        state.output.append(state.getTerm("year-range-delimiter"), "empty");
+                        if (this.strings["range-delimiter"]) {
+                            state.output.append(this.strings["range-delimiter"]);
+                        } else {
+                            state.output.append(state.getTerm("year-range-delimiter"), "empty");
+                        }
+                        state.dateput.closeLevel();
                         dcurr = state.dateput.current.value();
                         curr.blobs = curr.blobs.concat(dcurr);
                         state.dateput.string(state, state.dateput.queue);
+                        state.dateput.openLevel(state.tmp.date_token);
                         state.tmp.date_collapse_at = [];
                     } else {
                         state.output.append(value, this);
@@ -8451,14 +8434,17 @@ CSL.NameOutput.prototype.outputNames = function () {
     for (i = 0, ilen = blob_list.length; i < ilen; i += 1) {
         this.state.output.append(blob_list[i], "literal", true);
     }
+    if (!this.state.tmp.just_looking && blob_list.length > 0) {
+        this.state.tmp.probably_rendered_something = true;
+    }
     this.state.output.closeLevel("empty");
     var blob = this.state.output.pop();
+    this.state.tmp.name_node.top = blob;
     var namesToken = CSL.Util.cloneToken(this.names);
     this.state.output.append(blob, namesToken);
     if (this.state.tmp.term_predecessor_name) {
         this.state.tmp.term_predecessor = true;
     }
-    this.state.tmp.name_node.top = this.state.output.current.value();
     if (variables[0] !== "authority") {
         var name_node_string = [];
         var nameobjs = this.Item[variables[0]];
@@ -8556,11 +8542,13 @@ CSL.NameOutput.prototype._buildLabel = function (term, plural, position, v) {
 };
 CSL.NameOutput.prototype._collapseAuthor = function () {
     var myqueue, mystr, oldchars;
+    if (this.state.tmp.name_node.top.blobs.length === 0) {
+        return;
+    }
     if (this.nameset_base === 0 && this.Item[this.variables[0]] && !this._first_creator_variable) {
         this._first_creator_variable = this.variables[0];
     }
-    if ((this.item && this.item["suppress-author"] && this._first_creator_variable == this.variables[0])
-        || (this.state[this.state.tmp.area].opt.collapse 
+    if ((this.state[this.state.tmp.area].opt.collapse
             && this.state[this.state.tmp.area].opt.collapse.length)
         || (this.state[this.state.tmp.area].opt.cite_group_delimiter 
             && this.state[this.state.tmp.area].opt.cite_group_delimiter.length)) {
@@ -8574,7 +8562,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             this.state.tmp.offset_characters = oldchars;
             this.state.registry.authorstrings[this.Item.id] = mystr;
         } else if (!this.state.tmp.just_looking
-                   && !this.state.tmp.suppress_decorations && (this.item["suppress-author"] || (this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
+                   && !this.state.tmp.suppress_decorations && ((this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
             mystr = "";
             myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
             oldchars = this.state.tmp.offset_characters;
@@ -10836,13 +10824,7 @@ CSL.Node.text = {
                         id = "" + Item.id;
                         if (!state.tmp.just_looking) {
                             if (item && item["author-only"]) {
-                                state.tmp.element_trace.replace("do-not-suppress-me");
-                            }
-                            if (item && item["suppress-author"]) {
-                                if (state.tmp.last_element_trace) {
-                                    state.tmp.element_trace.replace("suppress-me");
-                                }
-                                state.tmp.last_element_trace = false;
+                                state.tmp.element_trace.replace("suppress-me");
                             }
                             num = state.registry.registry[id].seq;
                             if (state.opt.citation_number_slug) {
@@ -11093,6 +11075,36 @@ CSL.Node.text = {
             target.push(this);
             CSL.Util.substituteEnd.call(this, state, target);
         }
+    }
+};
+CSL.Node.intext = {
+    build: function (state, target) {
+        if (this.tokentype === CSL.START) {
+            state.build.area = "intext";
+            state.build.root = "intext";
+            state.build.extension = "";
+            var func = function(state, Item) {
+                state.tmp.area = "intext";
+                state.tmp.root = "intext";
+                state.tmp.extension = "";
+            }
+            this.execs.push(func);
+        }
+        if (this.tokentype === CSL.END) {
+            state.opt.grouped_sort = state.opt.xclass === "in-text" 
+                && (state.citation.opt.collapse 
+                    && state.citation.opt.collapse.length)
+                || (state.citation.opt.cite_group_delimiter
+                    && state.citation.opt.cite_group_delimiter.length)
+                && state.opt.update_mode !== CSL.POSITION
+                && state.opt.update_mode !== CSL.NUMERIC;
+            if (state.opt.grouped_sort 
+                && state.citation_sort.opt.sort_directions.length) {
+                state.intext_sort.opt.sort_directions = state.citation_sort.opt.sort_directions;
+            }
+            state.intext.srt = state.citation.srt;
+        }
+        target.push(this);
     }
 };
 CSL.Attributes = {};
@@ -12077,7 +12089,11 @@ CSL.Attributes["@second-field-align"] = function (state, arg) {
 };
 CSL.Attributes["@hanging-indent"] = function (state, arg) {
     if (arg === "true") {
-        state[this.name].opt.hangingindent = 2;
+        if (state.opt.development_extensions.hanging_indent_legacy_number) {
+            state[this.name].opt.hangingindent = 2;
+	    } else {
+            state[this.name].opt.hangingindent = true;
+	    }
     }
 };
 CSL.Attributes["@line-spacing"] = function (state, arg) {
@@ -12989,6 +13005,11 @@ CSL.Transform = function (state) {
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
+            if (!state.tmp.just_looking && item && item["suppress-author"]) {
+                if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
+                    return null;
+                }
+            }
             var slot = {primary:false, secondary:false, tertiary:false};
             if (state.tmp.area.slice(-5) === "_sort") {
                 slot.primary = 'locale-sort';
@@ -13089,6 +13110,7 @@ CSL.Transform = function (state) {
                 state.output.openLevel("empty");
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
+                state.tmp.probably_rendered_something = true;
                 if (secondary) {
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
@@ -13146,6 +13168,7 @@ CSL.Transform = function (state) {
                 state.output.closeLevel();
             } else {
                 state.output.append(primary, primary_tok);
+                state.tmp.probably_rendered_something = true;
             }
             return null;
         };
@@ -13766,14 +13789,16 @@ CSL.Util.Dates.normalizeMonth = function (num, useSeason) {
     num = parseInt(num, 10);
     if (useSeason) {
         var res = {stub: "month-", num: num};
-        if (res.num < 1 || res.num > 20) {
+        if (res.num < 1 || res.num > 24) {
             res.num = 0;
-        } else if (res.num > 16) {
-            res.stub = "season-";
-            res.num = res.num - 16;
-        } else if (res.num > 12) {
-            res.stub = "season-";
-            res.num = res.num - 12;
+        } else {
+            while (res.num > 16) {
+                res.num = res.num - 4;
+            }
+            if (res.num > 12) {
+                res.stub = "season-";
+                res.num = res.num - 12;
+            }
         }
         ret = res;
     } else {
@@ -13882,12 +13907,30 @@ CSL.Util.substituteStart = function (state, target) {
     if (("text" === this.name && !this.postponed_macro) || nodetypes.indexOf(this.name) > -1) {
         element_trace = function (state, Item, item) {
             if (state.tmp.element_trace.value() === "author" || "names" === this.name) {
-                if (item && item["author-only"]) {
-                    state.tmp.element_trace.push("do-not-suppress-me");
+                if (!state.tmp.just_looking && item && item["author-only"] && state.tmp.area !== "intext") {
+                    if (!state.tmp.probably_rendered_something) {
+                    } else {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
+                }
+                if (!state.tmp.just_looking && item && item["suppress-author"]) {
+                    if (!state.tmp.probably_rendered_something) {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
+                }
+            }
+            else if ("date" === this.name) {
+                if (!state.tmp.just_looking && item && item["author-only"] && state.tmp.area !== "intext") {
+                    if (state.tmp.probably_rendered_something) {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
                 }
             } else {
-                if (item && item["author-only"]) {
-                    state.tmp.element_trace.push("suppress-me");
+                if (!state.tmp.just_looking && item && item["author-only"] && state.tmp.area !== "intext") {
+                    if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
+                    } else {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
                 } else if (item && item["suppress-author"]) {
                     state.tmp.element_trace.push("do-not-suppress-me");
                 }
@@ -14120,8 +14163,10 @@ CSL.Util.substituteEnd = function (state, target) {
         this.execs.push(func);
     }
     if (("text" === this.name && !this.postponed_macro) || ["number", "date", "names"].indexOf(this.name) > -1) {
-        func = function (state) {
-            state.tmp.element_trace.pop();
+        func = function (state, Item) {
+            if (state.tmp.element_trace.mystack.length>1) {
+                state.tmp.element_trace.pop();
+            }
         };
         this.execs.push(func);
     }
@@ -14515,12 +14560,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var masterNode = CSL.Util.cloneToken(node);
         var masterStyling = new CSL.Token();
         if (!me.tmp.just_looking) {
-            for (var j=masterNode.decorations.length-1;j>-1;j--) {
-                if (masterNode.decorations[j][0] === "@quotes") {
-                    masterStyling.decorations = masterStyling.decorations.concat(masterNode.decorations.slice(j, j+1));
-                    masterNode.decorations = masterNode.decorations.slice(0, j).concat(masterNode.decorations.slice(j+1));
-                }
-            }
+            masterStyling.decorations = masterNode.decorations;
+            masterNode.decorations = [];
             masterStyling.strings.prefix = masterNode.strings.prefix;
             masterNode.strings.prefix = "";
             masterStyling.strings.suffix = masterNode.strings.suffix;
@@ -16257,6 +16298,72 @@ CSL.Output.Formats.prototype.fo = {
             doiurl = "https://doi.org/" + str;
         }
         return "<fo:basic-link external-destination=\"url('" + doiurl + "')\">" + str + "</fo:basic-link>";
+    }
+};
+CSL.Output.Formats.prototype.latex = {
+    "text_escape": function (text) {
+        if (!text) {
+            text = "";
+        }
+        return text;
+    },
+    "bibstart": "\\begin{thebibliography}{4}",
+    "bibend": "\end{thebibliography}",
+    "@font-style/italic": "{\\em %%STRING%%}",
+    "@font-style/oblique": false,
+    "@font-style/normal": false,
+    "@font-variant/small-caps": false,
+    "@passthrough/true": CSL.Output.Formatters.passthrough,
+    "@font-variant/normal": false,
+    "@font-weight/bold": "{\\bf %%STRING%%}",
+    "@font-weight/normal": false,
+    "@font-weight/light": false,
+    "@text-decoration/none": false,
+    "@text-decoration/underline": false,
+    "@vertical-align/baseline": false,
+    "@vertical-align/sup": false,
+    "@vertical-align/sub": false,
+    "@strip-periods/true": CSL.Output.Formatters.passthrough,
+    "@strip-periods/false": CSL.Output.Formatters.passthrough,
+    "@quotes/true": function (state, str) {
+        if ("undefined" === typeof str) {
+            return state.getTerm("open-quote");
+        }
+        return state.getTerm("open-quote") + str + state.getTerm("close-quote");
+    },
+    "@quotes/inner": function (state, str) {
+        if ("undefined" === typeof str) {
+            return "\u2019";
+        }
+        return state.getTerm("open-inner-quote") + str + state.getTerm("close-inner-quote");
+    },
+    "@quotes/false": false,
+    "@cite/entry": function (state, str) {
+		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+	},
+    "@bibliography/entry": function (state, str) {
+        return "\\bibitem{" + state.sys.embedBibliographyEntry(this.item_id) + "}\n";
+    },
+    "@display/block": function (state, str) {
+        return "\n"+str;
+    },
+    "@display/left-margin": function (state, str) {
+        return str;
+    },
+    "@display/right-inline": function (state, str) {
+        return str;
+    },
+    "@display/indent": function (state, str) {
+        return "\n    "+str;
+    },
+    "@showid/true": function (state, str, cslid) {
+        return str;
+    },
+    "@URL/true": function (state, str) {
+        return str;
+    },
+    "@DOI/true": function (state, str) {
+        return str;
     }
 };
 CSL.Output.Formats = new CSL.Output.Formats();
