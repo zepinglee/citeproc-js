@@ -4,12 +4,12 @@ citation
 
 
 >>== RESULT ==>>
-..[0] John Aloysius Smith
-..[1] (2005)
->>[2] (Jones 2000)
+John Smith
+(2005)
+(Jones 2000)
 <<== RESULT ==<<
 
->>== CITATIONS ==>>
+>>== CITATION-ITEMS ==>>
 [
     [
         {
@@ -22,34 +22,15 @@ citation
             "id": "ITEM-1", 
             "suppress-author": true
         }
-    ], 
+    ],
     [
         {
-            "citationID": "CITATION-3", 
-            "citationItems": [
-                {
-                    "id": "ITEM-2"
-                }
-            ], 
-            "properties": {
-                "noteIndex": 2
-            }
-        }, 
-        [
-            [
-                "CITATION-1", 
-                1
-            ], 
-            [
-                "CITATION-2", 
-                1
-            ]
-        ], 
-        []
+            "id": "ITEM-2"
+        }
     ]
 
 ]
-<<== CITATIONS ==<<
+<<== CITATION-ITEMS ==<<
 
 >>===== CSL =====>>
 <style 
