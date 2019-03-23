@@ -70,8 +70,6 @@ const reporters = {
     "progress": "progress"
 };
 
-const Sys = require(path.join(scriptDir, "testlib.js"));
-
 function errorHandler(err) {
     console.log("\nError: " + err.message + "\n");
     process.exit(1);
@@ -909,11 +907,13 @@ function buildTests() {
     fs.writeFileSync(path.join(scriptDir, "..", "test", "fixtures.js"), fixtures);
 }
 
-async function bundleValidateTest() {
+async function bundleValidateTest(skipBundle) {
     // Bundle, load, and run tests if -s, -g, or -a
     
     // Bundle the processor code.
-    Bundle();
+    if (!skipBundle) {
+        Bundle();
+    }
 
     // Build and run tests
     if (options.cranky || options.watch) {
@@ -944,6 +944,9 @@ async function bundleValidateTest() {
     }
 }
 
+Bundle();
+const Sys = require(path.join(scriptDir, "testlib.js"));
+
 if (options.C) {
     // If composing, just to that and quit.
     try {
@@ -970,7 +973,7 @@ if (options.C) {
         errorHandler(err);
     }
 } else if (options.single || options.group || options.all) {
-    bundleValidateTest().catch(err => {
+    bundleValidateTest(true).catch(err => {
         if (err) {
             console.log(err);
         }
