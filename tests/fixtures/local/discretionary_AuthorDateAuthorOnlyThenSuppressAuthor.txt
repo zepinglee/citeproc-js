@@ -15,14 +15,14 @@ Smith
 [
     [
         {
-            "author-only": 1, 
+            "author-only": true, 
             "id": "ITEM-1"
         }
     ], 
     [
         {
             "id": "ITEM-1", 
-            "suppress-author": 1
+            "suppress-author": true
         }
     ], 
     [
@@ -30,9 +30,9 @@ Smith
             "id": "ITEM-2"
         }
     ]
+
 ]
 <<== CITATION-ITEMS ==<<
-
 
 >>===== CSL =====>>
 <style 
@@ -69,8 +69,7 @@ Smith
         "author": [
             {
                 "family": "Smith", 
-                "given": "John", 
-                "static-ordering": false
+                "given": "John"
             }
         ], 
         "id": "ITEM-1", 
@@ -88,8 +87,7 @@ Smith
         "author": [
             {
                 "family": "Jones", 
-                "given": "Robert", 
-                "static-ordering": false
+                "given": "Robert"
             }
         ], 
         "id": "ITEM-2", 
@@ -105,3 +103,5 @@ Smith
     }
 ]
 <<===== INPUT =====<<
+
+

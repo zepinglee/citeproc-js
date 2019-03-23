@@ -6,21 +6,42 @@ citation
 
 
 >>== RESULT ==>>
-John Smith!
-(<i>Robert Jones</i>! 2000)
+John Smith
+(Robert Jones, 2002)
+Book C
+2004
+Book E
 <<== RESULT ==<<
 
 >>== CITATION-ITEMS ==>>
 [
     [
         {
-            "author-only": 1, 
-            "id": "ITEM-1"
+            "id": "ITEM-1", 
+            "author-only": true
         }
     ], 
     [
         {
             "id": "ITEM-2"
+        }
+    ],
+    [
+        {
+            "id": "ITEM-3",
+            "author-only": true
+        }
+    ],
+    [
+        {
+            "id": "ITEM-4",
+            "author-only": true
+        }
+    ],
+    [
+        {
+            "id": "ITEM-5",
+            "author-only": true
         }
     ]
 ]
@@ -38,14 +59,22 @@ John Smith!
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout prefix="(" suffix=")">
-      <group delimiter=" ">
-        <names font-style="italic" suffix="!" variable="author">
+    <layout delimiter="; " prefix="(" suffix=")">
+      <group delimiter=", ">
+        <names variable="author">
           <name />
+          <substitute>
+            <names variable="editor" />
+            <text variable="title"/>
+          </substitute>
         </names>
         <date variable="issued">
           <date-part name="year" />
         </date>
+        <names variable="translator" prefix="[" suffix="]">
+          <name/>
+          <label prefix=" " form="short"/>
+        </names>
       </group>
     </layout>
   </citation>
@@ -56,18 +85,17 @@ John Smith!
 >>===== INPUT =====>>
 [
     {
-        "author": [
+        "editor": [
             {
                 "family": "Smith", 
-                "given": "John", 
-                "static-ordering": false
+                "given": "John"
             }
         ], 
         "id": "ITEM-1", 
         "issued": {
             "date-parts": [
                 [
-                    "2005"
+                    "2001"
                 ]
             ]
         }, 
@@ -75,22 +103,68 @@ John Smith!
         "type": "book"
     }, 
     {
-        "author": [
+        "editor": [
             {
                 "family": "Jones", 
-                "given": "Robert", 
-                "static-ordering": false
+                "given": "Robert"
             }
         ], 
         "id": "ITEM-2", 
         "issued": {
             "date-parts": [
                 [
-                    "2000"
+                    "2002"
                 ]
             ]
         }, 
         "title": "Book B", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-3", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2003"
+                ]
+            ]
+        }, 
+        "title": "Book C", 
+        "type": "book"
+    }, 
+    {
+        "id": "ITEM-4", 
+        "translator": [
+            {
+                "family": "Jenkins", 
+                "given": "Susan"
+            }
+        ], 
+        "issued": {
+            "date-parts": [
+                [
+                    "2004"
+                ]
+            ]
+        }, 
+        "type": "book"
+    },
+    {
+        "translator": [
+            {
+                "family": "Herbert", 
+                "given": "Vincent"
+            }
+        ], 
+        "id": "ITEM-5", 
+        "issued": {
+            "date-parts": [
+                [
+                    "2005"
+                ]
+            ]
+        }, 
+        "title": "Book E", 
         "type": "book"
     }
 ]
