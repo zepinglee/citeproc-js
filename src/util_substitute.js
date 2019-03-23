@@ -24,14 +24,37 @@ CSL.Util.substituteStart = function (state, target) {
     if (("text" === this.name && !this.postponed_macro) || nodetypes.indexOf(this.name) > -1) {
         element_trace = function (state, Item, item) {
             if (state.tmp.element_trace.value() === "author" || "names" === this.name) {
-                if (item && item["author-only"]) {
-                    state.tmp.element_trace.push("do-not-suppress-me");
+                if (!state.tmp.just_looking && item && item["author-only"]) {
+                    if (!state.tmp.probably_rendered_something) {
+                    } else {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
                 }
-                // The counterpart, suppress-author, is better handled by namesOutput()
-                //state.tmp.element_trace.push("suppress-me");
+                if (!state.tmp.just_looking && item && item["suppress-author"]) {
+                    if (!state.tmp.probably_rendered_something) {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
+                }
+            }
+            else if ("date" === this.name) {
+                if (!state.tmp.just_looking && item && item["author-only"]) {
+                    if (state.tmp.probably_rendered_something) {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
+                }
+                /*
+                if (!state.tmp.just_looking && item && item["suppress-author"]) {
+                    if (state.tmp.probably_rendered_something) {
+                        //state.tmp.element_trace.push("suppress-me");
+                    }
+                }
+                */
             } else {
-                if (item && item["author-only"]) {
-                    state.tmp.element_trace.push("suppress-me");
+                if (!state.tmp.just_looking && item && item["author-only"]) {
+                    if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
+                    } else {
+                        state.tmp.element_trace.push("suppress-me");
+                    }
                 } else if (item && item["suppress-author"]) {
                     state.tmp.element_trace.push("do-not-suppress-me");
                 }

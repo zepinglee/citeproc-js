@@ -57,6 +57,7 @@ CSL.NameOutput.prototype.init = function (names) {
     if (!this.state.tmp.value.length) {
         return;
     }
+
     // Abort and proceed to the next substitution if a match is required,
     // two variables are called, and they do not match.
     var checkCommonTerm = this.checkCommonAuthor(this.requireMatch);
@@ -308,6 +309,9 @@ CSL.NameOutput.prototype.outputNames = function () {
         // notSerious
         this.state.output.append(blob_list[i], "literal", true);
     }
+    if (!this.state.tmp.just_looking && blob_list.length > 0) {
+        this.state.tmp.probably_rendered_something = true;
+    }
     //SNIP-START
     if (this.debug) {
         print("(14)");
@@ -320,11 +324,16 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     //SNIP-END
     var blob = this.state.output.pop();
+    this.state.tmp.name_node.top = blob;
     //SNIP-START
     if (this.debug) {
         print("(16)");
     }
     //SNIP-END
+
+    // Append will drop the names on the floor here if suppress-me is
+    // set on element_trace.
+    // Need to rescue the value for collapse comparison.
     var namesToken = CSL.Util.cloneToken(this.names);
     this.state.output.append(blob, namesToken);
     if (this.state.tmp.term_predecessor_name) {
@@ -342,8 +351,6 @@ CSL.NameOutput.prototype.outputNames = function () {
         print("(18)");
     }
     //SNIP-END
-    this.state.tmp.name_node.top = this.state.output.current.value();
-
     if (variables[0] !== "authority") {
         // Just grab the string values in the name
         var name_node_string = [];
@@ -466,17 +473,17 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
     var myqueue, mystr, oldchars;
     // collapse can be undefined, an array of length zero, and probably
     // other things ... ugh.
+    if (this.state.tmp.name_node.top.blobs.length === 0) {
+        return;
+    }
     if (this.nameset_base === 0 && this.Item[this.variables[0]] && !this._first_creator_variable) {
         this._first_creator_variable = this.variables[0];
     }
-    if ((this.item && this.item["suppress-author"] && !this.state.tmp.probably_rendered_something && this._first_creator_variable == this.variables[0])
-        || (this.state[this.state.tmp.area].opt.collapse 
+    if ((this.state[this.state.tmp.area].opt.collapse
             && this.state[this.state.tmp.area].opt.collapse.length)
         || (this.state[this.state.tmp.area].opt.cite_group_delimiter 
             && this.state[this.state.tmp.area].opt.cite_group_delimiter.length)) {
 
-        this.state.tmp.probably_rendered_something = true;
-        
         if (this.state.tmp.authorstring_request) {
             // Avoid running this on every call to getAmbiguousCite()?
             mystr = "";
@@ -490,7 +497,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             this.state.tmp.offset_characters = oldchars;
             this.state.registry.authorstrings[this.Item.id] = mystr;
         } else if (!this.state.tmp.just_looking
-                   && !this.state.tmp.suppress_decorations && (this.item["suppress-author"] || (this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
+                   && !this.state.tmp.suppress_decorations && ((this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
             // XX1 print("RENDER: "+this.Item.id);
             mystr = "";
             myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
@@ -499,7 +506,6 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
                 mystr = this.state.output.string(this.state, myqueue, false);
             }
             if (mystr === this.state.tmp.last_primary_names_string) {
-            
                 if (this.item["suppress-author"] || (this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length)) {
                     // XX1 print("    CUT!");
                     this.state.tmp.name_node.top.blobs.pop();
@@ -517,6 +523,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
                 this.state.tmp.last_primary_names_string = mystr;
                 // XXXXX A little more precision would be nice.
                 // This will clobber variable="author editor" as well as variable="author".
+
                 if (this.variables.indexOf(this._first_creator_variable) > -1 && this.item && this.item["suppress-author"] && this.Item.type !== "legal_case") {
                     this.state.tmp.name_node.top.blobs.pop();
                     this.state.tmp.name_node.children = [];

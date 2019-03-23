@@ -1209,6 +1209,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
         // this.tmp.handle_ranges = false;
         if ("string" === typeof composite) {
             this.tmp.suppress_decorations = false;
+            if (!composite) {
+                composite = "[NO_PRINTED_FORM]"
+            }
             return composite;
         }
         if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
@@ -1302,6 +1305,9 @@ CSL.getCitationCluster = function (inputList, citationID) {
         //result = "\u202b" + result + "\u202c";
     }
     this.tmp.suppress_decorations = false;
+    if (!result) {
+        result = "[NO_PRINTED_FORM]";
+    }
     return result;
 };
 
