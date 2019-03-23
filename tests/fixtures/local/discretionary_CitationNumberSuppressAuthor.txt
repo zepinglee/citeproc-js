@@ -3,58 +3,34 @@ citation
 <<== MODE ==<<
 
 
+
+
 >>== RESULT ==>>
-..[0] John Aloysius Smith
-..[1] (2005)
->>[2] (Jones 2000)
+<i>[1]</i>
+<i>[2]</i>
 <<== RESULT ==<<
 
->>== CITATIONS ==>>
+>>== CITATION-ITEMS ==>>
 [
     [
         {
-            "author-only": true, 
-            "id": "ITEM-1"
-        }
-    ], 
-    [
-        {
             "id": "ITEM-1", 
-            "suppress-author": true
+            "suppress-author": 1
         }
     ], 
     [
         {
-            "citationID": "CITATION-3", 
-            "citationItems": [
-                {
-                    "id": "ITEM-2"
-                }
-            ], 
-            "properties": {
-                "noteIndex": 2
-            }
-        }, 
-        [
-            [
-                "CITATION-1", 
-                1
-            ], 
-            [
-                "CITATION-2", 
-                1
-            ]
-        ], 
-        []
+            "id": "ITEM-2"
+        }
     ]
-
 ]
-<<== CITATIONS ==<<
+<<== CITATION-ITEMS ==<<
+
 
 >>===== CSL =====>>
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
-      class="in-text"
+      class="note"
       version="1.0">
   <info>
     <id />
@@ -62,13 +38,8 @@ citation
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout prefix="(" suffix=")" delimiter="; ">
-      <group delimiter=" ">
-        <names variable="author">
-          <name form="short"/>
-        </names>
-        <date variable="issued" form="text" date-parts="year"/>
-      </group>
+    <layout font-style="italic">
+      <text prefix="[" suffix="]" variable="citation-number" />
     </layout>
   </citation>
   <bibliography>
@@ -76,13 +47,6 @@ citation
       <text variable="title" />
     </layout>
   </bibliography>
-  <intext>
-    <layout>
-      <names variable="author">
-        <name/>
-      </names>
-    </layout>
-  </intext>
 </style>
 <<===== CSL =====<<
 
@@ -127,5 +91,3 @@ citation
     }
 ]
 <<===== INPUT =====<<
-
-

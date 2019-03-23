@@ -166,6 +166,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.spoof_institutional_affiliations = false;
     this.development_extensions.force_jurisdiction = false;
     this.development_extensions.parse_names = true;
+    this.development_extensions.hanging_indent_legacy_number = true;
 };
 
 CSL.Engine.Tmp = function () {

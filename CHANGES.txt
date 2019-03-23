@@ -2,6 +2,17 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.224
+==========================
+
+- Apply formatting to ranged numbers as a unit.
+  See: https://discourse.citationstyles.org/t/formatting-attributes-and-hyphen/1518
+
+- Add draft LaTeX format offered by Egon Willighagen (GitHub @egonw).
+
+- Housecleaning in load.js
+
+==========================
 Changes in version 1.1.223
 ==========================
 

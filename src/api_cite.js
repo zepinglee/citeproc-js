@@ -1251,6 +1251,9 @@ CSL.getCitationCluster = function (inputList, citation) {
         // this.tmp.handle_ranges = false;
         if ("string" === typeof composite) {
             this.tmp.suppress_decorations = false;
+            if (!composite) {
+                composite = "[NO_PRINTED_FORM]"
+            }
             return composite;
         }
         if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
@@ -1344,6 +1347,9 @@ CSL.getCitationCluster = function (inputList, citation) {
         //result = "\u202b" + result + "\u202c";
     }
     this.tmp.suppress_decorations = false;
+    if (!result) {
+        result = "[NO_PRINTED_FORM]";
+    }
     return result;
 };
 
@@ -1366,6 +1372,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
             this.tmp.area = "intext";
     }
     this.tmp.cite_renders_content = false;
+    this.tmp.probably_rendered_something = false;
     this.parallel.StartCite(Item, item, prevItemID);
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);

@@ -354,7 +354,15 @@ CSL.Transform = function (state) {
             if (!variables[0] || (!Item[variables[0]] && !Item[alternative_varname])) {
                 return null;
             }
-
+            //
+            // Exploring the edges here.
+            // "suppress-author" for string variables (mostly titles).
+            //
+            if (!state.tmp.just_looking && item && item["suppress-author"]) {
+                if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
+                    return null;
+                }
+            }
             var slot = {primary:false, secondary:false, tertiary:false};
             if (state.tmp.area.slice(-5) === "_sort") {
                 slot.primary = 'locale-sort';
@@ -489,7 +497,8 @@ CSL.Transform = function (state) {
                 // A little too aggressive maybe.
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
-
+                state.tmp.probably_rendered_something = true;
+                
                 if (secondary) {
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
@@ -561,6 +570,7 @@ CSL.Transform = function (state) {
                 state.output.closeLevel();
             } else {
                 state.output.append(primary, primary_tok);
+                state.tmp.probably_rendered_something = true;
             }
             return null;
         };
