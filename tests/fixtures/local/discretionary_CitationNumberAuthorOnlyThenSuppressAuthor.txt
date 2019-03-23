@@ -7,7 +7,7 @@ citation
 
 >>== RESULT ==>>
 Reference [1]
-
+[NO_PRINTED_FORM]
 <i>[2]</i>
 <<== RESULT ==<<
 
