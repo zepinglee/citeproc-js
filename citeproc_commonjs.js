@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.225",
+    PROCESSOR_VERSION: "1.1.226",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -4788,6 +4788,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.force_jurisdiction = false;
     this.development_extensions.parse_names = true;
     this.development_extensions.hanging_indent_legacy_number = true;
+    this.development_extensions.throw_on_empty = false;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -5476,9 +5477,16 @@ CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) 
         if (citation.properties.infix) {
             this.output.append(citation.properties.infix);
             secondChunk = this.output.string(this, this.output.queue);
+            if ("object" === typeof secondChunk) {
+                secondChunk = secondChunk.join("");
+            }
         }
         var thirdChunk = CSL.getCitationCluster.call(this, sortedItems, citation);
         citation.properties.mode = "composite";
+        if (firstChunk && secondChunk && CSL.SWAPPING_PUNCTUATION.concat(["\u2019", "\'"]).indexOf(secondChunk[0]) > -1) {
+            firstChunk += secondChunk;
+            secondChunk = false;
+        }
         str = [firstChunk, secondChunk, thirdChunk].filter(function(obj) {
             return obj;
         }).join(" ");
@@ -5826,7 +5834,13 @@ CSL.getCitationCluster = function (inputList, citation) {
         if ("string" === typeof composite) {
             this.tmp.suppress_decorations = false;
             if (!composite) {
-                composite = "[NO_PRINTED_FORM]"
+                if (this.opt.development_extensions.throw_on_empty) {
+                    var error = new Error("Citation would render no content");
+                    error.code = "ECSEMPTY";
+                    throw error;
+                } else {
+                    composite = "[NO_PRINTED_FORM]"
+                }
             }
             return composite;
         }
@@ -5910,7 +5924,13 @@ CSL.getCitationCluster = function (inputList, citation) {
     }
     this.tmp.suppress_decorations = false;
     if (!result) {
-        result = "[NO_PRINTED_FORM]";
+        if (this.opt.development_extensions.throw_on_empty) {
+            var error = new Error("Citation would render no content");
+            error.code = "ECSEMPTY";
+            throw error;
+        } else {
+            result = "[NO_PRINTED_FORM]"
+        }
     }
     return result;
 };
@@ -11302,7 +11322,6 @@ CSL.Attributes["@variable"] = function (state, arg) {
             }
             for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
                 if (state.tmp.done_vars.indexOf(this.variables_real[i]) === -1 
-                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
                    ) {
                     this.variables.push(this.variables_real[i]);
                 }
@@ -13006,7 +13025,7 @@ CSL.Transform = function (state) {
                 return null;
             }
             if (!state.tmp.just_looking && item && item["suppress-author"]) {
-                if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
+                if (!state.tmp.probably_rendered_something && state.tmp.can_substitute.length() > 1) {
                     return null;
                 }
             }
