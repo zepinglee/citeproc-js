@@ -58,6 +58,7 @@ CSL.Conditions.Engine = function (state, token) {
 };
 
 CSL.Conditions.Engine.prototype.addTest = function (test) {
+    this.token.tests ? {} : this.token.tests = [];
     this.token.tests.push(test);
 };
 

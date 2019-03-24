@@ -218,6 +218,7 @@ CSL.Node.group = {
                     };
                 }(this.juris));
                 
+                if_start.tests ? {} : if_start.tests = [];
                 if_start.tests.push(func);
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
                 target.push(if_start);

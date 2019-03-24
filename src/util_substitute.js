@@ -123,6 +123,7 @@ CSL.Util.substituteStart = function (state, target) {
             }
             return false;
         };
+        if_start.tests ? {} : if_start.tests = [];
         if_start.tests.push(func);
         if_start.test = state.fun.match.any(this, state, if_start.tests);
         target.push(if_start);

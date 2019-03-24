@@ -3,6 +3,7 @@
 CSL.Attributes = {};
 
 CSL.Attributes["@genre"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     arg = arg.replace("-", " ");
     var func = function (Item) {
         if (arg === Item.genre) {
@@ -14,6 +15,7 @@ CSL.Attributes["@genre"] = function (state, arg) {
 };
 
 CSL.Attributes["@disambiguate"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     if (arg === "true") {
         state.opt.has_disambiguate = true;
         var func = function (Item) {
@@ -45,6 +47,7 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-numeric"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var variables = arg.split(/\s+/);
     var maketest = function(variable) {
         return function (Item, item) {
@@ -79,6 +82,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 
 
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var variables = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (myvariable) {
@@ -97,6 +101,7 @@ CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
 
 
 CSL.Attributes["@locator"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
@@ -119,6 +124,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 
 
 CSL.Attributes["@position"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
     state.parallel.use_parallels = null;
@@ -177,6 +183,7 @@ CSL.Attributes["@position"] = function (state, arg) {
 };
 
 CSL.Attributes["@type"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     // XXX This is ALWAYS composed as an "any" match
     var types = arg.split(/\s+/);
     // Strip off any boolean prefix.
@@ -198,6 +205,7 @@ CSL.Attributes["@type"] = function (state, arg) {
 };
 
 CSL.Attributes["@variable"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var func;
     this.variables = arg.split(/\s+/);
     this.variables_real = this.variables.slice();
@@ -424,6 +432,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 
 CSL.Attributes["@page"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
@@ -453,6 +462,7 @@ CSL.Attributes["@page"] = function (state, arg) {
 
 // a near duplicate of code above
 CSL.Attributes["@number"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     var maketest = function(trylabel) {
@@ -479,6 +489,7 @@ CSL.Attributes["@number"] = function (state, arg) {
 };
 
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var tryjurisdictions = arg.split(/\s+/);
     // Strip off any boolean prefix.
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
@@ -513,6 +524,7 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
 
 
 CSL.Attributes["@context"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var func = function () {
         if (["bibliography", "citation"].indexOf(arg) > -1) {
 		    var area = state.tmp.area.slice(0, arg.length);
@@ -528,6 +540,7 @@ CSL.Attributes["@context"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-year-only"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item) {
@@ -545,6 +558,7 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item) {
@@ -562,6 +576,7 @@ CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-day"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item) {
@@ -579,6 +594,7 @@ CSL.Attributes["@has-day"] = function (state, arg) {
 };
 
 CSL.Attributes["@subjurisdictions"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var trysubjurisdictions = parseInt(arg, 10);
     var func = function (Item) {
         var subjurisdictions = 0;
@@ -597,6 +613,7 @@ CSL.Attributes["@subjurisdictions"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-plural"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var func = function (Item) {
         var nameList = Item[arg];
         if (nameList && nameList.length) {
@@ -627,6 +644,7 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
 };
 
 CSL.Attributes["@locale"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var ret, langspec, lang, lst, i, ilen;
     // Style default
     var locale_default = state.opt["default-locale"][0];
@@ -726,6 +744,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
 };
 
 CSL.Attributes["@authority-residue"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var maketest = function () {
         var succeed = (arg === "true") ? true : false;
         return function(Item) {
@@ -745,6 +764,7 @@ CSL.Attributes["@authority-residue"] = function (state, arg) {
 };
 
 CSL.Attributes["@alternative-node-internal"] = function (state) {
+    this.tests ? {} : this.tests = [];
     var maketest = function () {
         return function() {
             return !state.tmp.abort_alternative;
@@ -755,6 +775,7 @@ CSL.Attributes["@alternative-node-internal"] = function (state) {
 };
 
 CSL.Attributes["@locale-internal"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
     var langspec, lang, lst, i, ilen;
         // For if and if-else
 

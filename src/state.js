@@ -433,6 +433,7 @@ CSL.Engine.Configure = function () {
     //
     // the fail and succeed arrays are used for stack
     // processing during configure.
+    this.tests = [];
     this.fail = [];
     this.succeed = [];
 };
