@@ -57,7 +57,7 @@ in your environment:
 
 
     ``git``
-        A GitHub clone is needed to clone the code repository.
+        Needed to fetch a clone of the ``citeproc-js`` repository on GitHub.
     ``node.js``
         Any recent-ish version should work. Version 7 is used for automated testing.
     ``mocha``
