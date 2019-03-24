@@ -359,7 +359,7 @@ CSL.Transform = function (state) {
             // "suppress-author" for string variables (mostly titles).
             //
             if (!state.tmp.just_looking && item && item["suppress-author"]) {
-                if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
+                if (!state.tmp.probably_rendered_something && state.tmp.can_substitute.length() > 1) {
                     return null;
                 }
             }

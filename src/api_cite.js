@@ -778,9 +778,17 @@ CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) 
         if (citation.properties.infix) {
             this.output.append(citation.properties.infix);
             secondChunk = this.output.string(this, this.output.queue);
+            // Had no idea this could return a single-element array! Go figure.
+            if ("object" === typeof secondChunk) {
+                secondChunk = secondChunk.join("");
+            }
         }
         var thirdChunk = CSL.getCitationCluster.call(this, sortedItems, citation);
         citation.properties.mode = "composite";
+        if (firstChunk && secondChunk && CSL.SWAPPING_PUNCTUATION.concat(["\u2019", "\'"]).indexOf(secondChunk[0]) > -1) {
+            firstChunk += secondChunk;
+            secondChunk = false;
+        }
         str = [firstChunk, secondChunk, thirdChunk].filter(function(obj) {
             return obj;
         }).join(" ");
@@ -1252,7 +1260,13 @@ CSL.getCitationCluster = function (inputList, citation) {
         if ("string" === typeof composite) {
             this.tmp.suppress_decorations = false;
             if (!composite) {
-                composite = "[NO_PRINTED_FORM]"
+                if (this.opt.development_extensions.throw_on_empty) {
+                    var error = new Error("Citation would render no content");
+                    error.code = "ECSEMPTY";
+                    throw error;
+                } else {
+                    composite = "[NO_PRINTED_FORM]"
+                }
             }
             return composite;
         }
@@ -1348,7 +1362,13 @@ CSL.getCitationCluster = function (inputList, citation) {
     }
     this.tmp.suppress_decorations = false;
     if (!result) {
-        result = "[NO_PRINTED_FORM]";
+        if (this.opt.development_extensions.throw_on_empty) {
+            var error = new Error("Citation would render no content");
+            error.code = "ECSEMPTY";
+            throw error;
+        } else {
+            result = "[NO_PRINTED_FORM]"
+        }
     }
     return result;
 };

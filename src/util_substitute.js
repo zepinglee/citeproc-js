@@ -51,6 +51,7 @@ CSL.Util.substituteStart = function (state, target) {
                 */
             } else {
                 if (!state.tmp.just_looking && item && item["author-only"] && state.tmp.area !== "intext") {
+                    // XXX can_block_substitute probably is doing nothing here. The value is always true.
                     if (!state.tmp.probably_rendered_something && state.tmp.can_block_substitute) {
                     } else {
                         state.tmp.element_trace.push("suppress-me");

@@ -222,7 +222,8 @@ CSL.Attributes["@variable"] = function (state, arg) {
             for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
                 // set variable name if not quashed, and if not the title of a legal case w/suppress-author
                 if (state.tmp.done_vars.indexOf(this.variables_real[i]) === -1 
-                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
+// This looks nuts. Why suppress a case name if not required by context?
+//                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
                    ) {
                     this.variables.push(this.variables_real[i]);
                 }
