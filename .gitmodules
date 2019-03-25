@@ -1,5 +1,5 @@
-[submodule "tests/fixtures/std"]
-	path = tests/fixtures/std
+[submodule "fixtures/std"]
+	path = fixtures/std
 	url = https://github.com/citation-style-language/test-suite
 [submodule "locale"]
 	path = locale
