@@ -17,7 +17,12 @@ describe('Integration tests', function() {
         it('should pass ' + test.NAME, function() {
             var sys = new Sys(test, logger_queue);
             var ret = sys.run();
-            assert.equal(ret, test.RESULT, "FILE: " + test.PATH);
+            try{
+                assert.equal(ret, test.RESULT, "FILE: " + test.PATH);
+            } catch (err) {
+                err.message = test.PATH
+                throw err
+            }
         });
     });
 });

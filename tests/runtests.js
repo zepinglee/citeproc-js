@@ -845,10 +845,10 @@ function runFixturesAsync() {
         }
         var mocha = spawn("mocha", args, {cwd: path.join(scriptDir, ".."), shell: process.platform == 'win32'});
         mocha.stdout.on('data', (data) => {
-            process.stdout.write(data.toString().replace(/[^\n]*FILE:\s*(.*): expected [^\n]*(?:\r\n|\r|\n)/m, ""));
+            var lines = data.toString();
+            process.stdout.write(lines);
             if (options.w && options.k) {
-                var line = data.toString();
-                var m = line.match(/.*FILE:([^\n]+)\.txt:/m);
+                var m = lines.match(/.*AssertionError:\s*([^\n]+)\.txt/m);
                 if (m) {
                     console.log("Adopt this output as correct test RESULT? (y/n)");
                     process.stdin.once('data', function (key) {
