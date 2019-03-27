@@ -4,11 +4,8 @@
 [submodule "locale"]
 	path = locale
 	url = https://github.com/citation-style-language/locales.git
-[submodule "csl-schemata/csl"]
-	path = csl-schemata/csl
-	url = https://github.com/citation-style-language/schema.git
-[submodule "csl-schemata/csl-m"]
-	path = csl-schemata/csl-m
+[submodule "csl-schemata"]
+	path = csl-schemata
 	url = https://github.com/Juris-M/schema.git
 [submodule "docs"]
 	path = docs
