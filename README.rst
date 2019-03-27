@@ -15,10 +15,9 @@ A JavaScript implementation of the Citation Style Language
 About
 -----
 
-The `Citation Style Language <https://citationstyles.org/>`_ (CSL) is
+The `Citation Style Language`_ (CSL) is
 an XML grammar for expressing the detailed requirements of a citation
-style. A `CSL processor
-<https://citationstyles.org/developers/#csl-processors>`_ is a tool
+style. A `CSL processor`_ is a tool
 that generates citations and bibliographies by applying CSL style rules
 to bibliographic data.
 
@@ -32,29 +31,22 @@ colors. When run in CSL-M mode [1]_ it can handle multilingual and
 legal content with a flexibility and precision unrivaled by any other
 tool at any price. And it has been quite heavily field-tested, as the
 citation formatter driving word processor integration in both
-`Mendeley <https://www.mendeley.com/>`_ and `Zotero
-<https://www.zotero.org/>`_.
+`Mendeley`_ and `Zotero`_.
 
-More important than badges of popularity, though, is the CSL
+More important than fleeting badges of popularity, though, is the CSL
 standard. Developers can take comfort in the technical strength of the
-`CSL Specification
-<http://docs.citationstyles.org/en/1.0.1/specification.html>`_, and
-the existence of `other processors
-<https://citationstyles.org/developers/#csl-processors>`_ under active
+`CSL Specification`_, and
+the existence of `other processors`_ under active
 development.  CSL is the modern way to handle bibliographic projects,
 and ``citeproc-js`` is a convenient way to take advantage of it.
 
---------------------
-Testing Requirements
---------------------
+-------------
+Running Tests
+-------------
 
-The processor itself is contained in a single file. Two copies are in
-the repostitory: ``citeproc_commonjs.js`` is an ES6 module;
-``citeproc.js`` is just a raw bundle of JavaScript code. The former is
-probably what you will want for most purposes today. To test the
-processor (good fun and highly recommended), you will need the following
-in your environment:
-
+The processor is supported by a little over 1,300 test fixtures, which
+can be run from a ``git`` clone of this repository after installing the
+`Citeproc Test Runner`_. The system requirements (apart from ``git`` itself) are:
 
     ``git``
         Needed to fetch a clone of the ``citeproc-js`` repository on GitHub.
@@ -66,171 +58,98 @@ in your environment:
         This is used to perform schema validation. Browser extension is not
         required, a basic command-line install is all you need.
 
------------
-Quick Setup
------------
+Once the system requirements are set up, install the test runner
+with the following command::
 
-The quickest way to grab the processor is via ``npm``, for use in Node.js::
+  npm install -g citeproc-test-runner
 
-    npm install citeproc
-
-If you are working with the processor for the first time, though, running the
-test suite is a good way to build confidence and begin exploring the
-`documentation <https://citeproc-js.readthedocs.org/en/latest/index.html>`_.
-Start by cloning the repo and its submodules::
-
-    git clone --recursive https://github.com/Juris-M/citeproc-js.git
-
-Then set up the test framework::
-
-    cd citeproc-js
-    npm install
-
-You can now run the test script::
-      
-    node ./tests/runtests.js
+You can now run the full suite of integration tests from the ``citeproc-js`` directory
+with the following command:
   
-This will return a help text about the test runner. Options ``-a``, ``-g``, ``-s``, and ``-l`` should work out of the box::
+  cslrun -a
 
-    Usage: runtests.js <-s testName|-g groupName|-a|-l> [-S styleName|-w cslFilePath|-C cslJsonFilePath]
-      -s testName, --single=testName
-          Run a single local or standard test fixture.
-      -g groupName, --group=groupName
-          Run a group of tests with the specified prefix.
-      -a, --all
-          Run all tests.
-      Option for use with -s, -g, or -a:
-          -c, --cranky
-              Validate CSL in selected fixtures
-          -b, --black-and-white
-              Disable color output
-          -r, --reporter
-              Set the report style. Default is "landing."
-              Valid options are: spec, spectrum, nyan, dot, min
-              and progress.
-      Options for style development with -s, -g, or -a:
-          -S, --style
-              Style name (without spaces). Without -C, requires -w.
-          -w, --watch
-              Path to CSL source file watch for changes, relative to
-              repository root. Without -C, requires -S.
-          Option for use with -s, -g, or -a with -S and -w:
-              -k, --key-query
-                  When tests fail, stop processing and ask whether to
-                  adopt the processor output as the RESULT. Useful for
-                  rapidly back-fitting tests to existing styles.
-          Option for use with -S:
-              -C, --compose-tests
-                  Path to CSL JSON file containing item data, relative
-                  to repository root. Requires also -S. Creates draft
-                  test fixtures in -S style test directory. Existing
-                  files will be overwritten: be sure to rename files
-                  after generating draft fixtures.
-      Option for use on its own, or with -S  
-              -l, --list
-                  List available groups and styles.
+You can review the full set of options by running``cslrun -h``. For
+more information on running tests, see the `citeproc-js Manual`_ or
+the README of the `Citeproc Test Runner`_
 
-----------
-Watch mode
-----------
+------------------
+Repository Content
+------------------
 
-The ``runtests.js`` script supports a simple but powerful “watch” mode
-for use in style development. In the scenario below, we will prepare
-tests for the Journal Irreproducible Results (JIR). The journal
-`exists <http://www.jir.com/>`_, but as there is no CSL style for it
-in the CSL Repository, our tutorial will be largely devoid of
-screenshots. The steps, however, can be applied to any style that
-actually does exist.
+The processor itself is contained in a single file. Two copies are in
+the repository: ``citeproc_commonjs.js`` (an ES6 module); and
+``citeproc.js`` (a raw bundle of JavaScript). The former is
+probably what you will want for most purposes today.
 
-I'll begin by forking the ``citeproc-js`` GitHub repository. This
-will make it easy to fold my tests back into the main project ...
+The following command will pull the sources of the processor and
+supporting files::
 
+  git clone --recursive https://github.com/Juris-M/citeproc-js.git
 
-.. image:: https://juris-m.github.io/citeproc-js/fork.png
+Directories of the repository contain a number of tools used for
+development and testing:
 
-... and then I will clone a local copy of my forked ``citeproc-js``
-repository (not the Juris-M original)::
+``src``
+  Processor source files. These are bundled into the two processor
+  copies by the test script ``cslrun``, distributed separately in
+  the ``citeproc-test-runner`` package via ``npm`` (see below
+  for details).
 
-    git clone --recursive git://github.com/fbennett/citeproc-js.git
+``csl-schemata``
+  The RelaxNG schemata for CSL and CSL-M. These are used to
+  validate style code. The schemata are not used directly
+  by the processor at runtime.
 
-I will do two things in preparation for work on the JIR style:
+``demo``
+  Contains a simple example of processor configuration in a Web
+  environment. Can be viewed by running a local webserver in the
+  directory.
 
-* Prepare a rough copy of the style (if it resembles another
-  style, I might just fetch a copy of that, and change its
-  title and ID);
-* Prepare a small collection of items in Zotero for use in
-  testing the style, and export the full set of items
-  to a file, in CSL JSON format.
+``docs``
+  Source files for the ``citeproc-js`` manual on `ReadTheDocs
+  <https://citeproc-js.readthedocs.io/en/latest/>`_.
 
-I am now ready to begin working with the ``runtests.js`` script.
-The first step is to generate ``citeproc`` test fixtures for
-each of the exported library items. ``runtests.js`` can do
-this for me, with options like the following::
+``fixtures/local``
+  Integration test fixtures specific to the ``citeproc-js`` processor or to
+  the CSL-M grammar variant.
 
-  node ./tests/runtests.js \
-       -C path/to/exported-items.json \
-       -S journal-of-irreproducible-results
+``fixtures/std``
+  Standard CSL integration tests from the `Citation Style Language`_ repository.
+
+``fixtures/styles``
+  Style-level tests. For more information, see the `citeproc-js Manual`_ or the README of
+  the `Citeproc Test Runner`_
   
-I now have a set of boilerplate tests that will fail miserably,
-but those that pass can be quickly converted to passing
-tests, using the ``-k`` option like this::
+``juris-modules``
+  Jurisdiction modules. These are used to CSL-M mode to render legal
+  citations in country-specific forms.
 
-  node ./tests/runtests.js \
-       -S journal-of-irreproducible-results \
-       -w ../somepath/journal-of-irreproducible-results.csl \
-       -a \
-       -k
+``locale``
+  The `standard locale files <https://github.com/citation-style-language/locales>`_ from the CSL project.
 
-The output will look something like this:
-
-.. image:: https://juris-m.github.io/citeproc-js/style-fail.png
-
-If I respond to the prompt with ``Y``, the output of the style
-will be adopted as the RESULT of the test fixture. If I respond
-with ``N``, the fixture will be skipped, and the next test will
-be shown, until the test set is exhausted.
-
-The test fixtures are located in plain text files in a ``styletests``
-subdirectory, where they can be edited directly::
-
-  ./tests/styletests/journal-of-irreproducible-results
-  
-The ``-C`` option that generates the boilerplate is destructive—it
-will overwrite existing files—so be sure to rename the files after
-populating the directory. In test fixture filenames, the underscore
-(``_``) is required. The first portion of the name is the group to
-which the test belongs. You will notice that, unlike the fixtures used
-to test the processor, style fixtures do not contain a ``CSL``
-section, for the obvious reason that the CSL code of the target style
-is always used.
-
-Once I have prepared a full set of passing tests, I can set the script
-to watch the style file when I am making changes to it. The command
-for that is the same as for rapid “editing” of the fixtures, but
-without the ``-k`` option.::
-  
-  node ./tests/runtests.js \
-       -S journal-of-irreproducible-results \
-       -w ../somepath/journal-of-irreproducible-results.csl \
-       -a
- 
-Each time I save the CSL file, the style code will be validated
-before tests are run. Validation failures look like this:
-
-.. image:: https://juris-m.github.io/citeproc-js/validation-fail.png
-
-When I am happy with my tests, I can check them in to my local
-``git``, push them to my GitHub repository, and file a pull request
-to the ``Juris-M/citeproc-js`` master for general use by others
-editing the style.
-           
-Done.
+``tools``
+  An assortment of scripts that are used, or have been used at some point,
+  in the maintenance of ``citeproc-js``.
 
 ---------------------------
 
 .. [1] CSL-M is set of private extensions to official CSL used by the
        `Jurism <https://juris-m.github.io>`_ reference manager, a
-       variant of Zotero.
+       variant of Zotero. For more information, see the `citeproc-js Manual`_
 
-| 2019.03.17
+---------------------------
+
+| 2019.03.27
 | FB
+
+
+       
+.. _csl processor: https://citationstyles.org/developers/#csl-processors
+.. _mendeley: https://www.mendeley.com
+.. _zotero: https://www.zotero.org
+.. _csl specification: http://docs.citationstyles.org/en/1.0.1/specification.html
+.. _other processors: https://citationstyles.org/developers/#csl-processors
+.. _citeproc-js Manual: https://citeproc-js.readthedocs.io/en/latest/
+.. _citation style language: https://github.com/citation-style-language/test-suite
+
+.. _citeproc test runner: https://github.com/juris-m/citeproc-test-runner>
