@@ -329,6 +329,20 @@ CSL.Engine.Tmp = function () {
     this.shadow_numbers = {};
     this.authority_stop_last = 0;
     this.loadedItemIDs = {};
+    //
+    // Push/pop array for set/unset of opt.lang setting, used
+    // in if locale="XX" to force terms to language of item.
+    // @locale tests track their nesting level in a counter,
+    // and push the current value of state.opt.lang to one array,
+    // and the counter value to another. On the way back up,
+    // closing node decrements the counter, compares its value
+    // with the trailing value on the array, and pops both
+    // arrays, resetting state.opt.lang to the previous value.
+    // A hack to solve a surprisingly difficult problem caused
+    // by the use of an execution stack for the nested structure.
+    this.condition_counter = 0; //incremented/decremented on ALL conditions
+    this.condition_lang_val_arr = [];
+    this.condition_lang_counter_arr = [];
 };
 
 

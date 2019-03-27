@@ -729,11 +729,17 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 langspec = CSL.localeResolve(lang, locale_default);
                 for (i = 0, ilen = locale_list.length; i < ilen; i += 1) {
                     if (langspec.best === locale_list[i].best) {
+                        state.tmp.condition_lang_counter_arr.push(state.tmp.condition_counter);
+                        state.tmp.condition_lang_val_arr.push(state.opt.lang);
+                        state.opt.lang = locale_list[0].best;
                         res = true;
                         break;
                     }
                 }
                 if (!res && locale_bares.indexOf(langspec.bare) > -1) {
+                    state.tmp.condition_lang_counter_arr.push(state.tmp.condition_counter);
+                    state.tmp.condition_lang_val_arr.push(state.opt.lang);
+                    state.opt.lang = locale_list[0].best;
                     res = true;
                 }
                 return res;

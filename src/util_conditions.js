@@ -13,10 +13,22 @@ CSL.Conditions.TopNode = function (state) {
             // The usual.
             this.test = state.fun.match[this.match](this, state, this.tests);
         }
+        func = function(state) {
+            state.tmp.condition_counter++;
+        }
+        this.execs.push(func);
     }
     if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
         // closingjump
         func = function (state) {
+            state.tmp.condition_counter--;
+            if (state.tmp.condition_lang_counter_arr.length > 0) {
+                var counter = state.tmp.condition_lang_counter_arr.slice(-1)[0];
+                if (counter === state.tmp.condition_counter) {
+                    state.opt.lang = state.tmp.condition_lang_val_arr.pop();
+                    state.tmp.condition_lang_counter_arr.pop();
+                }
+            }
             if (this.locale_default) {
                 // Open output tag with locale marker
                 state.output.current.value().old_locale = this.locale_default;
