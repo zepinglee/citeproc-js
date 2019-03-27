@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.226",
+    PROCESSOR_VERSION: "1.1.227",
 
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 

@@ -2,6 +2,22 @@ Summary of changes to citeproc-js since version 1.0.0 release.
 
 
 ==========================
+Changes in version 1.1.227
+==========================
+
+- Remove empty segments from non-condition tokens. Very slightly reduces
+  bulk in memory.
+
+- Move test runner to separate Citeproc Test Runner npm package.
+
+- Updates to README
+
+- Fix CSL-M locale test to properly set and unset the locale within
+  the scope of the test element.
+
+- Reorganization of sources.
+
+==========================
 Changes in version 1.1.226
 ==========================
 
