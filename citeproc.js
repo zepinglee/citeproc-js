@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.227",
+    PROCESSOR_VERSION: "1.1.228",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -11027,10 +11027,10 @@ CSL.Node.text = {
                                     if (value) {
                                         if (state.opt.development_extensions.wrap_url_and_doi) {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
+                                                var clonetoken = CSL.Util.cloneToken(this);
+                                                var groupblob = new CSL.Blob(null, null, "url-wrapper");
+                                                groupblob.decorations.push(["@DOI", "true"]);
                                                 if (this.variables_real[0] === "DOI") {
-                                                    var clonetoken = CSL.Util.cloneToken(this);
-                                                    var groupblob = new CSL.Blob(null, null, "url-wrapper");
-                                                    groupblob.decorations.push(["@DOI", "true"]);
                                                     var prefix;
                                                     if (this.strings.prefix && this.strings.prefix.match(/^.*https:\/\/doi\.org\/$/)) {
                                                         value = value.replace(/^https?:\/\/doi\.org\//, "");
@@ -11047,8 +11047,9 @@ CSL.Node.text = {
                                                     groupblob.push(valueblob);
                                                     state.output.append(groupblob, clonetoken, false, false, true);
                                                 } else {
-                                                    this.decorations = [["@" + this.variables[0], "true"]].concat(this.decorations);
-                                                    state.output.append(value, this, false, false, true);
+                                                    var valueblob = new CSL.Blob(value);
+                                                    groupblob.push(valueblob);
+                                                    state.output.append(groupblob, clonetoken, false, false, true);
                                                 }
                                             } else {
                                                 state.output.append(value, this, false, false, true);
