@@ -293,15 +293,14 @@ CSL.Node.text = {
                                         // true is for non-suppression of periods
                                         if (state.opt.development_extensions.wrap_url_and_doi) {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
-                            // HAD THIS IN FOLLOWING CONDITION:  && this.strings.prefixXXXXX === "https://doi.org/"
+                                                // Special-casing to fix https://github.com/Juris-M/citeproc-js/issues/57
+                                                // clone current token, to avoid collateral damage
+                                                var clonetoken = CSL.Util.cloneToken(this);
+                                                // cast a group blob
+                                                var groupblob = new CSL.Blob(null, null, "url-wrapper");
+                                                // set the DOI decoration on the blob
+                                                groupblob.decorations.push(["@DOI", "true"]);
                                                 if (this.variables_real[0] === "DOI") {
-                                                    // Special-casing to fix https://github.com/Juris-M/citeproc-js/issues/57
-                                                    // clone current token, to avoid collateral damage
-                                                    var clonetoken = CSL.Util.cloneToken(this);
-                                                    // cast a group blob
-                                                    var groupblob = new CSL.Blob(null, null, "url-wrapper");
-                                                    // set the DOI decoration on the blob
-                                                    groupblob.decorations.push(["@DOI", "true"]);
                                                     // strip a proper DOI prefix
                                                     var prefix;
                                                     if (this.strings.prefix && this.strings.prefix.match(/^.*https:\/\/doi\.org\/$/)) {
@@ -328,8 +327,12 @@ CSL.Node.text = {
                                                     // append group token to output
                                                     state.output.append(groupblob, clonetoken, false, false, true);
                                                 } else {
-                                                    this.decorations = [["@" + this.variables[0], "true"]].concat(this.decorations);
-                                                    state.output.append(value, this, false, false, true);
+                                                    var valueblob = new CSL.Blob(value);
+                                                    // append new text token and clone to group token
+                                                    groupblob.push(valueblob);
+                                                    // append group token to output
+                                                    //this.decorations = [["@" + this.variables[0], "true"]].concat(this.decorations);
+                                                    state.output.append(groupblob, clonetoken, false, false, true);
                                                 }
                                             } else {
                                                 state.output.append(value, this, false, false, true);
