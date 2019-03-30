@@ -21,23 +21,25 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     var plural = node.strings.plural;
     if ("number" !== typeof plural) {
         // (node, ItemObject, variable, type)
-        var theItem = node.strings.term === "locator" ? item : Item;
-        state.processNumber(false, theItem, node.strings.term, Item.type);
-        plural = state.tmp.shadow_numbers[node.strings.term].plural;
-        if (!state.tmp.shadow_numbers[node.strings.term].labelForm
-           && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
-            state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
-            state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
-            state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
-        }
-        
-        if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
-            myterm = state.tmp.shadow_numbers[node.strings.term].label;
-        }
-        if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
-            node.decorations.reverse();
-            node.decorations.push(["@showid","true", node.cslid]);
-            node.decorations.reverse();
+        var theItem = (item && node.strings.term === "locator") ? item : Item;
+        if (theItem[node.strings.term]) {
+            state.processNumber(false, theItem, node.strings.term, Item.type);
+            plural = state.tmp.shadow_numbers[node.strings.term].plural;
+            if (!state.tmp.shadow_numbers[node.strings.term].labelForm
+                && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
+                state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+                state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
+                state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
+            }
+            
+            if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
+                myterm = state.tmp.shadow_numbers[node.strings.term].label;
+            }
+            if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
+                node.decorations.reverse();
+                node.decorations.push(["@showid","true", node.cslid]);
+                node.decorations.reverse();
+            }
         }
     }
     return CSL.castLabel(state, node, myterm, plural, CSL.TOLERANT);

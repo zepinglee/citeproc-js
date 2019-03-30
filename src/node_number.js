@@ -35,16 +35,24 @@ CSL.Node.number = {
             // If further functions are added, they need to start with the same
             // abort condition.
             if (this.variables.length === 0) {
-
                 return;
-            }
-            if ("undefined" === typeof item) {
-                var item = {};
             }
             var varname;
             varname = this.variables[0];
-            if (varname === "locator" && state.tmp.just_looking) {
-                return;
+            if ("undefined" === typeof item) {
+                var item = {};
+            }
+            if (["locator", "locator-extra"].indexOf(varname) > -1) {
+                if (state.tmp.just_looking) {
+                    return;
+                }
+                if (!item[varname]) {
+                    return;
+                }
+            } else {
+                if (!Item[varname]) {
+                    return;
+                }
             }
             state.parallel.StartVariable(this.variables[0]);
             if (this.variables[0] === "locator") {
@@ -89,12 +97,12 @@ CSL.Node.number = {
 
             if (["locator", "locator-extra"].indexOf(varname) > -1) {
                 // amazing that we reach this. should abort sooner if no content?
-                state.processNumber(node, item, varname, Item.type);
+                state.processNumber.call(state, node, item, varname, Item.type);
             } else {
-                if (!state.tmp.group_context.tip.condition && Item[varname]) {
+                if (!state.tmp.group_context.tip.condition) {
                     state.tmp.just_did_number = true;
                 }
-                state.processNumber(node, Item, varname, Item.type);
+                state.processNumber.call(state, node, Item, varname, Item.type);
             }
 
             CSL.Util.outputNumericField(state, varname, Item.id);
