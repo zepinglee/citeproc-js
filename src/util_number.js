@@ -462,13 +462,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 currentLabelInfo.count = groupCount;
                 currentLabelInfo.numeric = true;
                 fixNumericAndCount(values, groupStartPos, currentLabelInfo);
-                if (i === 0 || (lastVal.label !== thisVal.label)) {
+                if (lastVal.label !== thisVal.label) {
                     fixLabelVisibility(values, groupStartPos, currentLabelInfo);
                 }
                 groupStartPos = i;
                 groupCount = 1;
             }
         }
+        // Not sure why this repetition is necessary?
         var currentLabelInfo = JSON.parse(JSON.stringify(values[groupStartPos]));
         currentLabelInfo.pos = groupStartPos;
         currentLabelInfo.count = groupCount;

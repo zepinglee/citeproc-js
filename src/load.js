@@ -37,10 +37,10 @@ var CSL = {
 
     PROCESSOR_VERSION: "1.1.228",
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
-    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_STRINGS: {
         "art.": "article",
         "bk.": "book",
@@ -54,6 +54,7 @@ var CSL = {
         "r.": "rule",
         "sec.": "section",
         "subsec.": "subsection",
+        "supp.": "supplement",
         "sch.": "schedule",
         "tit.": "title",
         "col.": "column",
@@ -79,6 +80,7 @@ var CSL = {
         "rule": "r.",
         "section": "sec.",
         "subsection": "subsec.",
+        "supplement": "supp.",
         "schedule": "sch.",
         "title": "tit.",
         "column": "col.",
@@ -114,6 +116,7 @@ var CSL = {
         "r": "rule",
 		"sec": "section",
 		"subsec": "subsection",
+		"supp": "supplement",
 		"sv": "sub-verbo",
         "sch": "schedule",
         "tit": "title",
@@ -599,6 +602,7 @@ var CSL = {
         "number-of-pages",
         "number-of-volumes",
         "volume",
+        "supplement",
         "citation-number"
     ],
     //var x = new Array();

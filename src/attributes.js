@@ -55,21 +55,19 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
             if (["locator","locator-extra"].indexOf(variable) > -1) {
                 myitem = item;
             }
-            if ("undefined" === typeof myitem) {
+            if (!myitem[variable]) {
                 return false;
             }
             if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
                 if (!state.tmp.shadow_numbers[variable]) {
                     state.processNumber(false, myitem, variable, Item.type);
                 }
-                if (myitem[variable] && state.tmp.shadow_numbers[variable].numeric) {
+                if (state.tmp.shadow_numbers[variable].numeric) {
                     return true;
                 }
             } else if (["title", "locator-extra","version"].indexOf(variable) > -1) {
-                if (myitem[variable]) {
-                    if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
-                        return true;
-                    }
+                if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
+                    return true;
                 }
             }
             return false;
@@ -463,16 +461,13 @@ CSL.Attributes["@page"] = function (state, arg) {
 // a near duplicate of code above
 CSL.Attributes["@number"] = function (state, arg) {
     this.tests ? {} : this.tests = [];
-    var trylabels = arg.replace("sub verbo", "sub-verbo");
-    trylabels = trylabels.split(/\s+/);
+    var trylabels = arg.split(/\s+/);
     var maketest = function(trylabel) {
         return function (Item) {
             var label;
             state.processNumber(false, Item, "number", Item.type);
             if (!state.tmp.shadow_numbers.number.label) {
                 label = "number";
-            } else if (state.tmp.shadow_numbers.number.label === "sub verbo") {
-                label = "sub-verbo";
             } else {
                 label = state.tmp.shadow_numbers.number.label;
             }

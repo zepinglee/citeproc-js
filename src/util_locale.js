@@ -261,6 +261,12 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             }
         }
     }
+    if (!this.locale[lang_out].terms.supplement) {
+        this.locale[lang_out].terms.supplement = {};
+    }
+    if (!this.locale[lang_out].terms.supplement["long"]) {
+        this.locale[lang_out].terms.supplement["long"] = ["supplement", "supplements"];
+    }
     // If locale had a CSL 1.0.1-style ordinal definition, install the logic object
     // and iterate over gendered terms, filling in default values for use by getTerm.
     if (ordinals101_toggle) {
