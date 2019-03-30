@@ -20,7 +20,7 @@ citation
 
 
 >>== RESULT ==>>
-Some Statute, ch. 888
+Some Statute, 章 888
 Some Other Statute, Pub. L. No. 999
 <<== RESULT ==<<
 
@@ -42,6 +42,7 @@ Some Other Statute, Pub. L. No. 999
     <terms>
       <term name="chapter">chapter</term>
       <term form="short" name="chapter">ch.</term>
+      <term form="symbol" name="chapter">章</term>
     </terms>
   </locale>
   <citation>
