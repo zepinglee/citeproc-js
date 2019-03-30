@@ -1,10 +1,9 @@
 path:
+    styletests: fixtures/local/styles
     local: fixtures/local
     std: fixtures/std/processor-tests/humans
     src: src
     locale: locale
-    styles: fixtures/local/styles
     modules: juris-modules
-    styletests: styletests
     cslschema: csl-schemata/csl.rnc
     cslmschema: csl-schemata/csl-mlz.rnc
