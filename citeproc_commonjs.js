@@ -23,10 +23,10 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.228",
-    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
-    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
+    PROCESSOR_VERSION: "1.1.229",
+    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_STRINGS: {
         "art.": "article",
         "bk.": "book",
@@ -40,6 +40,7 @@ var CSL = {
         "r.": "rule",
         "sec.": "section",
         "subsec.": "subsection",
+        "supp.": "supplement",
         "sch.": "schedule",
         "tit.": "title",
         "col.": "column",
@@ -65,6 +66,7 @@ var CSL = {
         "rule": "r.",
         "section": "sec.",
         "subsection": "subsec.",
+        "supplement": "supp.",
         "schedule": "sch.",
         "title": "tit.",
         "column": "col.",
@@ -99,6 +101,7 @@ var CSL = {
         "r": "rule",
 		"sec": "section",
 		"subsec": "subsection",
+		"supp": "supplement",
 		"sv": "sub-verbo",
         "sch": "schedule",
         "tit": "title",
@@ -511,6 +514,7 @@ var CSL = {
         "number-of-pages",
         "number-of-volumes",
         "volume",
+        "supplement",
         "citation-number"
     ],
     DATE_VARIABLES: [
@@ -6740,6 +6744,12 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             }
         }
     }
+    if (!this.locale[lang_out].terms.supplement) {
+        this.locale[lang_out].terms.supplement = {};
+    }
+    if (!this.locale[lang_out].terms.supplement["long"]) {
+        this.locale[lang_out].terms.supplement["long"] = ["supplement", "supplements"];
+    }
     if (ordinals101_toggle) {
         for (var ikey in genderized_terms) {
             var gender_segments = {};
@@ -10394,22 +10404,24 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     }
     var plural = node.strings.plural;
     if ("number" !== typeof plural) {
-        var theItem = node.strings.term === "locator" ? item : Item;
-        state.processNumber(false, theItem, node.strings.term, Item.type);
-        plural = state.tmp.shadow_numbers[node.strings.term].plural;
-        if (!state.tmp.shadow_numbers[node.strings.term].labelForm
-           && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
-            state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
-            state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
-            state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
-        }
-        if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
-            myterm = state.tmp.shadow_numbers[node.strings.term].label;
-        }
-        if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
-            node.decorations.reverse();
-            node.decorations.push(["@showid","true", node.cslid]);
-            node.decorations.reverse();
+        var theItem = (item && node.strings.term === "locator") ? item : Item;
+        if (theItem[node.strings.term]) {
+            state.processNumber(false, theItem, node.strings.term, Item.type);
+            plural = state.tmp.shadow_numbers[node.strings.term].plural;
+            if (!state.tmp.shadow_numbers[node.strings.term].labelForm
+                && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
+                state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+                state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
+                state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
+            }
+            if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
+                myterm = state.tmp.shadow_numbers[node.strings.term].label;
+            }
+            if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
+                node.decorations.reverse();
+                node.decorations.push(["@showid","true", node.cslid]);
+                node.decorations.reverse();
+            }
         }
     }
     return CSL.castLabel(state, node, myterm, plural, CSL.TOLERANT);
@@ -10705,13 +10717,22 @@ CSL.Node.number = {
             if (this.variables.length === 0) {
                 return;
             }
+            var varname;
+            varname = this.variables[0];
             if ("undefined" === typeof item) {
                 var item = {};
             }
-            var varname;
-            varname = this.variables[0];
-            if (varname === "locator" && state.tmp.just_looking) {
-                return;
+            if (["locator", "locator-extra"].indexOf(varname) > -1) {
+                if (state.tmp.just_looking) {
+                    return;
+                }
+                if (!item[varname]) {
+                    return;
+                }
+            } else {
+                if (!Item[varname]) {
+                    return;
+                }
             }
             state.parallel.StartVariable(this.variables[0]);
             if (this.variables[0] === "locator") {
@@ -10727,12 +10748,12 @@ CSL.Node.number = {
                 return false;
             }
             if (["locator", "locator-extra"].indexOf(varname) > -1) {
-                state.processNumber(node, item, varname, Item.type);
+                state.processNumber.call(state, node, item, varname, Item.type);
             } else {
-                if (!state.tmp.group_context.tip.condition && Item[varname]) {
+                if (!state.tmp.group_context.tip.condition) {
                     state.tmp.just_did_number = true;
                 }
-                state.processNumber(node, Item, varname, Item.type);
+                state.processNumber.call(state, node, Item, varname, Item.type);
             }
             CSL.Util.outputNumericField(state, varname, Item.id);
             state.parallel.CloseVariable("number");
@@ -11198,21 +11219,19 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
             if (["locator","locator-extra"].indexOf(variable) > -1) {
                 myitem = item;
             }
-            if ("undefined" === typeof myitem) {
+            if (!myitem[variable]) {
                 return false;
             }
             if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
                 if (!state.tmp.shadow_numbers[variable]) {
                     state.processNumber(false, myitem, variable, Item.type);
                 }
-                if (myitem[variable] && state.tmp.shadow_numbers[variable].numeric) {
+                if (state.tmp.shadow_numbers[variable].numeric) {
                     return true;
                 }
             } else if (["title", "locator-extra","version"].indexOf(variable) > -1) {
-                if (myitem[variable]) {
-                    if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
-                        return true;
-                    }
+                if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
+                    return true;
                 }
             }
             return false;
@@ -11543,16 +11562,13 @@ CSL.Attributes["@page"] = function (state, arg) {
 };
 CSL.Attributes["@number"] = function (state, arg) {
     this.tests ? {} : this.tests = [];
-    var trylabels = arg.replace("sub verbo", "sub-verbo");
-    trylabels = trylabels.split(/\s+/);
+    var trylabels = arg.split(/\s+/);
     var maketest = function(trylabel) {
         return function (Item) {
             var label;
             state.processNumber(false, Item, "number", Item.type);
             if (!state.tmp.shadow_numbers.number.label) {
                 label = "number";
-            } else if (state.tmp.shadow_numbers.number.label === "sub verbo") {
-                label = "sub-verbo";
             } else {
                 label = state.tmp.shadow_numbers.number.label;
             }
@@ -13744,11 +13760,15 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
 };
 CSL.Util.Names.getRawName = function (name) {
     var ret = [];
-    if (name.given) {
-        ret.push(name.given);
-    }
-    if (name.family) {
-        ret.push(name.family);
+    if (name.literal) {
+        ret.push(name.literal);
+    } else {
+        if (name.given) {
+            ret.push(name.given);
+        }
+        if (name.family) {
+            ret.push(name.family);
+        }
     }
     return ret.join(" ");
 };
@@ -14595,7 +14615,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 currentLabelInfo.count = groupCount;
                 currentLabelInfo.numeric = true;
                 fixNumericAndCount(values, groupStartPos, currentLabelInfo);
-                if (i === 0 || (lastVal.label !== thisVal.label)) {
+                if (lastVal.label !== thisVal.label) {
                     fixLabelVisibility(values, groupStartPos, currentLabelInfo);
                 }
                 groupStartPos = i;
