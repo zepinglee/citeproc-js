@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.229",
+    PROCESSOR_VERSION: "1.1.230",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -8513,22 +8513,22 @@ CSL.NameOutput.prototype.outputNames = function () {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
     }
     if ("classic" === this.Item.type) {
-        var author_title = [];
         if (this.state.tmp.first_name_string) {
+            var author_title = [];
             author_title.push(this.state.tmp.first_name_string);
-        }
-        if (this.Item.title) {
-            author_title.push(this.Item.title);
-        }
-        author_title = author_title.join(", ");
-        if (author_title && this.state.sys.getAbbreviation) {
-            this.state.transform.loadAbbreviation("default", "classic", author_title);
-            if (this.state.transform.abbrevs["default"].classic[author_title]) {
-                this.state.tmp.done_vars.push("title");
-                this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
-                blob = this.state.output.pop();
-				this.state.tmp.name_node.top.blobs.pop();
-                this.state.tmp.name_node.top.blobs.push(blob);
+            if (this.Item.title) {
+                author_title.push(this.Item.title);
+            }
+            author_title = author_title.join(", ");
+            if (author_title && this.state.sys.getAbbreviation) {
+                this.state.transform.loadAbbreviation("default", "classic", author_title);
+                if (this.state.transform.abbrevs["default"].classic[author_title]) {
+                    this.state.tmp.done_vars.push("title");
+                    this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
+                    blob = this.state.output.pop();
+				    this.state.tmp.name_node.top.blobs.pop();
+                    this.state.tmp.name_node.top.blobs.push(blob);
+                }
             }
         }
     }

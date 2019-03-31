@@ -1,18 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.230
+==========================
+
+Register author_date match strings for Classic items only
+when an author is available to the raw name reader.
+
+
+==========================
 Changes in version 1.1.229
 ==========================
 
-* Recognize literal names when reading raw name data
+- Recognize literal names when reading raw name data
 
-* Avoid running processNumber on fields with no data
+- Avoid running processNumber on fields with no data
 
-* Bugfixes around CSL-M "supplement" variable term
-  - Add its long form to locales if not present
-  - Add its nick to pattern data and mappings
+- Bugfixes around CSL-M "supplement" variable term
+  * Add its long form to locales if not present
+  * Add its nick to pattern data and mappings
 
-* Fix styles path in cslrun.yaml
+- Fix styles path in cslrun.yaml
 
 ==========================
 Changes in version 1.1.228
