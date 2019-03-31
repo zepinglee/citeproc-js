@@ -379,22 +379,22 @@ CSL.NameOutput.prototype.outputNames = function () {
         this.state.tmp.first_name_string = this.state.tmp.name_node.string;
     }
     if ("classic" === this.Item.type) {
-        var author_title = [];
         if (this.state.tmp.first_name_string) {
+            var author_title = [];
             author_title.push(this.state.tmp.first_name_string);
-        }
-        if (this.Item.title) {
-            author_title.push(this.Item.title);
-        }
-        author_title = author_title.join(", ");
-        if (author_title && this.state.sys.getAbbreviation) {
-            this.state.transform.loadAbbreviation("default", "classic", author_title);
-            if (this.state.transform.abbrevs["default"].classic[author_title]) {
-                this.state.tmp.done_vars.push("title");
-                this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
-                blob = this.state.output.pop();
-				this.state.tmp.name_node.top.blobs.pop();
-                this.state.tmp.name_node.top.blobs.push(blob);
+            if (this.Item.title) {
+                author_title.push(this.Item.title);
+            }
+            author_title = author_title.join(", ");
+            if (author_title && this.state.sys.getAbbreviation) {
+                this.state.transform.loadAbbreviation("default", "classic", author_title);
+                if (this.state.transform.abbrevs["default"].classic[author_title]) {
+                    this.state.tmp.done_vars.push("title");
+                    this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
+                    blob = this.state.output.pop();
+				    this.state.tmp.name_node.top.blobs.pop();
+                    this.state.tmp.name_node.top.blobs.push(blob);
+                }
             }
         }
     }
