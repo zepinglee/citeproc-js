@@ -28,7 +28,7 @@ Bl Comm; Bankton <span style="font-variant:small-caps;">Institute</span> II.
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
     <id />
     <title />

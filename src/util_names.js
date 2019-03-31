@@ -221,11 +221,15 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
 
 CSL.Util.Names.getRawName = function (name) {
     var ret = [];
-    if (name.given) {
-        ret.push(name.given);
-    }
-    if (name.family) {
-        ret.push(name.family);
+    if (name.literal) {
+        ret.push(name.literal);
+    } else {
+        if (name.given) {
+            ret.push(name.given);
+        }
+        if (name.family) {
+            ret.push(name.family);
+        }
     }
     return ret.join(" ");
 };
