@@ -77,23 +77,31 @@ CSL.Node.names = {
                 }
 
                 this.etal_term = state.getTerm(state.tmp.etal_term, "long", 0);
-                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
-                    this.etal_prefix_single = " ";
-                    // Should be name delimiter, not hard-wired.
-                    this.etal_prefix_multiple = state.tmp.name_delimiter;
-                    if (state.tmp["delimiter-precedes-et-al"] === "always") {
-                        this.etal_prefix_single = state.tmp.name_delimiter;
-                    } else if (state.tmp["delimiter-precedes-et-al"] === "never") {
-                        this.etal_prefix_multiple = " ";
-                    } else if (state.tmp["delimiter-precedes-et-al"] === "after-inverted-name") {
-                        this.etal_prefix_single = state.tmp.name_delimiter;
-                        this.etal_prefix_multiple = " ";
+                this.etal_prefix_single = " ";
+                // Should be name delimiter, not hard-wired.
+                this.etal_prefix_multiple = state.tmp.name_delimiter;
+                if (state.tmp["delimiter-precedes-et-al"] === "always") {
+                    this.etal_prefix_single = state.tmp.name_delimiter;
+                } else if (state.tmp["delimiter-precedes-et-al"] === "never") {
+                    this.etal_prefix_multiple = " ";
+                } else if (state.tmp["delimiter-precedes-et-al"] === "after-inverted-name") {
+                    this.etal_prefix_single = state.tmp.name_delimiter;
+                    this.etal_prefix_multiple = " ";
+                }
+                this.etal_suffix = "";
+                if (!CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
+                    // Not sure what the correct treatment is here, but we should not suppress
+                    // a comma-space.
+                    // https://forums.zotero.org/discussion/76679/delimiter-precedes-et-al-always-dose-not-work-in-locale-zh-cn
+                    if (this.etal_prefix_single === " ") {
+                        this.etal_prefix_single = "";
                     }
-                    this.etal_suffix = "";
-                } else {
-                    this.etal_prefix_single = "";
-                    this.etal_prefix_multiple = "";
-                    this.etal_suffix = "";
+                    if (this.etal_prefix_multiple === " ") {
+                        this.etal_prefix_multiple = "";
+                    }
+                    if (this.etal_suffix === " ") {
+                        this.etal_suffix = "";
+                    }
                 }
                 // et-al affixes are further adjusted in nameOutput(),
                 // after the term (possibly changed in cs:et-al) is known.
