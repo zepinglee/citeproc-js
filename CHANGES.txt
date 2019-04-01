@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.231
+==========================
+
+- Do not suppress non-space et-al prefix when et-al is non-romanesque.
+  Passes current tests and addresses this report:
+  https://forums.zotero.org/discussion/76679/delimiter-precedes-et-al-always-dose-not-work-in-locale-zh-cn
+  See tests name_EtAlKanji (new) and name_EtAlWithCombined (old)
+
+==========================
 Changes in version 1.1.230
 ==========================
 

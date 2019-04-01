@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.230",
+    PROCESSOR_VERSION: "1.1.231",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -10617,22 +10617,27 @@ CSL.Node.names = {
                     this.etal_style = "empty";
                 }
                 this.etal_term = state.getTerm(state.tmp.etal_term, "long", 0);
-                if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
-                    this.etal_prefix_single = " ";
-                    this.etal_prefix_multiple = state.tmp.name_delimiter;
-                    if (state.tmp["delimiter-precedes-et-al"] === "always") {
-                        this.etal_prefix_single = state.tmp.name_delimiter;
-                    } else if (state.tmp["delimiter-precedes-et-al"] === "never") {
-                        this.etal_prefix_multiple = " ";
-                    } else if (state.tmp["delimiter-precedes-et-al"] === "after-inverted-name") {
-                        this.etal_prefix_single = state.tmp.name_delimiter;
-                        this.etal_prefix_multiple = " ";
+                this.etal_prefix_single = " ";
+                this.etal_prefix_multiple = state.tmp.name_delimiter;
+                if (state.tmp["delimiter-precedes-et-al"] === "always") {
+                    this.etal_prefix_single = state.tmp.name_delimiter;
+                } else if (state.tmp["delimiter-precedes-et-al"] === "never") {
+                    this.etal_prefix_multiple = " ";
+                } else if (state.tmp["delimiter-precedes-et-al"] === "after-inverted-name") {
+                    this.etal_prefix_single = state.tmp.name_delimiter;
+                    this.etal_prefix_multiple = " ";
+                }
+                this.etal_suffix = "";
+                if (!CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.etal_term)) {
+                    if (this.etal_prefix_single === " ") {
+                        this.etal_prefix_single = "";
                     }
-                    this.etal_suffix = "";
-                } else {
-                    this.etal_prefix_single = "";
-                    this.etal_prefix_multiple = "";
-                    this.etal_suffix = "";
+                    if (this.etal_prefix_multiple === " ") {
+                        this.etal_prefix_multiple = "";
+                    }
+                    if (this.etal_suffix === " ") {
+                        this.etal_suffix = "";
+                    }
                 }
                 for (var i = 0, ilen = 3; i < ilen; i += 1) {
                     var key = ["family", "given"][i];
