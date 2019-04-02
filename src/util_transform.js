@@ -197,59 +197,98 @@ CSL.Transform = function (state) {
                 token: CSL.Util.cloneToken(this)
             };
         }
-        ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
 
-        opts = state.opt[locale_type];
-        var hasVal = false;
-        if (locale_type === 'locale-orig') {
-            if (stopOrig) {
-                ret = {name:"", usedOrig:stopOrig};
-            } else {
-                ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
-            }
-            hasVal = true;
-            usingOrig = true;
-        } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
-            // If we want the original, or if we don't have any specific guidance and we 
-            // definitely want output, just return the original value.
-            var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
-            hasVal = true;
-            usingOrig = true;
+        var breakMe = false;
+        var firstValue = null;
+        var fieldsToTry = [];
+        if (field.slice(-6) === "-short") {
+            fieldsToTry.push(field);
+            fieldsToTry.push(field.slice(0, -6))
+        } else {
+            fieldsToTry.push(field);
         }
 
-        if (!hasVal) {
-            for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
-                opt = opts[i];
-                o = opt.split(/[\-_]/)[0];
-                if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
-                    ret.name = Item.multi._keys[field][opt];
-                    ret.locale = opt;
-                    //if (field === 'jurisdiction') jurisdictionName = ret.name;
-                    break;
-                } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
-                    ret.name = Item.multi._keys[field][o];
-                    ret.locale = o;
-                    //if (field === 'jurisdiction') jurisdictionName = ret.name;
-                    break;
+        for (var h=0,hlen=fieldsToTry.length; h<hlen; h++) {
+
+            var variantMatch = false;
+            var field = fieldsToTry[h];
+
+            ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
+
+            opts = state.opt[locale_type];
+            var hasVal = false;
+            if (locale_type === 'locale-orig') {
+                if (stopOrig) {
+                    ret = {name:"", usedOrig:stopOrig};
+                } else {
+                    ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
                 }
-            }
-            if (!ret.name && use_default) {
-                ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                hasVal = true;
+                usingOrig = true;
+            } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
+                // If we want the original, or if we don't have any specific guidance and we 
+                // definitely want output, just return the original value.
+                var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                hasVal = true;
                 usingOrig = true;
             }
-        }
-        ret.token = CSL.Util.cloneToken(this);
-        if (["title", "container-title"].indexOf(field) > -1) {
-            if (!usedOrig
-                && (!ret.token.strings["text-case"]
-                    || ret.token.strings["text-case"] === "sentence"
-                    || ret.token.strings["text-case"] === "normal")) {
-                
-                var locale = usingOrig ? false : ret.locale;
-                var seg = field.slice(0,-5);
-                var sentenceCase = ret.token.strings["text-case"] === "sentence" ? true : false;
-                ret.name = CSL.titlecaseSentenceOrNormal(state, Item, seg, locale, sentenceCase);
-                delete ret.token.strings["text-case"];
+
+            if (!hasVal) {
+                for (var i = 0, ilen = opts.length; i < ilen; i += 1) {
+                    opt = opts[i];
+                    o = opt.split(/[\-_]/)[0];
+                    if (opt && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][opt]) {
+                        ret.name = Item.multi._keys[field][opt];
+                        ret.locale = opt;
+                        hasVal = true;
+                        variantMatch = true;
+                        usingOrig = false;
+                        break;
+                    } else if (o && Item.multi && Item.multi._keys[field] && Item.multi._keys[field][o]) {
+                        ret.name = Item.multi._keys[field][o];
+                        ret.locale = o;
+                        hasVal = true;
+                        variantMatch = true;
+                        usingOrig = false;
+                        break;
+                    }
+                }
+                if (!ret.name && use_default) {
+                    ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                    usingOrig = true;
+                }
+            }
+            ret.token = CSL.Util.cloneToken(this);
+            if (h === 0) {
+                firstValue = ret;
+                if (variantMatch || ("undefined" === typeof opts || opts.length === 0)) {
+                    breakMe = true;
+                }
+            } else {
+                if (hasVal && !variantMatch && firstValue) {
+                    ret = firstValue;
+                }
+            }
+            if (["title", "container-title"].indexOf(field) > -1) {
+                if (!usedOrig
+                    && (!ret.token.strings["text-case"]
+                        || ret.token.strings["text-case"] === "sentence"
+                        || ret.token.strings["text-case"] === "normal")) {
+                    var locale = state.opt.lang;
+                    var lang;
+                    if (usingOrig) {
+                        lang = false;
+                    } else {
+                        lang = ret.locale;
+                    }
+                    var seg = field.slice(0,-5);
+                    var sentenceCase = ret.token.strings["text-case"] === "sentence" ? true : false;
+                    ret.name = CSL.titlecaseSentenceOrNormal(state, Item, seg, lang, sentenceCase);
+                    delete ret.token.strings["text-case"];
+                }
+            }
+            if (breakMe) {
+                break;
             }
         }
         return ret;
@@ -367,7 +406,10 @@ CSL.Transform = function (state) {
             if (state.tmp.area.slice(-5) === "_sort") {
                 slot.primary = 'locale-sort';
             } else {
-                if (localesets && !state.tmp.multi_layout) {
+                if (localesets && localesets.length === 1 && localesets[0] === "locale-orig") {
+                    slot.primary = "locale-orig";
+                    localesets = false;
+                } else if (localesets && !state.tmp.multi_layout) {
                     var slotnames = ["primary", "secondary", "tertiary"];
                     for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
                         if (localesets.length - 1 <  i) {
