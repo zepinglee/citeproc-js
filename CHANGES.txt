@@ -1,6 +1,18 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.232
+==========================
+
+- Properly fix style tests path in cslrun.yaml
+
+- Recognize uppercase_subtitles separately from main_title_from_short_title
+
+- Implement short-title variant fallback
+  * When short form lacks a variant available on the parent, use the latter
+
+
+==========================
 Changes in version 1.1.231
 ==========================
 
