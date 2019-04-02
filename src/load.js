@@ -732,7 +732,7 @@ var CSL = {
             if (sentenceCase) {
                 mainTitle = CSL.Output.Formatters.sentence(state, mainTitle);
                 subTitle = CSL.Output.Formatters.sentence(state, subTitle);
-            } else {
+            } else if (state.opt.development_extensions.uppercase_subtitles) {
                 subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
             }
             return [mainTitle, subTitle].join(vals[title.title].slice(mainTitle.length, -1 * subTitle.length));
