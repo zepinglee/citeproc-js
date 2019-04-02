@@ -5,42 +5,41 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] Summary record [[Gijiroku: kaishaku iinkai]]
->>[1] 議事録
+..[0] Transliterated title with good short-title variant: subtitle [Translation of good title]
+..[1] Transliterated title with good short-title variant
+..[2] Transliterated title without short-title variant: subtitle [Translation of bad title]
+>>[3] Transliterated title without short-title variant: subtitle
 <<===== RESULT =====<<
 
 >>===== LANGPARAMS =====>>
 {
     "institutions": [
-        "translat",
         "orig"
     ],
     "persons": [
-        "translat",
         "orig"
     ],
     "titles": [
-        "translat",
-        "translit"
+        "translit",
+        "translat"
     ],
     "journals": [
-        "translat",
         "orig"
     ],
     "places": [
-        "translat"
+        "orig"
     ],
     "publishers": [
-        "translat"
+        "orig"
     ]
 }
 <<===== LANGPARAMS =====<<
 
 >>===== MULTIAFFIX =====>>
 [
-  null,null," (",")",null,null,null,null,
-  null,null," [","]",null,null,null,null,
-  null,null," [","]"," [[","]]",null,null,
+  null,null,null,null,null,null,null,null,
+  null,null,null,null,null,null,null,null,
+  null,null,null,null,null,null," [","]",
   null,null," [","]",null,null,null,null,
   null,null,null,null,null,null,null,null,
   null,null,null,null,null,null,null,null
@@ -77,7 +76,37 @@ citation
                 "noteIndex": 2
             }
         }, 
-        [["CITATION-1", 2]], 
+        [["CITATION-1", 1]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-3", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 3
+            }
+        }, 
+        [["CITATION-1", 1],["CITATION-2", 2]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-4", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 4
+            }
+        }, 
+        [["CITATION-1", 1],["CITATION-2", 2],["CITATION-3", 3]],
         []
     ]
 ]
@@ -125,14 +154,32 @@ citation
 		"multi": {
 			"_keys": {
 				"title": {
-					"en": "Summary record",
-                    "alalc97": "Gijiroku: kaishaku iinkai"
+					"alalc97": "Transliterated title with good short-title variant: subtitle",
+                    "en": "Translation of good title"
+				},
+				"title-short": {
+					"alalc97": "Transliterated title with good short-title variant",
+                    "en": "TRANSLATION OF SHORT TITLE SHOULD NOT BE PRINTED"
 				}
 			}
 		},
 		"id": "ITEM-1",
-		"title": "議事録：解釈委員会",
-        "title-short": "議事録"
+		"title": "ORIGINAL SHOULD NOT BE PRINTED: EVER",
+        "title-short": "ORIGINAL SHOULD NOT BE PRINTED"
+	},
+	{
+		"type": "book",
+		"multi": {
+			"_keys": {
+				"title": {
+					"alalc97": "Transliterated title without short-title variant: subtitle",
+                    "en": "Translation of bad title"
+				}
+			}
+		},
+		"id": "ITEM-2",
+		"title": "ORIGINAL SHOULD NOT BE PRINTED: EVER",
+        "title-short": "ORIGINAL SHOULD NOT BE PRINTED"
 	}
 ]
 <<===== INPUT =====<<
