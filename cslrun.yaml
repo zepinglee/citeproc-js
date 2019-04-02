@@ -1,5 +1,5 @@
 path:
-    styletests: fixtures/local/styles
+    styletests: fixtures/styles
     local: fixtures/local
     std: fixtures/std/processor-tests/humans
     src: src
