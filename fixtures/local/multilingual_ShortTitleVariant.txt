@@ -8,7 +8,9 @@ citation
 ..[0] Transliterated title with good short-title variant: subtitle [Translation of good title]
 ..[1] Transliterated title with good short-title variant
 ..[2] Transliterated title without short-title variant: subtitle [Translation of bad title]
->>[3] Transliterated title without short-title variant: subtitle
+..[3] Transliterated title without short-title variant: subtitle
+..[4] Original title with no variant of its own
+>>[5] Original title set on title-short
 <<===== RESULT =====<<
 
 >>===== LANGPARAMS =====>>
@@ -108,6 +110,36 @@ citation
         }, 
         [["CITATION-1", 1],["CITATION-2", 2],["CITATION-3", 3]],
         []
+    ],
+    [
+        {
+            "citationID": "CITATION-5", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 5
+            }
+        }, 
+        [["CITATION-1", 1],["CITATION-2", 2],["CITATION-3", 3],["CITATION-4", 4]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-6", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 6
+            }
+        }, 
+        [["CITATION-1", 1],["CITATION-2", 2],["CITATION-3", 3],["CITATION-4", 4],["CITATION-5", 5]],
+        []
     ]
 ]
 <<===== CITATIONS =====<<
@@ -149,37 +181,46 @@ citation
 
 >>===== INPUT =====>>
 [
-	{
-		"type": "book",
-		"multi": {
-			"_keys": {
-				"title": {
-					"alalc97": "Transliterated title with good short-title variant: subtitle",
+    {
+        "type": "book",
+        "multi": {
+            "_keys": {
+                "title": {
+                    "alalc97": "Transliterated title with good short-title variant: subtitle",
                     "en": "Translation of good title"
-				},
-				"title-short": {
-					"alalc97": "Transliterated title with good short-title variant",
+                },
+                "title-short": {
+                    "alalc97": "Transliterated title with good short-title variant",
                     "en": "TRANSLATION OF SHORT TITLE SHOULD NOT BE PRINTED"
-				}
-			}
-		},
-		"id": "ITEM-1",
-		"title": "ORIGINAL SHOULD NOT BE PRINTED: EVER",
+                }
+            }
+        },
+        "id": "ITEM-1",
+        "title": "ORIGINAL SHOULD NOT BE PRINTED: EVER",
         "title-short": "ORIGINAL SHOULD NOT BE PRINTED"
-	},
-	{
-		"type": "book",
-		"multi": {
-			"_keys": {
-				"title": {
-					"alalc97": "Transliterated title without short-title variant: subtitle",
+    },
+    {
+        "type": "book",
+        "multi": {
+            "_keys": {
+                "title": {
+                    "alalc97": "Transliterated title without short-title variant: subtitle",
                     "en": "Translation of bad title"
-				}
-			}
-		},
-		"id": "ITEM-2",
-		"title": "ORIGINAL SHOULD NOT BE PRINTED: EVER",
+                }
+            }
+        },
+        "id": "ITEM-2",
+        "title": "ORIGINAL SHOULD NOT BE PRINTED: EVER",
         "title-short": "ORIGINAL SHOULD NOT BE PRINTED"
-	}
+    },
+    {
+        "type": "book",
+        "multi": {
+            "_keys": {}
+        },
+        "id": "ITEM-3",
+        "title": "Original title with no variant of its own",
+        "title-short": "Original title set on title-short"
+    }
 ]
 <<===== INPUT =====<<
