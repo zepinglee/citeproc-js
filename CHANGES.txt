@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.233
+==========================
+
+- Fix bug in short-form variant fallback case where full-form field also lacks
+  a requested variant. citeproc-js was using the (wrong-lang) full form, where
+  desired result is the (wrong-lang) short-form.
+
+==========================
 Changes in version 1.1.232
 ==========================
 
