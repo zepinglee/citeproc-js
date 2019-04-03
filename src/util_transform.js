@@ -265,8 +265,9 @@ CSL.Transform = function (state) {
                     breakMe = true;
                 }
             } else {
-                if (hasVal && !variantMatch && firstValue) {
+                if (!variantMatch && firstValue) {
                     ret = firstValue;
+                    field = fieldsToTry[0];
                 }
             }
             if (["title", "container-title"].indexOf(field) > -1) {
