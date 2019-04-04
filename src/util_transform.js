@@ -177,7 +177,7 @@ CSL.Transform = function (state) {
             ret = Item.multi.main[field];
         }
         if (!state.opt.development_extensions.strict_text_case_locales
-           || state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+            || state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
 
             ret = ret.toLowerCase();
         }
@@ -185,7 +185,7 @@ CSL.Transform = function (state) {
     }
 
     // Internal functions
-    function getTextSubField (Item, field, locale_type, use_default, stopOrig) {
+    function getTextSubField (Item, field, locale_type, use_default, stopOrig, family_var) {
         var opt, o, ret, opts;
         var usedOrig = stopOrig;
         var usingOrig = false;
@@ -197,7 +197,17 @@ CSL.Transform = function (state) {
                 token: CSL.Util.cloneToken(this)
             };
         }
+        // If form="short" is selected ("family_var" is a misnomer
+        // here, it means short-form requested), and the variable
+        // has a short-form partner (i.e. it is in array
+        // VARIABLES_WITH_SHORT_FORM), then it is run here as *-short".
+        var stickyLongForm = false;
+        if (CSL.VARIABLES_WITH_SHORT_FORM.indexOf(field) > -1
+            && family_var) {
 
+            field = field + "-short";
+            stickyLongForm = true;
+        }
         var breakMe = false;
         var firstValue = null;
         var fieldsToTry = [];
@@ -209,7 +219,6 @@ CSL.Transform = function (state) {
         }
 
         for (var h=0,hlen=fieldsToTry.length; h<hlen; h++) {
-
             var variantMatch = false;
             var field = fieldsToTry[h];
 
@@ -217,6 +226,7 @@ CSL.Transform = function (state) {
 
             opts = state.opt[locale_type];
             var hasVal = false;
+
             if (locale_type === 'locale-orig') {
                 if (stopOrig) {
                     ret = {name:"", usedOrig:stopOrig};
@@ -260,14 +270,22 @@ CSL.Transform = function (state) {
             }
             ret.token = CSL.Util.cloneToken(this);
             if (h === 0) {
+                if (variantMatch) {
+                    ret.found_variant_ok = true;
+                }
                 firstValue = ret;
-                if (variantMatch || ("undefined" === typeof opts || opts.length === 0)) {
+                if (!stickyLongForm && ("undefined" === typeof opts || opts.length === 0)) {
+                    breakMe = true;
+                }
+                if (variantMatch) {
                     breakMe = true;
                 }
             } else {
-                if (!variantMatch && firstValue) {
+                if (!stickyLongForm && !variantMatch && firstValue) {
                     ret = firstValue;
                     field = fieldsToTry[0];
+                } else if (variantMatch) {
+                    ret.found_variant_ok = true;
                 }
             }
             if (["title", "container-title"].indexOf(field) > -1) {
@@ -451,14 +469,21 @@ CSL.Transform = function (state) {
                 }
                 return null;
             }
-
             // True is for transform fallback
-            var res = getTextSubField.call(this, Item, variables[0], slot.primary, true);
+            var res = getTextSubField.call(this, Item, variables[0], slot.primary, true, null, family_var);
             primary = res.name;
             primary_locale = res.locale;
             var primary_tok = res.token;
             var primaryUsedOrig = res.usedOrig;
-
+            if (family_var && !res.found_variant_ok) {
+                primary = abbreviate(state, primary_tok, Item, alternative_varname, primary, family_var, true);
+                // Suppress subsequent use of another variable if requested by
+                // hack syntax in this abbreviation short form.
+                if (primary) {
+                    // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
+                    primary = quashCheck(primary);
+                }
+            }
             if (publisherCheck(this, Item, primary, family_var)) {
                 return null;
             }
@@ -469,37 +494,30 @@ CSL.Transform = function (state) {
             var secondary_tok;
             var tertiary_tok;
             if (slot.secondary) {
-                res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig, null, family_var);
                 secondary = res.name;
                 secondary_locale = res.locale;
                 secondary_tok = res.token;
+                if (family_var && !res.found_variant_ok) {
+                    if (secondary) {
+                        // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
+                        secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
+                    }
+                }
                 //print("XXX secondary_locale: "+secondary_locale);
             }
             if (slot.tertiary) {
-                res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig, null, family_var);
                 tertiary = res.name;
                 tertiary_locale = res.locale;
                 tertiary_tok = res.token;
+                if (family_var && !res.found_variant_ok) {
+                    if (tertiary) {
+                        // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
+                        tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                    }
+                }
                 //print("XXX tertiary_locale: "+tertiary_locale);
-            }
-        
-            // Abbreviate if requested and if poss.
-            // (We don't yet control for the possibility that full translations may not
-            // be provided on the alternative variable.)
-            if (family_var) {
-                primary = abbreviate(state, primary_tok, Item, alternative_varname, primary, family_var, true);
-                // Suppress subsequent use of another variable if requested by
-                // hack syntax in this abbreviation short form.
-                if (primary) {
-                    primary = quashCheck(primary);
-                }
-                // Avoid needless thrashing
-                if (secondary) {
-                    secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
-                }
-                if (tertiary) {
-                    tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
-                }
             }
             
             // Decoration of primary (currently translit only) goes here

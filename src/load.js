@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.1.233",
+    PROCESSOR_VERSION: "1.1.234",
 
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
@@ -622,6 +622,10 @@ var CSL = {
         "submitted",
         "alt-issued",
         "alt-event"
+    ],
+    VARIABLES_WITH_SHORT_FORM: [
+        "title",
+        "container-title"
     ],
     TITLE_FIELD_SPLITS: function(seg) {
         var keys = ["title", "short", "main", "sub"];
