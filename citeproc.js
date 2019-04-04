@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.233",
+    PROCESSOR_VERSION: "1.1.234",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -528,6 +528,10 @@ var CSL = {
         "submitted",
         "alt-issued",
         "alt-event"
+    ],
+    VARIABLES_WITH_SHORT_FORM: [
+        "title",
+        "container-title"
     ],
     TITLE_FIELD_SPLITS: function(seg) {
         var keys = ["title", "short", "main", "sub"];
@@ -12954,12 +12958,12 @@ CSL.Transform = function (state) {
             ret = Item.multi.main[field];
         }
         if (!state.opt.development_extensions.strict_text_case_locales
-           || state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
+            || state.opt.development_extensions.normalize_lang_keys_to_lowercase) {
             ret = ret.toLowerCase();
         }
         return ret;
     }
-    function getTextSubField (Item, field, locale_type, use_default, stopOrig) {
+    function getTextSubField (Item, field, locale_type, use_default, stopOrig, family_var) {
         var opt, o, ret, opts;
         var usedOrig = stopOrig;
         var usingOrig = false;
@@ -12969,6 +12973,12 @@ CSL.Transform = function (state) {
                 usedOrig:stopOrig,
                 token: CSL.Util.cloneToken(this)
             };
+        }
+        var stickyLongForm = false;
+        if (CSL.VARIABLES_WITH_SHORT_FORM.indexOf(field) > -1
+            && family_var) {
+            field = field + "-short";
+            stickyLongForm = true;
         }
         var breakMe = false;
         var firstValue = null;
@@ -13025,14 +13035,22 @@ CSL.Transform = function (state) {
             }
             ret.token = CSL.Util.cloneToken(this);
             if (h === 0) {
+                if (variantMatch) {
+                    ret.found_variant_ok = true;
+                }
                 firstValue = ret;
-                if (variantMatch || ("undefined" === typeof opts || opts.length === 0)) {
+                if (!stickyLongForm && ("undefined" === typeof opts || opts.length === 0)) {
+                    breakMe = true;
+                }
+                if (variantMatch) {
                     breakMe = true;
                 }
             } else {
-                if (!variantMatch && firstValue) {
+                if (!stickyLongForm && !variantMatch && firstValue) {
                     ret = firstValue;
                     field = fieldsToTry[0];
+                } else if (variantMatch) {
+                    ret.found_variant_ok = true;
                 }
             }
             if (["title", "container-title"].indexOf(field) > -1) {
@@ -13176,11 +13194,17 @@ CSL.Transform = function (state) {
                 }
                 return null;
             }
-            var res = getTextSubField.call(this, Item, variables[0], slot.primary, true);
+            var res = getTextSubField.call(this, Item, variables[0], slot.primary, true, null, family_var);
             primary = res.name;
             primary_locale = res.locale;
             var primary_tok = res.token;
             var primaryUsedOrig = res.usedOrig;
+            if (family_var && !res.found_variant_ok) {
+                primary = abbreviate(state, primary_tok, Item, alternative_varname, primary, family_var, true);
+                if (primary) {
+                    primary = quashCheck(primary);
+                }
+            }
             if (publisherCheck(this, Item, primary, family_var)) {
                 return null;
             }
@@ -13189,27 +13213,25 @@ CSL.Transform = function (state) {
             var secondary_tok;
             var tertiary_tok;
             if (slot.secondary) {
-                res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.secondary, false, res.usedOrig, null, family_var);
                 secondary = res.name;
                 secondary_locale = res.locale;
                 secondary_tok = res.token;
+                if (family_var && !res.found_variant_ok) {
+                    if (secondary) {
+                        secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
+                    }
+                }
             }
             if (slot.tertiary) {
-                res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig);
+                res = getTextSubField.call(this, Item, variables[0], slot.tertiary, false, res.usedOrig, null, family_var);
                 tertiary = res.name;
                 tertiary_locale = res.locale;
                 tertiary_tok = res.token;
-            }
-            if (family_var) {
-                primary = abbreviate(state, primary_tok, Item, alternative_varname, primary, family_var, true);
-                if (primary) {
-                    primary = quashCheck(primary);
-                }
-                if (secondary) {
-                    secondary = abbreviate(state, secondary_tok, Item, false, secondary, family_var, true);
-                }
-                if (tertiary) {
-                    tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                if (family_var && !res.found_variant_ok) {
+                    if (tertiary) {
+                        tertiary = abbreviate(state, tertiary_tok, Item, false, tertiary, family_var, true);
+                    }
                 }
             }
             var primaryPrefix;
