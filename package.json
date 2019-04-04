@@ -14,8 +14,5 @@
     "contributors": [
         "Frank Bennett <biercenator@gmail.com> (https://juris-m.github.io)"
     ],
-    "license": "CPAL-1.0 OR AGPL-1.0",
-    "dependencies": {
-        "nyanplusreporter": "^0.10.4"
-    }
+    "license": "CPAL-1.0 OR AGPL-1.0"
 }
