@@ -2650,7 +2650,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         this.opt.development_extensions.static_statute_locator = true;
         this.opt.development_extensions.handle_parallel_articles = true;
         this.opt.development_extensions.main_title_from_short_title = true;
-        this.opt.development_extensions.rtl_support = true;
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
         this.opt.development_extensions.force_jurisdiction = true;
@@ -4789,13 +4788,12 @@ CSL.Engine.Opt = function () {
     this.development_extensions.uppercase_subtitles = false;
     this.development_extensions.normalize_lang_keys_to_lowercase = false;
     this.development_extensions.strict_text_case_locales = false;
-    this.development_extensions.rtl_support = false;
     this.development_extensions.expect_and_symbol_form = false;
     this.development_extensions.require_explicit_legal_case_title_short = false;
     this.development_extensions.spoof_institutional_affiliations = false;
     this.development_extensions.force_jurisdiction = false;
     this.development_extensions.parse_names = true;
-    this.development_extensions.hanging_indent_legacy_number = true;
+    this.development_extensions.hanging_indent_legacy_number = false;
     this.development_extensions.throw_on_empty = false;
 };
 CSL.Engine.Tmp = function () {
@@ -8057,21 +8055,10 @@ CSL.Node.layout = {
             this.execs.push(func);
             func = function (state, Item) {
                 var tok = new CSL.Token();
-                if (state.opt.development_extensions.rtl_support) {
-                    if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
-                        tok = new CSL.Token();
-                        tok.strings.prefix = "\u202b";
-                        tok.strings.suffix = "\u202c";
-                    }
-                }
                 state.output.openLevel(tok);
             };
             this.execs.push(func);
             target.push(this);
-            if (state.opt.development_extensions.rtl_support && false) {
-                this.strings.prefix = this.strings.prefix.replace(/\((.|$)/g,"(\u200e$1");
-                this.strings.suffix = this.strings.suffix.replace(/\)(.|$)/g,")\u200e$1");
-            }
             if (state.build.area === "citation") {
                 prefix_token = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item, item) {

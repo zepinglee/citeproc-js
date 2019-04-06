@@ -753,6 +753,7 @@ var CSL = {
         if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
             // Callback to apply thin space hack
             // Callback to force LTR/RTL on parens and braces
+            // XXX Is this really necessary?
             var callbacks = [];
             if (state.opt.development_extensions.thin_non_breaking_space_html_hack && state.opt.mode === "html") {
                 callbacks.push(function (txt) {

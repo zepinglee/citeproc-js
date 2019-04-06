@@ -100,25 +100,10 @@ CSL.Node.layout = {
 
             func = function (state, Item) {
                 var tok = new CSL.Token();
-                if (state.opt.development_extensions.rtl_support) {
-                    if (["ar", "he", "fa", "ur", "yi", "ps", "syr"].indexOf(Item.language) > -1) {
-                        // Force correct text direction of this cite if necessary.
-                        //print("DO 202b/202c");
-                        tok = new CSL.Token();
-                        tok.strings.prefix = "\u202b";
-                        tok.strings.suffix = "\u202c";
-                    }
-                }
                 state.output.openLevel(tok);
             };
             this.execs.push(func);
             target.push(this);
-
-            if (state.opt.development_extensions.rtl_support && false) {
-                //print("INSERT 200e into: " + this.strings.prefix);
-                this.strings.prefix = this.strings.prefix.replace(/\((.|$)/g,"(\u200e$1");
-                this.strings.suffix = this.strings.suffix.replace(/\)(.|$)/g,")\u200e$1");
-            }
 
             if (state.build.area === "citation") {
                 prefix_token = new CSL.Token("text", CSL.SINGLETON);
@@ -250,7 +235,7 @@ CSL.Node.layout = {
                     target.push(suffix_token);
                 }
 
-                // Closes the RTL token
+                // Closes wrapper token
                 func = function (state) {
                     state.output.closeLevel();
                 };
