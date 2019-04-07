@@ -436,7 +436,7 @@ CSL.DateParser = function () {
                 // If it's a fuzzy marker, record it.
                 //
                 if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
-                    thedate.circa = "" + 1;
+                    thedate.circa = true;
                 }
                 //
                 // If it's a month, record it.
