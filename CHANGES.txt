@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.237
+==========================
+
+- Remove CSL-M mode special-handling code for RTL text, which was causing
+  more problems that it was solving.
+
+==========================
 Changes in version 1.1.236
 ==========================
 
