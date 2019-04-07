@@ -1,6 +1,6 @@
 {
     "name": "citeproc",
-    "version": "2.1.235",
+    "version": "2.1.236",
     "description": "The citeproc-js citation formatting module, in CommonJS format. This version is based on citeproc-js 1.1.235",
     "main": "citeproc_commonjs.js",
     "repository": {
@@ -14,5 +14,6 @@
     "contributors": [
         "Frank Bennett <biercenator@gmail.com> (https://juris-m.github.io)"
     ],
-    "license": "CPAL-1.0 OR AGPL-1.0"
+    "license": "CPAL-1.0 OR AGPL-1.0",
+    "dependencies": {}
 }

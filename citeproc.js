@@ -2482,7 +2482,7 @@ CSL.DateParser = function () {
                     continue;
                 }
                 if (element === "~" || element === "?" || element === "c" || element.match(/^cir/)) {
-                    thedate.circa = "" + 1;
+                    thedate.circa = true;
                 }
                 for (var k=0,klen=this.monthRexes.length; k<klen; k++) {
                     if (element.toLocaleLowerCase().match(this.monthRexes[k])) {
@@ -4972,6 +4972,9 @@ CSL.Engine.InText = function () {
 CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, citationsPost, newMode) {
     var oldMode = this.opt.mode;
     this.setOutputFormat(newMode);
+	if (citation.citationID) {
+		delete citation.citationID;
+	}
     var ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
     this.setOutputFormat(oldMode);
     return ret[1];
@@ -4998,7 +5001,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     if (flag === CSL.PREVIEW) {
         oldCitationList = this.registry.citationreg.citationByIndex.slice();
         oldItemList = this.registry.reflist.slice();
-        var newCitationList = citationsPre.concat([["" + citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+        var newCitationList = citationsPre.concat(citationsPost);
         var newItemIds = {};
         var newItemIdsList = [];
         for (var i = 0, ilen = newCitationList.length; i < ilen; i += 1) {
@@ -5007,6 +5010,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 newItemIds[c.citationItems[j].id] = true;
                 newItemIdsList.push("" + c.citationItems[j].id);
             }
+        }
+        for (j = 0, jlen = citation.citationItems.length; j < jlen; j += 1) {
+            newItemIds[citation.citationItems[j].id] = true;
+            newItemIdsList.push("" + citation.citationItems[j].id);
         }
         oldAmbigs = {};
         for (var i = 0, ilen = oldItemList.length; i < ilen; i += 1) {
