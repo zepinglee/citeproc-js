@@ -6,7 +6,10 @@ CSL.Engine.prototype.previewCitationCluster = function (citation, citationsPre, 
     //print("################### previewCitationCluster() #################");
     var oldMode = this.opt.mode;
     this.setOutputFormat(newMode);
-
+    // Avoids generating unwanted ibids, if the citationID already exists in document
+	if (citation.citationID) {
+		delete citation.citationID;
+	}
     var ret = this.processCitationCluster(citation, citationsPre, citationsPost, CSL.PREVIEW);
 
     this.setOutputFormat(oldMode);
@@ -58,11 +61,16 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         // Take a slice of current items, for later use with update.
         oldItemList = this.registry.reflist.slice();
 
-        // Make a list of preview citation ref objects
-        var newCitationList = citationsPre.concat([["" + citation.citationID, citation.properties.noteIndex]]).concat(citationsPost);
+        // Make a list of preview citation ref objects. Omit the current
+        // citation, because it will not exist in registry if: (a) this is
+        // a new citation; or (b) the calling application is assigning
+        // new citationIDs for every transaction.
+        var newCitationList = citationsPre.concat(citationsPost);
 
         // Make a full list of desired ids, for use in preview update,
         // and a hash list of same while we're at it.
+        // First step through known citations, then step through
+        // the items in the citation for preview.
         var newItemIds = {};
         var newItemIdsList = [];
         for (var i = 0, ilen = newCitationList.length; i < ilen; i += 1) {
@@ -71,6 +79,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 newItemIds[c.citationItems[j].id] = true;
                 newItemIdsList.push("" + c.citationItems[j].id);
             }
+        }
+        for (j = 0, jlen = citation.citationItems.length; j < jlen; j += 1) {
+            newItemIds[citation.citationItems[j].id] = true;
+            newItemIdsList.push("" + citation.citationItems[j].id);
         }
 
         // Clone and save off disambigs of items that will be lost.
