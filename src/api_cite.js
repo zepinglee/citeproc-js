@@ -1370,7 +1370,6 @@ CSL.getCitationCluster = function (inputList, citation) {
                 }
             }
         }
-        //result = "\u202b" + result + "\u202c";
     }
     this.tmp.suppress_decorations = false;
     if (!result) {
