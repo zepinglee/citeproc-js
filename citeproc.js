@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.237",
+    PROCESSOR_VERSION: "1.1.238",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -4987,7 +4987,7 @@ CSL.Engine.prototype.appendCitationCluster = function (citation) {
     return this.processCitationCluster(citation, citationsPre, [])[1];
 };
 CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, citationsPost, flag) {
-    var c, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations, m, citationsInNote;
+    var c, preCitation, postCitation, i, ilen, j, jlen, k, klen, n, nlen, key, Item, item, noteCitations, textCitations, m, citationsInNote;
     this.debug = false;
     this.tmp.loadedItemIDs = {};
     this.tmp.citation_errors = [];
@@ -5061,37 +5061,47 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     citation.sortedItems = sortedItems;
     var citationByIndex = [];
     var citationById = {};
-    for (var i = 0, ilen = citationsPre.length; i < ilen; i += 1) {
-        c = citationsPre[i];
-        try {
-            this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
-        } catch (e) {
-            var err = "CSL error\n";
-            err += "  " + e + "\n";
-            err += "  citationID=" + c[0] + "\n";
-            err += "  noteIndex=" + c[1] + "\n";
-            err += "  atarray citationsPre index " + i + ", from citation at document position " + citationsPre.length;
-            throw err;
+    var lastNotePos;
+    for (i=0, ilen=citationsPre.length; i<ilen; i += 1) {
+        preCitation = citationsPre[i];
+        if (citationById[preCitation[0]]) {
+            throw "Previously referenced citationID " + preCitation[0] + " encountered in citationsPre";
         }
-        citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
-        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];
+        if (preCitation[1]) {
+            if (lastNotePos > preCitation[1]) {
+                throw "Note index sequence is not sane at citationsPre[" + i + "]";
+            }
+            lastNotePos = preCitation[1];
+        }
+        this.registry.citationreg.citationById[preCitation[0]].properties.noteIndex = preCitation[1];
+        citationByIndex.push(this.registry.citationreg.citationById[preCitation[0]]);
+        citationById[preCitation[0]] = this.registry.citationreg.citationById[preCitation[0]];
+    }
+    if (citationById[citation.citationID]) {
+        throw "Citation with previously referenced citationID " + citation.citationID;
+    }
+    if (citation.properties.noteIndex) {
+        if (lastNotePos > citation.properties.noteIndex) {
+            throw "Note index sequence is not sane for citation " + citation.citationID;
+        }
+        lastNotePos = citation.properties.noteIndex;
     }
     citationByIndex.push(citation);
     citationById[citation.citationID] = citation;
-    for (var i = 0, ilen = citationsPost.length; i < ilen; i += 1) {
-        c = citationsPost[i];
-        try {
-            this.registry.citationreg.citationById[c[0]].properties.noteIndex = c[1];
-        } catch (e) {
-            var err = "CSL error\n";
-            err += "  " + e + "\n";
-            err += "  citationID=" + c[0] + "\n";
-            err += "  noteIndex=" + c[1] + "\n";
-            err += "  at array citationsPost index " + i + ", from citation at document position " + citationsPre.length;
-            throw err;
+    for (i=0, ilen=citationsPost.length; i<ilen; i += 1) {
+        postCitation = citationsPost[i];
+        if (citationById[postCitation[0]]) {
+            throw "Previously referenced citationID " + postCitation[0] + " encountered in citationsPost";
         }
-        citationByIndex.push(this.registry.citationreg.citationById[c[0]]);
-        citationById[c[0]] = this.registry.citationreg.citationById[c[0]];
+        if (postCitation[1]) {
+            if (lastNotePos > postCitation[1]) {
+                throw "Note index sequence is not sane at postCitation[" + i + "]";
+            }
+            lastNotePos = postCitation[1];
+        }
+        this.registry.citationreg.citationById[postCitation[0]].properties.noteIndex = postCitation[1];
+        citationByIndex.push(this.registry.citationreg.citationById[postCitation[0]]);
+        citationById[postCitation[0]] = this.registry.citationreg.citationById[postCitation[0]];
     }
     this.registry.citationreg.citationByIndex = citationByIndex;
     this.registry.citationreg.citationById = citationById;
