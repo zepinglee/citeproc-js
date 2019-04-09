@@ -2,6 +2,11 @@
 bibliography
 <<===== MODE =====<<
 
+>>===== OPTIONS =====>>
+{
+  "csl_reverse_lookup_support": true
+}
+<<===== OPTIONS =====<<
 
 
 >>===== RESULT =====>>
