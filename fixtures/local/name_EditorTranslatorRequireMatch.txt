@@ -2,13 +2,6 @@
 bibliography
 <<===== MODE =====<<
 
->>===== OPTIONS =====>>
-{
-  "csl_reverse_lookup_support": true
-}
-<<===== OPTIONS =====<<
-
-
 >>===== RESULT =====>>
 <div class="csl-bib-body">
   <div class="csl-entry">Tiger, T. (ed.). Title. G. Gerbil (tran.)</div>
