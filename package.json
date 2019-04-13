@@ -15,5 +15,8 @@
         "Frank Bennett <biercenator@gmail.com> (https://juris-m.github.io)"
     ],
     "license": "CPAL-1.0 OR AGPL-1.0",
-    "dependencies": {}
+    "dependencies": {
+        "getopts": "^2.2.4",
+        "randomatic": "^3.1.1"
+    }
 }
