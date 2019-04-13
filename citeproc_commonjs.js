@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.238",
+    PROCESSOR_VERSION: "1.1.239",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -4795,6 +4795,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.parse_names = true;
     this.development_extensions.hanging_indent_legacy_number = false;
     this.development_extensions.throw_on_empty = false;
+    this.development_extensions.strict_inputs = true;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -5064,40 +5065,46 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     var lastNotePos;
     for (i=0, ilen=citationsPre.length; i<ilen; i += 1) {
         preCitation = citationsPre[i];
-        if (citationById[preCitation[0]]) {
-            throw "Previously referenced citationID " + preCitation[0] + " encountered in citationsPre";
-        }
-        if (preCitation[1]) {
-            if (lastNotePos > preCitation[1]) {
-                throw "Note index sequence is not sane at citationsPre[" + i + "]";
+        if (this.opt.development_extensions.strict_inputs) {
+            if (citationById[preCitation[0]]) {
+                throw "Previously referenced citationID " + preCitation[0] + " encountered in citationsPre";
             }
-            lastNotePos = preCitation[1];
+            if (preCitation[1]) {
+                if (lastNotePos > preCitation[1]) {
+                    throw "Note index sequence is not sane at citationsPre[" + i + "]";
+                }
+                lastNotePos = preCitation[1];
+            }
         }
         this.registry.citationreg.citationById[preCitation[0]].properties.noteIndex = preCitation[1];
         citationByIndex.push(this.registry.citationreg.citationById[preCitation[0]]);
         citationById[preCitation[0]] = this.registry.citationreg.citationById[preCitation[0]];
     }
-    if (citationById[citation.citationID]) {
-        throw "Citation with previously referenced citationID " + citation.citationID;
-    }
-    if (citation.properties.noteIndex) {
-        if (lastNotePos > citation.properties.noteIndex) {
-            throw "Note index sequence is not sane for citation " + citation.citationID;
+    if (this.opt.development_extensions.strict_inputs) {
+        if (citationById[citation.citationID]) {
+            throw "Citation with previously referenced citationID " + citation.citationID;
         }
-        lastNotePos = citation.properties.noteIndex;
+        if (citation.properties.noteIndex) {
+            if (lastNotePos > citation.properties.noteIndex) {
+                throw "Note index sequence is not sane for citation " + citation.citationID;
+            }
+            lastNotePos = citation.properties.noteIndex;
+        }
     }
     citationByIndex.push(citation);
     citationById[citation.citationID] = citation;
     for (i=0, ilen=citationsPost.length; i<ilen; i += 1) {
         postCitation = citationsPost[i];
-        if (citationById[postCitation[0]]) {
-            throw "Previously referenced citationID " + postCitation[0] + " encountered in citationsPost";
-        }
-        if (postCitation[1]) {
-            if (lastNotePos > postCitation[1]) {
-                throw "Note index sequence is not sane at postCitation[" + i + "]";
+        if (this.opt.development_extensions.strict_inputs) {
+            if (citationById[postCitation[0]]) {
+                throw "Previously referenced citationID " + postCitation[0] + " encountered in citationsPost";
             }
-            lastNotePos = postCitation[1];
+            if (postCitation[1]) {
+                if (lastNotePos > postCitation[1]) {
+                    throw "Note index sequence is not sane at postCitation[" + i + "]";
+                }
+                lastNotePos = postCitation[1];
+            }
         }
         this.registry.citationreg.citationById[postCitation[0]].properties.noteIndex = postCitation[1];
         citationByIndex.push(this.registry.citationreg.citationById[postCitation[0]]);
@@ -10832,6 +10839,18 @@ CSL.Node.substitute = {
     build: function (state, target) {
         var func;
         if (this.tokentype === CSL.START) {
+            var choose_start = new CSL.Token("choose", CSL.START);
+            CSL.Node.choose.build.call(choose_start, state, target);
+            var if_singleton = new CSL.Token("if", CSL.SINGLETON);
+            func = function() {
+                if (state.tmp.value.length && !state.tmp.common_term_match_fail) {
+                    return true;
+                }
+                return false;
+            }
+            if_singleton.tests = [func];
+            if_singleton.test = state.fun.match.any(if_singleton, state, if_singleton.tests);
+            target.push(if_singleton);
             func = function (state) {
                 state.tmp.can_block_substitute = true;
                 if (state.tmp.value.length && !state.tmp.common_term_match_fail) {
@@ -10840,8 +10859,13 @@ CSL.Node.substitute = {
                 state.tmp.common_term_match_fail = false;
             };
             this.execs.push(func);
+            target.push(this);
         }
-        target.push(this);
+        if (this.tokentype === CSL.END) {
+            target.push(this);
+            var choose_end = new CSL.Token("choose", CSL.END);
+            CSL.Node.choose.build.call(choose_end, state, target);
+        }
     }
 };
 CSL.Node.text = {
