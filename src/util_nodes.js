@@ -1,16 +1,33 @@
 /*global CSL: true */
 
+/* For node execution pretty-printing (see below) */
+
+/*
+var INDENT = "";
+*/
+
 CSL.tokenExec = function (token, Item, item) {
     // Called on state object
     var next, maybenext, exec, debug;
     debug = false;
     next = token.next;
     maybenext = false;
-    //SNIP-START
-    if (debug) {
-        CSL.debug("---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
+
+    /* Pretty-print node executions */
+
+    /*
+    if (["if", "else-if", "else"].indexOf(token.name) === -1) {
+        if (token.tokentype == 1) {
+            INDENT = INDENT.slice(0, -2);
+        }
     }
-    //SNIP-END
+    this.sys.print(INDENT + "---> Token: " + token.name + " (" + token.tokentype + ") in " + this.tmp.area + ", " + this.output.current.mystack.length);
+    if (["if", "else-if", "else"].indexOf(token.name) === -1) {
+        if (token.tokentype == 0) {
+            INDENT += "  ";
+        }
+    }
+    */
 
     var record = function (result) {
         if (result) {
