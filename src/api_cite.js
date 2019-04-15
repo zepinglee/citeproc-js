@@ -181,6 +181,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         citationByIndex.push(this.registry.citationreg.citationById[preCitation[0]]);
         citationById[preCitation[0]] = this.registry.citationreg.citationById[preCitation[0]];
     }
+    if (!citation.properties) {
+        citation.properties = {
+            noteIndex: 0
+        };
+    }
     if (this.opt.development_extensions.strict_inputs) {
         if (citationById[citation.citationID]) {
             throw "Citation with previously referenced citationID " + citation.citationID;
@@ -247,9 +252,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     }
     var update_items = [];
     for (var i = 0, ilen = citationByIndex.length; i < ilen; i += 1) {
-        if (!citationByIndex[i].properties) {
-            citationByIndex[i].properties = {};
-        }
         citationByIndex[i].properties.index = i;
         for (j = 0, jlen = citationByIndex[i].sortedItems.length; j < jlen; j += 1) {
             item = citationByIndex[i].sortedItems[j];
