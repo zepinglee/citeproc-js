@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.239",
+    PROCESSOR_VERSION: "1.1.240",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -5080,6 +5080,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         citationByIndex.push(this.registry.citationreg.citationById[preCitation[0]]);
         citationById[preCitation[0]] = this.registry.citationreg.citationById[preCitation[0]];
     }
+    if (!citation.properties) {
+        citation.properties = {
+            noteIndex: 0
+        };
+    }
     if (this.opt.development_extensions.strict_inputs) {
         if (citationById[citation.citationID]) {
             throw "Citation with previously referenced citationID " + citation.citationID;
@@ -5120,9 +5125,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     }
     var update_items = [];
     for (var i = 0, ilen = citationByIndex.length; i < ilen; i += 1) {
-        if (!citationByIndex[i].properties) {
-            citationByIndex[i].properties = {};
-        }
         citationByIndex[i].properties.index = i;
         for (j = 0, jlen = citationByIndex[i].sortedItems.length; j < jlen; j += 1) {
             item = citationByIndex[i].sortedItems[j];

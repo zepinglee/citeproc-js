@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.240
+==========================
+
+- Protect against undefined citation object key "properties."
+  https://github.com/Juris-M/citeproc-js/issues/106
+
+==========================
 Changes in version 1.1.239
 ==========================
 
