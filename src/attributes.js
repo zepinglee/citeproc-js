@@ -52,7 +52,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
     var maketest = function(variable) {
         return function (Item, item) {
             var myitem = Item;
-            if (["locator","locator-extra"].indexOf(variable) > -1) {
+            if (item && ["locator","locator-extra"].indexOf(variable) > -1) {
                 myitem = item;
             }
             if (!myitem[variable]) {
