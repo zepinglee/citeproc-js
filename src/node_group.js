@@ -266,6 +266,17 @@ CSL.Node.group = {
                 state.output.endTag();
                 if (this.realGroup) {
                     var flags = state.tmp.group_context.pop();
+                    if (state.tmp.area === "bibliography_sort") {
+                        var citationNumberIdx = flags.done_vars.indexOf("citation-number");
+                        if (this.strings.sort_direction && citationNumberIdx > -1 && state.tmp.group_context.length() == 1) {
+                            if (this.strings.sort_direction === CSL.DESCENDING) {
+                                state.bibliography_sort.opt.citation_number_sort_direction = CSL.DESCENDING;
+                            } else {
+                                state.bibliography_sort.opt.citation_number_sort_direction = CSL.ASCENDING;
+                            }
+                            flags.done_vars = flags.done_vars.slice(0, citationNumberIdx).concat(flags.done_vars.slice(citationNumberIdx + 1))
+                        }
+                    }
                     //var params = ["condition", "variable_success", "force_suppress","term_intended", "variable_attempt"]
                     //if (!state.tmp.just_looking) {
                     //    print("POP parent="+JSON.stringify(state.tmp.group_context.tip, params))

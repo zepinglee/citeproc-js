@@ -65,9 +65,11 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     mkey = macro_key_token.postponed_macro;
 
+    var sort_direction = macro_key_token.strings.sort_direction;
+    
     // Decorations and affixes are in wrapper applied in cs:text
     macro_key_token = new CSL.Token("group", CSL.START);
-
+    
     var hasDate = false;
     var macroid = false;
     macro_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, 'macro', mkey);
@@ -127,6 +129,7 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     // Decorations and affixes are in wrapper applied in cs:text
     end_of_macro = new CSL.Token("group", CSL.END);
+    end_of_macro.strings.sort_direction = sort_direction;
     
     if (hasDate) {
         func = function (state) {

@@ -24,8 +24,6 @@ CSL.Node.key = {
         };
         start_key.execs.push(func);
 
-        state.opt.citation_number_sort_direction = this.strings.sort_direction;
-
         // initialize output queue
         func = function (state) {
             state.output.openLevel("empty");
@@ -71,20 +69,6 @@ CSL.Node.key = {
         // ops to initialize the key's output structures
         if (this.variables.length) {
             var variable = this.variables[0];
-            // Set flag if sorting citations by citation-number
-
-            // Nit: This will assume citation-number sorting if
-            // that variable is set as key in ANY position.  Could
-            // be a little more conservative, but secondary sorts
-            // by this variable seem unlikely.
-            if (variable === "citation-number") {
-                if (state.build.area === "citation" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort = false;
-                }
-                if (state.build.root === "bibliography" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort_used = false;
-                }
-            }
             if (CSL.NAME_VARIABLES.indexOf(variable) > -1) {
                 //
                 // Start tag
@@ -114,21 +98,44 @@ CSL.Node.key = {
                 CSL.Node.names.build.call(names_end_token, state, target);
             } else {
                 var single_text = new CSL.Token("text", CSL.SINGLETON);
+                single_text.strings.sort_direction = this.strings.sort_direction;
                 single_text.dateparts = this.dateparts;
                 if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
-                    func = function (state, Item) {
-                        var num = false;
-                        if ("citation-number" === variable) {
-                            num = state.registry.registry[Item.id].seq.toString();
-                        } else {
+                    // citation-number is virtualized. As a sort key it has no effect on registry
+                    // sort order per se, but if set to DESCENDING, it reverses the sequence of numbers representing
+                    // bib entries.
+                    if (variable === "citation-number") {
+                        func = function (state, Item) {
+                            if (state.tmp.area === "bibliography_sort") {
+                                if (this.strings.sort_direction === CSL.DESCENDING) {
+                                    state.bibliography_sort.opt.citation_number_sort_direction = CSL.DESCENDING;
+                                } else {
+                                    state.bibliography_sort.opt.citation_number_sort_direction = CSL.ASCENDING;
+                                }
+                            }
+                            if (state.tmp.area === "citation_sort" && state.bibliography_sort.tmp.citation_number_map) {
+                                var num = state.bibliography_sort.tmp.citation_number_map[state.registry.registry[Item.id].seq];
+                            } else {
+                                var num = state.registry.registry[Item.id].seq;
+                            }
+                            if (num) {
+                                // Code currently in util_number.js
+                                num = CSL.Util.padding("" + num);
+                            }
+                            state.output.append(num, this);
+                        };
+                    } else {
+                        func = function (state, Item) {
+                            var num = false;
                             num = Item[variable];
-                        }
-                        if (num) {
-                            // Code currently in util_number.js
-                            num = CSL.Util.padding(num);
-                        }
-                        state.output.append(num, this);
-                    };
+                            // XXX What if this is NaN?
+                            if (num) {
+                                // Code currently in util_number.js
+                                num = CSL.Util.padding(num);
+                            }
+                            state.output.append(num, this);
+                        };
+                    }
                 } else if (variable === "citation-label") {
                     func = function (state, Item) {
                         var trigraph = state.getCitationLabel(Item);
@@ -156,6 +163,7 @@ CSL.Node.key = {
             //
             // if it's not a variable, it's a macro
             var token = new CSL.Token("text", CSL.SINGLETON);
+            token.strings.sort_direction = this.strings.sort_direction;
             token.postponed_macro = this.postponed_macro;
             CSL.expandMacro.call(state, token, target);
         }
@@ -169,7 +177,7 @@ CSL.Node.key = {
         // Was causing non-fatal error "wanted empty but found group".
         // Possible contributor to weird "PAGES" bug?
         //func = function (state, Item) {
-            //state.output.closeLevel("empty");
+        //state.output.closeLevel("empty");
         //};
         //end_key.execs.push(func);
         
@@ -186,6 +194,7 @@ CSL.Node.key = {
             }
             //print("keystring: (" + keystring + ") " + typeof keystring + " " + state.tmp.area);
             //SNIP-END
+            //state.sys.print("keystring: (" + keystring + ") " + typeof keystring + " " + state.tmp.area);
             if ("" === keystring) {
                 keystring = undefined;
             }

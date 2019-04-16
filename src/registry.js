@@ -559,12 +559,18 @@ CSL.Registry.prototype.renumber = function () {
     //
     // 19. Reset citation numbers on list items
     //
+    if (this.state.bibliography_sort.opt.citation_number_sort_direction === CSL.DESCENDING) {
+        this.state.bibliography_sort.tmp.citation_number_map = {};
+    }
     len = this.reflist.length;
     for (pos = 0; pos < len; pos += 1) {
         item = this.reflist[pos];
         // save the overhead of rerenderings if citation-number is not
         // used in the style.
         item.seq = (pos + 1);
+        if (this.state.bibliography_sort.opt.citation_number_sort_direction === CSL.DESCENDING) {
+            this.state.bibliography_sort.tmp.citation_number_map[item.seq] = (this.reflist.length - item.seq + 1);
+        }
         // update_mode is set to CSL.NUMERIC if citation-number is rendered
         // in citations.
         if (this.state.opt.update_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
@@ -574,13 +580,6 @@ CSL.Registry.prototype.renumber = function () {
             this.return_data.bibchange = true;
         }
     }
-    if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
-       && this.state.opt.citation_number_sort_used) {
-        this.reflist.reverse();
-    }
-    //for (var key in this.state.tmp.taintedItemIDs) {
-    //    print("  tainted: " + this.registry[key].seq + " " + key);
-    //}
 };
 
 CSL.Registry.prototype.setsortkeys = function () {

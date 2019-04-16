@@ -440,6 +440,7 @@ CSL.Engine.Build = function () {
     this.names_level = 0;
     this.render_nesting_level = 0;
     this.render_seen = false;
+    this.bibliography_key_pos = 0;
 };
 
 
@@ -517,8 +518,14 @@ CSL.Engine.BibliographySort = function () {
     this.tokens = [];
     this.opt = {};
     this.opt.sort_directions = [];
-    this.keys = [];
     this.opt.topdecor = [];
+    // Holds the final citation-number sort direction, for use
+    // in applying numbers in cs:citation and cs:bibliography.
+    // Value is exclusively controlled by cs:key in bibliography_sort
+    this.opt.citation_number_sort_direction = CSL.ASCENDING;
+    this.opt.citation_number_secondary = false;
+    this.tmp = {};
+    this.keys = [];
     this.root = "bibliography";
 };
 

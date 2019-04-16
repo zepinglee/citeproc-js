@@ -51,14 +51,12 @@ CSL.Node.text = {
                 // different set of formatting parameters on the output
                 // queue.
                 if (this.variables_real[0] === "citation-number") {
+
                     if (state.build.root === "citation") {
                         state.opt.update_mode = CSL.NUMERIC;
                     }
                     if (state.build.root === "bibliography") {
                         state.opt.bib_mode = CSL.NUMERIC;
-                    }
-                    if (state.build.area === "bibliography_sort") {
-                        state.opt.citation_number_sort_used = true;
                     }
                     //this.strings.is_rangeable = true;
                     if ("citation-number" === state[state.tmp.area].opt.collapse) {
@@ -70,10 +68,30 @@ CSL.Node.text = {
 
                         id = "" + Item.id;
                         if (!state.tmp.just_looking) {
+                            if (state.tmp.area.slice(-5) === "_sort" && this.variables[0] === "citation-number") {
+                                if (state.tmp.area === "bibliography_sort") {
+                                    state.tmp.group_context.tip.done_vars.push("citation-number");
+                                }
+                                if (state.tmp.area === "citation_sort" && state.bibliography_sort.tmp.citation_number_map) {
+                                    var num = state.bibliography_sort.tmp.citation_number_map[state.registry.registry[Item.id].seq];
+                                } else {
+                                    var num = state.registry.registry[Item.id].seq;
+                                }
+                                if (num) {
+                                    // Code currently in util_number.js
+                                    num = CSL.Util.padding("" + num);
+                                }
+                                state.output.append(num, this);
+                                return;
+                            }
                             if (item && item["author-only"]) {
                                 state.tmp.element_trace.replace("suppress-me");
                             }
-                            num = state.registry.registry[id].seq;
+                            if (state.tmp.area !== "bibliography_sort" && state.bibliography_sort.tmp.citation_number_map && state.bibliography_sort.opt.citation_number_sort_direction === CSL.DESCENDING) {
+                                num = state.bibliography_sort.tmp.citation_number_map[state.registry.registry[id].seq];
+                            } else {
+                                num = state.registry.registry[id].seq;
+                            }
                             if (state.opt.citation_number_slug) {
                                 state.output.append(state.opt.citation_number_slug, this);
                             } else {

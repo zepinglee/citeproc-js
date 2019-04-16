@@ -162,6 +162,7 @@ CSL.Util.substituteStart = function (state, target) {
                     firstReferenceNoteNumber = item['first-reference-note-number'];
                 }
                 var citationNumber = 0;
+                // XXX Will this EVER happen?
                 if (item && item['citation-number']) {
                     citationNumber = item['citation-number'];
                 }

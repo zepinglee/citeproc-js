@@ -1119,7 +1119,6 @@ CSL.Attributes["@sort"] = function (state, arg) {
     }
 };
 
-
 CSL.Attributes["@plural"] = function (state, arg) {
     // Accepted values of plural attribute differ on cs:text
     // and cs:label nodes.
@@ -1131,7 +1130,6 @@ CSL.Attributes["@plural"] = function (state, arg) {
         this.strings.plural = false;
     }
 };
-
 
 CSL.Attributes["@has-publisher-and-publisher-place"] = function () {
     this.strings["has-publisher-and-publisher-place"] = true;
