@@ -65,107 +65,7 @@ citation
     <updated>2014-04-30T13:19:38+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
-<macro name="title">
-       <text value="wow"/>
-</macro>
-<macro name="wisconsin-secondary-subsequent">
-       <text value="wow"/>
-</macro>
-<macro name="catch-all-first">
-       <text value="wow"/>
-</macro>
-<citation et-al-min="3" et-al-use-first="1" near-note-distance="0">
-  <layout delimiter="; ">
-		<choose> 
-			<if type="book report" match="any">
-				<text macro="book-report"/>
-			</if>
-			<else-if type="chapter">
-				<text macro="chapter"/>
-			</else-if>
-			<else-if type="article-journal">
-				<text macro="periodical"/>
-			</else-if>
-			<!-- else-if type="report">
-				<text macro="report"/>
-			</else-if -->
-			<else-if type="treaty" >
-				<text variable="title"/>
-			</else-if>
-			<else-if type="legal_case">
-				<text macro="legal-case"/>
-			</else-if>
-			<else-if type="legislation">
-				<text macro="statute"/>
-			</else-if>
-			<else-if type="regulation">
-				<text macro="regulation"/>
-			</else-if>
-			<else-if type="article-newspaper">
-				<text macro="newspaper"/>
-			</else-if>
-			<else-if type="webpage post-weblog" match="any">
-				<text macro="web"/>
-			</else-if>
-			<else-if type="paper-conference" match="any">
-				<text macro="paper-conference"/>
-			</else-if>			
-			<else-if position="ibid-with-locator">
-				<group delimiter=", ">
-					<text font-style="italic" term="ibid"/>
-					<group delimiter=",">
-						<label form="short" variable="locator"/>
-						<number variable="locator"/>
-					</group>
-				</group>
-			</else-if>
-			<else-if position="ibid">
-				<text font-style="italic" term="ibid"/>
-			</else-if>
-			<else-if match="none" position="first" type="classic"> <!-- non-classic subsequent -->
-				<text macro="wisconsin-secondary-subsequent"/>
-			</else-if>
-			<else>
-				<!-- the remainder; first appearance of any other type/ -->
-				<text macro="catch-all"/>				
-			</else>
-		</choose>
-	</layout>
-</citation>  
-<bibliography subsequent-author-substitute="-----" et-al-min="3" et-al-use-first="1">
-  <sort>
-			<key variable="author"/>
-      <key variable="issued"/>
-      <key variable="title"/>
-  </sort>
-  <layout suffix=".">
-		<choose>
-			<if type="book report" match="any">
-				<text macro="book-report"/>
-			</if>
-			<else-if type="chapter">
-				<text macro="chapter"/>
-			</else-if>
-			<else-if type="article-journal">
-				<text macro="periodical"/>
-			</else-if>
-			<!-- else-if type="report manuscript" match="any" >
-				<text macro="report"/>
-			</else-if -->
-			<else-if type="legal_case">
-				<text macro="legal-case"/>
-			</else-if>
-			<else-if match="any" type="treaty" >
-				<text variable="title"/>
-			</else-if>
-			<else>
-				<!-- text macro="wisconsin-secondary-first"/ -->
-				<text macro="catch-all"/>				
-			</else>
-		</choose>
-  </layout>
-</bibliography>
-<locale>
+  <locale>
 	<style-options punctuation-in-quote="true" skip-words="vs,but,or,yet,so,for,and,nor,a,an,the,at,by,from,in,into,of,on,to,with,as,via,onto,over,till,is,this,that,within,vs"/>
     <terms>
       <term name="article">article</term>
@@ -252,9 +152,18 @@ citation
       <date-part name="day" form="numeric" suffix=", "/>
       <date-part name="year"/>
     </date>
-</locale>
+  </locale>
+  <macro name="title">
+       <text value="wow"/>
+  </macro>
+  <macro name="wisconsin-secondary-subsequent">
+       <text value="wow"/>
+  </macro>
+  <macro name="catch-all-first">
+       <text value="wow"/>
+  </macro>
 
-<macro name="author">
+  <macro name="author">
 	<choose>
 		<if type="book report" match="any">
 			<names variable="author">
@@ -272,36 +181,36 @@ citation
 			</names>
 		</else>
 	</choose>
-</macro>
-<macro name="author-short">
+  </macro>
+  <macro name="author-short">
 	<names variable="author">
 		<name form="short" delimiter-precedes-last="never" and="text" />
 		<substitute>
 			<text variable="title" form="short"/>
 		</substitute>
 	</names>
-</macro>
-<macro name="author-bibliography">
+  </macro>
+  <macro name="author-bibliography">
 	<names variable="author">
 		<name form="long" name-as-sort-order="all" initialize="true" initialize-with="." and="symbol" delimiter-precedes-last="never" />
 	</names>
-</macro>
-<macro name="editor">
+  </macro>
+  <macro name="editor">
     <names variable="editor">
 			<name form="long" and="text" delimiter-precedes-last="never"/>
     </names>
-</macro>
-<macro name="editor-short">
+  </macro>
+  <macro name="editor-short">
     <names variable="editor">
       <name form="long" initialize="true" initialize-with="." delimiter-precedes-last="never" and="text"/>
     </names>
-</macro>
-<macro name="editor-bibliography">
+  </macro>
+  <macro name="editor-bibliography">
 	<names variable="editor">
 		<name form="long" name-as-sort-order="all" initialize="true" initialize-with="." and="symbol" delimiter-precedes-last="never" />
 	</names>
-</macro>
-<macro name="short-title">
+  </macro>
+  <macro name="short-title">
 	<choose>
 		<if type="book" match="any">
 			<text variable="title" text-case="title" font-style="italic"/>
@@ -333,23 +242,23 @@ citation
 			<text variable="title" text-case="title" font-style="italic" />
 		</else>
 	</choose>
-</macro>
-<macro name="container-title">
+  </macro>
+  <macro name="container-title">
     <text variable="container-title" text-case="title"/>
-</macro>
-<macro name="proceedings-title">
+  </macro>
+  <macro name="proceedings-title">
     <group delimiter=" ">
       <text term="in"/>
       <text variable="container-title" font-variant="small-caps"/>
     </group>
-</macro>
-<macro name="edition">
+  </macro>
+  <macro name="edition">
     <group delimiter=" ">
       <number variable="edition" form="ordinal"/>
       <text term="edition" form="short"/>
     </group>
-</macro>
-<macro name="issued-with-alt">
+  </macro>
+  <macro name="issued-with-alt">
     <group delimiter=", ">
       <group prefix="(" suffix=")" delimiter=", ">
         <text variable="publisher" form="short"/>
@@ -369,8 +278,8 @@ citation
         <text variable="URL"/>
       </group>
     </group>
-</macro>
-<macro name="point-locator-comma">
+  </macro>
+  <macro name="point-locator-comma">
     <group delimiter=" ">
       <choose>
         <if variable="number page" position="ibid" match="any">
@@ -384,8 +293,8 @@ citation
       </choose>
       <text variable="locator"/>
     </group>
-</macro>
-<macro name="secondary-subsequent">
+  </macro>
+  <macro name="secondary-subsequent">
 	<group delimiter=", ">
 		<text macro="author-short" />
 		<choose> 
@@ -404,8 +313,8 @@ citation
 		</group>
 	<text variable="locator" />
 	</group>
-</macro>
-<macro name="ibid">
+  </macro>
+  <macro name="ibid">
 		<text term="ibid" font-style="italic"/>
 		<choose>
 			<if position="ibid-with-locator">
@@ -413,10 +322,10 @@ citation
 				<number variable="locator" />
 			</if>
 		</choose>
-</macro>
+  </macro>
 
 <!-- by type -->
-<macro name="legal-case">
+  <macro name="legal-case">
     <choose>
       <if position="first">
         <text macro="legal-case-first"/>
@@ -431,8 +340,8 @@ citation
         <text macro="legal-case-first"/>
       </else>
     </choose>
-</macro>
-<macro name="legal-case-first">
+  </macro>
+  <macro name="legal-case-first">
 	<choose>
 		<if jurisdiction="us">
 			<group delimiter=", ">
@@ -555,8 +464,8 @@ citation
 			</choose>
 		</else>
 	</choose>
-</macro>
-<macro name="legal-case-subsequent">
+  </macro>
+  <macro name="legal-case-subsequent">
     <group delimiter=", ">
       <text macro="short-title"/>
       <group delimiter=" ">
@@ -580,8 +489,8 @@ citation
         </choose>
       </group>
     </group>
-</macro>
-<macro name="statute">  <!-- type="legislation" -->
+  </macro>
+  <macro name="statute">  <!-- type="legislation" -->
     <choose>
       <if position="first">
         <text macro="statute-first"/>
@@ -593,8 +502,8 @@ citation
         <text macro="statute-first"/>
       </else>
     </choose>
-</macro>
-<macro name="statute-first"> 
+  </macro>
+  <macro name="statute-first"> 
 	<choose>
 		<if jurisdiction="kr">
 		<!--  beobyul/beob (statutes): 
@@ -616,8 +525,8 @@ citation
 			</group>
 		</else>
 	</choose>
-</macro>
-<macro name="statute-subsequent">
+  </macro>
+  <macro name="statute-subsequent">
 		<group delimiter="">
       <group delimiter=" ">
         <number variable="volume"/>
@@ -634,8 +543,8 @@ citation
       <text macro="point-locator-comma"/>
       <date prefix="(" variable="issued" date-parts="year" form="text" suffix=")"/>
     </group>	
-</macro>
-<macro name="regulation">  <!-- type="regulation" -->
+  </macro>
+  <macro name="regulation">  <!-- type="regulation" -->
     <choose>
       <if position="first">
         <text macro="regulation-first"/>
@@ -647,8 +556,8 @@ citation
         <text macro="regulation-first"/>
       </else>
     </choose>
-</macro>
-<macro name="regulation-first"> 
+  </macro>
+  <macro name="regulation-first"> 
 	<choose>
 		<if jurisdiction="kr">
 		<!--  <romanized Korean decree name> [<English translation of decree name>], 
@@ -671,8 +580,8 @@ citation
     </group>
 		</else>
 	</choose>
-</macro>
-<macro name="regulation-subsequent">	
+  </macro>
+  <macro name="regulation-subsequent">	
    <group delimiter=" ">
       <text variable="title" form="short" font-variant="small-caps"/>
       <group delimiter=" ">
@@ -680,8 +589,8 @@ citation
         <text variable="locator"/>
       </group>
     </group>	
-</macro>
-<macro name="web">
+  </macro>
+  <macro name="web">
     <choose>
       <if position="first">
         <text macro="web-first"/>
@@ -693,8 +602,8 @@ citation
         <text macro="web-first"/>
       </else>
     </choose>
-</macro>
-<macro name="web-first">
+  </macro>
+  <macro name="web-first">
 	<group delimiter=", ">
 		<!-- choose>
 			<if variable="issued">
@@ -752,8 +661,8 @@ citation
 			</group>
 		</group>
 	</group>
-</macro>
-<macro name="newspaper">
+  </macro>
+  <macro name="newspaper">
 	<group delimiter=" ">
 		<text macro="author" suffix=","/>
 		<text variable="title" text-case="title" font-style="normal" prefix="“" suffix=",”"/> 			
@@ -764,8 +673,8 @@ citation
 			<date-part name="day" prefix=". " suffix=")"/>
 		</date>
 	</group>
-</macro>
-<macro name="paper-conference">
+  </macro>
+  <macro name="paper-conference">
     <choose>
       <if position="first">
         <text macro="paper-conference-first"/>
@@ -777,8 +686,8 @@ citation
         <text macro="secondary-subsequent"/>
       </else-if>
     </choose>
-</macro>
-<macro name="paper-conference-first">
+  </macro>
+  <macro name="paper-conference-first">
     <group delimiter=" ">
       <group delimiter=", ">
         <text macro="author"/>
@@ -787,8 +696,8 @@ citation
       <text macro="proceedings-title"/>
       <text macro="issued-with-alt"/>
     </group>
-</macro>
-<macro name="periodical">
+  </macro>
+  <macro name="periodical">
 	<choose>
 		<if position="first">
 			<text macro="periodical-first" font-style="normal" />
@@ -803,8 +712,8 @@ citation
 			<text macro="periodical-first"/>
 		</else>
 	</choose>
-</macro>
-<macro name="periodical-first">
+  </macro>
+  <macro name="periodical-first">
 	<!--  Bluebook 20.6: Give the author; 
 	title in the original language, followed by a translation or shortened name in English, if desired (rule 20.2.2); 
 	the volume number of the periodical if appropriate (rule 16.4); 
@@ -829,8 +738,8 @@ citation
 			<date-part name="year"/>
 		</date>
 	</group>
-</macro>
-<macro name="book-report">
+  </macro>
+  <macro name="book-report">
 	<choose>
 		<if position="first">
 			<text macro="book-report-first"/>			
@@ -845,8 +754,8 @@ citation
 			<text macro="book-report-first"/>
 		</else>
 	</choose>
-</macro>
-<macro name="book-report-first">
+  </macro>
+  <macro name="book-report-first">
 	<group delimiter=" ">
 		<text macro="author" suffix=","/>
 		<text variable="title" text-case="title" font-variant="small-caps"/>
@@ -857,8 +766,8 @@ citation
 			</date>
 		</group>
 	</group>
-</macro>
-<macro name="chapter">
+  </macro>
+  <macro name="chapter">
 	<choose>
 		<if position="first">
 			<text macro="chapter-first"/> 
@@ -873,8 +782,8 @@ citation
 			<text macro="chapter-first"/>
 		</else>
 	</choose>
-</macro>
-<macro name="chapter-first"> 
+  </macro>
+  <macro name="chapter-first"> 
 <!-- To cite an individual shorter work within a volume of collected works by various authors, 
 list the author’s full name according to rule 15.1 in ordinary roman type 
 followed by the title of the shorter work in italics, 
@@ -905,8 +814,8 @@ according to rules 15.2 and 15.4 -->
 				</date>
 			</group>
 	</group>		
-</macro>
-<macro name="catch-all">
+  </macro>
+  <macro name="catch-all">
 	<choose>
 		<if position="first">
 			<text macro="catch-all-first"/>
@@ -938,8 +847,8 @@ according to rules 15.2 and 15.4 -->
 			</group>
 		</else>
 	</choose>
-</macro>
-<macro name="catch-first">
+  </macro>
+  <macro name="catch-first">
 	<group delimiter=", ">
 		<text macro="author" />
 		<group delimiter=" ">
@@ -965,8 +874,98 @@ according to rules 15.2 and 15.4 -->
 	<text variable="locator" />
 	</group>
 	<text variable="references" prefix="[" suffix="]"/>
-</macro>
-
+  </macro>
+  <citation et-al-min="3" et-al-use-first="1" near-note-distance="0">
+    <layout delimiter="; ">
+		<choose> 
+			<if type="book report" match="any">
+				<text macro="book-report"/>
+			</if>
+			<else-if type="chapter">
+				<text macro="chapter"/>
+			</else-if>
+			<else-if type="article-journal">
+				<text macro="periodical"/>
+			</else-if>
+			<!-- else-if type="report">
+				<text macro="report"/>
+			</else-if -->
+			<else-if type="treaty" >
+				<text variable="title"/>
+			</else-if>
+			<else-if type="legal_case">
+				<text macro="legal-case"/>
+			</else-if>
+			<else-if type="legislation">
+				<text macro="statute"/>
+			</else-if>
+			<else-if type="regulation">
+				<text macro="regulation"/>
+			</else-if>
+			<else-if type="article-newspaper">
+				<text macro="newspaper"/>
+			</else-if>
+			<else-if type="webpage post-weblog" match="any">
+				<text macro="web"/>
+			</else-if>
+			<else-if type="paper-conference" match="any">
+				<text macro="paper-conference"/>
+			</else-if>			
+			<else-if position="ibid-with-locator">
+				<group delimiter=", ">
+					<text font-style="italic" term="ibid"/>
+					<group delimiter=",">
+						<label form="short" variable="locator"/>
+						<number variable="locator"/>
+					</group>
+				</group>
+			</else-if>
+			<else-if position="ibid">
+				<text font-style="italic" term="ibid"/>
+			</else-if>
+			<else-if match="none" position="first" type="classic"> <!-- non-classic subsequent -->
+				<text macro="wisconsin-secondary-subsequent"/>
+			</else-if>
+			<else>
+				<!-- the remainder; first appearance of any other type/ -->
+				<text macro="catch-all"/>				
+			</else>
+		</choose>
+	</layout>
+  </citation>  
+  <bibliography subsequent-author-substitute="-----" et-al-min="3" et-al-use-first="1">
+    <sort>
+			<key variable="author"/>
+      <key variable="issued"/>
+      <key variable="title"/>
+    </sort>
+    <layout suffix=".">
+		<choose>
+			<if type="book report" match="any">
+				<text macro="book-report"/>
+			</if>
+			<else-if type="chapter">
+				<text macro="chapter"/>
+			</else-if>
+			<else-if type="article-journal">
+				<text macro="periodical"/>
+			</else-if>
+			<!-- else-if type="report manuscript" match="any" >
+				<text macro="report"/>
+			</else-if -->
+			<else-if type="legal_case">
+				<text macro="legal-case"/>
+			</else-if>
+			<else-if match="any" type="treaty" >
+				<text variable="title"/>
+			</else-if>
+			<else>
+				<!-- text macro="wisconsin-secondary-first"/ -->
+				<text macro="catch-all"/>				
+			</else>
+		</choose>
+    </layout>
+  </bibliography>
 </style>
 <<===== CSL =====<<
 
