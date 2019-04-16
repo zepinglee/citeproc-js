@@ -295,6 +295,12 @@ CSL.Node.group = {
                         if (flags.force_suppress && !state.tmp.group_context.tip.condition) {
                             state.tmp.group_context.tip.variable_attempt = true;
                             state.tmp.group_context.tip.variable_success = flags.variable_success_parent;
+                            // 2019-04-15
+                            // This is removing variables done within the group we're leaveing from global
+                            // done_vars? How does that make sense?
+                            // Ah. This is a FAILURE. So removing from done_vars allows it to re-render
+                            // later in the cite if desired.
+                            // Currently no tests fail from removing the condition, but leaving it in.
                             for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
                                 if (state.tmp.done_vars.indexOf(flags.done_vars[i]) > -1) {
                                     state.tmp.done_vars = state.tmp.done_vars.slice(0, i).concat(state.tmp.done_vars.slice(i+1));
