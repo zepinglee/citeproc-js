@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.241
+==========================
+
+- Do not crash when @is-numeric is called against locator in bibliography.
+
+==========================
 Changes in version 1.1.240
 ==========================
 
