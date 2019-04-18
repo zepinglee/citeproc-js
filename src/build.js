@@ -623,7 +623,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             if (dateobj) {
                 // raw date parsing is harmless, but can be disabled if desired
                 if (this.opt.development_extensions.raw_date_parsing) {
-                    if (dateobj.raw) {
+                    if (dateobj.raw && (!dateobj["date-parts"] || dateobj["date-parts"].length === 0)) {
                         dateobj = this.fun.dateparser.parseDateToObject(dateobj.raw);
                     }
                 }
