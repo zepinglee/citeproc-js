@@ -1,6 +1,26 @@
 Summary of changes to citeproc-js since version 1.0.0 release.
 
 ==========================
+Changes in version 1.1.242
+==========================
+
+- Prefer pre-parsed date over raw date string when both are available.
+
+- Fix citation-number sorts via variable or macro
+
+  * Calling citation-number from cs:key as a macro or as a variable has
+    the same effect.
+  * citation-number with sort="descending" as primary key on cs:bibliography reverses the order
+    of items, from order-cited to reverse-of-order-cited. Citation numbers in this case
+    reflect citation order, and so run from high to low in the bibliography.
+  * citation-number as secondary key on cs:bibliography sets the order of
+    numbering.  Whether ascending or descending, citation number assignments are
+    aligned in citations and bibliography.
+
+- Move date and sort tests specfiic to citeproc-js from std test suite to
+  citeproc-js repo.
+
+==========================
 Changes in version 1.1.241
 ==========================
 

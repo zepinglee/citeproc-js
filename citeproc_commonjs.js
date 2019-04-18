@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.241",
+    PROCESSOR_VERSION: "1.1.242",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -403,6 +403,8 @@ var CSL = {
     AFTER: 2,
     DESCENDING: 1,
     ASCENDING: 2,
+    PRIMARY: 1,
+    SECONDARY: 2,
     POSITION_FIRST: 0,
     POSITION_SUBSEQUENT: 1,
     POSITION_IBID: 2,
@@ -2016,6 +2018,7 @@ CSL.tokenExec = function (token, Item, item) {
 CSL.expandMacro = function (macro_key_token, target) {
     var mkey, macro_nodes, end_of_macro, func;
     mkey = macro_key_token.postponed_macro;
+    var sort_direction = macro_key_token.strings.sort_direction;
     macro_key_token = new CSL.Token("group", CSL.START);
     var hasDate = false;
     var macroid = false;
@@ -2066,6 +2069,7 @@ CSL.expandMacro = function (macro_key_token, target) {
         target.push(text_node);
     }
     end_of_macro = new CSL.Token("group", CSL.END);
+    end_of_macro.strings.sort_direction = sort_direction;
     if (hasDate) {
         func = function (state) {
             if (state.tmp.extension) {
@@ -3043,7 +3047,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             var dateobj = Item[key];
             if (dateobj) {
                 if (this.opt.development_extensions.raw_date_parsing) {
-                    if (dateobj.raw) {
+                    if (dateobj.raw && (!dateobj["date-parts"] || dateobj["date-parts"].length === 0)) {
                         dateobj = this.fun.dateparser.parseDateToObject(dateobj.raw);
                     }
                 }
@@ -4888,6 +4892,7 @@ CSL.Engine.Build = function () {
     this.names_level = 0;
     this.render_nesting_level = 0;
     this.render_seen = false;
+    this.bibliography_key_pos = 0;
 };
 CSL.Engine.Configure = function () {
     this.tests = [];
@@ -4936,8 +4941,11 @@ CSL.Engine.BibliographySort = function () {
     this.tokens = [];
     this.opt = {};
     this.opt.sort_directions = [];
-    this.keys = [];
     this.opt.topdecor = [];
+    this.opt.citation_number_sort_direction = CSL.ASCENDING;
+    this.opt.citation_number_secondary = false;
+    this.tmp = {};
+    this.keys = [];
     this.root = "bibliography";
 };
 CSL.Engine.CitationSort = function () {
@@ -7540,6 +7548,17 @@ CSL.Node.group = {
                 state.output.endTag();
                 if (this.realGroup) {
                     var flags = state.tmp.group_context.pop();
+                    if (state.tmp.area === "bibliography_sort") {
+                        var citationNumberIdx = flags.done_vars.indexOf("citation-number");
+                        if (this.strings.sort_direction && citationNumberIdx > -1 && state.tmp.group_context.length() == 1) {
+                            if (this.strings.sort_direction === CSL.DESCENDING) {
+                                state.bibliography_sort.opt.citation_number_sort_direction = CSL.DESCENDING;
+                            } else {
+                                state.bibliography_sort.opt.citation_number_sort_direction = CSL.ASCENDING;
+                            }
+                            flags.done_vars = flags.done_vars.slice(0, citationNumberIdx).concat(flags.done_vars.slice(citationNumberIdx + 1))
+                        }
+                    }
                     if (state.tmp.group_context.tip.condition) {
                         state.tmp.group_context.tip.force_suppress = flags.force_suppress;
                     }
@@ -7808,7 +7827,6 @@ CSL.Node.key = {
             state.tmp.done_vars = [];
         };
         start_key.execs.push(func);
-        state.opt.citation_number_sort_direction = this.strings.sort_direction;
         func = function (state) {
             state.output.openLevel("empty");
         };
@@ -7841,14 +7859,6 @@ CSL.Node.key = {
         target.push(start_key);
         if (this.variables.length) {
             var variable = this.variables[0];
-            if (variable === "citation-number") {
-                if (state.build.area === "citation" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort = false;
-                }
-                if (state.build.root === "bibliography" && state.build.extension === "_sort") {
-                    state.opt.citation_number_sort_used = false;
-                }
-            }
             if (CSL.NAME_VARIABLES.indexOf(variable) > -1) {
                 var names_start_token = new CSL.Token("names", CSL.START);
                 names_start_token.tokentype = CSL.START;
@@ -7870,20 +7880,38 @@ CSL.Node.key = {
                 CSL.Node.names.build.call(names_end_token, state, target);
             } else {
                 var single_text = new CSL.Token("text", CSL.SINGLETON);
+                single_text.strings.sort_direction = this.strings.sort_direction;
                 single_text.dateparts = this.dateparts;
                 if (CSL.NUMERIC_VARIABLES.indexOf(variable) > -1) {
-                    func = function (state, Item) {
-                        var num = false;
-                        if ("citation-number" === variable) {
-                            num = state.registry.registry[Item.id].seq.toString();
-                        } else {
+                    if (variable === "citation-number") {
+                        func = function (state, Item) {
+                            if (state.tmp.area === "bibliography_sort") {
+                                if (this.strings.sort_direction === CSL.DESCENDING) {
+                                    state.bibliography_sort.opt.citation_number_sort_direction = CSL.DESCENDING;
+                                } else {
+                                    state.bibliography_sort.opt.citation_number_sort_direction = CSL.ASCENDING;
+                                }
+                            }
+                            if (state.tmp.area === "citation_sort" && state.bibliography_sort.tmp.citation_number_map) {
+                                var num = state.bibliography_sort.tmp.citation_number_map[state.registry.registry[Item.id].seq];
+                            } else {
+                                var num = state.registry.registry[Item.id].seq;
+                            }
+                            if (num) {
+                                num = CSL.Util.padding("" + num);
+                            }
+                            state.output.append(num, this);
+                        };
+                    } else {
+                        func = function (state, Item) {
+                            var num = false;
                             num = Item[variable];
-                        }
-                        if (num) {
-                            num = CSL.Util.padding(num);
-                        }
-                        state.output.append(num, this);
-                    };
+                            if (num) {
+                                num = CSL.Util.padding(num);
+                            }
+                            state.output.append(num, this);
+                        };
+                    }
                 } else if (variable === "citation-label") {
                     func = function (state, Item) {
                         var trigraph = state.getCitationLabel(Item);
@@ -7909,6 +7937,7 @@ CSL.Node.key = {
             }
         } else { // macro
             var token = new CSL.Token("text", CSL.SINGLETON);
+            token.strings.sort_direction = this.strings.sort_direction;
             token.postponed_macro = this.postponed_macro;
             CSL.expandMacro.call(state, token, target);
         }
@@ -10910,9 +10939,6 @@ CSL.Node.text = {
                     if (state.build.root === "bibliography") {
                         state.opt.bib_mode = CSL.NUMERIC;
                     }
-                    if (state.build.area === "bibliography_sort") {
-                        state.opt.citation_number_sort_used = true;
-                    }
                     if ("citation-number" === state[state.tmp.area].opt.collapse) {
                         this.range_prefix = state.getTerm("citation-range-delimiter");
                     }
@@ -10921,10 +10947,29 @@ CSL.Node.text = {
                     func = function (state, Item, item) {
                         id = "" + Item.id;
                         if (!state.tmp.just_looking) {
+                            if (state.tmp.area.slice(-5) === "_sort" && this.variables[0] === "citation-number") {
+                                if (state.tmp.area === "bibliography_sort") {
+                                    state.tmp.group_context.tip.done_vars.push("citation-number");
+                                }
+                                if (state.tmp.area === "citation_sort" && state.bibliography_sort.tmp.citation_number_map) {
+                                    var num = state.bibliography_sort.tmp.citation_number_map[state.registry.registry[Item.id].seq];
+                                } else {
+                                    var num = state.registry.registry[Item.id].seq;
+                                }
+                                if (num) {
+                                    num = CSL.Util.padding("" + num);
+                                }
+                                state.output.append(num, this);
+                                return;
+                            }
                             if (item && item["author-only"]) {
                                 state.tmp.element_trace.replace("suppress-me");
                             }
-                            num = state.registry.registry[id].seq;
+                            if (state.tmp.area !== "bibliography_sort" && state.bibliography_sort.tmp.citation_number_map && state.bibliography_sort.opt.citation_number_sort_direction === CSL.DESCENDING) {
+                                num = state.bibliography_sort.tmp.citation_number_map[state.registry.registry[id].seq];
+                            } else {
+                                num = state.registry.registry[id].seq;
+                            }
                             if (state.opt.citation_number_slug) {
                                 state.output.append(state.opt.citation_number_slug, this);
                             } else {
@@ -16801,20 +16846,22 @@ CSL.Registry.prototype.setdisambigs = function () {
 };
 CSL.Registry.prototype.renumber = function () {
     var len, pos, item;
+    if (this.state.bibliography_sort.opt.citation_number_sort_direction === CSL.DESCENDING) {
+        this.state.bibliography_sort.tmp.citation_number_map = {};
+    }
     len = this.reflist.length;
     for (pos = 0; pos < len; pos += 1) {
         item = this.reflist[pos];
         item.seq = (pos + 1);
+        if (this.state.bibliography_sort.opt.citation_number_sort_direction === CSL.DESCENDING) {
+            this.state.bibliography_sort.tmp.citation_number_map[item.seq] = (this.reflist.length - item.seq + 1);
+        }
         if (this.state.opt.update_mode === CSL.NUMERIC && item.seq != this.oldseq[item.id]) {
             this.state.tmp.taintedItemIDs[item.id] = true;
         }
         if (item.seq != this.oldseq[item.id]) {
             this.return_data.bibchange = true;
         }
-    }
-    if (this.state.opt.citation_number_sort_direction === CSL.DESCENDING
-       && this.state.opt.citation_number_sort_used) {
-        this.reflist.reverse();
     }
 };
 CSL.Registry.prototype.setsortkeys = function () {
