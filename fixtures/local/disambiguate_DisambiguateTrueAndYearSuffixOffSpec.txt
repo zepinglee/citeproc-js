@@ -4,7 +4,7 @@ citation
 
 >>==== OPTIONS ====>>
 {
-  "disambiguation_priority_per_specification": false
+  "prioritize_disambiguate_condition": true
 }
 <<==== OPTIONS ====<<
 
