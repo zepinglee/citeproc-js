@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.1.242",
+    PROCESSOR_VERSION: "1.2.1",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -2636,6 +2636,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         };
         this.setCslNodeIds(this.cslXml.dataObj, "style");
     }
+    if ("boolean" === typeof this.sys.prioritize_disambiguate_condition) {
+        this.opt.development_extensions.prioritize_disambiguate_condition = this.sys.prioritize_disambiguate_condition;
+    }
     this.cslXml.addMissingNameNodes(this.cslXml.dataObj);
     this.cslXml.addInstitutionNodes(this.cslXml.dataObj);
     this.cslXml.insertPublisherAndPlace(this.cslXml.dataObj);
@@ -4800,6 +4803,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.hanging_indent_legacy_number = false;
     this.development_extensions.throw_on_empty = false;
     this.development_extensions.strict_inputs = true;
+    this.development_extensions.prioritize_disambiguate_condition = false;
 };
 CSL.Engine.Tmp = function () {
     this.names_max = new CSL.Stack();
@@ -17562,11 +17566,20 @@ CSL.Disambiguation.prototype.configModes = function () {
     if (this.state.opt['disambiguate-add-names'] || (dagopt && gdropt === "by-cite")) {
         this.modes.push("disNames");
     }
-    if (this.state.opt.has_disambiguate) {
-        this.modes.push("disExtraText");
-    }
-    if (this.state.opt["disambiguate-add-year-suffix"]) {
-        this.modes.push("disYears");
+    if (this.state.opt.development_extensions.prioritize_disambiguate_condition) {
+        if (this.state.opt.has_disambiguate) {
+            this.modes.push("disExtraText");
+        }
+        if (this.state.opt["disambiguate-add-year-suffix"]) {
+            this.modes.push("disYears");
+        }
+    } else {
+        if (this.state.opt["disambiguate-add-year-suffix"]) {
+            this.modes.push("disYears");
+        }
+        if (this.state.opt.has_disambiguate) {
+            this.modes.push("disExtraText");
+        }
     }
 };
 CSL.Disambiguation.prototype.getCiteData = function(Item, base) {
