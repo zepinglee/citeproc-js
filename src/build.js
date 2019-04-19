@@ -104,6 +104,9 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         };
         this.setCslNodeIds(this.cslXml.dataObj, "style");
     }
+    if ("boolean" === typeof this.sys.prioritize_disambiguate_condition) {
+        this.opt.development_extensions.prioritize_disambiguate_condition = this.sys.prioritize_disambiguate_condition;
+    }
     // Preprocessing ops for the XML input
     this.cslXml.addMissingNameNodes(this.cslXml.dataObj);
     this.cslXml.addInstitutionNodes(this.cslXml.dataObj);

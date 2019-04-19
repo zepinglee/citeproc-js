@@ -168,6 +168,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.hanging_indent_legacy_number = false;
     this.development_extensions.throw_on_empty = false;
     this.development_extensions.strict_inputs = true;
+    this.development_extensions.prioritize_disambiguate_condition = false;
 };
 
 CSL.Engine.Tmp = function () {

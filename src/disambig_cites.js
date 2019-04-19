@@ -526,11 +526,21 @@ CSL.Disambiguation.prototype.configModes = function () {
     if (this.state.opt['disambiguate-add-names'] || (dagopt && gdropt === "by-cite")) {
         this.modes.push("disNames");
     }
-    if (this.state.opt.has_disambiguate) {
-        this.modes.push("disExtraText");
-    }
-    if (this.state.opt["disambiguate-add-year-suffix"]) {
-        this.modes.push("disYears");
+
+    if (this.state.opt.development_extensions.prioritize_disambiguate_condition) {
+        if (this.state.opt.has_disambiguate) {
+            this.modes.push("disExtraText");
+        }
+        if (this.state.opt["disambiguate-add-year-suffix"]) {
+            this.modes.push("disYears");
+        }
+    } else {
+        if (this.state.opt["disambiguate-add-year-suffix"]) {
+            this.modes.push("disYears");
+        }
+        if (this.state.opt.has_disambiguate) {
+            this.modes.push("disExtraText");
+        }
     }
 };
 
