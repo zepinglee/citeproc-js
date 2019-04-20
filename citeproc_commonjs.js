@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.1",
+    PROCESSOR_VERSION: "1.2.2",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -944,7 +944,13 @@ var CSL = {
                 state.tmp.just_did_number = false;
             }
         }
-    }
+    },
+    SYS_OPTIONS: [
+        "prioritize_disambiguate_condition",
+        "csl_reverse_lookup_support",
+        "main_title_from_short_title",
+        "uppercase_subtitles"
+    ]
 };
 if ("undefined" === typeof console) {
     CSL.debug = function (str) {
@@ -2620,7 +2626,16 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.output = new CSL.Output.Queue(this);
     this.dateput = new CSL.Output.Queue(this);
     this.cslXml = CSL.setupXml(style);
-    if (this.opt.development_extensions.csl_reverse_lookup_support || this.sys.csl_reverse_lookup_support) {
+    for (var i in CSL.SYS_OPTIONS) {
+        var option = CSL.SYS_OPTIONS[i];
+        if ("boolean" === typeof this.sys[option]) {
+            this.opt.development_extensions[option] = this.sys[option];
+        }
+    }
+    if (this.opt.development_extensions.uppercase_subtitles) {
+        this.opt.development_extensions.main_title_from_short_title = true;
+    }
+    if (this.opt.development_extensions.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
         this.setCslNodeIds = function(myxml, nodename) {
             var children = this.cslXml.children(myxml);
@@ -2635,9 +2650,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
             }
         };
         this.setCslNodeIds(this.cslXml.dataObj, "style");
-    }
-    if ("boolean" === typeof this.sys.prioritize_disambiguate_condition) {
-        this.opt.development_extensions.prioritize_disambiguate_condition = this.sys.prioritize_disambiguate_condition;
     }
     this.cslXml.addMissingNameNodes(this.cslXml.dataObj);
     this.cslXml.addInstitutionNodes(this.cslXml.dataObj);
@@ -3941,7 +3953,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 }
                 if (b && b.length) {
                     b = txt_esc(blobjr.strings.prefix) + b + txt_esc(blobjr.strings.suffix);
-                    if ((state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support) && !state.tmp.suppress_decorations) {
+                    if (state.opt.development_extensions.csl_reverse_lookup_support && !state.tmp.suppress_decorations) {
                         for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
                             params = blobjr.decorations[j];
                             if (params[0] === "@showid") {
@@ -10467,7 +10479,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
                 myterm = state.tmp.shadow_numbers[node.strings.term].label;
             }
-            if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
+            if (node.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
                 node.decorations.reverse();
                 node.decorations.push(["@showid","true", node.cslid]);
                 node.decorations.reverse();
@@ -14126,7 +14138,7 @@ CSL.Util.substituteStart = function (state, target) {
         }
     };
     this.execs.push(func);
-    if (this.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
+    if (this.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
         this.decorations.reverse();
         this.decorations.push(["@showid","true", this.cslid]);
         this.decorations.reverse();
