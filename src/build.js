@@ -88,7 +88,17 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     this.cslXml = CSL.setupXml(style);
 
-    if (this.opt.development_extensions.csl_reverse_lookup_support || this.sys.csl_reverse_lookup_support) {
+    for (var i in CSL.SYS_OPTIONS) {
+        var option = CSL.SYS_OPTIONS[i];
+        if ("boolean" === typeof this.sys[option]) {
+            this.opt.development_extensions[option] = this.sys[option];
+        }
+        
+    }
+    if (this.opt.development_extensions.uppercase_subtitles) {
+        this.opt.development_extensions.main_title_from_short_title = true;
+    }
+    if (this.opt.development_extensions.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
         this.setCslNodeIds = function(myxml, nodename) {
             var children = this.cslXml.children(myxml);
@@ -103,9 +113,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
             }
         };
         this.setCslNodeIds(this.cslXml.dataObj, "style");
-    }
-    if ("boolean" === typeof this.sys.prioritize_disambiguate_condition) {
-        this.opt.development_extensions.prioritize_disambiguate_condition = this.sys.prioritize_disambiguate_condition;
     }
     // Preprocessing ops for the XML input
     this.cslXml.addMissingNameNodes(this.cslXml.dataObj);

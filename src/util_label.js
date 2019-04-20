@@ -35,7 +35,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
                 myterm = state.tmp.shadow_numbers[node.strings.term].label;
             }
-            if (node.decorations && (state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support)) {
+            if (node.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
                 node.decorations.reverse();
                 node.decorations.push(["@showid","true", node.cslid]);
                 node.decorations.reverse();

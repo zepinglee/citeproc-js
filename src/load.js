@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.1",
+    PROCESSOR_VERSION: "1.2.2",
 
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
@@ -1056,5 +1056,12 @@ var CSL = {
                 state.tmp.just_did_number = false;
             }
         }
-    }
+    },
+
+    SYS_OPTIONS: [
+        "prioritize_disambiguate_condition",
+        "csl_reverse_lookup_support",
+        "main_title_from_short_title",
+        "uppercase_subtitles"
+    ]
 };

@@ -394,7 +394,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 // empty.
                 if (b && b.length) {
                     b = txt_esc(blobjr.strings.prefix) + b + txt_esc(blobjr.strings.suffix);
-                    if ((state.opt.development_extensions.csl_reverse_lookup_support || state.sys.csl_reverse_lookup_support) && !state.tmp.suppress_decorations) {
+                    if (state.opt.development_extensions.csl_reverse_lookup_support && !state.tmp.suppress_decorations) {
                         for (j = 0, jlen = blobjr.decorations.length; j < jlen; j += 1) {
                             params = blobjr.decorations[j];
 
