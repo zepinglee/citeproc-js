@@ -692,7 +692,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     }
     // Add support for main_title_from_short_title
     if (this.opt.development_extensions.main_title_from_short_title) {
-        CSL.extractTitleAndSubtitle(Item);
+        CSL.extractTitleAndSubtitle.call(this, Item);
     }
     var isLegalType = ["bill","legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
     if (this.opt.development_extensions.force_jurisdiction && isLegalType) {
