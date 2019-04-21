@@ -47,7 +47,6 @@ Comment on “Pigs can fly: A meta-analysis”—Authors’ response
 
 >>===== OPTIONS =====>>
 {
-    "main_title_from_short_title": true, 
     "uppercase_subtitles": true
 }
 <<===== OPTIONS =====<<
