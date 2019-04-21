@@ -5,8 +5,45 @@ citation
 
 
 >>===== RESULT =====>>
+Journal One: Long version
 Journal A: Long version
+Journal One—Long version
+Journal One? Long version
+Comment on “Pigs can fly: A meta-analysis”—Authors’ response
 <<===== RESULT =====<<
+
+
+>>===== CITATION-ITEMS =====>>
+[
+  [
+    {
+      "id": "ITEM-1"
+    }
+  ],
+  [
+    {
+      "id": "ITEM-2"
+    }
+  ],
+  [
+    {
+      "id": "ITEM-3"
+    }
+  ],
+  [
+    {
+      "id": "ITEM-4"
+    }
+  ],
+  [
+    {
+      "id": "ITEM-5"
+    }
+  ]
+]
+<<===== CITATION-ITEMS =====<<
+
+
 
 >>===== OPTIONS =====>>
 {
@@ -26,7 +63,7 @@ Journal A: Long version
     <updated>2009-08-10T04:49:00+09:00</updated>
   </info>
   <citation>
-    <layout>
+    <layout delimiter="; ">
       <text variable="container-title"/>
     </layout>
   </citation>
@@ -38,8 +75,28 @@ Journal A: Long version
 [
     {
         "id": "ITEM-1", 
-        "container-title": "Journal A: long version", 
+        "container-title": "Journal One: long version", 
+        "type": "article-journal"
+    },
+    {
+        "id": "ITEM-2", 
+        "container-title": "Journal A : long version", 
         "container-title-short": "Journal A", 
+        "type": "article-journal"
+    },
+    {
+        "id": "ITEM-3", 
+        "container-title": "Journal One -- long version", 
+        "type": "article-journal"
+    },
+    {
+        "id": "ITEM-4", 
+        "container-title": "Journal One? long version", 
+        "type": "article-journal"
+    },
+    {
+        "id": "ITEM-5", 
+        "container-title": "Comment on “Pigs can fly :: a meta-analysis” - authors’ response", 
         "type": "article-journal"
     }
 ]
