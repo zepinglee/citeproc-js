@@ -664,7 +664,8 @@ var CSL = {
         return fld;
     },
 
-    extractTitleAndSubtitle: function (Item) {
+    extractTitleAndSubtitle: function (Item, narrowSpaceLocale) {
+        var narrowSpace = narrowSpaceLocale ? "\u202f" : "";
         // XXX In this function, split on split-char, but prefer exact match
         // XXX of subtitle to a split-char in title if found.
         var segments = ["", "container-"];
@@ -739,14 +740,14 @@ var CSL = {
                     if (vals[title.subjoin]) {
                         if (vals[title.subjoin].match(/([\?\!])/)) {
                             var m = vals[title.subjoin].match(/(\s*)$/)
-                            vals[title.main] = vals[title.main] + vals[title.subjoin].trim();
+                            vals[title.main] = vals[title.main] + narrowSpace +vals[title.subjoin].trim();
                             vals[title.subjoin] = m[1];
                         }
                     }
                 }
                 if (vals[title.subjoin]) {
                     if (vals[title.subjoin].indexOf(":") > -1) {
-                        vals[title.subjoin] = ": ";
+                        vals[title.subjoin] = narrowSpace + ": ";
                     }
                     if (vals[title.subjoin].indexOf("-") > -1 || vals[title.subjoin].indexOf("—") > -1) {
                         vals[title.subjoin] = "—";
@@ -818,7 +819,8 @@ var CSL = {
                 }
                 for (var i=1, ilen=splits.length-1; i < ilen; i += 2) {
                     if (splits[i].indexOf(":") > -1) {
-                        splits[i] = ": ";
+                        var narrowSpace = state.opt["default-locale"][0].slice(0, 2).toLowerCase() === "fr" ? "\u202f" : "";
+                        splits[i] = narrowSpace + ": ";
                     }
                     if (splits[i].indexOf("-") > -1 || splits[i].indexOf("—") > -1) {
                         splits[i] = "—";
@@ -1169,6 +1171,7 @@ var CSL = {
         var m = str.match(CSL.TITLE_SPLIT_REGEXP.match);
         var lst = str.split(CSL.TITLE_SPLIT_REGEXP.split);
         for (var i=lst.length-2; i>-1; i--) {
+            lst[i] = lst[i].trim();
             if (lst[i] && lst[i].slice(-1).toLowerCase() !== lst[i].slice(-1)) {
                 // recombine
                 lst[i] = lst[i] + m[i] + lst[i+1];
