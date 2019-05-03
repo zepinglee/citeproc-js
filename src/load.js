@@ -818,9 +818,10 @@ var CSL = {
                     splits[i] = CSL.Output.Formatters["capitalize-first"](state, splits[i]);
                 }
                 for (var i=1, ilen=splits.length-1; i < ilen; i += 2) {
-                    if (splits[i].indexOf(":") > -1) {
+                    var m = splits[i].match(/([:\?\!] )/);
+                    if (m) {
                         var narrowSpace = state.opt["default-locale"][0].slice(0, 2).toLowerCase() === "fr" ? "\u202f" : "";
-                        splits[i] = narrowSpace + ": ";
+                        splits[i] = narrowSpace + m[1];
                     }
                     if (splits[i].indexOf("-") > -1 || splits[i].indexOf("—") > -1) {
                         splits[i] = "—";
