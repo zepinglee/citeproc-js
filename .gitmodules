@@ -13,3 +13,6 @@
 [submodule "juris-modules"]
 	path = juris-modules
 	url = https://github.com/Juris-M/style-modules
+[submodule "fixtures/styles"]
+	path = fixtures/styles
+	url = https://github.com/Juris-M/jm-style-tests.git
