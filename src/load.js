@@ -596,6 +596,7 @@ var CSL = {
         "call-number",
         "chapter-number",
         "collection-number",
+        "division",
         "edition",
         "page",
         "issue",
