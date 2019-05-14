@@ -11,117 +11,53 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] full: First main title: First subtitle
+full: First main title: First subtitle
 short: First main title
 main: First main title
 sub: First subtitle
 
-..[1] full: Second main title : Second subtitle
+full: Second main title: second subtitle
 short: Second main title
 main: Second main title
-sub: Second subtitle
+sub: second subtitle
 
-..[2] full: Third main title -- Third subtitle
+full: Third main title—Third subtitle
 short: Third main title
-main: Third main title -- Third subtitle
+main: Third main title
+sub: Third subtitle
 
->>[3] full: Fourth main title? Fourth subtitle
+full: Fourth main title? Fourth subtitle
 short: Fourth main title?
-main: Fourth main title? Fourth subtitle
+main: Fourth main title?
+sub: Fourth subtitle
 
 <<===== RESULT =====<<
 
->>===== CITATIONS =====>>
+
+>>===== CITATION-ITEMS =====>>
 [
     [
-        {
-            "citationID": "CITATION-1", 
-            "citationItems": [
                 {
                     "id": "ITEM-1"
                 }
-            ], 
-            "properties": {
-                "noteIndex": 1
-            }
-        }, 
-        [], 
-        []
     ], 
     [
-        {
-            "citationID": "CITATION-2", 
-            "citationItems": [
                 {
                     "id": "ITEM-2"
                 }
-            ], 
-            "properties": {
-                "noteIndex": 2
-            }
-        }, 
-        [
-            [
-                "CITATION-1", 
-                1
-            ]
-        ], 
-        []
     ], 
     [
-        {
-            "citationID": "CITATION-3", 
-            "citationItems": [
                 {
                     "id": "ITEM-3"
                 }
-            ], 
-            "properties": {
-                "noteIndex": 3
-            }
-        }, 
-        [
-            [
-                "CITATION-1", 
-                1
-            ], 
-            [
-                "CITATION-2", 
-                2
-            ]
-        ], 
-        []
     ], 
     [
-        {
-            "citationID": "CITATION-4", 
-            "citationItems": [
                 {
                     "id": "ITEM-4"
                 }
-            ], 
-            "properties": {
-                "noteIndex": 4
-            }
-        }, 
-        [
-            [
-                "CITATION-1", 
-                1
-            ], 
-            [
-                "CITATION-2", 
-                2
-            ], 
-            [
-                "CITATION-3", 
-                3
-            ]
-        ], 
-        []
     ]
 ]
-<<===== CITATIONS =====<<
+<<===== CITATION-ITEMS =====<<
 
 
 
@@ -163,7 +99,7 @@ main: Fourth main title? Fourth subtitle
     {
         "id": "ITEM-2", 
         "type": "book",
-		"title": "Second main title : Second subtitle",
+		"title": "Second main title : second subtitle",
 		"title-short": "Second main title"
     },
     {
@@ -180,3 +116,5 @@ main: Fourth main title? Fourth subtitle
     }
 ]
 <<===== INPUT =====<<
+
+

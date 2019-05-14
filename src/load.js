@@ -596,6 +596,7 @@ var CSL = {
         "call-number",
         "chapter-number",
         "collection-number",
+        "division",
         "edition",
         "page",
         "issue",
@@ -631,7 +632,7 @@ var CSL = {
         "container-title"
     ],
     TITLE_FIELD_SPLITS: function(seg) {
-        var keys = ["title", "short", "main", "sub"];
+        var keys = ["title", "short", "main", "sub", "subjoin"];
         var ret = {};
         for (var i=0,ilen=keys.length;i<ilen;i++) {
             ret[keys[i]] = seg + "title" + (keys[i] === "title" ? "" : "-" + keys[i]);
@@ -664,7 +665,10 @@ var CSL = {
         return fld;
     },
 
-    extractTitleAndSubtitle: function (Item) {
+    extractTitleAndSubtitle: function (Item, narrowSpaceLocale) {
+        var narrowSpace = narrowSpaceLocale ? "\u202f" : "";
+        // XXX In this function, split on split-char, but prefer exact match
+        // XXX of subtitle to a split-char in title if found.
         var segments = ["", "container-"];
         for (var i=0,ilen=segments.length;i<ilen;i++) {
             var seg = segments[i];
@@ -691,12 +695,63 @@ var CSL = {
                 }
                 vals[title.main] = vals[title.title];
                 vals[title.sub] = false;
-                if (vals[title.title] && vals[title["short"]]) {
-                    var shortTitle = vals[title["short"]];
-                    var offset = shortTitle.length;
-                    if (vals[title.title].slice(0,offset) === shortTitle && vals[title.title].slice(offset).match(/^\s*:/)) {
-                        vals[title.main] = vals[title.title].slice(0,offset).replace(/\s+$/,"");
-                        vals[title.sub] = vals[title.title].slice(offset).replace(/^\s*:\s*/,"");
+                var shortTitle = vals[title["short"]];
+                if (vals[title.title]) {
+                    // Rules
+                    // TITLE_SPLIT eliminates split-points of period-space preceded by a capital letter.
+                    // If short title exists and matches exactly to a split-point, use that split-point only.
+                    // Otherwise if there is just one split-point, use that as main/sub split.
+                    // Otherwise use all split-points ... which is handled in titleCaseSentenceOrNormal, not here.
+                    if (shortTitle && shortTitle === vals[title.title]) {
+                        vals[title.main] = vals[title.title];
+                        vals[title.subjoin] = "";
+                        vals[title.sub] = "";
+                    } else if (shortTitle) {
+                        // check for valid match to shortTitle
+                        var checkAhead = vals[title.title].slice(shortTitle.replace(/[\?\!]+$/, "").length);
+                        var m = CSL.TITLE_SPLIT_REGEXP.matchfirst.exec(checkAhead);
+                        if (m) {
+                            vals[title.main] = shortTitle;
+                            vals[title.subjoin] = m[1].replace(/[\?\!]+(\s*)$/, "$1");
+                            vals[title.sub] = checkAhead.replace(CSL.TITLE_SPLIT_REGEXP.matchfirst, "");
+                        } else {
+                            var splitTitle = CSL.TITLE_SPLIT(vals[title.title]);
+                            if (splitTitle.length == 3) {
+                                vals[title.main] = splitTitle[0];
+                                vals[title.subjoin] = splitTitle[1];
+                                vals[title.sub] = splitTitle[2];
+                            } else {
+                                vals[title.main] = vals[title.title];
+                                vals[title.subjoin] = "";
+                                vals[title.sub] = "";
+                            }
+                        }
+                    } else {
+                        var splitTitle = CSL.TITLE_SPLIT(vals[title.title]);
+                        if (splitTitle.length == 3) {
+                            vals[title.main] = splitTitle[0];
+                            vals[title.subjoin] = splitTitle[1];
+                            vals[title.sub] = splitTitle[2];
+                        } else {
+                            vals[title.main] = vals[title.title];
+                            vals[title.subjoin] = "";
+                            vals[title.sub] = "";
+                        }
+                    }
+                    if (vals[title.subjoin]) {
+                        if (vals[title.subjoin].match(/([\?\!])/)) {
+                            var m = vals[title.subjoin].match(/(\s*)$/)
+                            vals[title.main] = vals[title.main] + narrowSpace +vals[title.subjoin].trim();
+                            vals[title.subjoin] = m[1];
+                        }
+                    }
+                }
+                if (vals[title.subjoin]) {
+                    if (vals[title.subjoin].indexOf(":") > -1) {
+                        vals[title.subjoin] = narrowSpace + ": ";
+                    }
+                    if (vals[title.subjoin].indexOf("-") > -1 || vals[title.subjoin].indexOf("—") > -1) {
+                        vals[title.subjoin] = "—";
                     }
                 }
                 if (lang) {
@@ -716,6 +771,12 @@ var CSL = {
     },
 
     titlecaseSentenceOrNormal: function(state, Item, seg, lang, sentenceCase) {
+        // Hold on here.
+        // What is seg here?
+        // It's ... either "" or "container-". Which is ugly, but works.
+        // But this ALWAYS returns the full title, never short.
+        // So sentence-casing cannot be applied to short.
+        // Goes unnoticed because forced sentence-casing almost never appears in styles.
         var title = CSL.TITLE_FIELD_SPLITS(seg);
         var vals = {};
         if (lang && Item.multi) {
@@ -728,13 +789,18 @@ var CSL = {
             if (Item.multi._keys[title.sub]) {
                 vals[title.sub] = Item.multi._keys[title.sub][lang];
             }
+            if (Item.multi._keys[title.subjoin]) {
+                vals[title.subjoin] = Item.multi._keys[title.subjoin][lang];
+            }
         } else {
             vals[title.title] = Item[title.title];
             vals[title.main] = Item[title.main];
             vals[title.sub] = Item[title.sub];
+            vals[title.subjoin] = Item[title.subjoin];
         }
         if (vals[title.main] && vals[title.sub]) {
             var mainTitle = vals[title.main];
+            var subJoin = vals[title.subjoin];
             var subTitle = vals[title.sub];
             if (sentenceCase) {
                 mainTitle = CSL.Output.Formatters.sentence(state, mainTitle);
@@ -742,10 +808,28 @@ var CSL = {
             } else if (state.opt.development_extensions.uppercase_subtitles) {
                 subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
             }
-            return [mainTitle, subTitle].join(vals[title.title].slice(mainTitle.length, -1 * subTitle.length));
+            return [mainTitle, subJoin, subTitle].join("");
         } else {
             if (sentenceCase) {
                 return CSL.Output.Formatters.sentence(state, vals[title.title]);
+            } else if (state.opt.development_extensions.uppercase_subtitles) {
+                // Split and apply everywhere.
+                var splits = CSL.TITLE_SPLIT(vals[title.title]);
+                for (var i=0,ilen=splits.length; i<ilen; i += 2) {
+                    splits[i] = CSL.Output.Formatters["capitalize-first"](state, splits[i]);
+                }
+                for (var i=1, ilen=splits.length-1; i < ilen; i += 2) {
+                    var m = splits[i].match(/([:\?\!] )/);
+                    if (m) {
+                        var narrowSpace = state.opt["default-locale"][0].slice(0, 2).toLowerCase() === "fr" ? "\u202f" : "";
+                        splits[i] = narrowSpace + m[1];
+                    }
+                    if (splits[i].indexOf("-") > -1 || splits[i].indexOf("—") > -1) {
+                        splits[i] = "—";
+                    }
+                }
+                vals[title.title] = splits.join("");
+                return vals[title.title];
             } else {
                 return vals[title.title];
             }
@@ -1063,5 +1147,42 @@ var CSL = {
         "csl_reverse_lookup_support",
         "main_title_from_short_title",
         "uppercase_subtitles"
-    ]
+    ],
+
+    TITLE_SPLIT_REGEXP: (function() {
+        var splits = [
+            "\\.\\s+",
+            "\\!\\s+",
+            "\\?\\s+",
+            "\\s*::*\\s+",
+            "\\s*—\\s*",
+            "\\s+\\-\\s+",
+            "\\s*\\-\\-\\-*\\s*"
+        ]
+        return {
+            match: new RegExp("(" + splits.join("|") + ")", "g"),
+            matchfirst: new RegExp("^(" + splits.join("|") + ")"),
+            split: new RegExp("(?:" + splits.join("|") + ")")
+        }
+    })(),
+
+    TITLE_SPLIT: function(str) {
+        if (!str) {
+            return str;
+        }
+        var m = str.match(CSL.TITLE_SPLIT_REGEXP.match);
+        var lst = str.split(CSL.TITLE_SPLIT_REGEXP.split);
+        for (var i=lst.length-2; i>-1; i--) {
+            lst[i] = lst[i].trim();
+            if (lst[i] && lst[i].slice(-1).toLowerCase() !== lst[i].slice(-1)) {
+                // recombine
+                lst[i] = lst[i] + m[i] + lst[i+1];
+                lst = lst.slice(0, i+1).concat(lst.slice(i+2))
+            } else {
+                // merge
+                lst = lst.slice(0, i+1).concat([m[i]]).concat(lst.slice(i+1))
+            }
+        }
+        return lst;
+    }
 };
