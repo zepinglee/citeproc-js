@@ -11340,16 +11340,10 @@ CSL.Node.intext = {
             this.execs.push(func);
         }
         if (this.tokentype === CSL.END) {
-            state.opt.grouped_sort = state.opt.xclass === "in-text" 
-                && (state.citation.opt.collapse 
-                    && state.citation.opt.collapse.length)
-                || (state.citation.opt.cite_group_delimiter
-                    && state.citation.opt.cite_group_delimiter.length)
-                && state.opt.update_mode !== CSL.POSITION
-                && state.opt.update_mode !== CSL.NUMERIC;
-            if (state.opt.grouped_sort 
-                && state.citation_sort.opt.sort_directions.length) {
-                state.intext_sort.opt.sort_directions = state.citation_sort.opt.sort_directions;
+            state.intext_sort = {
+                opt: {
+                    sort_directions: state.citation_sort.opt.sort_directions
+                }
             }
             state.intext.srt = state.citation.srt;
         }

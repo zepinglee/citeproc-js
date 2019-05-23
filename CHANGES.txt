@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.4
+========================
+
+- Fix bug in cs:intext triggered by grouped sorts.
+
+========================
 Changes in version 1.2.3
 ========================
 
