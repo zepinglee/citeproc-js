@@ -2,11 +2,3 @@
 node_modules
 test
 .cslValidationPos
-fixtures/styles/**
-!fixtures/styles/.gitkeep
-!fixtures/styles/jm-japan-tourism-review
-!fixtures/styles/jm-japan-tourism-review/*_*.txt
-!fixtures/styles/jm-japan-sociological-society
-!fixtures/styles/jm-japan-sociological-society/*_*.txt
-!fixtures/styles/antarctic-science
-!fixtures/styles/antarctic-science/*_*.txt
