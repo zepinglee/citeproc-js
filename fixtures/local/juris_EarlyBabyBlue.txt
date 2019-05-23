@@ -7,7 +7,7 @@ citation
 {
     "default": {
         "institution-part": {
-            "District Court": "!here>>>"
+            "District Court": "9th Cir."
         }, 
         "place": {
             "us:c9:ca": "9th Cir.",
@@ -78,7 +78,7 @@ citation
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale>
-    <!-- style-options jurisdiction-preference="babyblue"/ -->
+    <!-- style-options jurisdiction-preference="IndigoTemp"/ -->
     <terms>
       <term name="ibid">id.</term>
       <term name="paragraph" form="static">[%s]</term>
