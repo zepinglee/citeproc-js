@@ -1,6 +1,30 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.3
+========================
+
+* Adjust a test to reflect new modulare style logic
+  (Jurism US module now renders only authority, not jurisdiction,
+  in the legal_case type)
+
+* Send raw institution keys to abbrevs filter
+  (Using raw machine-readable keys was always the right way,
+  human-readable form should not have been used for this)
+
+* Recognize "division" as a numeric variable
+
+* Broaden French subtitle split condition in multiple subtitles to include ? and !
+
+* Tweaks for narrow no-break-space in fr locale
+
+* Remove unused flags from state.js
+
+* More generous subtitle capitalization
+
+* Tests of new title split/subtitle caps code
+
+========================
 Changes in version 1.2.2
 ========================
 
