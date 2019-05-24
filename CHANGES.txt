@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.5
+========================
+
+- Convert number to string before string operation
+
+========================
 Changes in version 1.2.4
 ========================
 
