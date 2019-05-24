@@ -282,7 +282,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             var lst = str.split(/(?:;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
             var recombine = false;
             for (var i in lst) {
-                if (lst[i].replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {
+                if (("" + lst[i]).replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {
                     //recombine = true;
                     break;
                 }
