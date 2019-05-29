@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.5",
+    PROCESSOR_VERSION: "1.2.6",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -7228,6 +7228,25 @@ CSL.Node["date-part"] = {
         }
         state.build.date_parts.push(this.strings.name);
         var date_variable = state.build.date_variables[0];
+        function formatAndStrip(myform, gender, val) {
+            if (!val) {
+                return val;
+            }
+            val = "" + CSL.Util.Dates[this.strings.name][myform](state, val, gender, this.default_locale);
+            if ("month" === this.strings.name) {
+                if (state.tmp.strip_periods) {
+                    val = val.replace(/\./g, "");
+                } else {
+                    for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
+                        if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
+                            val = val.replace(/\./g, "");
+                            break;
+                        }
+                    }
+                }
+            }
+            return val;
+        }
         func = function (state, Item) {
             if (!state.tmp.date_object) {
                 return;
@@ -7301,32 +7320,8 @@ CSL.Node["date-part"] = {
                             myform = "numeric";
                         }
                     }
-                    value = CSL.Util.Dates[this.strings.name][myform](state, value, gender, this.default_locale);
-                    if ("month" === this.strings.name) {
-                        if (state.tmp.strip_periods) {
-                            value = value.replace(/\./g, "");
-                        } else {
-                            for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
-                                if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
-                                    value = value.replace(/\./g, "");
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    if (value_end) {
-                        value_end = CSL.Util.Dates[this.strings.name][myform](state, value_end, gender, ("accessed" === date_variable), "_end");
-                        if (state.tmp.strip_periods) {
-                            value_end = value_end.replace(/\./g, "");
-                        } else {
-                            for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
-                                if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
-                                    value_end = value_end.replace(/\./g, "");
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    value = formatAndStrip.call(this, myform, gender, value);
+                    value_end = formatAndStrip.call(this, myform, gender, value_end);
                 }
                 state.output.openLevel("empty");
                 if (state.tmp.date_collapse_at.length) {

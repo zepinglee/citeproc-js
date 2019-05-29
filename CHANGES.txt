@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.6
+========================
+
+- Avoid potential type error when strip-periods is set
+  on cs:date-part
+
+========================
 Changes in version 1.2.5
 ========================
 
