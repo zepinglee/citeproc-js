@@ -174,7 +174,25 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var val;
 
     var me = this;
+    
+    var fullformAnd = ",\\s+and\\s+|\\s+and\\s+";
+    if (this.opt.lang.slice(0, 2) !== "en") {
+        fullformAnd += "|,\\s+" + this.getTerm("and") + "\\s+|\\s+" + this.getTerm("and") + "\\s+";
+    }
+    var symbolAnd = "\\s*&\\s*";
+    var andRex = new RegExp("^" + symbolAnd+ "$");
+    var joinerMatchRex = new RegExp("(" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*)", "g");
+    var joinerSplitRex = new RegExp("(?:" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*|\\s*&\\s*)");
 
+    // This guesses whether the symbol form is defined or not.
+    // It's the best we can do, because when locales are built, all of the
+    // holes are filled explictly with fallback values: the symbol form is never undefined.
+    var localeAnd = this.getTerm("and");
+    var localeAmpersand = this.getTerm("and", "symbol");
+    if (localeAnd === localeAmpersand) {
+        localeAmpersand = "&";
+    }
+    
     // XXXX shadow_numbers should carry an array of objects with
     // XXXX full data for each. The test of a number should be
     // XXXX a separate function, possibly supported by a splitter
@@ -277,9 +295,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
         // Split chunks and collate delimiters.
         var elems = [];
-        var m = str.match(/(;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
+        var m = str.match(joinerMatchRex);
         if (m) {
-            var lst = str.split(/(?:;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
+            for (var i=0, ilen=m.length; i<ilen; i++) {
+                if (m[i].match(andRex)) {
+                    m[i] = " " + localeAmpersand + " ";
+                }
+            }
+            var lst = str.split(joinerSplitRex);
             var recombine = false;
             for (var i in lst) {
                 if (("" + lst[i]).replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {
