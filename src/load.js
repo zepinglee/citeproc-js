@@ -809,7 +809,7 @@ var CSL = {
                 subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
             }
             return [mainTitle, subJoin, subTitle].join("");
-        } else {
+        } else if (vals[title.title]) {
             if (sentenceCase) {
                 return CSL.Output.Formatters.sentence(state, vals[title.title]);
             } else if (state.opt.development_extensions.uppercase_subtitles) {
@@ -833,6 +833,8 @@ var CSL = {
             } else {
                 return vals[title.title];
             }
+        } else {
+            return "";
         }
     },
 
