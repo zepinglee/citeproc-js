@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.6",
+    PROCESSOR_VERSION: "1.2.7",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -697,7 +697,7 @@ var CSL = {
                 subTitle = CSL.Output.Formatters["capitalize-first"](state, subTitle);
             }
             return [mainTitle, subJoin, subTitle].join("");
-        } else {
+        } else if (vals[title.title]) {
             if (sentenceCase) {
                 return CSL.Output.Formatters.sentence(state, vals[title.title]);
             } else if (state.opt.development_extensions.uppercase_subtitles) {
@@ -720,6 +720,8 @@ var CSL = {
             } else {
                 return vals[title.title];
             }
+        } else {
+            return "";
         }
     },
     getSafeEscape: function(state) {
@@ -14631,6 +14633,19 @@ CSL.Util.Suffixator.prototype.format = function (N) {
 CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var val;
     var me = this;
+    var fullformAnd = ",\\s+and\\s+|\\s+and\\s+";
+    if (this.opt.lang.slice(0, 2) !== "en") {
+        fullformAnd += "|,\\s+" + this.getTerm("and") + "\\s+|\\s+" + this.getTerm("and") + "\\s+";
+    }
+    var symbolAnd = "\\s*&\\s*";
+    var andRex = new RegExp("^" + symbolAnd+ "$");
+    var joinerMatchRex = new RegExp("(" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*)", "g");
+    var joinerSplitRex = new RegExp("(?:" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*|\\s*&\\s*)");
+    var localeAnd = this.getTerm("and");
+    var localeAmpersand = this.getTerm("and", "symbol");
+    if (localeAnd === localeAmpersand) {
+        localeAmpersand = "&";
+    }
     function normalizeFieldValue(str) {
         str = str.trim();
         var m = str.match(/^([^ ]+)/);
@@ -14691,9 +14706,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         defaultLabel = defaultLabel ? defaultLabel : "";
         str = normalizeFieldValue(str, defaultLabel);
         var elems = [];
-        var m = str.match(/(;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/g);
+        var m = str.match(joinerMatchRex);
         if (m) {
-            var lst = str.split(/(?:;\s+|,\s+|\s*\\*[\-\u2013]+\s*|\s*&\s*)/);
+            for (var i=0, ilen=m.length; i<ilen; i++) {
+                if (m[i].match(andRex)) {
+                    m[i] = " " + localeAmpersand + " ";
+                }
+            }
+            var lst = str.split(joinerSplitRex);
             var recombine = false;
             for (var i in lst) {
                 if (("" + lst[i]).replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {

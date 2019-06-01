@@ -1,6 +1,16 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.7
+========================
+
+- Fix bug triggered by APA bug and multilingual settings
+
+- Localize ampersand if poss, but render full form of "and"
+  (either en or localized) as-is, recognizing as plural.
+  See: https://forums.zotero.org/discussion/77628/citeproc-js-referring-to-single-vs-multiple-paragraphs
+
+========================
 Changes in version 1.2.6
 ========================
 
