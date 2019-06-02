@@ -336,8 +336,8 @@ var CSL = {
                 Item.type = val;
                 lines[i] = "";
             } else if (CSL.DATE_VARIABLES.indexOf(key.replace(/^alt-/, "")) > -1) {
-                if (allowDateOverride) {
-                    Item[key] = {raw: val};
+                if (!Item[key] || allowDateOverride) {
+                    Item[key] = CSL.DateParser.parseDateToArray(val);
                     if (!validFieldsForType || (validFieldsForType[key] && this.isDateString(val))) {
                         lines[i] = "";
                     }
