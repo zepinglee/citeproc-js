@@ -5,9 +5,30 @@ citation
 
 
 >>===== RESULT =====>>
-Some Book or Other, 1965 [October 3, 1855]
+Original date, 1965 [October 3, 1855]
+Date override, 1900
+Valid date field in note field, 2000
 <<===== RESULT =====<<
 
+>>===== CITATION-ITEMS =====>>
+[
+  [
+    {
+      "id": "ITEM-1"
+    }
+  ],
+  [
+    {
+      "id": "ITEM-2"
+    }
+  ],
+  [
+    {
+      "id": "ITEM-3"
+    }
+  ]
+]
+<<===== CITATION-ITEMS =====<<
 
 >>===== CSL =====>>
 <style 
@@ -47,8 +68,29 @@ Some Book or Other, 1965 [October 3, 1855]
                 ]
             ]
         }, 
-        "note": "{:original-date: 1855-10-03}", 
-        "title": "Some Book or Other", 
+        "note": "original-date: 1855-10-03", 
+        "title": "Original date", 
+        "type": "book"
+    },
+    {
+        "id": "ITEM-2", 
+        "issued": {
+            "date-parts": [
+                [
+                    "1965", 
+                    "6", 
+                    "1"
+                ]
+            ]
+        }, 
+        "note": "issued: 1900-06-30", 
+        "title": "Date override", 
+        "type": "book"
+    },
+    {
+        "id": "ITEM-3", 
+        "note": "issued: 2000-01-01", 
+        "title": "Valid date field in note field", 
         "type": "book"
     }
 ]
