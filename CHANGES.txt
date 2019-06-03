@@ -1,6 +1,19 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.8
+========================
+
+- Updates to style tests
+
+- Updates to style modules
+
+- Process extra date to array on retrieval, and always process if no
+  main entry
+
+- Test for the above
+
+========================
 Changes in version 1.2.7
 ========================
 

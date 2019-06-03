@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.7",
+    PROCESSOR_VERSION: "1.2.8",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -307,8 +307,8 @@ var CSL = {
                 Item.type = val;
                 lines[i] = "";
             } else if (CSL.DATE_VARIABLES.indexOf(key.replace(/^alt-/, "")) > -1) {
-                if (allowDateOverride) {
-                    Item[key] = {raw: val};
+                if (!Item[key] || allowDateOverride) {
+                    Item[key] = CSL.DateParser.parseDateToArray(val);
                     if (!validFieldsForType || (validFieldsForType[key] && this.isDateString(val))) {
                         lines[i] = "";
                     }
