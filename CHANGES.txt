@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 ========================
+Changes in version 1.2.9
+========================
+
+- Added some style tests
+
+- Split jurisdiction preferences on space and in other CSL
+  attribute values, not on comma.
+
+========================
 Changes in version 1.2.8
 ========================
 

@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.8",
+    PROCESSOR_VERSION: "1.2.9",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -6953,7 +6953,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                             this.locale[lang_out].opts[attrname.slice(1)] = false;
                         }
                     } else if (attrname === "@jurisdiction-preference") {
-                        var jurisdiction_preference = attributes[attrname].split(/\s*,\s*/);
+                        var jurisdiction_preference = attributes[attrname].split(/\s+/);
                         this.locale[lang_out].opts[attrname.slice(1)] = jurisdiction_preference;
                     } else if (attrname === "@skip-words") {
                         var skip_words = attributes[attrname].split(/\s*,\s*/);
