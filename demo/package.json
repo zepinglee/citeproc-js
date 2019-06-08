@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "ecstatic": ">=3.3.2",
     "getopts": "^2.2.4",
     "randomize": "0.0.4"
   },
