@@ -606,6 +606,7 @@ var CSL = {
         "number-of-pages",
         "number-of-volumes",
         "volume",
+        // "section", ??? add this?
         "supplement",
         "citation-number"
     ],
