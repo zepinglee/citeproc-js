@@ -597,6 +597,9 @@ CSL.Disambiguation.prototype.captureStepToBase = function() {
     if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite"
         && this.base.givens && this.base.givens.length) {
         if ("undefined" !== typeof this.base.givens[this.gnameset][this.gname]) {
+            if (this.betterbase.givens.length < this.base.givens.length) {
+                this.betterbase.givens = JSON.parse(JSON.stringify(this.base.givens));
+            }
             this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
         }
     }
