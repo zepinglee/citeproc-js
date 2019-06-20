@@ -26,7 +26,7 @@ Title input with immediate period. Should start with uppercase
 Title input with space-period. Should normalize and start with uppercase
 Title input with immediate period and no trailing space.should render vebatim
 Title input with em dash—Should start with uppercase
-Title input with space-em-dash-space—Should start with uppercase
+Title input with space-em-dash-space—Should normalize and start with uppercase
 Title input with space-hyphen-space—Should normalize and start with uppercase
 Title input with space-double-hyphen-space—Should normalize and start with uppercase
 Title input with space-triple-hyphen-space—Should normalize and start with uppercase

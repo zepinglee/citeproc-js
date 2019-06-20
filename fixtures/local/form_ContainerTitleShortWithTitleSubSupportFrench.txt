@@ -5,28 +5,28 @@ citation
 
 
 >>===== RESULT =====>>
-Title input with immediate colon : Should start with uppercase
+Title input with immediate colon : Should normalize and start with uppercase
 Title input with immediate double-colon : Should normalize and start with uppercase
 Title input with space-colon : Should normalize and start with uppercase
 Title input with no-break-space-colon : Should normalize and start with uppercase
-Title input with narrow-no-break-space-colon : Should normalize and start with uppercase
+Title input with narrow-no-break-space-colon : Should start with uppercase
 Title input with space-double-colon : Should normalize and start with uppercase
 Title input with immediate colon and no trailing space:should render vebatim
 Title input with immediate question mark ? Should start with uppercase
 Title input with space-question mark ? Should normalize and start with uppercase
 Title input with no-break-space-question mark ? Should normalize and start with uppercase
-Title input with narrow-no-break-space-question mark ? Should normalize and start with uppercase
+Title input with narrow-no-break-space-question mark ? Should start with uppercase
 Title input with immediate question mark and no trailing space?should render vebatim
 Title input with immediate exclamation point ! Should start with uppercase
 Title input with space-exclamation point ! Should normalize and start with uppercase
 Title input with no-break-space-exclamation point ! Should normalize and start with uppercase
-Title input with narrow-no-break-space-exclamation point ! Should normalize and start with uppercase
+Title input with narrow-no-break-space-exclamation point ! Should start with uppercase
 Title input with immediate exclamation point and no trailing space!should render vebatim
 Title input with immediate period. Should start with uppercase
 Title input with space-period. Should normalize and start with uppercase
 Title input with immediate period and no trailing space.should render vebatim
 Title input with em dash—Should start with uppercase
-Title input with space-em-dash-space—Should start with uppercase
+Title input with space-em-dash-space—Should normalize and start with uppercase
 Title input with space-hyphen-space—Should normalize and start with uppercase
 Title input with space-double-hyphen-space—Should normalize and start with uppercase
 Title input with space-triple-hyphen-space—Should normalize and start with uppercase
@@ -219,7 +219,7 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
 [
     {
         "id": "ITEM-1", 
-        "container-title": "Title input with immediate colon: should start with uppercase", 
+        "container-title": "Title input with immediate colon: should normalized and start with uppercase", 
         "type": "article-journal"
     },
     {
@@ -239,7 +239,7 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
     },
     {
         "id": "ITEM-5", 
-        "container-title": "Title input with narrow-no-break-space-colon : should normalize and start with uppercase", 
+        "container-title": "Title input with narrow-no-break-space-colon : should start with uppercase", 
         "type": "article-journal"
     },
     {
@@ -269,7 +269,7 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
     },
     {
         "id": "ITEM-11", 
-        "container-title": "Title input with narrow-no-break-space-question mark ? should normalize and start with uppercase", 
+        "container-title": "Title input with narrow-no-break-space-question mark ? should start with uppercase", 
         "type": "article-journal"
     },
     {
@@ -294,7 +294,7 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
     },
     {
         "id": "ITEM-16", 
-        "container-title": "Title input with narrow-no-break-space-exclamation point ! should normalize and start with uppercase", 
+        "container-title": "Title input with narrow-no-break-space-exclamation point ! should start with uppercase", 
         "type": "article-journal"
     },
     {
@@ -324,7 +324,7 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
     },
     {
         "id": "ITEM-22", 
-        "container-title": "Title input with space-em-dash-space — should start with uppercase", 
+        "container-title": "Title input with space-em-dash-space — should normalize and start with uppercase", 
         "type": "article-journal"
     },
     {
