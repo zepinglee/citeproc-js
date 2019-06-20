@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.9",
+    PROCESSOR_VERSION: "1.2.10",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -17729,6 +17729,9 @@ CSL.Disambiguation.prototype.captureStepToBase = function() {
     if (this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite"
         && this.base.givens && this.base.givens.length) {
         if ("undefined" !== typeof this.base.givens[this.gnameset][this.gname]) {
+            if (this.betterbase.givens.length < this.base.givens.length) {
+                this.betterbase.givens = JSON.parse(JSON.stringify(this.base.givens));
+            }
             this.betterbase.givens[this.gnameset][this.gname] = this.base.givens[this.gnameset][this.gname];
         }
     }

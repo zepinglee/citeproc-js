@@ -1,5 +1,13 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
+=========================
+Changes in version 1.2.10
+=========================
+
+- Avoid crash under some obscure disambiguation conditions.
+
+  https://forums.zotero.org/discussion/77849/report-id-1635808036
+
 ========================
 Changes in version 1.2.9
 ========================
