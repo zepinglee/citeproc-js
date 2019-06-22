@@ -542,7 +542,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         }
     } else { // plain vanilla
         if (name["dropping-particle"] && name.family && !name["non-dropping-particle"]) {
-            if (["'","\u02bc","\u2019","-"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
+            var dp = name["dropping-particle"];
+            var apostrophes = ["'","\u02bc","\u2019","-"];
+            if (apostrophes.indexOf(dp.slice(-1)) > -1 && dp.slice(0, -1) !== "de") {
                 family = this._join([dropping_particle, family], "");
                 dropping_particle = false;
             }
