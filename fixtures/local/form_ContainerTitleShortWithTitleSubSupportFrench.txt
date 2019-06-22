@@ -219,7 +219,7 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
 [
     {
         "id": "ITEM-1", 
-        "container-title": "Title input with immediate colon: should normalized and start with uppercase", 
+        "container-title": "Title input with immediate colon: should normalize and start with uppercase", 
         "type": "article-journal"
     },
     {
