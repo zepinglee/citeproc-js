@@ -142,7 +142,8 @@ var CSL = {
         "gazette": true,
         "report": true,
         "regulation": true,
-        "standard": true
+        "standard": true,
+        "patent": true
     },
     checkNestedBrace: function(state) {
         if (state.opt.xclass === "note") {
