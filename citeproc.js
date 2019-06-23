@@ -23,7 +23,7 @@ Copyright (c) 2009-2019 Frank Bennett
     <http://www.gnu.org/licenses/> respectively.
 */
 var CSL = {
-    PROCESSOR_VERSION: "1.2.10",
+    PROCESSOR_VERSION: "1.2.11",
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
@@ -127,7 +127,8 @@ var CSL = {
         "gazette": true,
         "report": true,
         "regulation": true,
-        "standard": true
+        "standard": true,
+        "patent": true
     },
     checkNestedBrace: function(state) {
         if (state.opt.xclass === "note") {
@@ -9953,7 +9954,9 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
         }
     } else { // plain vanilla
         if (name["dropping-particle"] && name.family && !name["non-dropping-particle"]) {
-            if (["'","\u02bc","\u2019","-"].indexOf(name["dropping-particle"].slice(-1)) > -1) {
+            var dp = name["dropping-particle"];
+            var apostrophes = ["'","\u02bc","\u2019","-"];
+            if (apostrophes.indexOf(dp.slice(-1)) > -1 && dp.slice(0, -1) !== "de") {
                 family = this._join([dropping_particle, family], "");
                 dropping_particle = false;
             }
