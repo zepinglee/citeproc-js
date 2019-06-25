@@ -159,7 +159,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
     // attach the sorted list to the citation item
     citation.sortedItems = sortedItems;
-
+    
     // build reconstituted citations list in current document order
     var citationByIndex = [];
     var citationById = {};
@@ -342,6 +342,9 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         }
     }
 
+    // evaluate parallels
+    this.parallel.StartCitation(citation.sortedItems);
+
     var citations;
     if (this.opt.update_mode === CSL.POSITION) {
         for (var i = 0; i < 2; i += 1) {
@@ -360,12 +363,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     last_ref = {};
                 }
                 for (k = 0, klen = onecitation.sortedItems.length; k < klen; k += 1) {
-                    if (!this.registry.registry[onecitation.sortedItems[k][1].id].parallel) {
-                        if (!citationsInNote[onecitation.properties.noteIndex]) {
-                            citationsInNote[onecitation.properties.noteIndex] = 1;
-                        } else {
-                            citationsInNote[onecitation.properties.noteIndex] += 1;
-                        }
+                    if (onecitation.sortedItems[k][1].parallel && onecitation.sortedItems[k][1].parallel !== "first") {
+                        continue;
+                    }
+                    if (!citationsInNote[onecitation.properties.noteIndex]) {
+                        citationsInNote[onecitation.properties.noteIndex] = 1;
+                    } else {
+                        citationsInNote[onecitation.properties.noteIndex] += 1;
                     }
                 }
                 // Set the following:
@@ -398,6 +402,13 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             incitationid = onecitation.sortedItems[k - 1][0].legislation_id;
                         } else {
                             incitationid = onecitation.sortedItems[k - 1][1].id;
+                            //if (onecitation.sortedItems[k-1][1].parallel === "last") {
+                                for (var l=k-2; l>-1; l--) {
+                                    if (onecitation.sortedItems[l][1].parallel === "first") {
+                                        incitationid = onecitation.sortedItems[l][1].id;
+                                    }
+                                }
+                            //}
                         }
                     }
                     // Don't touch item data of other cites when previewing
@@ -484,26 +495,15 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             //         to the same item ...
                             //     (d) the note numbers must be the same or consecutive.
                             // (this has some jiggery-pokery in it for parallels)
-                            var items = citations[(j - 1)].sortedItems;
                             var useme = false;
                             // XXX Can oldid be equated with oldlastid, I wonder ...
                             var oldid = citations[j - 1].sortedItems[0][0].id;
                             if (citations[j - 1].sortedItems[0][0].legislation_id) {
                                 oldid = citations[j - 1].sortedItems[0][0].legislation_id;
                             }
-                            if ((oldid  == myid && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1)) || citations[j - 1].sortedItems[0][1].id == this.registry.registry[item[1].id].parallel) {
+                            if ((oldid  == myid && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1))) {
                                 if (citationsInNote[citations[j - 1].properties.noteIndex] === 1 || citations[j - 1].properties.noteIndex === 0) {
                                     useme = true;
-                                }
-                            }
-                            for (n = 0, nlen = items.slice(1).length; n < nlen; n += 1) {
-                                var itmp = items.slice(1)[n];
-                                // XXXXX: This test can't be right.  parallel stores an ID ... ?
-                                if (!this.registry.registry[itmp[1].id].parallel || this.registry.registry[itmp[1].id].parallel == this.registry.registry[itmp[1].id]) {
-                                    // Does fire in some tests, as a matching undefined
-                                    // No apparent side effects of turning it off, though.
-                                    // For future consideration.
-                                    useme = false;
                                 }
                             }
                             if (useme) {
@@ -797,7 +797,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) {
     var str = "";
-    this.parallel.StartCitation(sortedItems);
+    // Parallels must be evaluated in the calling function
+    //this.parallel.StartCitation(sortedItems);
     if (citation && citation.properties && citation.properties.mode === "composite") {
         citation.properties.mode = "author-only";
         var firstChunk = CSL.getCitationCluster.call(this, sortedItems, citation);
@@ -889,7 +890,10 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         variable_success: flags.variable_success,
         output_tip: flags.output_tip,
         label_form: flags.label_form,
-        parallel_conditions: flags.parallel_conditions,
+        parallel_condition: flags.parallel_condition,
+        parallel_result: flags.parallel_result,
+        no_repeat_condition: flags.no_repeat_condition,
+        parallel_repeats: flags.parallel_result,
         condition: flags.condition,
         force_suppress: flags.force_suppress,
         done_vars: flags.done_vars.slice()
@@ -920,7 +924,6 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     }
     this.tmp.area = "citation";
     this.tmp.root = "citation";
-    this.parallel.use_parallels = (this.parallel.use_parallels === true || this.parallel.use_parallels === null) ? null : false;
     var origSuppressDecorations = this.tmp.suppress_decorations;
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
@@ -942,7 +945,6 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     var ret = this.output.string(this, this.output.queue);
     this.tmp.just_looking = false;
     this.tmp.suppress_decorations = origSuppressDecorations;
-    this.parallel.use_parallels = this.parallel.use_parallels === null ? true : false;
     // Cache the result.
     this.tmp.group_context.replace(oldTermSiblingLayer);
     return ret;
@@ -1171,9 +1173,6 @@ CSL.getCitationCluster = function (inputList, citation) {
             };
             this.tmp.citation_errors.push(error_object);
         }
-        if (pos === (inputList.length - 1)) {
-            this.parallel.ComposeSet();
-        }
         params.splice_delimiter = CSL.getSpliceDelimiter.call(this, last_locator, last_collapsed, pos);
         // XXX This appears to be superfluous.
         if (item && item["author-only"]) {
@@ -1185,8 +1184,8 @@ CSL.getCitationCluster = function (inputList, citation) {
 
             // XXX OR if preceding suffix is empty, and the current prefix begins with a full stop.
 
-            var precedingEndsInPeriodOrComma = preceding_item.suffix && [".", ","].indexOf(preceding_item.suffix.slice(-1)) > -1;
-            var currentStartsWithPeriodOrComma = !preceding_item.suffix && item.prefix && [".", ","].indexOf(item.prefix.slice(0, 1)) > -1;
+            var precedingEndsInPeriodOrComma = preceding_item.suffix && [";", ".", ","].indexOf(preceding_item.suffix.slice(-1)) > -1;
+            var currentStartsWithPeriodOrComma = !preceding_item.suffix && item.prefix && [";", ".", ","].indexOf(item.prefix.slice(0, 1)) > -1;
             if (precedingEndsInPeriodOrComma || currentStartsWithPeriodOrComma) {
                 var spaceidx = params.splice_delimiter.indexOf(" ");
                 if (spaceidx > -1 && !currentStartsWithPeriodOrComma) {
@@ -1209,8 +1208,7 @@ CSL.getCitationCluster = function (inputList, citation) {
         }
     }
 
-    this.tmp.has_purged_parallel = false;
-    this.parallel.PruneOutputQueue(this);
+    this.parallel.purgeGroupsIfParallel();
     //
     // output.queue is a simple array.  do a slice
     // of it to get each cite item, setting params from
@@ -1299,14 +1297,10 @@ CSL.getCitationCluster = function (inputList, citation) {
             return composite;
         }
         if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
-            if (this.tmp.has_purged_parallel) {
-                composite.push("");
-            } else {
-                var errStr = "[CSL STYLE ERROR: reference with no printed form.]";
-                var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
-                var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
-                composite.push(preStr + errStr + sufStr);
-            }
+            var errStr = "[CSL STYLE ERROR: reference with no printed form.]";
+            var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
+            var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
+            composite.push(preStr + errStr + sufStr);
         }
         if (buffer.length && "string" === typeof composite[0]) {
             composite.reverse();
@@ -1420,7 +1414,6 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     }
     this.tmp.cite_renders_content = false;
     this.tmp.probably_rendered_something = false;
-    this.parallel.StartCite(Item, item, prevItemID);
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
@@ -1433,7 +1426,6 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     }
 
     CSL.citeEnd.call(this, Item, item);
-    this.parallel.CloseCite(this);
     // Odd place for this, but it seems to fit here
     if (!this.tmp.cite_renders_content && !this.tmp.just_looking) {
         if (this.tmp.area === "bibliography") {
@@ -1573,10 +1565,6 @@ CSL.citeEnd = function (Item, item) {
         // Put the other stuff back
         for (i = buf.length - 1; i > -1; i += -1) {
             this.tmp.issued_date.list.push(buf.pop());
-        }
-        // Notice the deletion to parallels machinery
-        if (this.parallel.use_parallels) {
-            this.parallel.cite.issued = false;
         }
     }
     this.tmp.issued_date = false;

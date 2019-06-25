@@ -122,7 +122,6 @@ CSL.Node.date = {
                 if (!Item[this.variables[0]]) {
                     return;
                 }
-                state.parallel.StartVariable(this.variables[0]);
                 state.output.startTag("date", this);
                 if (this.variables[0] === "issued"
                     && Item.type === "legal_case"
@@ -161,7 +160,6 @@ CSL.Node.date = {
                     return;
                 }
                 state.output.endTag();
-                state.parallel.CloseVariable(this.variables[0]);
             };
             this.execs.push(func);
         }

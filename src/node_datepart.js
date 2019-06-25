@@ -50,7 +50,6 @@ CSL.Node["date-part"] = {
 
             // Render literal only when year is included in date output
             if (state.tmp.date_object.literal && "year" === this.strings.name) {
-                state.parallel.AppendToVariable(state.tmp.date_object.literal);
                 state.output.append(state.tmp.date_object.literal, this);
             }
 
@@ -97,8 +96,6 @@ CSL.Node["date-part"] = {
                         }
                     }
                 }
-
-                state.parallel.AppendToVariable(value);
 
                 // For gendered locales
                 var monthnameid = ""+state.tmp.date_object.month;

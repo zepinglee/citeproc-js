@@ -2431,8 +2431,10 @@ reversion though, like this:
             </if>
           </choose>
           <group delimiter=", ">
-            <text macro="us-default-author"/>
-            <text macro="us-default-title"/>
+            <group is-parallel="first" delimiter=", ">
+              <text macro="us-default-author"/>
+              <text macro="us-default-title"/>
+            </group>
             <text macro="us-collection-title-podcast"/>
             <text macro="opus-number"/>
             <text macro="us-default-presentation-description"/>
@@ -2478,7 +2480,9 @@ reversion though, like this:
                     </group>
                   </if>
                 </choose>
-                <date date-parts="year-month-day" form="text" variable="issued"/>
+                <group is-parallel="last">
+                  <date date-parts="year-month-day" form="text" variable="issued"/>
+                </group>
                 <choose>
                   <if match="none" variable="URL">
                     <choose>
@@ -2666,7 +2670,8 @@ reversion though, like this:
 					"ja-alalc97":"Minsho ho zasshi"
 				}
 			}
-	  }
+	  },
+      "seeAlso": ["ITEM-1", "ITEM-2"]
    },
    {
       "id": "ITEM-2",
@@ -2696,7 +2701,8 @@ reversion though, like this:
 					"ja-alalc97":"Minsho ho zasshi"
 				}
 			}
-	  }
+	  },
+      "seeAlso": ["ITEM-1", "ITEM-2"]
    }
 ]
 <<===== INPUT =====<<

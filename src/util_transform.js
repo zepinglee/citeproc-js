@@ -586,14 +586,7 @@ CSL.Transform = function (state) {
                     var blob_obj = state.output.current.value();
                     var blobs_pos = state.output.current.value().blobs.length - 1;
                     // Suppress supplementary multilingual info on subsequent
-                    // partners of a parallel cite.
-                    // The logic of this is obscure. Parent blob is used by parallels
-                    // detection machinery (leveraged here), while parent list (blob.blobs)
-                    // is used by the is-parallel conditional available on cs:group.
-                    if (state.parallel.use_parallels) {
-                        state.parallel.cite.front.push(variables[0] + ":secondary");
-                        state.parallel.cite[variables[0] + ":secondary"] = {blobs:[[blob_obj, blobs_pos]]};
-                    }
+                    // partners of a parallel cite?
                 }
                 if (tertiary) {
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
@@ -621,12 +614,8 @@ CSL.Transform = function (state) {
                     var blob_obj = state.output.current.value();
                     var blobs_pos = state.output.current.value().blobs.length - 1;
                     // Suppress supplementary multilingual info on subsequent
-                    // partners of a parallel cite.
+                    // partners of a parallel cite?
                     // See note above.
-                    if (state.parallel.use_parallels) {
-                        state.parallel.cite.front.push(variables[0] + ":tertiary");
-                        state.parallel.cite[variables[0] + ":tertiary"] = {blobs:[[blob_obj, blobs_pos]]};
-                    }
                 }
                 state.output.closeLevel();
             } else {

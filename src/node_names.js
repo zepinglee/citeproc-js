@@ -36,7 +36,6 @@ CSL.Node.names = {
             // init names
             func = function (state) {
                 state.tmp.can_substitute.push(true);
-                state.parallel.StartVariable("names",this.variables[0]);
                 state.nameOutput.init(this);
             };
             this.execs.push(func);
@@ -164,8 +163,6 @@ CSL.Node.names = {
                     state.tmp.can_substitute.replace(false, CSL.LITERAL);
                 }
                 
-                state.parallel.CloseVariable("names");
-
                 // For posterity ...
                 //
                 // This was enough to fix the issue reported here:

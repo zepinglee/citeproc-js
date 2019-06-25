@@ -39,11 +39,11 @@ citation
                 }, 
                 {
                     "id": "ITEM-2",
-                    "prefix": "aff'd"
+                    "prefix": ", aff'd"
                 },
                 {
                     "id": "ITEM-3",
-                    "prefix": "cert. denied"
+                    "prefix": ", cert. denied"
                 }
             ], 
             "properties": {
@@ -1169,7 +1169,9 @@ citation
     <choose>
       <if variable="title">
         <group delimiter=", ">
-          <text form="short" variable="title"/>
+          <group is-parallel="first">
+            <text form="short" variable="title"/>
+          </group>
           <group delimiter=" ">
             <choose>
               <if variable="volume">
@@ -1270,7 +1272,9 @@ citation
   </macro>
   <macro name="us-case-subsequent">
     <group delimiter=", ">
-      <text macro="us-title-short"/>
+      <group is-parallel="first">
+        <text macro="us-title-short"/>
+      </group>
       <group delimiter=" ">
         <group delimiter=", ">
           <choose>
@@ -2674,7 +2678,8 @@ citation
 					"1985"
 				]
 			]
-		}
+		},
+        "seeAlso": ["ITEM-1", "ITEM-2", "ITEM-3"]
 	},
 	{
 		"id": "ITEM-2",
@@ -2692,7 +2697,8 @@ citation
 					"1986"
 				]
 			]
-		}
+		},
+        "seeAlso": ["ITEM-1", "ITEM-2", "ITEM-3"]
 	},
 	{
 		"id": "ITEM-3",
@@ -2709,7 +2715,8 @@ citation
 					"1986"
 				]
 			]
-		}
+		},
+        "seeAlso": ["ITEM-1", "ITEM-2", "ITEM-3"]
 	}
 ]
 <<===== INPUT =====<<

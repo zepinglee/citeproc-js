@@ -261,32 +261,32 @@ CSL.getBibliographyEntries = function (bibsection) {
         } else {
             this.output.current.value().system_id = item.id;
         }
-        // The needs fixing.  Parallel cite should be generated
-        // by arrival of either a master or a sibling, with the
-        // same result.
 
-        sortedItems = [[{id: "" + item.id}, item]];
+        // 2019-06-25 Hacked to conform to new parallels evaluation method
         entry_item_ids = [];
         if (this.registry.registry[item.id].master
             && !(bibsection && bibsection.page_start && bibsection.page_length)) {
 
+            sortedItems = [[item, {id: item.id}]];
+            var siblings = this.registry.registry[item.id].siblings;
+            for (var j=0,jlen=siblings.length; j<jlen; j++) {
+                sortedItems.push([{id: siblings[j]}, {id: siblings[j]}]);
+            }
             collapse_parallel = true;
             this.parallel.StartCitation(sortedItems);
             this.output.queue[0].strings.delimiter = ", ";
             this.tmp.term_predecessor = false;
-            entry_item_ids.push("" + CSL.getCite.call(this, item));
+            entry_item_ids.push("" + CSL.getCite.call(this, item, sortedItems[0][1]));
             skips[item.id] = true;
             siblings = this.registry.registry[item.id].siblings;
             for (j = 0, jlen = siblings.length; j < jlen; j += 1) {
                 var k = this.registry.registry[item.id].siblings[j];
                 eyetem = this.refetchItem(k);
-                entry_item_ids.push("" + CSL.getCite.call(this, eyetem));
+                entry_item_ids.push("" + CSL.getCite.call(this, eyetem, sortedItems[j+1][1]));
                 skips[eyetem.id] = true;
             }
-            this.parallel.ComposeSet();
-            this.parallel.PruneOutputQueue();
+            this.parallel.purgeGroupsIfParallel();
         } else if (!this.registry.registry[item.id].siblings) {
-            this.parallel.StartCitation(sortedItems);
             this.tmp.term_predecessor = false;
             entry_item_ids.push("" + CSL.getCite.call(this, item));
             if (bibsection && bibsection.page_start && bibsection.page_length) {

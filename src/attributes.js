@@ -858,19 +858,13 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
 };
 
 
-// This one is not evaluated as a condition: it only
-// sets some parameters that are picked up during
-// processing.
+// These are not evaluated as conditions immediately: they only
+// set parameters that are picked up during processing.
 CSL.Attributes["@is-parallel"] = function (state, arg) {
-    var values = arg.split(" ");
-    for (var i = 0, ilen = values.length; i < ilen; i += 1) {
-        if (values[i] === "true") {
-            values[i] = true;
-        } else if (values[i] === "false") {
-            values[i] = false;
-        }
-    }
-    this.strings.set_parallel_condition = values;
+    this.strings.set_parallel_condition = arg;
+};
+CSL.Attributes["@no-repeat"] = function (state, arg) {
+    this.strings.set_no_repeat_condition = arg.split(/\s+/);
 };
 
 

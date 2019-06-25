@@ -267,9 +267,6 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
     // Caution: The parallel detection machinery will blow up if tracking
     // variables are not properly initialized elsewhere.
     //
-    if (!notSerious) {
-        this.state.parallel.AppendBlobPointer(curr);
-    }
     if ("string" === typeof str) {
         if ("string" === typeof blob.blobs) {
             if (blob.blobs.slice(0, 1) !== " ") {

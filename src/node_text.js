@@ -231,8 +231,6 @@ CSL.Node.text = {
                             // Only if not main_title_from_short_title
                             parallel_variable = "title-short";
                         }
-                        state.parallel.StartVariable(parallel_variable);
-                        state.parallel.AppendToVariable(Item[parallel_variable],parallel_variable);
 
                         if (!state.tmp.group_context.tip.condition && Item[this.variables[0]]) {
                             state.tmp.just_did_number = false;
@@ -403,10 +401,6 @@ CSL.Node.text = {
                             };
                         }
                     }
-                    this.execs.push(func);
-                    func = function (state) {
-                        state.parallel.CloseVariable("text");
-                    };
                     this.execs.push(func);
                 } else if (this.strings.value) {
                     // for the text value attribute.

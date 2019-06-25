@@ -54,12 +54,6 @@ CSL.Node.number = {
                     return;
                 }
             }
-            state.parallel.StartVariable(this.variables[0]);
-            if (this.variables[0] === "locator") {
-                state.parallel.AppendToVariable(Item.section);
-            } else {
-                state.parallel.AppendToVariable(Item[this.variables[0]]);
-            }
 
             if (varname === 'collection-number' && Item.type === 'legal_case') {
                 state.tmp.renders_collection_number = true;
@@ -107,7 +101,6 @@ CSL.Node.number = {
 
             CSL.Util.outputNumericField(state, varname, Item.id);
 
-            state.parallel.CloseVariable("number");
             if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
                && !state.tmp.just_looking) {
                 state.tmp.done_vars.push(this.variables_real[0]);

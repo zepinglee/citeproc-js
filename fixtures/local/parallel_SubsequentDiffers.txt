@@ -179,11 +179,13 @@ citation
           <choose>
             <if type="legal_case bill legislation manuscript" match="any">
               <group delimiter=" ">
-              <group delimiter=", ">
+              <group is-parallel="first">
                 <text variable="title-short"/>
               </group>
               <group delimiter=" ">
-                <text macro="date-parenthesis"/>
+                <group is-parallel="first">
+                  <text macro="date-parenthesis"/>
+                </group>
                 <text macro="article-case-info"/>
               </group>
               <group delimiter=", ">
@@ -198,11 +200,13 @@ citation
           <group delimiter=" ">
             <group delimiter=", ">
               <group delimiter=" ">
-                <group delimiter=", ">
+                <group is-parallel="first">
                   <text macro="title"/>
                 </group>
                 <group delimiter=" ">
-                  <text macro="date-parenthesis"/>
+                  <group is-parallel="first">
+                    <text macro="date-parenthesis"/>
+                  </group>
                   <text macro="article-case-info"/>
                 </group>
               </group>
@@ -237,7 +241,8 @@ citation
 		"jurisdiction": "us",
 		"issued": {
 			"raw": "2011"
-		}
+		},
+        "seeAlso": ["ITEM-1", "ITEM-2"]
 	},
 	{
 		"id": "ITEM-2",
@@ -255,7 +260,8 @@ citation
 		"jurisdiction": "us",
 		"issued": {
 			"raw": "2011"
-		}
+		},
+        "seeAlso": ["ITEM-1", "ITEM-2"]
 	},
     {
         "id": "ITEM-3",

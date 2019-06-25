@@ -2,7 +2,13 @@
 
 CSL.Util.substituteStart = function (state, target) {
     var element_trace, display, bib_first, func, choose_start, if_start, nodetypes;
-    func = function (state) {
+    func = function (state, Item, item) {
+        if (item && item.parallel) {
+            state.tmp.group_context.tip.parallel_result = item.parallel;
+        }
+        if (item && item.repeats && Object.keys(item.repeats).length > 0) {
+            state.tmp.group_context.tip.parallel_repeats = item.repeats;
+        }
         for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
             if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
                 state.tmp.strip_periods += 1;

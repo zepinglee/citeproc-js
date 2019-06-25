@@ -380,27 +380,31 @@ Failing parallel collapse in New Zealand Law style
   </macro>
   <macro name="render-nz-cite">
     <group delimiter=" ">
-      <text macro="title-italic"/>
+      <group is-parallel="first">
+        <text macro="title-italic"/>
+      </group>
       <text variable="references" suffix=","/>
       <choose>
         <if variable="number">
           <text macro="render-unreported-case"/>
         </if>
         <else>
-          <choose>
-            <if variable="volume" match="none">
-              <date variable="issued" form="text" date-parts="year" prefix="[" suffix="]"/>
-            </if>
-            <else-if variable="container-title" match="none">
-              <date variable="issued" form="text" date-parts="year" prefix="[" suffix="]"/>
-            </else-if>
-            <else-if variable="collection-number">
-              <number variable="collection-number" prefix="[" suffix="]"/>
-            </else-if>
-            <else>
-              <date variable="issued" form="text" date-parts="year" prefix="(" suffix=")"/>
-            </else>
-          </choose>
+          <group is-parallel="first">
+            <choose>
+              <if variable="volume" match="none">
+                <date variable="issued" form="text" date-parts="year" prefix="[" suffix="]"/>
+              </if>
+              <else-if variable="container-title" match="none">
+                <date variable="issued" form="text" date-parts="year" prefix="[" suffix="]"/>
+              </else-if>
+              <else-if variable="collection-number">
+                <number variable="collection-number" prefix="[" suffix="]"/>
+              </else-if>
+              <else>
+                <date variable="issued" form="text" date-parts="year" prefix="(" suffix=")"/>
+              </else>
+            </choose>
+          </group>
           <number variable="volume"/>
           <text macro="nz-container-title"/>
           <text variable="page-first"/>
@@ -842,7 +846,8 @@ Failing parallel collapse in New Zealand Law style
         "page": "33", 
         "title": "Smith v. Jones", 
         "type": "legal_case", 
-        "volume": "20"
+        "volume": "20",
+        "seeAlso": ["ITEM-1", "ITEM-2"]
     }, 
     {
         "author": [
@@ -864,7 +869,8 @@ Failing parallel collapse in New Zealand Law style
         "page": "23", 
         "title": "Smith v. Jones", 
         "type": "legal_case", 
-        "volume": "10"
+        "volume": "10",
+        "seeAlso": ["ITEM-1", "ITEM-2"]
     }
 ]
 <<===== INPUT =====<<

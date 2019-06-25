@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
-Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983.
+Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983 (1999).
 <<===== RESULT =====<<
 
 >>===== CITATION-ITEMS =====>>
@@ -47,7 +47,9 @@ Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983.
           <group delimiter=" ">
             <!-- Hello -->
             <group delimiter=", ">
-              <text variable="title"/>
+              <group is-parallel="first">
+                <text variable="title"/>
+              </group>
               <group delimiter="">
                 <group delimiter=" ">
                   <choose>
@@ -67,7 +69,9 @@ Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983.
                 </group>
               </group>
             </group>
-            <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
+            <group is-parallel="last">
+              <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
+            </group>
           </group>
         </if>
       </choose>
@@ -92,7 +96,8 @@ Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983.
         "page" : "110",
         "title": "Beck v. Beck", 
         "container-title": "ME", 
-        "type": "legal_case"
+        "type": "legal_case",
+        "seeAlso": ["ITEM-1", "ITEM-2"]
     },
     {
         "id": "ITEM-2", 
@@ -107,7 +112,8 @@ Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983.
         "page" : "981",
         "title": "Beck v. Beck", 
         "container-title": "A.2d", 
-        "type": "legal_case"
+        "type": "legal_case",
+        "seeAlso": ["ITEM-1", "ITEM-2"]
     }
 ]
 <<===== INPUT =====<<
