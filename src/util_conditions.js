@@ -13,33 +13,39 @@ CSL.Conditions.TopNode = function (state) {
             // The usual.
             this.test = state.fun.match[this.match](this, state, this.tests);
         }
-        func = function(state) {
-            state.tmp.condition_counter++;
+        if (state.build.substitute_level.value() === 0) {
+            func = function(state) {
+                state.tmp.condition_counter++;
+            }
+            this.execs.push(func);
         }
-        this.execs.push(func);
     }
     if (this.tokentype === CSL.END || this.tokentype === CSL.SINGLETON) {
+        if (state.build.substitute_level.value() === 0) {
+            func = function (state) {
+                state.tmp.condition_counter--;
+                if (state.tmp.condition_lang_counter_arr.length > 0) {
+                    var counter = state.tmp.condition_lang_counter_arr.slice(-1)[0];
+                    if (counter === state.tmp.condition_counter) {
+                        state.opt.lang = state.tmp.condition_lang_val_arr.pop();
+                        state.tmp.condition_lang_counter_arr.pop();
+                    }
+                }
+                if (this.locale_default) {
+                    // Open output tag with locale marker
+                    state.output.current.value().old_locale = this.locale_default;
+                    state.output.closeLevel("empty");
+                    state.opt.lang = this.locale_default;
+                }
+            };
+            this.execs.push(func);
+        }
         // closingjump
         func = function (state) {
-            state.tmp.condition_counter--;
-            if (state.tmp.condition_lang_counter_arr.length > 0) {
-                var counter = state.tmp.condition_lang_counter_arr.slice(-1)[0];
-                if (counter === state.tmp.condition_counter) {
-                    state.opt.lang = state.tmp.condition_lang_val_arr.pop();
-                    state.tmp.condition_lang_counter_arr.pop();
-                }
-            }
-            if (this.locale_default) {
-                // Open output tag with locale marker
-                state.output.current.value().old_locale = this.locale_default;
-                state.output.closeLevel("empty");
-                state.opt.lang = this.locale_default;
-            }
             var next = this[state.tmp.jump.value()];
             return next;
         };
         this.execs.push(func);
-        
         if (this.locale_default) {
             state.opt.lang = this.locale_default;
         }
