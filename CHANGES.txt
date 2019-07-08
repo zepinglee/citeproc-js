@@ -1,6 +1,20 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.13
+=========================
+
+- Fix a bug in CSL-M locale conditional triggered when
+  cs:choose is an immediate child of cs:substitute.
+
+  https://github.com/Juris-M/citeproc-js/issues/107
+
+- Just issue little warnings when note numbers make no
+  sense.
+
+  https://github.com/zotero/zotero-libreoffice-integration/commit/bb21e3c150994254d41003c39a5a0a5ba9ca2188
+
+=========================
 Changes in version 1.2.12
 =========================
 

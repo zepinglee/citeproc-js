@@ -35,6 +35,8 @@
 
 var CSL = {
 
+    PROCESSOR_VERSION: "1.2.13",
+
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
             throw new Error("citeproc-js error: " + str);
@@ -49,7 +51,6 @@ var CSL = {
             console.log("citeproc-js warning: " + str);
         }
     },
-    PROCESSOR_VERSION: "1.2.12",
 
     LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
 
