@@ -29,7 +29,7 @@ CSL.setupXml = function(xmlObject) {
         CSL.error("unable to parse XML input");
     }
     if (!parser) {
-        throw "citeproc-js error: unable to parse CSL style or locale object";
+        CSL.error("citeproc-js error: unable to parse CSL style or locale object");
     }
     return parser;
 };

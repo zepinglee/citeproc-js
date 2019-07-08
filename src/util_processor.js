@@ -68,7 +68,7 @@ CSL.Mode = function (mode) {
             } else if (typeof val === "function") {
                 func = val;
             } else {
-                throw "CSL.Compiler: Bad " + mode + " config entry for " + param + ": " + val;
+                CSL.error("Bad " + mode + " config entry for " + param + ": " + val);
             }
 
             if (args.length === 1) {

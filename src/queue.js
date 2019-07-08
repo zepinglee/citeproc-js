@@ -93,18 +93,12 @@ CSL.Output.Queue.prototype.pushFormats = function (tokenstore) {
     if (!tokenstore) {
         tokenstore = {};
     }
-    //SNIP-START
-    CSL.debug("XXX pushFormats()");
-    //SNIP-END
     tokenstore.empty = this.empty;
     this.formats.push(tokenstore);
 };
 
 
 CSL.Output.Queue.prototype.popFormats = function () {
-    //SNIP-START
-    CSL.debug("XXX popFormats()");
-    //SNIP-END
     this.formats.pop();
 };
 
@@ -138,7 +132,7 @@ CSL.Output.Queue.prototype.openLevel = function (token) {
         blob = new CSL.Blob(undefined, this.formats.value().empty, "empty");
     } else {
         if (!this.formats.value() || !this.formats.value()[token]) {
-            throw "CSL processor error: call to nonexistent format token \"" + token + "\"";
+            CSL.error("CSL processor error: call to nonexistent format token \"" + token + "\"");
         }
         // delimiter, prefix, suffix, decorations from token
         blob = new CSL.Blob(undefined, this.formats.value()[token], token);
@@ -216,7 +210,7 @@ CSL.Output.Queue.prototype.append = function (str, tokname, notSerious, ignorePr
         token = tokname;
     }
     if (!token) {
-        throw "CSL processor error: unknown format token name: " + tokname;
+        CSL.error("CSL processor error: unknown format token name: " + tokname);
     }
     // Unset delimiters must be left undefined until they reach the queue
     // in order to discriminate unset from explicitly empty delimiters

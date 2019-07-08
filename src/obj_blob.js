@@ -40,7 +40,7 @@ CSL.Blob = function (str, token, levelname) {
 
 CSL.Blob.prototype.push = function (blob) {
     if ("string" === typeof this.blobs) {
-        throw "Attempt to push blob onto string object";
+        CSL.error("Attempt to push blob onto string object");
     } else if (false !== blob) {
         blob.alldecor = blob.alldecor.concat(this.alldecor);
         this.blobs.push(blob);

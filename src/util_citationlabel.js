@@ -87,7 +87,7 @@ CSL.Engine.prototype.getTrigraphParams = function () {
     var params = [];
     var ilst = this.opt.trigraph.split(":");
     if (!this.opt.trigraph || this.opt.trigraph.slice(0,1) !== "A") {
-        throw "Bad trigraph definition: "+this.opt.trigraph;
+        CSL.error("Bad trigraph definition: "+this.opt.trigraph);
     }
     for (var i = 0, ilen = ilst.length; i < ilen; i += 1) {
         var str = ilst[i];
@@ -104,7 +104,7 @@ CSL.Engine.prototype.getTrigraphParams = function () {
                 config.year += 1;
                 break;
             default:
-                throw "Invalid character in trigraph definition: "+this.opt.trigraph;
+                CSL.error("Invalid character in trigraph definition: "+this.opt.trigraph);
             }
         }
         params.push(config);

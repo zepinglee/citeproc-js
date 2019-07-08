@@ -370,7 +370,7 @@ CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, force
     // XXXXX Not so good if mode is neither strict nor tolerant ...
     if (typeof ret === "undefined") {
         if (mode === CSL.STRICT) {
-            throw "Error in getTerm: term \"" + term + "\" does not exist.";
+            CSL.error("Error in getTerm: term \"" + term + "\" does not exist.");
         } else if (mode === CSL.TOLERANT) {
             ret = "";
         }
@@ -422,7 +422,7 @@ CSL.Engine.getField = function (mode, hash, term, form, plural, gender) {
     ret = "";
     if ("undefined" === typeof hash[term]) {
         if (mode === CSL.STRICT) {
-            throw "Error in getField: term \"" + term + "\" does not exist.";
+            CSL.error("Error in getField: term \"" + term + "\" does not exist.");
         } else {
             return undefined;
         }

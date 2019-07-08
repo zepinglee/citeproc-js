@@ -88,7 +88,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     }
 
     if (this.build.macro_stack.indexOf(mkey) > -1) {
-        throw "CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop";
+        CSL.error("CSL processor error: call to macro \"" + mkey + "\" would cause an infinite loop");
     } else {
         this.build.macro_stack.push(mkey);
     }
@@ -104,7 +104,7 @@ CSL.expandMacro = function (macro_key_token, target) {
 
     // Node does not exist in the CSL
     if (!this.cslXml.getNodeValue(macro_nodes)) {
-        throw "CSL style error: undefined macro \"" + mkey + "\"";
+        CSL.error("CSL style error: undefined macro \"" + mkey + "\"");
     }
 
     // Let's macro
@@ -207,7 +207,7 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget, var_stack) {
         return;
     }
     if (!CSL.Node[state.cslXml.nodename(this)]) {
-        throw "Undefined node name \"" + name + "\".";
+        CSL.error("Undefined node name \"" + name + "\".");
     }
     attrfuncs = [];
     attributes = state.cslXml.attributes(this);
@@ -227,8 +227,7 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget, var_stack) {
                         try {
                             CSL.Attributes[key].call(token, state, "" + attributes[key]);
                         } catch (e) {
-                            CSL.error(e);
-                            throw "CSL processor error, " + key + " attribute: " + e;
+                            CSL.error(key + " attribute: " + e);
                         }
                     } else {
                         CSL.debug("warning: undefined attribute \""+key+"\" in style");

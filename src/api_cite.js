@@ -168,11 +168,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         preCitation = citationsPre[i];
         if (this.opt.development_extensions.strict_inputs) {
             if (citationById[preCitation[0]]) {
-                throw "Previously referenced citationID " + preCitation[0] + " encountered in citationsPre";
+                CSL.error("Previously referenced citationID " + preCitation[0] + " encountered in citationsPre");
             }
             if (preCitation[1]) {
                 if (lastNotePos > preCitation[1]) {
-                    throw "Note index sequence is not sane at citationsPre[" + i + "]";
+                    CSL.debug("Note index sequence is not sane at citationsPre[" + i + "]");
                 }
                 lastNotePos = preCitation[1];
             }
@@ -188,11 +188,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     }
     if (this.opt.development_extensions.strict_inputs) {
         if (citationById[citation.citationID]) {
-            throw "Citation with previously referenced citationID " + citation.citationID;
+            CSL.error("Citation with previously referenced citationID " + citation.citationID);
         }
         if (citation.properties.noteIndex) {
             if (lastNotePos > citation.properties.noteIndex) {
-                throw "Note index sequence is not sane for citation " + citation.citationID;
+                CSL.debug("Note index sequence is not sane for citation " + citation.citationID);
             }
             lastNotePos = citation.properties.noteIndex;
         }
@@ -203,11 +203,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         postCitation = citationsPost[i];
         if (this.opt.development_extensions.strict_inputs) {
             if (citationById[postCitation[0]]) {
-                throw "Previously referenced citationID " + postCitation[0] + " encountered in citationsPost";
+                CSL.error("Previously referenced citationID " + postCitation[0] + " encountered in citationsPost");
             }
             if (postCitation[1]) {
                 if (lastNotePos > postCitation[1]) {
-                    throw "Note index sequence is not sane at postCitation[" + i + "]";
+                    CSL.debug("Note index sequence is not sane at postCitation[" + i + "]");
                 }
                 lastNotePos = postCitation[1];
             }
@@ -470,18 +470,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         var suprame = false;
                         // XXX Ugly, but This is used in the second else-if branch condition below.
                         if (j > 0) {
-                            try {
-                                var old_last_id_offset = 1;
-                                if (citations[j-1].properties.mode === "author-only" && j > 1) {
-                                    old_last_id_offset = 2;
-                                }
-                                oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
-                            } catch (e) {
-                                var err = "CSL Error\n";
-                                err += "  " + e;
-                                err += "  in citation object " + citations[j - 1].citationID + " at index " + (j - 1);
-                                throw err;
+                            var old_last_id_offset = 1;
+                            if (citations[j-1].properties.mode === "author-only" && j > 1) {
+                                old_last_id_offset = 2;
                             }
+                            oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
                             if (citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id) {
                                 oldlastid = citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id;
                             }
@@ -1287,9 +1280,7 @@ CSL.getCitationCluster = function (inputList, citation) {
             this.tmp.suppress_decorations = false;
             if (!composite) {
                 if (this.opt.development_extensions.throw_on_empty) {
-                    var error = new Error("Citation would render no content");
-                    error.code = "ECSEMPTY";
-                    throw error;
+                    CSL.error("Citation would render no content");
                 } else {
                     composite = "[NO_PRINTED_FORM]"
                 }
@@ -1384,9 +1375,7 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.suppress_decorations = false;
     if (!result) {
         if (this.opt.development_extensions.throw_on_empty) {
-            var error = new Error("Citation would render no content");
-            error.code = "ECSEMPTY";
-            throw error;
+            CSL.error("Citation would render no content");
         } else {
             result = "[NO_PRINTED_FORM]"
         }
