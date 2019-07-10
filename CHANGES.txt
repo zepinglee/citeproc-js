@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.15
+=========================
+
+- Housekeeping update. Remove decommissioned attributes from schema, tests,
+  docs, and processor code. Still work to be done on docs, some things
+  remain to be covered.
+
+=========================
 Changes in version 1.2.14
 =========================
 
