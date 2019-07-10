@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.14
+=========================
+
+- Block ibid if locator-extra differs.
+
+  https://forums.zotero.org/discussion/15636/changes-to-fields-and-item-types-for-zotero-5-1#Comment_335357
+
+=========================
 Changes in version 1.2.13
 =========================
 

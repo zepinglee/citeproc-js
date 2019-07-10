@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.13",
+    PROCESSOR_VERSION: "1.2.14",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -6963,12 +6963,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 for (k = 0, klen = citations[j].sortedItems.length; k < klen; k += 1) {
                     item = citations[j].sortedItems[k];
                     var myid = item[0].id;
+                    var myxloc = item[1]["locator-extra"];
                     var mylocator = item[1].locator;
                     var mylabel = item[1].label;
                     if (item[0].legislation_id) {
                         myid = item[0].legislation_id;
                     }
                     var incitationid;
+                    var incitationxloc;
                     if (k > 0) {
                         // incitationid is only reached in the else branch
                         // following "undefined" === typeof first_ref[myid]
@@ -6977,10 +6979,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             incitationid = onecitation.sortedItems[k - 1][0].legislation_id;
                         } else {
                             incitationid = onecitation.sortedItems[k - 1][1].id;
+                            incitationxloc = onecitation.sortedItems[k - 1][1]["locator-extra"];
                             //if (onecitation.sortedItems[k-1][1].parallel === "last") {
                                 for (var l=k-2; l>-1; l--) {
                                     if (onecitation.sortedItems[l][1].parallel === "first") {
                                         incitationid = onecitation.sortedItems[l][1].id;
+                                        incitationxloc = onecitation.sortedItems[l][1]["locator-extra"];
                                     }
                                 }
                             //}
@@ -7027,6 +7031,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         }
                     }
                     var oldlastid;
+                    var oldlastxloc;
 
                     if ("undefined" === typeof first_ref[myid] && onecitation.properties.mode !== "author-only") {
                         first_ref[myid] = onecitation.properties.noteIndex;
@@ -7043,18 +7048,24 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         //
                         var ibidme = false;
                         var suprame = false;
+                        var prevCitation = null;
+                        if (j > 0) {
+                            var prevCitation = citations[j-1];
+                        }
+                        var thisCitation = citations[j];
                         // XXX Ugly, but This is used in the second else-if branch condition below.
                         if (j > 0) {
                             var old_last_id_offset = 1;
-                            if (citations[j-1].properties.mode === "author-only" && j > 1) {
+                            if (prevCitation.properties.mode === "author-only" && j > 1) {
                                 old_last_id_offset = 2;
                             }
                             oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
-                            if (citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id) {
-                                oldlastid = citations[j - 1].sortedItems[0].slice(-1)[0].legislation_id;
+                            oldlastxloc =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1]["locator-extra"];
+                            if (prevCitation.sortedItems[0].slice(-1)[0].legislation_id) {
+                                oldlastid = prevCitation.sortedItems[0].slice(-1)[0].legislation_id;
                             }
                         }
-                        if (j > 0 && parseInt(k, 10) === 0 && citations[j - 1].properties.noteIndex !== citations[j].properties.noteIndex) {
+                        if (j > 0 && k === 0 && prevCitation.properties.noteIndex !== thisCitation.properties.noteIndex) {
                             // Case 1: source in previous onecitation
                             // (1) Threshold conditions
                             //     (a) there must be a previous onecitation with one item
@@ -7065,12 +7076,14 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             // (this has some jiggery-pokery in it for parallels)
                             var useme = false;
                             // XXX Can oldid be equated with oldlastid, I wonder ...
-                            var oldid = citations[j - 1].sortedItems[0][0].id;
-                            if (citations[j - 1].sortedItems[0][0].legislation_id) {
-                                oldid = citations[j - 1].sortedItems[0][0].legislation_id;
+                            var oldid = prevCitation.sortedItems[0][0].id;
+                            if (prevCitation.sortedItems[0][0].legislation_id) {
+                                oldid = prevCitation.sortedItems[0][0].legislation_id;
                             }
-                            if ((oldid  == myid && citations[j - 1].properties.noteIndex >= (citations[j].properties.noteIndex - 1))) {
-                                if (citationsInNote[citations[j - 1].properties.noteIndex] === 1 || citations[j - 1].properties.noteIndex === 0) {
+                            if ((oldid  == myid && prevCitation.properties.noteIndex >= (thisCitation.properties.noteIndex - 1))) {
+                                var prevxloc = prevCitation.sortedItems[0][1]["locator-extra"];
+                                var thisxloc = thisCitation.sortedItems[0][1]["locator-extra"];
+                                if ((citationsInNote[prevCitation.properties.noteIndex] === 1 || prevCitation.properties.noteIndex === 0) && prevxloc === thisxloc) {
                                     useme = true;
                                 }
                             }
@@ -7079,15 +7092,15 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             } else {
                                 suprame = true;
                             }
-                        } else if (k > 0 && incitationid == myid) {
+                        } else if (k > 0 && incitationid == myid && incitationxloc == myxloc) {
                             // Case 2: immediately preceding source in this onecitation
                             // (1) Threshold conditions
                             //     (a) there must be an imediately preceding reference to  the
                             //         same item in this onecitation; and
                             ibidme = true;
-                        } else if (k === 0 && j > 0 && citations[j - 1].properties.noteIndex == citations[j].properties.noteIndex
-                                   && citations[j - 1].sortedItems.length 
-                                   && oldlastid == myid) {
+                        } else if (k === 0 && j > 0 && prevCitation.properties.noteIndex == thisCitation.properties.noteIndex
+                                   && prevCitation.sortedItems.length 
+                                   && oldlastid == myid && oldlastxloc == myxloc) {
                             // ... in case there are separate citations in the same note ...
                             // Case 2 [take 2]: immediately preceding source in this onecitation
                             // (1) Threshold conditions
