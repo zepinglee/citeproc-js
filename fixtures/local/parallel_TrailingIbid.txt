@@ -47,58 +47,55 @@ citation
 
 
 >>===== CSL =====>>
-<style 
-      xmlns="http://purl.org/net/xbiblio/csl"
-      class="note"
-      version="1.0">
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" page-range-format="chicago" version="1.1mlz1" year-range-format="expanded">
   <info>
-    <id />
-    <title />
-    <updated>2009-08-10T04:49:00+09:00</updated>
+    <title>Test fixture</title>
+    <id>http://citationstyles.org/tests/fixture</id>
+    <link href="http://citationstyles.org/tests/fixture" rel="self"/>
+    <link href="http://citationstyles.org/documentation/text" rel="documentation"/>
+    <category citation-format="author-date"/>
+    <updated>2014-04-30T13:19:38+00:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
-  <citation year-suffix-delimiter=", ">
+  <citation disambiguate-add-givenname="true" et-al-min="3" et-al-use-first="1" near-note-distance="5">
     <layout delimiter="; " suffix=".">
       <choose>
-      <if position="first">
-        <group delimiter=", ">
-          <group is-parallel="first">
-            <text variable="title"/>
-          </group>
+        <if position="ibid-with-locator">
           <group delimiter=" ">
-            <text variable="volume"/>
-            <text variable="container-title"/>
-            <group>
-              <text variable="page"/>
-              <text variable="locator" prefix=", "/>
+            <text term="ibid"/>
+            <text value="at"/>
+            <number variable="locator"/>
+          </group>
+        </if>
+        <else-if position="subsequent">
+            <group delimiter=" ">
+              <number variable="volume"/>
+              <text variable="container-title"/>
+              <number variable="locator"/>
             </group>
-            <group is-parallel="last">
-              <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
+        </else-if>
+        <else>
+          <group delimiter=", ">
+            <group is-parallel="first">
+              <text variable="title"/>
+            </group>
+            <group delimiter=" ">
+              <number variable="volume"/>
+              <text variable="container-title"/>
+              <group delimiter=", ">
+                <number variable="page"/>
+                <number variable="locator"/>
+              </group>
+              <group delimiter=" " prefix="(" suffix=")" no-repeat="jurisdiction" is-parallel="last">
+                <names variable="authority">
+                  <name/>
+                  <institution institution-parts="short"/>
+                </names>
+                <date variable="issued" form="text" date-parts="year"/>
+              </group>
             </group>
           </group>
-        </group>
-      </if>
-      <else-if position="ibid-with-locator">
-        <text term="ibid"/>
-        <text variable="locator" prefix=" at "/>
-      </else-if>
-      <else-if position="ibid">
-        <text term="ibid"/>
-      </else-if>
-      <else-if position="subsequent">
-        <group delimiter=", ">
-          <group is-parallel="first">
-            <text variable="title"/>
-          </group>
-          <group delimiter=" ">
-            <text variable="volume"/>
-            <text variable="container-title"/>
-            <text variable="locator"/>
-          </group>
-        </group>
-      </else-if>
-      <else>
-        <text value="WTF?"/>
-      </else>
+        </else>
       </choose>
     </layout>
   </citation>

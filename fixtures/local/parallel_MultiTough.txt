@@ -143,23 +143,9 @@ reversion though, like this:
     </names>
   </macro>
   <macro name="std-authority-full">
-    <group delimiter=" ">
-      <choose>
-        <if subjurisdictions="2">
-          <text macro="std-authority-child"/>
-          <text form="short" variable="jurisdiction"/>
-        </if>
-        <else>
-          <text form="short" variable="jurisdiction"/>
-          <text macro="std-authority-child"/>
-        </else>
-      </choose>
-    </group>
-  </macro>
-  <macro name="std-authority-child">
     <names variable="authority">
       <name/>
-      <institution institution-parts="short" use-first="1"/>
+      <institution institution-parts="short"/>
     </names>
   </macro>
   <macro name="std-locator-label">
@@ -1431,23 +1417,12 @@ reversion though, like this:
         <number form="ordinal" variable="collection-number"/>
         <text macro="std-authority-parent"/>
       </group>
-      <choose>
-        <if subjurisdictions="1">
-          <text macro="us-session-number"/>
-        </if>
-      </choose>
+      <text macro="us-session-number"/>
     </group>
   </macro>
   <macro name="us-bill-end">
     <group delimiter=" " prefix="(" suffix=")">
-      <choose>
-        <if match="none" subjurisdictions="1">
-          <text macro="us-session-number"/>
-        </if>
-        <else>
-          <text form="short" variable="jurisdiction"/>
-        </else>
-      </choose>
+      <text form="short" variable="jurisdiction"/>
       <date date-parts="year" form="text" variable="issued"/>
     </group>
   </macro>

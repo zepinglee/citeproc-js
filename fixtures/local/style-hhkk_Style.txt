@@ -679,17 +679,10 @@ citation
     <text macro="hhkk-author-first"/>
     <choose>
       <if type="legal_case legislation regulation gazette">
-        <choose>
-          <if subjurisdictions="1">
-            <text variable="jurisdiction" form="short"/>
-          </if>
-          <else>
-            <names variable="authority">
-              <name/>
-              <institution/>
-            </names>
-          </else>
-        </choose>
+        <names variable="authority">
+          <name/>
+          <institution/>
+        </names>
         <date variable="issued" form="imperial" date-parts="year-month-day"/>
         <text macro="hhkk-volume-chain"/>
       </if>
