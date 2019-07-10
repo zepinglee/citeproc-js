@@ -26,7 +26,7 @@ CSL.Parallel.prototype.getRepeats = function(prev, curr) {
         if (key.match(rex)) {
             continue;
         }
-        if (typeof prev[key] === "string") {
+        if (typeof prev[key] === "string" || !prev[key]) {
             if (prev[key] && prev[key] === curr[key]) {
                 ret[key] = true;
             }
@@ -86,6 +86,7 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
                     sortedItems[i-1][1].parallel = "first";
                     sortedItems[i][1].parallel = "mid";
                     sortedItems[i][1].repeats = this.getRepeats(prev, curr);
+                    sortedItems[i-1][1].repeats = sortedItems[i][1].repeats;
                     if (!sortedItems[i][1].prefix) {
                         sortedItems[i][1].prefix = ", ";
                     }
@@ -102,15 +103,20 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
                     }
                     delete seriesRels[curr.id];
                     sortedItems[i][1].repeats = this.getRepeats(prev, curr);
+                    //sortedItems[i-1][1].repeats = sortedItems[i][1].repeats;
                     this.state.registry.registry[masterID].siblings.push(curr.id);
                 } else {
                     sortedItems[i-1][1].parallel = "last";
+                    sortedItems[i][1].repeats = this.getRepeats(prev, curr);
                     seriesRels = false;
                 }
             }
             if (i === (sortedItems.length-1)) {
                 if (sortedItems[i][1].parallel === "mid") {
                     sortedItems[i][1].parallel = "last";
+                    sortedItems[i][1].repeats = this.getRepeats(prev, curr);
+                } else if (sortedItems[i][1].parallel !== "last") {
+                    delete sortedItems[i][1].repeats;
                 }
             }
         }
@@ -122,22 +128,17 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function () {
     for (var i = this.parallel_conditional_blobs_list.length - 1; i > -1; i += -1) {
         var obj = this.parallel_conditional_blobs_list[i];
         if (!obj.result && !obj.repeats) {
-            //this.state.sys.print(i + " No action [render] " + obj.id);
             purgeme = false;
         } else {
             if (obj.condition) {
                 var purgeme = true;
                 if (obj.result === obj.condition) {
-                    //this.state.sys.print(i + " Position match [render] "+obj.id);
                     purgeme = false;
                 }
-                //else {
-                //    this.state.sys.print(i + " Position non-match [not-render] "+obj.id + " " + obj.condition + " " + obj.result);
-                //}
-            } else if (obj.repeats) {
+            }
+            if (purgeme && obj.norepeat && obj.repeats) {
                 purgeme = false;
                 var matches = 0;
-                //this.state.sys.print(obj.norepeat)
                 for (var j=0,jlen=obj.norepeat.length; j<jlen; j++) {
                     if (obj.repeats[obj.norepeat[j]]) {
                         matches += 1;
@@ -148,11 +149,6 @@ CSL.Parallel.prototype.purgeGroupsIfParallel = function () {
                 }
             }
         }
-        //if (purgeme) {
-        //    this.state.sys.print(i + " Repetition check [not-render] "+obj.id + " (" + obj.norepeat + " / " + JSON.stringify(obj.repeats) + ")");
-        //} else {
-        //    this.state.sys.print(i + " Repetition check [render] "+obj.id + " (" + obj.norepeat + " / " + JSON.stringify(obj.repeats) + ")");
-        //}
         if (purgeme) {
             var buffer = [];
             while (obj.blobs.length > obj.pos) {
