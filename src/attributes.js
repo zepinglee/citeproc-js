@@ -2,18 +2,6 @@
 
 CSL.Attributes = {};
 
-CSL.Attributes["@genre"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
-    arg = arg.replace("-", " ");
-    var func = function (Item) {
-        if (arg === Item.genre) {
-            return true;
-        }
-        return false;
-    };
-    this.tests.push(func);
-};
-
 CSL.Attributes["@disambiguate"] = function (state, arg) {
     this.tests ? {} : this.tests = [];
     if (arg === "true") {
@@ -588,25 +576,6 @@ CSL.Attributes["@has-day"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@subjurisdictions"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
-    var trysubjurisdictions = parseInt(arg, 10);
-    var func = function (Item) {
-        var subjurisdictions = 0;
-        if (Item.jurisdiction) {
-            subjurisdictions = Item.jurisdiction.split(":").length;
-        }
-        if (subjurisdictions) {
-            subjurisdictions += -1;
-        }
-        if (subjurisdictions >= trysubjurisdictions) {
-            return true;
-        }
-        return false;
-    };
-    this.tests.push(func);
-};
-
 CSL.Attributes["@is-plural"] = function (state, arg) {
     this.tests ? {} : this.tests = [];
     var func = function (Item) {
@@ -744,26 +713,6 @@ CSL.Attributes["@locale"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@authority-residue"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
-    var maketest = function () {
-        var succeed = (arg === "true") ? true : false;
-        return function(Item) {
-            if (!Item.authority || !Item.authority[0] || !Item.authority[0].family) {
-                return !succeed;
-            }
-            var varLen = Item.authority[0].family.split("|").length;
-            var stopLast = state.tmp.authority_stop_last;
-            if ((varLen + stopLast) > 0) {
-                return succeed;
-            } else {
-                return !succeed;
-            }
-        };
-    };
-    this.tests.push(maketest());
-};
-
 CSL.Attributes["@alternative-node-internal"] = function (state) {
     this.tests ? {} : this.tests = [];
     var maketest = function () {
@@ -867,10 +816,6 @@ CSL.Attributes["@no-repeat"] = function (state, arg) {
     this.strings.set_no_repeat_condition = arg.split(/\s+/);
 };
 
-
-CSL.Attributes["@jurisdiction-depth"] = function (state, arg) {
-    this.strings.jurisdiction_depth = parseInt(arg, 10);
-};
 
 
 CSL.Attributes["@require"] = function (state, arg) {
@@ -1140,9 +1085,6 @@ CSL.Attributes["@publisher-delimiter"] = function (state, arg) {
 CSL.Attributes["@publisher-and"] = function (state, arg) {
     this.strings["publisher-and"] = arg;
 };
-
-CSL.Attributes["@newdate"] = function () {};
-
 
 CSL.Attributes["@givenname-disambiguation-rule"] = function (state, arg) {
     if (CSL.GIVENNAME_DISAMBIGUATION_RULES.indexOf(arg) > -1) {
