@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.16
+=========================
+
+- Fix bugs in CSL-M require/reject attributes to cs:group.
+
+=========================
 Changes in version 1.2.15
 =========================
 

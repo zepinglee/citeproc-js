@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.15",
+    PROCESSOR_VERSION: "1.2.16",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1140,39 +1140,8 @@ var CSL = {
     UPDATE_GROUP_CONTEXT_CONDITION: function (state, termtxt, valueTerm) {
         if (state.tmp.group_context.tip.condition) {
             if (state.tmp.group_context.tip.condition.test) {
-                var testres;
-                if (state.tmp.group_context.tip.condition.test === "empty-label") {
-                    testres = !termtxt;
-                } else if (state.tmp.group_context.tip.condition.test === "empty-label-no-decor") {
-                    testres = !termtxt || termtxt.indexOf("%s") > -1;
-                } else if (state.tmp.group_context.tip.condition.test === "comma-safe") {
-                    var empty = !termtxt;
-                    var alpha = termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
-                    var num = state.tmp.just_did_number;
-                    if (empty) {
-                        testres = true;
-                    } else if (num) {
-                        if (alpha && !valueTerm) {
-                            testres = true;
-                        } else {
-                            testres = false;
-                        }
-                    } else {
-                        if (alpha && !valueTerm) {
-                            testres = true;
-                        } else {
-                            testres = false;
-                        }
-                    }
-                }
-                if (testres) {
-                    state.tmp.group_context.tip.force_suppress = false;
-                } else {
-                    state.tmp.group_context.tip.force_suppress = true;
-                }
-                if (state.tmp.group_context.tip.condition.not) {
-                    state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
-                }
+                state.tmp.group_context.tip.condition.termtxt = termtxt;
+                state.tmp.group_context.tip.condition.valueTerm = valueTerm;
             }
         } else {
             // If not inside a conditional group, raise numeric flag
@@ -1185,6 +1154,50 @@ var CSL = {
         }
     },
 
+    EVALUATE_GROUP_CONDITION: function(state, flags) {
+        var testres;
+        if (flags.condition.test === "empty-label") {
+            testres = !flags.condition.termtxt;
+        } else if (flags.condition.test === "empty-label-no-decor") {
+            testres = !flags.condition.termtxt || flags.condition.termtxt.indexOf("%s") > -1;
+        } else if (flags.condition.test === "comma-safe") {
+            var empty = !flags.condition.termtxt;
+            var termStartAlpha = false;
+            if (flags.condition.termtxt) {
+                termStartAlpha = flags.condition.termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
+            }
+            var num = state.tmp.just_did_number;
+            if (empty) {
+                // i.e. Big L. Rev. 100, 102
+                //      Little L. Rev. 102
+                //      L. Rev. for Plan 9, 102
+                if (num) {
+                    testres = true;
+                } else {
+                    testres = false;
+                }
+            } else if (flags.condition.valueTerm) {
+                // i.e. Ibid. at 102
+                testres = false;
+            } else {
+                if (termStartAlpha) {
+                    testres = true;
+                } else {
+                    testres = false;
+                }
+            }
+        }
+        if (testres) {
+            var force_suppress = false;
+        } else {
+            var force_suppress = true;
+        }
+        if (flags.condition.not) {
+            force_suppress = !force_suppress;
+        }
+        return force_suppress;
+    },
+    
     SYS_OPTIONS: [
         "prioritize_disambiguate_condition",
         "csl_reverse_lookup_support",
@@ -7509,7 +7522,6 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
 
-    // Do not reset shadow_numbers when running ambiguous cites
     CSL.getCite.call(this, Item, itemSupp, null, false);
     // !!!
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
@@ -9960,7 +9972,6 @@ CSL.Node.group = {
                             test: this.strings.reject,
                             not: true
                         };
-                        force_suppress = true;
                         done_vars = [];
                     } else if (this.strings.require) {
                         condition = {
@@ -10188,6 +10199,9 @@ CSL.Node.group = {
                     //    print("POP parent="+JSON.stringify(state.tmp.group_context.tip, params))
                     //    print("    flags="+JSON.stringify(flags, params));
                     //}
+                    if (flags.condition) {
+                        flags.force_suppress = CSL.EVALUATE_GROUP_CONDITION(state, flags);
+                    }
                     if (state.tmp.group_context.tip.condition) {
                         state.tmp.group_context.tip.force_suppress = flags.force_suppress;
                     }
@@ -10215,6 +10229,8 @@ CSL.Node.group = {
                         if (flags.force_suppress && !state.tmp.group_context.tip.condition) {
                             state.tmp.group_context.tip.variable_attempt = true;
                             state.tmp.group_context.tip.variable_success = flags.variable_success_parent;
+                        }
+                        if (flags.force_suppress) {
                             // 2019-04-15
                             // This is removing variables done within the group we're leaveing from global
                             // done_vars? How does that make sense?
@@ -10222,8 +10238,11 @@ CSL.Node.group = {
                             // later in the cite if desired.
                             // Currently no tests fail from removing the condition, but leaving it in.
                             for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
-                                if (state.tmp.done_vars.indexOf(flags.done_vars[i]) > -1) {
-                                    state.tmp.done_vars = state.tmp.done_vars.slice(0, i).concat(state.tmp.done_vars.slice(i+1));
+                                var doneVar = flags.done_vars[i];
+                                for (var j=0,jlen=state.tmp.done_vars.length; j<jlen; j++) {
+                                    if (state.tmp.done_vars[j] === doneVar) {
+                                        state.tmp.done_vars = state.tmp.done_vars.slice(0, j).concat(state.tmp.done_vars.slice(j+1));
+                                    }
                                 }
                             }
                         }
@@ -14881,16 +14900,17 @@ CSL.Node.text = {
                         if (this.variables_real[0] !== "locator") {
                             state.tmp.have_collapsed = false;
                         }
-                        var parallel_variable = this.variables[0];
-                        
-                        if (parallel_variable === "title" 
-                            && (form === "short" || Item["title-short"])) { 
-                            // Only if not main_title_from_short_title
-                            parallel_variable = "title-short";
-                        }
 
                         if (!state.tmp.group_context.tip.condition && Item[this.variables[0]]) {
                             state.tmp.just_did_number = false;
+                        }
+                        var val = Item[this.variables[0]];
+                        if (val && !state.tmp.group_context.tip.condition) {
+                            if (("" + val).slice(-1).match(/[0-9]/)) {
+                                state.tmp.just_did_number = true;
+                            } else {
+                                state.tmp.just_did_number = false;
+                            }
                         }
                     };
                     this.execs.push(func);
