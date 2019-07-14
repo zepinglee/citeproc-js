@@ -934,7 +934,6 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
     this.tmp.suppress_decorations = true;
     this.tmp.just_looking = true;
 
-    // Do not reset shadow_numbers when running ambiguous cites
     CSL.getCite.call(this, Item, itemSupp, null, false);
     // !!!
     for (var i=0,ilen=this.output.queue.length;i<ilen;i+=1) {
