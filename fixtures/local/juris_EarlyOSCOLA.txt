@@ -26,7 +26,7 @@ citation
 <<===== ABBREVIATIONS =====<<
 
 >>===== RESULT =====>>
-..[0] <i>Donoghue v Stevenson</i> [1932] AC 562 (HL), 563
+..[0] <i>Donoghue v Stevenson</i> [1932] AC 562 (HL) 563
 ..[1] ibid at 566
 ..[2] <i>Bogus Book</i> (no date)
 ..[3] <i>Donoghue</i> (n 1) 563
@@ -753,7 +753,7 @@ citation
       <else-if variable="locator-extra locator-date" match="any">
         <group delimiter=", ">
           <group delimiter=" ">
-            <text variable="locator-extra"/>
+            <number variable="locator-extra"/>
             <choose>
               <if is-numeric="locator-extra" match="none">
                 <date date-parts="year-month-day" form="text" variable="locator-date"/>
@@ -1385,10 +1385,10 @@ citation
                       <text macro="juris-main" strip-periods="true"/>
                     </else>
                   </choose>
-                  <group delimiter=" " require="empty-label">
+                  <!-- group delimiter=" " require="empty-label">
                     <text value="at"/>
                     <text macro="juris-locator" label-form="short" strip-periods="true"/>
-                  </group>
+                  </group -->
                   <group require="comma-safe">
                     <text macro="juris-locator" label-form="short" strip-periods="true"/>
                   </group>

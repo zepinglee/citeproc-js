@@ -313,8 +313,17 @@ citation-nojuris
                 </group>
               </group>
             </group>
-            <group delimiter=" " reject="comma-safe">
-              <text macro="juris-locator" label-form="symbol"/>
+            <group delimiter=" ">
+      <choose>
+        <if locator="page"/>
+        <else-if locator="paragraph">
+          <label variable="locator" form="static"/>
+        </else-if>
+        <else>
+          <label variable="locator"/>
+        </else>
+      </choose>
+      <number variable="locator"/>
             </group>
             <text macro="juris-tail"/>
           </group>

@@ -5,12 +5,13 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] Some Book or Other, 1
-..[1] Some Book or Other, 2 [10]
-..[2] Some Book or Other, fol. 3
-..[3] Some Book or Other [4]
->>[4] Some Book or Other § 5
+..[0] Some Book or Other 1 [reject comma-safe]
+..[1] Some Other Book or Other 1000, 2 [10] [require comma-safe]
+..[2] Some Book or Other, fol. 3 [require comma-safe]
+..[3] Some Book or Other [4] [reject comma-safe]
+>>[4] Some Book or Other § 5 [reject comma-safe]
 <<===== RESULT =====<<
+
 
 
 >>===== CITATIONS =====>>
@@ -37,7 +38,7 @@ citation
             "citationID": "CITATION-2", 
             "citationItems": [
                 {
-                    "id": "ITEM-1", 
+                    "id": "ITEM-2", 
                     "label": "book", 
                     "locator": "2 para. 10"
                 }
@@ -165,7 +166,7 @@ citation
   <locale>
     <terms>
       <term name="folio" form="short">fol.</term>
-      <term name="page" form="short">p.</term>
+      <term name="page" form="short"></term>
       <term name="book" form="short"></term>
       <term name="paragraph" form="short">[%s]</term>
       <term name="section" form="short">§</term>
@@ -173,25 +174,30 @@ citation
   </locale>
   <citation>
     <layout>
-      <group delimiter=" ">
+        <!-- PAGE and LOCATOR -->
         <group delimiter=", ">
-          <text variable="title"/>
-          <!-- If rendered, will join with comma -->
+          <group delimiter=" ">
+            <group delimiter=", ">
+              <text variable="title"/>
+              <!-- join with comma -->
+              <group require="comma-safe">
+                <number variable="page"/>
+              </group>
+            </group>
+            <!-- join with space -->
+            <group reject="comma-safe">
+              <number variable="page"/>
+            </group>
+            <group delimiter=" " reject="comma-safe">
+              <label variable="locator" form="short"/>
+              <number variable="locator" suffix=" [reject comma-safe]"/>
+            </group>
+          </group>
           <group delimiter=" " require="comma-safe">
-            <choose>
-              <if locator="page" match="none">
-                <label variable="locator" form="short"/>
-              </if>
-            </choose>
-            <number variable="locator"/>
+            <label variable="locator" form="short"/>
+            <number variable="locator" suffix=" [require comma-safe]"/>
           </group>
         </group>
-        <!-- If rendered, will join with space -->
-        <group delimiter=" ">
-          <label variable="locator" form="short"/>
-          <number variable="locator"/>
-        </group>
-      </group>
     </layout>
   </citation>
 </style>
@@ -203,6 +209,11 @@ citation
     {
         "id": "ITEM-1", 
         "title": "Some Book or Other",
+        "type": "book"
+    },
+    {
+        "id": "ITEM-2", 
+        "title": "Some Other Book or Other 1000",
         "type": "book"
     }
 ]

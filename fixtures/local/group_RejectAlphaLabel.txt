@@ -5,8 +5,8 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] Some Book or Other, 1
-..[1] Some Book or Other, 2 [10]
+..[0] Some Book or Other 1
+..[1] Some Book or Other 2 [10]
 ..[2] Some Book or Other, fol. 3
 ..[3] Some Book or Other [4]
 >>[4] Some Book or Other § 5
