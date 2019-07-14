@@ -224,16 +224,17 @@ CSL.Node.text = {
                         if (this.variables_real[0] !== "locator") {
                             state.tmp.have_collapsed = false;
                         }
-                        var parallel_variable = this.variables[0];
-                        
-                        if (parallel_variable === "title" 
-                            && (form === "short" || Item["title-short"])) { 
-                            // Only if not main_title_from_short_title
-                            parallel_variable = "title-short";
-                        }
 
                         if (!state.tmp.group_context.tip.condition && Item[this.variables[0]]) {
                             state.tmp.just_did_number = false;
+                        }
+                        var val = Item[this.variables[0]];
+                        if (val && !state.tmp.group_context.tip.condition) {
+                            if (("" + val).slice(-1).match(/[0-9]/)) {
+                                state.tmp.just_did_number = true;
+                            } else {
+                                state.tmp.just_did_number = false;
+                            }
                         }
                     };
                     this.execs.push(func);

@@ -57,7 +57,6 @@ CSL.Node.group = {
                             test: this.strings.reject,
                             not: true
                         };
-                        force_suppress = true;
                         done_vars = [];
                     } else if (this.strings.require) {
                         condition = {
@@ -285,6 +284,9 @@ CSL.Node.group = {
                     //    print("POP parent="+JSON.stringify(state.tmp.group_context.tip, params))
                     //    print("    flags="+JSON.stringify(flags, params));
                     //}
+                    if (flags.condition) {
+                        flags.force_suppress = CSL.EVALUATE_GROUP_CONDITION(state, flags);
+                    }
                     if (state.tmp.group_context.tip.condition) {
                         state.tmp.group_context.tip.force_suppress = flags.force_suppress;
                     }
@@ -312,6 +314,8 @@ CSL.Node.group = {
                         if (flags.force_suppress && !state.tmp.group_context.tip.condition) {
                             state.tmp.group_context.tip.variable_attempt = true;
                             state.tmp.group_context.tip.variable_success = flags.variable_success_parent;
+                        }
+                        if (flags.force_suppress) {
                             // 2019-04-15
                             // This is removing variables done within the group we're leaveing from global
                             // done_vars? How does that make sense?
@@ -319,8 +323,11 @@ CSL.Node.group = {
                             // later in the cite if desired.
                             // Currently no tests fail from removing the condition, but leaving it in.
                             for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
-                                if (state.tmp.done_vars.indexOf(flags.done_vars[i]) > -1) {
-                                    state.tmp.done_vars = state.tmp.done_vars.slice(0, i).concat(state.tmp.done_vars.slice(i+1));
+                                var doneVar = flags.done_vars[i];
+                                for (var j=0,jlen=state.tmp.done_vars.length; j<jlen; j++) {
+                                    if (state.tmp.done_vars[j] === doneVar) {
+                                        state.tmp.done_vars = state.tmp.done_vars.slice(0, j).concat(state.tmp.done_vars.slice(j+1));
+                                    }
                                 }
                             }
                         }

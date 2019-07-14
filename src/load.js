@@ -1116,39 +1116,8 @@ var CSL = {
     UPDATE_GROUP_CONTEXT_CONDITION: function (state, termtxt, valueTerm) {
         if (state.tmp.group_context.tip.condition) {
             if (state.tmp.group_context.tip.condition.test) {
-                var testres;
-                if (state.tmp.group_context.tip.condition.test === "empty-label") {
-                    testres = !termtxt;
-                } else if (state.tmp.group_context.tip.condition.test === "empty-label-no-decor") {
-                    testres = !termtxt || termtxt.indexOf("%s") > -1;
-                } else if (state.tmp.group_context.tip.condition.test === "comma-safe") {
-                    var empty = !termtxt;
-                    var alpha = termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
-                    var num = state.tmp.just_did_number;
-                    if (empty) {
-                        testres = true;
-                    } else if (num) {
-                        if (alpha && !valueTerm) {
-                            testres = true;
-                        } else {
-                            testres = false;
-                        }
-                    } else {
-                        if (alpha && !valueTerm) {
-                            testres = true;
-                        } else {
-                            testres = false;
-                        }
-                    }
-                }
-                if (testres) {
-                    state.tmp.group_context.tip.force_suppress = false;
-                } else {
-                    state.tmp.group_context.tip.force_suppress = true;
-                }
-                if (state.tmp.group_context.tip.condition.not) {
-                    state.tmp.group_context.tip.force_suppress = !state.tmp.group_context.tip.force_suppress;
-                }
+                state.tmp.group_context.tip.condition.termtxt = termtxt;
+                state.tmp.group_context.tip.condition.valueTerm = valueTerm;
             }
         } else {
             // If not inside a conditional group, raise numeric flag
@@ -1161,6 +1130,50 @@ var CSL = {
         }
     },
 
+    EVALUATE_GROUP_CONDITION: function(state, flags) {
+        var testres;
+        if (flags.condition.test === "empty-label") {
+            testres = !flags.condition.termtxt;
+        } else if (flags.condition.test === "empty-label-no-decor") {
+            testres = !flags.condition.termtxt || flags.condition.termtxt.indexOf("%s") > -1;
+        } else if (flags.condition.test === "comma-safe") {
+            var empty = !flags.condition.termtxt;
+            var termStartAlpha = false;
+            if (flags.condition.termtxt) {
+                termStartAlpha = flags.condition.termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
+            }
+            var num = state.tmp.just_did_number;
+            if (empty) {
+                // i.e. Big L. Rev. 100, 102
+                //      Little L. Rev. 102
+                //      L. Rev. for Plan 9, 102
+                if (num) {
+                    testres = true;
+                } else {
+                    testres = false;
+                }
+            } else if (flags.condition.valueTerm) {
+                // i.e. Ibid. at 102
+                testres = false;
+            } else {
+                if (termStartAlpha) {
+                    testres = true;
+                } else {
+                    testres = false;
+                }
+            }
+        }
+        if (testres) {
+            var force_suppress = false;
+        } else {
+            var force_suppress = true;
+        }
+        if (flags.condition.not) {
+            force_suppress = !force_suppress;
+        }
+        return force_suppress;
+    },
+    
     SYS_OPTIONS: [
         "prioritize_disambiguate_condition",
         "csl_reverse_lookup_support",
