@@ -75,9 +75,11 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     minimize = function (lst, minchars, isyear) {
         len = lst.length;
         for (var i = 1, ilen = lst.length; i < ilen; i += 2) {
-            lst[i][3] = minimize_internal(lst[i][1], lst[i][3], minchars, isyear);
-            if (lst[i][2].slice(1) === lst[i][0]) {
-                lst[i][2] = range_delimiter;
+            if ("object" === typeof lst[i]) {
+                lst[i][3] = minimize_internal(lst[i][1], lst[i][3], minchars, isyear);
+                if (lst[i][2].slice(1) === lst[i][0]) {
+                    lst[i][2] = range_delimiter;
+                }
             }
         }
         return stringify(lst);
