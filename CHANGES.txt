@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.17
+=========================
+
+- Allow irrational ranges to pass through without error when
+  page-range-format="minimal" is applied.
+
+  https://forums.zotero.org/discussion/78267/error-refreshing-vancouver-rapport-id-1919864613
+
+=========================
 Changes in version 1.2.16
 =========================
 
