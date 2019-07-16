@@ -40,6 +40,13 @@ the existence of `other processors`_ under active
 development.  CSL is the modern way to handle bibliographic projects,
 and ``citeproc-js`` is a convenient way to take advantage of it.
 
+----------------------
+Building the processor
+----------------------
+
+The processor files `citeproc.js`` and ``citeproc_commonjs.js`` are built
+automatically when tests are run (see below).
+
 -------------
 Running Tests
 -------------
