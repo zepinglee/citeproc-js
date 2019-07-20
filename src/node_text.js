@@ -307,6 +307,12 @@ CSL.Node.text = {
                                 if (this.variables[0]) {
                                     value = state.getVariable(Item, this.variables[0], form);
                                     if (value) {
+                                        if (this.variables[0] === "URL" && form === "short") {
+                                            value = value.replace(/(.*\.[^\/]+)\/.*/, "$1");
+                                            if (value.match(/\/\/www\./)) {
+                                                value = value.replace(/https?:\/\//, "");
+                                            }
+                                        }
                                         // true is for non-suppression of periods
                                         if (state.opt.development_extensions.wrap_url_and_doi) {
                                             if (!this.decorations.length || this.decorations[0][0] !== "@" + this.variables[0]) {
