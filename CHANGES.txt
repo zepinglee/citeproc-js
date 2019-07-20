@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.18
+=========================
+
+- On URL with form="short", truncate to host only, and include protocol
+  prefix only if no leading www
+
+- Force alignment of title-short casing with main title
+
+  https://forums.zotero.org/discussion/comment/335938/
+
+=========================
 Changes in version 1.2.17
 =========================
 
