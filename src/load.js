@@ -1182,7 +1182,8 @@ var CSL = {
         "prioritize_disambiguate_condition",
         "csl_reverse_lookup_support",
         "main_title_from_short_title",
-        "uppercase_subtitles"
+        "uppercase_subtitles",
+        "force_short_title_casing_alignment"
     ],
 
     TITLE_SPLIT_REGEXP: (function() {
