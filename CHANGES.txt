@@ -1,6 +1,14 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.20
+=========================
+
+- Implicit short title, disabled by default
+
+  https://forums.zotero.org/discussion/comment/336437/#Comment_336437
+
+=========================
 Changes in version 1.2.19
 =========================
 

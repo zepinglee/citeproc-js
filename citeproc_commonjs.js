@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.19",
+    PROCESSOR_VERSION: "1.2.20",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -777,6 +777,15 @@ var CSL = {
                             vals[title.main] = splitTitle[0];
                             vals[title.subjoin] = splitTitle[1];
                             vals[title.sub] = splitTitle[2];
+                            if (this.opt.development_extensions.implicit_short_title) {
+                                if (!Item["title-short"]) {
+                                    var punct = vals[title.subjoin].trim();
+                                    if (["?", "!"].indexOf(punct) === -1) {
+                                        punct = "";
+                                    }
+                                    vals[title["short"]] = vals[title.main] + punct;
+                                }
+                            }
                         } else {
                             vals[title.main] = vals[title.title];
                             vals[title.subjoin] = "";
@@ -1207,7 +1216,8 @@ var CSL = {
         "csl_reverse_lookup_support",
         "main_title_from_short_title",
         "uppercase_subtitles",
-        "force_short_title_casing_alignment"
+        "force_short_title_casing_alignment",
+        "implicit_short_title"
     ],
 
     TITLE_SPLIT_REGEXP: (function() {
@@ -3472,7 +3482,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         }
         
     }
-    if (this.opt.development_extensions.uppercase_subtitles) {
+    if (this.opt.development_extensions.uppercase_subtitles || this.opt.development_extensions.implicit_short_title) {
         this.opt.development_extensions.main_title_from_short_title = true;
     }
     if (this.opt.development_extensions.csl_reverse_lookup_support) {
@@ -6182,6 +6192,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.strict_inputs = true;
     this.development_extensions.prioritize_disambiguate_condition = false;
     this.development_extensions.force_short_title_casing_alignment = true;
+    this.development_extensions.implicit_short_title = false;
 };
 
 CSL.Engine.Tmp = function () {
