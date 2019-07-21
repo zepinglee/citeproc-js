@@ -753,6 +753,15 @@ var CSL = {
                             vals[title.main] = splitTitle[0];
                             vals[title.subjoin] = splitTitle[1];
                             vals[title.sub] = splitTitle[2];
+                            if (this.opt.development_extensions.implicit_short_title) {
+                                if (!Item["title-short"]) {
+                                    var punct = vals[title.subjoin].trim();
+                                    if (["?", "!"].indexOf(punct) === -1) {
+                                        punct = "";
+                                    }
+                                    vals[title["short"]] = vals[title.main] + punct;
+                                }
+                            }
                         } else {
                             vals[title.main] = vals[title.title];
                             vals[title.subjoin] = "";
@@ -1183,7 +1192,8 @@ var CSL = {
         "csl_reverse_lookup_support",
         "main_title_from_short_title",
         "uppercase_subtitles",
-        "force_short_title_casing_alignment"
+        "force_short_title_casing_alignment",
+        "implicit_short_title"
     ],
 
     TITLE_SPLIT_REGEXP: (function() {

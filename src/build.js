@@ -95,7 +95,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         }
         
     }
-    if (this.opt.development_extensions.uppercase_subtitles) {
+    if (this.opt.development_extensions.uppercase_subtitles || this.opt.development_extensions.implicit_short_title) {
         this.opt.development_extensions.main_title_from_short_title = true;
     }
     if (this.opt.development_extensions.csl_reverse_lookup_support) {
