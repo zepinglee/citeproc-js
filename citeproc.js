@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.17",
+    PROCESSOR_VERSION: "1.2.19",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1206,7 +1206,8 @@ var CSL = {
         "prioritize_disambiguate_condition",
         "csl_reverse_lookup_support",
         "main_title_from_short_title",
-        "uppercase_subtitles"
+        "uppercase_subtitles",
+        "force_short_title_casing_alignment"
     ],
 
     TITLE_SPLIT_REGEXP: (function() {
@@ -17435,7 +17436,10 @@ CSL.Transform = function (state) {
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
                 state.tmp.probably_rendered_something = true;
-                
+
+                if (primary === secondary) {
+                    secondary = false;
+                }
                 if (secondary) {
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
@@ -17464,6 +17468,10 @@ CSL.Transform = function (state) {
                     // Suppress supplementary multilingual info on subsequent
                     // partners of a parallel cite?
                 }
+                if (primary === tertiary) {
+                    tertiary = false;
+                }
+                
                 if (tertiary) {
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
