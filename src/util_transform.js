@@ -559,7 +559,10 @@ CSL.Transform = function (state) {
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
                 state.output.append(primary, primary_tok);
                 state.tmp.probably_rendered_something = true;
-                
+
+                if (primary === secondary) {
+                    secondary = false;
+                }
                 if (secondary) {
                     secondary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.secondary].prefix;
                     secondary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.secondary].suffix;
@@ -588,6 +591,10 @@ CSL.Transform = function (state) {
                     // Suppress supplementary multilingual info on subsequent
                     // partners of a parallel cite?
                 }
+                if (primary === tertiary) {
+                    tertiary = false;
+                }
+                
                 if (tertiary) {
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
