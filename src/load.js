@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.20",
+    PROCESSOR_VERSION: "1.2.21",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -754,12 +754,12 @@ var CSL = {
                             vals[title.subjoin] = splitTitle[1];
                             vals[title.sub] = splitTitle[2];
                             if (this.opt.development_extensions.implicit_short_title) {
-                                if (!Item["title-short"]) {
+                                if (!Item[title.short] && !vals[title.main].match(/^[\-\.[0-9]+$/)) {
                                     var punct = vals[title.subjoin].trim();
                                     if (["?", "!"].indexOf(punct) === -1) {
                                         punct = "";
                                     }
-                                    vals[title["short"]] = vals[title.main] + punct;
+                                    vals[title.short] = vals[title.main] + punct;
                                 }
                             }
                         } else {
