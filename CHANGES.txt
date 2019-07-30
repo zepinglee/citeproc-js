@@ -1,6 +1,15 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.21
+=========================
+
+- Block implicit short title if "main" title is purely numeric:
+
+
+  https://forums.zotero.org/discussion/78458/incomplete-reference-title-in-text-citation
+
+=========================
 Changes in version 1.2.20
 =========================
 
