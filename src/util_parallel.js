@@ -6,6 +6,7 @@
 CSL.Parallel = function (state) {
     this.state = state;
     this.info = {};
+    this.parallel_conditional_blobs_list = [];
 };
 
 CSL.Parallel.prototype.setSeriesRels = function(prevID, currID, seriesRels) {
