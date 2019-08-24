@@ -1,6 +1,13 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.22
+=========================
+
+- Create parallel blobs array at instantiation, to avoid crash
+  on an early call to parallel evaluation.
+
+=========================
 Changes in version 1.2.21
 =========================
 

@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.21",
+    PROCESSOR_VERSION: "1.2.22",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -16668,6 +16668,7 @@ CSL.Stack.prototype.length = function () {
 CSL.Parallel = function (state) {
     this.state = state;
     this.info = {};
+    this.parallel_conditional_blobs_list = [];
 };
 
 CSL.Parallel.prototype.setSeriesRels = function(prevID, currID, seriesRels) {
