@@ -175,6 +175,10 @@ CSL.Node.group = {
                                 var macroCount = 0;
                                 state.juris[jurisdiction] = {};
                                 var myXml = CSL.setupXml(res[jurisdiction]);
+                                myXml.addMissingNameNodes(myXml.dataObj);
+                                myXml.addInstitutionNodes(myXml.dataObj);
+                                myXml.insertPublisherAndPlace(myXml.dataObj);
+                                myXml.flagDateMacros(myXml.dataObj);
                                 var myNodes = myXml.getNodesByName(myXml.dataObj, "law-module");
                                 for (var i=0,ilen=myNodes.length;i<ilen;i++) {
                                     var myTypes = myXml.getAttributeValue(myNodes[i],"types");
