@@ -591,7 +591,8 @@ var CSL = {
         "original-author",
         "recipient",
         "reviewed-author",
-        "translator"
+        "translator",
+        "commenter"
     ],
     CREATORS: [
         "author",
@@ -606,7 +607,8 @@ var CSL = {
         "original-author",
         "recipient",
         "reviewed-author",
-        "translator"
+        "translator",
+        "commenter"
     ],
     NUMERIC_VARIABLES: [
         "call-number",
