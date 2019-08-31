@@ -83,7 +83,7 @@ CSL.Node.group = {
                         label_form: label_form,
                         label_capitalize_if_first: label_capitalize_if_first,
                         parallel_condition: this.strings.set_parallel_condition,
-                        no_repeat_condition: this.strings.set_no_repeat_condition,
+                        changes_in_condition: this.strings.set_changes_in_condition,
                         parallel_result: undefined,
                         parallel_repeats: undefined,
                         condition: condition,
@@ -300,13 +300,13 @@ CSL.Node.group = {
                         }
                         var blobs = state.output.current.value().blobs;
                         var pos = state.output.current.value().blobs.length - 1;
-                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.no_repeat_condition)) {
+                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.changes_in_condition)) {
                             var parallel_condition_object = {
                                 blobs: blobs,
                                 condition: flags.parallel_condition,
                                 result: flags.parallel_result,
-                                norepeat: flags.no_repeat_condition,
-                                repeats: flags.parallel_repeats,
+                                changes_in_condition: flags.changes_in_condition,
+                                parallel_repeats: flags.parallel_repeats,
                                 id: Item.id,
                                 pos: pos
                             };

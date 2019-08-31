@@ -812,6 +812,9 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
 CSL.Attributes["@is-parallel"] = function (state, arg) {
     this.strings.set_parallel_condition = arg;
 };
+CSL.Attributes["@changes-in"] = function (state, arg) {
+    this.strings.set_changes_in_condition = arg.split(/\s+/);
+};
 CSL.Attributes["@no-repeat"] = function (state, arg) {
     this.strings.set_no_repeat_condition = arg.split(/\s+/);
 };

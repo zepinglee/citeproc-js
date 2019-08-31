@@ -898,7 +898,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         label_form: flags.label_form,
         parallel_condition: flags.parallel_condition,
         parallel_result: flags.parallel_result,
-        no_repeat_condition: flags.no_repeat_condition,
+        changes_in_condition: flags.changes_in_condition,
         parallel_repeats: flags.parallel_result,
         condition: flags.condition,
         force_suppress: flags.force_suppress,

@@ -5,35 +5,73 @@
  */
 CSL.Parallel = function (state) {
     this.state = state;
-    this.info = {};
     this.parallel_conditional_blobs_list = [];
 };
 
-CSL.Parallel.prototype.setSeriesRels = function(prevID, currID, seriesRels) {
-    if (this.info[prevID][currID]) {
-        if (!seriesRels) {
-            seriesRels = JSON.parse(JSON.stringify(this.info[prevID]));
+CSL.Parallel.Partnerships = function(state, items) {
+    this.state = state;
+    this.items = items.concat([[{},{}]]);
+    this.partnerMap = null;
+};
+
+CSL.Parallel.Partnerships.prototype.update = function(i) {
+    var currItem = this.items[i][0];
+    var nextItem = this.items[i+1][0];
+    var partnerStatus = null;
+    if (this.partnerMap) {
+        if (this.partnerMap[nextItem.id]) {
+            partnerStatus = "mid";
+        } else {
+            this.partnerMap = null;
+            partnerStatus = "last";
         }
     } else {
-        seriesRels = false;
+        // set partnerMap for this and its partner if none present
+        if (this._setPartnerStatus(i)) {
+            partnerStatus = "first";
+        }
     }
-    return seriesRels;
+    return partnerStatus;
+    // set repeatMap for this an its partner
 }
 
-CSL.Parallel.prototype.getRepeats = function(prev, curr) {
+CSL.Parallel.Partnerships.prototype.getID = function(i) {
+    return this.items[i][0].id;
+}
+
+CSL.Parallel.Partnerships.prototype._setPartnerStatus = function(i) {
+    var currItem = this.items[i][0];
+    var nextItem = this.items[i+1][0]
+    var hasMap = false;
+    if (currItem.seeAlso) {
+        if (currItem.seeAlso.indexOf(nextItem.id) > -1) {
+            this.partnerMap = {};
+            for (var j=0,jlen=currItem.seeAlso.length; j<jlen; j++) {
+                this.partnerMap[currItem.seeAlso[j]] = true;
+            }
+            hasMap = true;
+        }
+    }
+    return hasMap;
+}
+
+CSL.Parallel.Partnerships.prototype._getPartnerRepeats = function(i) {
+    var currItem = this.items[i][0];
+    var nextItem = this.items[i+1][0];
     var rex = /(?:type|id|seeAlso|.*-sub|.*-subjoin|.*-main)/;
     var ret = {};
-    for (var key in prev) {
+    for (var key in currItem) {
         if (key.match(rex)) {
             continue;
         }
-        if (typeof prev[key] === "string" || !prev[key]) {
-            if (prev[key] && prev[key] === curr[key]) {
+        if (!currItem[key]) continue;
+        if (typeof currItem[key] === "string") {
+            if (currItem[key] === nextItem[key]) {
                 ret[key] = true;
             }
-        } else if (typeof prev[key] === "object") {
-            // Could do better than this.
-            if (JSON.stringify(prev[key]) === JSON.stringify(curr[key])) {
+        } else if (typeof currItem[key] === "object") {
+            // Could do better than this, should be proper deepEqual polyfill
+            if (JSON.stringify(currItem[key]) === JSON.stringify(nextItem[key])) {
                 ret[key] = true;
             }
         }
@@ -43,82 +81,39 @@ CSL.Parallel.prototype.getRepeats = function(prev, curr) {
 
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
     this.parallel_conditional_blobs_list = [];
-    this.info = {};
     if (sortedItems.length > 1) {
-        // Harder than it looks.
-        // On a first pass, get the seeAlso of each item.
-        for (var i=0,ilen=sortedItems.length; i<ilen; i++) {
-            var curr = sortedItems[i][0];
-            this.info[curr.id] = {};
-            if (curr.seeAlso) {
-                for (var j=0,jlen=curr.seeAlso.length; j<jlen; j++) {
-                    if (curr.id === curr.seeAlso[j]) {
-                        continue;
-                    }
-                    this.info[curr.id][curr.seeAlso[j]] = true;
-                }
-            }
-        }
-        // On a second pass, set an item to FIRST if the current
-        // item is in its seeAlso. The seeAlso of the FIRST item control
-        // until (a) a non-member is encountered at CURRENT, or
-        // (b) the end of the array is reached.
-        // The seeAlso keys are deleted as each is seen.
-        // If neither (a) nor (b), set the current item to MID.
-        // If (a) and the previous item is FIRST, delete its
-        // parallel marker.
-        // If (b) and the current item is FIRST, delete its
-        // parallel marker.
-        // If (a) and the previous item is not FIRST, set it to
-        // LAST, and reset seeAlso from the current item.
-        // If (b) and the current item is not FIRST, set it to
-        // LAST.
-        var seriesRels = false;
+        var partners = new CSL.Parallel.Partnerships(this.state, sortedItems);
         var masterID = false;
-        for (var i=1,ilen=sortedItems.length; i<ilen; i++) {
-            var prev = sortedItems[i-1][0];
-            var curr = sortedItems[i][0];
-            var newSeriesRels = this.setSeriesRels(prev.id, curr.id, seriesRels);
-            if (!seriesRels) {
-                if (newSeriesRels) {
-                    // first
-                    seriesRels = newSeriesRels;
-                    delete seriesRels[curr.id];
-                    sortedItems[i-1][1].parallel = "first";
-                    sortedItems[i][1].parallel = "mid";
-                    sortedItems[i][1].repeats = this.getRepeats(prev, curr);
-                    sortedItems[i-1][1].repeats = sortedItems[i][1].repeats;
-                    if (!sortedItems[i][1].prefix) {
-                        sortedItems[i][1].prefix = ", ";
-                    }
-                    masterID = prev.id;
-                    this.state.registry.registry[masterID].master = true;
-                    this.state.registry.registry[masterID].siblings = [curr.id];
-
+        for (var i=0,ilen=sortedItems.length; i<ilen; i++) {
+            var status = partners.update(i);
+            var currentID = partners.getID(i);
+            if (status === "first") {
+                sortedItems[i][1].parallel = "first";
+                if (i < ilen-1) {
+                    sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i);
+                    sortedItems[i][1].parallel_repeats = sortedItems[i+1][1].parallel_repeats;
                 }
-            } else {
-                if (seriesRels[curr.id]) {
-                    sortedItems[i][1].parallel = "mid";
-                    if (!sortedItems[i][1].prefix) {
-                        sortedItems[i][1].prefix = ", ";
-                    }
-                    delete seriesRels[curr.id];
-                    sortedItems[i][1].repeats = this.getRepeats(prev, curr);
-                    //sortedItems[i-1][1].repeats = sortedItems[i][1].repeats;
-                    this.state.registry.registry[masterID].siblings.push(curr.id);
-                } else {
-                    sortedItems[i-1][1].parallel = "last";
-                    sortedItems[i][1].repeats = this.getRepeats(prev, curr);
-                    seriesRels = false;
+                masterID = currentID;
+                this.state.registry.registry[masterID].master = true;
+                this.state.registry.registry[masterID].siblings = [];
+            } else if (status === "mid") {
+                sortedItems[i][1].parallel = "mid";
+                if (i < ilen-1) {
+                    sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i);
                 }
-            }
-            if (i === (sortedItems.length-1)) {
-                if (sortedItems[i][1].parallel === "mid") {
-                    sortedItems[i][1].parallel = "last";
-                    sortedItems[i][1].repeats = this.getRepeats(prev, curr);
-                } else if (sortedItems[i][1].parallel !== "last") {
-                    delete sortedItems[i][1].repeats;
+                if (!sortedItems[i][1].prefix) {
+                    sortedItems[i][1].prefix = ", ";
                 }
+                this.state.registry.registry[masterID].siblings.push(currentID);
+            } else if (status === "last") {
+                sortedItems[i][1].parallel = "last";
+                if (!sortedItems[i][1].prefix) {
+                    sortedItems[i][1].prefix = ", ";
+                }
+                if (i < ilen-1) {
+                    sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i);
+                }
+                this.state.registry.registry[masterID].siblings.push(currentID);
             }
         }
     }
@@ -128,24 +123,25 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 CSL.Parallel.prototype.purgeGroupsIfParallel = function () {
     for (var i = this.parallel_conditional_blobs_list.length - 1; i > -1; i += -1) {
         var obj = this.parallel_conditional_blobs_list[i];
-        if (!obj.result && !obj.repeats) {
+        if (!obj.result && !obj.parallel_repeats) {
             purgeme = false;
         } else {
             if (obj.condition) {
                 var purgeme = true;
-                if (obj.result === obj.condition) {
+                if (!obj.result || obj.result === obj.condition) {
                     purgeme = false;
                 }
             }
-            if (purgeme && obj.norepeat && obj.repeats) {
+            if (purgeme && obj.changes_in_condition && obj.parallel_repeats) {
+                //if (purgeme && obj.changes_in_condition && obj.parallel_repeats)
                 purgeme = false;
                 var matches = 0;
-                for (var j=0,jlen=obj.norepeat.length; j<jlen; j++) {
-                    if (obj.repeats[obj.norepeat[j]]) {
+                for (var j=0,jlen=obj.changes_in_condition.length; j<jlen; j++) {
+                    if (obj.parallel_repeats[obj.changes_in_condition[j]]) {
                         matches += 1;
                     }
                 }
-                if (matches === obj.norepeat.length) {
+                if (matches === obj.changes_in_condition.length) {
                     purgeme = true;
                 }
             }

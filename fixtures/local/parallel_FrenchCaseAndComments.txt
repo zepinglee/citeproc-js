@@ -182,12 +182,12 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
           <group is-parallel="first">
   	 	    <date variable="issued" form="text"/>
           </group>
-          <group delimiter=", " no-repeat="container-title volume">
+          <group delimiter=", " changes-in="container-title volume">
 		    <text variable="container-title" font-style="italic" strip-periods="true"/>
 		    <number variable="volume"/>
           </group>
           <group delimiter=" ">
-            <group no-repeat="container-title volume section">
+            <group changes-in="container-title volume section">
 			  <text variable="section"/>
             </group>
             <label variable="page" form="short"/>

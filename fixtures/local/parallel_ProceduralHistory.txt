@@ -148,7 +148,7 @@ citation
           <number variable="volume"/>
           <text variable="container-title"/>
           <number variable="page"/>
-          <group delimiter=" " prefix="(" suffix=")" no-repeat="jurisdiction" is-parallel="last">
+          <group delimiter=" " prefix="(" suffix=")" changes-in="jurisdiction" is-parallel="last">
             <names variable="authority">
               <name/>
               <institution institution-parts="short"/>
