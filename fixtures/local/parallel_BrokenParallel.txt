@@ -79,7 +79,7 @@ Amaya v. Home Ice, Fuel &#38; Supply Co., 379 P. 2d 513 (Cal. 1963); Dillon v. L
                 <number variable="page"/>
                 <number variable="locator"/>
               </group>
-              <group delimiter=" " prefix="(" suffix=")" no-repeat="jurisdiction" is-parallel="last">
+              <group delimiter=" " prefix="(" suffix=")" changes-in="jurisdiction" is-parallel="last">
                 <names variable="authority">
                   <name/>
                   <institution institution-parts="short"/>
