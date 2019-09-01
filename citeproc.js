@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.24",
+    PROCESSOR_VERSION: "1.2.25",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -10170,7 +10170,7 @@ CSL.Node.group = {
                         }
                         if (state.opt.parallel.enable) {
                             if (!state.parallel) {
-                                state.parallel = new CSL.Parallel(this);
+                                state.parallel = new CSL.Parallel(state);
                             }
                         }
                         // Identify the best jurisdiction for the item and return true, otherwise return false
