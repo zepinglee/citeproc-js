@@ -1,6 +1,17 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.24
+=========================
+
+- Changes to parallel citation handling:
+
+  * former no-repeat (for use with is-parallel) is now changes-in
+  * new no-repeat attribute, which works on its own, and covers non-related items
+  * new parallel-delimiter-override allows explicit delimiter join for related/un-repeated cites
+  * code improvements: parallels engine not instantiated if not used, some refactoring for clarity
+
+=========================
 Changes in version 1.2.23
 =========================
 
