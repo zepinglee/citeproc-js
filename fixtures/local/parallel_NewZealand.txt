@@ -380,7 +380,7 @@ Failing parallel collapse in New Zealand Law style
   </macro>
   <macro name="render-nz-cite">
     <group delimiter=" ">
-      <group is-parallel="first">
+      <group parallel-delimiter-override=", " is-parallel="first">
         <text macro="title-italic"/>
       </group>
       <text variable="references" suffix=","/>

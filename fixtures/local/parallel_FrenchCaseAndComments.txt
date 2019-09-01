@@ -20,7 +20,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
         {
             "id": "ITEM-2",
             "prefix": "; "
-        },
+        }, 
         {
             "id": "ITEM-3"
         }
@@ -158,7 +158,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 			  <text macro="bb-point-locator-comma"/>
 			</group>
 			<group prefix="(" suffix=")" delimiter=" ">
-              <group is-parallel="first">
+              <group is-parallel="first" prefix="[" suffix="]">
                 <names variable="authority">
                   <name form="short"/>
                 </names>
@@ -171,9 +171,9 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		</group>
 	  </if>
       <else>
-		<!-- Civil law cases -->
-		<group delimiter=", ">
-          <group is-parallel="first">
+	<!-- Civil law cases -->
+	<group delimiter=", ">
+          <group parallel-delimiter-override=", " is-parallel="first">
             <names variable="authority">
               <name form="short"/>
             </names>
@@ -194,7 +194,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
             <number variable="page"/>
 		  </group>
           <group is-parallel="first">
-            <number variable="number"/>
+             <number variable="number"/>
           </group>
           <group delimiter=" ">
             <text variable="genre"/>
@@ -212,7 +212,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
       <group delimiter=" ">
 		<choose>
 		  <if variable="issue">
-			<number variable="volume" prefix="[" suffix="]"/>
+			<number variable="volume"/>
 			<number variable="issue"/>
 		  </if>
 		  <else>

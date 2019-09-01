@@ -213,10 +213,10 @@ citation-nojuris
                     <text term="note"/>
                     <text variable="first-reference-note-number"/>
                   </group>
-                  <group delimiter=" " require="empty-label">
+                  <group delimiter=" " require="empty-label" prefix="XX">
                     <text macro="juris-locator" label-form="symbol"/>
                   </group>
-                  <group delimiter=" " reject="empty-label">
+                  <group delimiter=" " reject="empty-label" prefix="YY">
                     <text macro="juris-locator" label-form="symbol"/>
                   </group>
                 </group>

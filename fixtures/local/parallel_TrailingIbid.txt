@@ -68,7 +68,7 @@ citation
           </group>
         </if>
         <else-if position="subsequent">
-            <group delimiter=" ">
+            <group delimiter=" " parallel-delimiter-override=", ">
               <number variable="volume"/>
               <text variable="container-title"/>
               <number variable="locator"/>
@@ -76,7 +76,7 @@ citation
         </else-if>
         <else>
           <group delimiter=", ">
-            <group is-parallel="first">
+            <group is-parallel="first" parallel-delimiter-override=", ">
               <text variable="title"/>
             </group>
             <group delimiter=" ">

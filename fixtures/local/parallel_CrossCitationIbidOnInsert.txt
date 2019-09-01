@@ -104,7 +104,7 @@ citation
       <choose>
       <if position="first">
         <group delimiter=", ">
-          <group is-parallel="first">
+          <group parallel-delimiter-override=", " is-parallel="first">
             <text variable="title"/>
           </group>
           <group delimiter=" ">
@@ -128,7 +128,7 @@ citation
       </else-if>
       <else-if position="subsequent">
         <group delimiter=", ">
-          <group is-parallel="first">
+          <group parallel-delimiter-override=", " is-parallel="first">
             <text variable="title"/>
           </group>
           <group delimiter=" ">

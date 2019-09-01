@@ -127,7 +127,7 @@ citation
   </locale>
   <macro name="mcgill-treaty-first">
     <group delimiter=", ">
-      <group is-parallel="first">
+      <group is-parallel="first" parallel-delimiter-override=", ">
         <text variable="title"/>
         <names variable="author">
           <name/>

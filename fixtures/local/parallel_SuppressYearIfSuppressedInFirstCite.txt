@@ -47,7 +47,7 @@ Beck v. Beck, 1999 ME 110, ¶ 6, 733 A.2d 981, 983 (1999).
           <group delimiter=" ">
             <!-- Hello -->
             <group delimiter=", ">
-              <group is-parallel="first">
+              <group parallel-delimiter-override=", " is-parallel="first">
                 <text variable="title"/>
               </group>
               <group delimiter="">
