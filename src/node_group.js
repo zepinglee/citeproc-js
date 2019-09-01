@@ -216,7 +216,7 @@ CSL.Node.group = {
                         }
                         if (state.opt.parallel.enable) {
                             if (!state.parallel) {
-                                state.parallel = new CSL.Parallel(this);
+                                state.parallel = new CSL.Parallel(state);
                             }
                         }
                         // Identify the best jurisdiction for the item and return true, otherwise return false
