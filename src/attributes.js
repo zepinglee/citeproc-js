@@ -113,7 +113,6 @@ CSL.Attributes["@position"] = function (state, arg) {
     this.tests ? {} : this.tests = [];
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
-    state.parallel.use_parallels = null;
     var trypositions = arg.split(/\s+/);
     var testSubsequentNear = function (Item, item) {
         if (item && item.position >= CSL.POSITION_SUBSEQUENT && item["near-note"]) {
@@ -810,15 +809,30 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
 CSL.Attributes["@is-parallel"] = function (state, arg) {
+    state.opt.parallel.enable = true;
     this.strings.set_parallel_condition = arg;
 };
 CSL.Attributes["@changes-in"] = function (state, arg) {
-    this.strings.set_changes_in_condition = arg.split(/\s+/);
+    var lst = arg.split(/\s+/);
+    for (var i=0,ilen=lst.length;i<ilen;i++) {
+        state.opt.parallel.changes_in[lst[i]] = true;
+    }
+    this.strings.set_changes_in_condition = lst;
 };
 CSL.Attributes["@no-repeat"] = function (state, arg) {
-    this.strings.set_no_repeat_condition = arg.split(/\s+/);
+    if (!state.opt.parallel.no_repeat) {
+        state.opt.parallel.no_repeat = {};
+    }
+    var lst = arg.split(/\s+/);
+    state.opt.parallel.enable = true;
+    for (var i=0,ilen=lst.length;i<ilen;i++) {
+        state.opt.parallel.no_repeat[lst[i]] = true;
+    }
+    this.strings.set_no_repeat_condition = lst;
 };
-
+CSL.Attributes["@layout-delimiter-override"] = function (state, arg) {
+    this.strings.set_layout_delimiter_override = arg;
+};
 
 
 CSL.Attributes["@require"] = function (state, arg) {

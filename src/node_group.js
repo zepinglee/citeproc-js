@@ -84,6 +84,8 @@ CSL.Node.group = {
                         label_capitalize_if_first: label_capitalize_if_first,
                         parallel_condition: this.strings.set_parallel_condition,
                         changes_in_condition: this.strings.set_changes_in_condition,
+                        no_repeat_condition: this.strings.set_no_repeat_condition,
+                        layout_delimiter_override: this.strings.set_layout_delimiter_override,
                         parallel_result: undefined,
                         parallel_repeats: undefined,
                         condition: condition,
@@ -212,6 +214,11 @@ CSL.Node.group = {
                                 //}
                             }
                         }
+                        if (state.opt.parallel.enable) {
+                            if (!state.parallel) {
+                                state.parallel = new CSL.Parallel(this);
+                            }
+                        }
                         // Identify the best jurisdiction for the item and return true, otherwise return false
                         for (var i=0,ilen=jurisdictionList.length;i<ilen;i++) {
                             var jurisdiction = jurisdictionList[i];
@@ -268,7 +275,7 @@ CSL.Node.group = {
             }
             
             // quashnonfields
-            func = function (state, Item) {
+            func = function (state, Item, item) {
                 state.output.endTag();
                 if (this.realGroup) {
                     var flags = state.tmp.group_context.pop();
@@ -300,17 +307,27 @@ CSL.Node.group = {
                         }
                         var blobs = state.output.current.value().blobs;
                         var pos = state.output.current.value().blobs.length - 1;
-                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.changes_in_condition)) {
+                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.changes_in_condition || flags.no_repeat_condition)) {
                             var parallel_condition_object = {
                                 blobs: blobs,
                                 condition: flags.parallel_condition,
                                 result: flags.parallel_result,
                                 changes_in_condition: flags.changes_in_condition,
                                 parallel_repeats: flags.parallel_repeats,
+                                no_repeat_condition: flags.no_repeat_condition,
+                                no_repeat_repeats: flags.no_repeat_repeats,
+                                layout_delimiter_override: flags.layout_delimiter_override,
                                 id: Item.id,
                                 pos: pos
                             };
-                            state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
+                            if (state.parallel.checkRepeats(parallel_condition_object)) {
+                                while (blobs.length) {
+                                    blobs.pop();
+                                }
+                                state.output.queue.slice(-1)[0].parallel_delimiter = parallel_condition_object.layout_delimiter_override;
+                            } else {
+                                state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
+                            }
                         }
                     } else {
                         state.tmp.term_predecessor = flags.old_term_predecessor;

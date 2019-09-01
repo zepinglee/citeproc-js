@@ -12,7 +12,6 @@ CSL.Node.sort = {
         target = state[state.build.root + "_sort"].tokens;
         if (this.tokentype === CSL.START) {
             if (state.build.area === "citation") {
-                state.parallel.use_parallels = false;
                 state.opt.sort_citations = true;
             }
             state.build.area = state.build.root + "_sort";

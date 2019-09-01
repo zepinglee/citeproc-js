@@ -1,6 +1,11 @@
 /*global CSL: true */
 
 CSL.Engine.Opt = function () {
+    this.parallel = {
+        enable: false,
+        no_repeat: null,
+        changes_in: {}
+    },
     this.has_disambiguate = false;
     this.mode = "html";
     this.dates = {};
@@ -236,8 +241,9 @@ CSL.Engine.Tmp = function () {
         label_form:  undefined,
         parallel_condition: undefined,
         parallel_result: undefined,
-        no_repeat_condition: undefined,
         parallel_repeats: undefined,
+        no_repeat_condition: undefined,
+        no_repeat_repeats: undefined,
         condition: false,
         force_suppress: false,
         done_vars: []

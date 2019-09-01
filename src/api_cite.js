@@ -343,7 +343,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     }
 
     // evaluate parallels
-    this.parallel.StartCitation(citation.sortedItems);
+
+    if (this.opt.parallel.enable) {
+        this.parallel.StartCitation(citation.sortedItems);
+    }
 
     var citations;
     if (this.opt.update_mode === CSL.POSITION) {
@@ -873,7 +876,9 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
         inputList.sort(this.citation.srt.compareCompositeKeys);
     }
     this.tmp.citation_errors = [];
-    this.parallel.StartCitation(inputList);
+    if (this.opt.parallel.enable) {
+        this.parallel.StartCitation(inputList);
+    }
     var str = CSL.getCitationCluster.call(this, inputList);
     return str;
 };
@@ -899,7 +904,10 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         parallel_condition: flags.parallel_condition,
         parallel_result: flags.parallel_result,
         changes_in_condition: flags.changes_in_condition,
-        parallel_repeats: flags.parallel_result,
+        no_repeat_condition: flags.no_repeat_condition,
+        layout_delimiter_override: flags.layout_delimiter_override,
+        parallel_repeats: flags.parallel_repeats,
+        no_repeat_repeats: flags.no_repeat_repeats,
         condition: flags.condition,
         force_suppress: flags.force_suppress,
         done_vars: flags.done_vars.slice()
@@ -1159,6 +1167,8 @@ CSL.getCitationCluster = function (inputList, citation) {
 
         this.tmp.in_cite_predecessor = false;
         // true is to block reset of shadow numbers
+        
+        
         if (pos > 0) {
             CSL.getCite.call(this, Item, item, "" + inputList[(pos - 1)][0].id, true);
         } else {
@@ -1213,7 +1223,9 @@ CSL.getCitationCluster = function (inputList, citation) {
         }
     }
 
-    this.parallel.purgeGroupsIfParallel();
+    if (this.opt.parallel.enable) {
+        this.parallel.purgeGroupsIfParallel();
+    }
     //
     // output.queue is a simple array.  do a slice
     // of it to get each cite item, setting params from

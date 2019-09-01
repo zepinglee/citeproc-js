@@ -10,6 +10,9 @@ CSL.Util.substituteStart = function (state, target) {
         if (item && item.parallel_repeats) {
             state.tmp.group_context.tip.parallel_repeats = item.parallel_repeats;
         }
+        if (item && item.no_repeat_repeats) {
+            state.tmp.group_context.tip.no_repeat_repeats = item.no_repeat_repeats;
+        }
         for (var i = 0, ilen = this.decorations.length; i < ilen; i += 1) {
             if ("@strip-periods" === this.decorations[i][0] && "true" === this.decorations[i][1]) {
                 state.tmp.strip_periods += 1;

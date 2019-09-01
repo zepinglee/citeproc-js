@@ -53,8 +53,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         CSL.stringCompare = this.sys.stringCompare;
     }
     this.sys.AbbreviationSegments = CSL.AbbreviationSegments;
-    this.parallel = new CSL.Parallel(this);
-    //this.parallel.use_parallels = true;
 
     this.transform = new CSL.Transform(this);
     // true or false
@@ -220,6 +218,10 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.build.area = "intext";
     var area_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, this.build.area);
     this.buildTokenLists(area_nodes, this[this.build.area].tokens);
+
+    if (this.opt.parallel.enable) {
+        this.parallel = new CSL.Parallel(this);
+    }
 
     this.juris = {};
 
