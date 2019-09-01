@@ -41,6 +41,21 @@ development.  CSL is the modern way to handle bibliographic projects,
 and ``citeproc-js`` is a convenient way to take advantage of it.
 
 ----------------------
+Submitting bug reports
+----------------------
+
+If you think you have found a processor bug, you can help track it
+down by submitting a test item or items that expose the error.  To
+submit an item, join the public `Jurism Test Submission group
+<https://www.zotero.org/groups/2339078/jurism_test_submissions>`,
+sync, create a collection named for the style that shows the error,
+drop the item into it, jot a description of the problem in the
+Abstract field, and sync again.
+
+For errors not associated with a particular style or item, file
+reports on the `citeproc-js GitHub tracker <https://github.com/juris-m/citeproc-js/issues>`.
+
+----------------------
 Building the processor
 ----------------------
 
