@@ -85,7 +85,7 @@ CSL.Node.group = {
                         parallel_condition: this.strings.set_parallel_condition,
                         changes_in_condition: this.strings.set_changes_in_condition,
                         no_repeat_condition: this.strings.set_no_repeat_condition,
-                        layout_delimiter_override: this.strings.set_layout_delimiter_override,
+                        parallel_delimiter_override: this.strings.set_parallel_delimiter_override,
                         parallel_result: undefined,
                         parallel_repeats: undefined,
                         condition: condition,
@@ -307,26 +307,37 @@ CSL.Node.group = {
                         }
                         var blobs = state.output.current.value().blobs;
                         var pos = state.output.current.value().blobs.length - 1;
-                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.changes_in_condition || flags.no_repeat_condition)) {
+                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.no_repeat_condition || flags.parallel_delimiter_override)) {
                             var parallel_condition_object = {
                                 blobs: blobs,
-                                condition: flags.parallel_condition,
-                                result: flags.parallel_result,
+                                condition: flags.condition,
+                                parallel_condition: flags.parallel_condition,
+                                parallel_result: flags.parallel_result,
                                 changes_in_condition: flags.changes_in_condition,
                                 parallel_repeats: flags.parallel_repeats,
                                 no_repeat_condition: flags.no_repeat_condition,
                                 no_repeat_repeats: flags.no_repeat_repeats,
-                                layout_delimiter_override: flags.layout_delimiter_override,
+                                parallel_delimiter_override: flags.parallel_delimiter_override,
                                 id: Item.id,
                                 pos: pos
                             };
                             if (state.parallel.checkRepeats(parallel_condition_object)) {
-                                while (blobs.length) {
+                                if (blobs) {
                                     blobs.pop();
                                 }
-                                state.output.queue.slice(-1)[0].parallel_delimiter = parallel_condition_object.layout_delimiter_override;
-                            } else {
-                                state.parallel.parallel_conditional_blobs_list.push(parallel_condition_object);
+                                if (parallel_condition_object.parallel_delimiter_override) {
+                                    state.output.queue.slice(-1)[0].parallel_delimiter = parallel_condition_object.parallel_delimiter_override;
+                                }
+                            }
+                            if (state.parallel.checkParallels(parallel_condition_object, Item)) {
+                                if (blobs) {
+                                    blobs.pop();
+                                }
+                            }
+                            if (state.tmp.area === "citation" && !item.prefix && ["mid", "last"].indexOf(parallel_condition_object.parallel_result) > -1) {
+                                if (parallel_condition_object.parallel_delimiter_override) {
+                                    state.output.queue.slice(-1)[0].parallel_delimiter = parallel_condition_object.parallel_delimiter_override;
+                                }
                             }
                         }
                     } else {

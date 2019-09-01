@@ -830,8 +830,8 @@ CSL.Attributes["@no-repeat"] = function (state, arg) {
     }
     this.strings.set_no_repeat_condition = lst;
 };
-CSL.Attributes["@layout-delimiter-override"] = function (state, arg) {
-    this.strings.set_layout_delimiter_override = arg;
+CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
+    this.strings.set_parallel_delimiter_override = arg;
 };
 
 

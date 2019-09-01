@@ -5,7 +5,6 @@
  */
 CSL.Parallel = function (state) {
     this.state = state;
-    this.parallel_conditional_blobs_list = [];
 };
 
 CSL.Parallel.Partnerships = function(state, items) {
@@ -115,19 +114,15 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
                 if (i < ilen-1) {
                     sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i, "changes_in");
                 }
-                if (!sortedItems[i][1].prefix) {
-                    sortedItems[i][1].prefix = ", ";
-                }
                 this.state.registry.registry[masterID].siblings.push(currentID);
+                this.state.registry.masterMap[currentID] = masterID;
             } else if (status === "last") {
                 sortedItems[i][1].parallel = "last";
-                if (!sortedItems[i][1].prefix) {
-                    sortedItems[i][1].prefix = ", ";
-                }
                 if (i < ilen-1) {
                     sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i, "changes_in");
                 }
                 this.state.registry.registry[masterID].siblings.push(currentID);
+                this.state.registry.masterMap[currentID] = masterID;
             }
             // Set repeats map here?
             if (this.state.opt.parallel.no_repeat) {
@@ -156,41 +151,29 @@ CSL.Parallel.prototype.checkRepeats = function(obj) {
     return purgeme;
 };
 
-CSL.Parallel.prototype.purgeGroupsIfParallel = function () {
-    for (var i = this.parallel_conditional_blobs_list.length - 1; i > -1; i += -1) {
-        var obj = this.parallel_conditional_blobs_list[i];
-        var purgeme = false;
-        if (obj.result && obj.condition) {
-            var purgeme = true;
-            if (!obj.result || obj.result === obj.condition) {
-                purgeme = false;
-            }
-            if (purgeme && obj.changes_in_condition && obj.parallel_repeats) {
-                //if (purgeme && obj.changes_in_condition && obj.parallel_repeats)
-                purgeme = false;
-                var matches = 0;
-                for (var j=0,jlen=obj.changes_in_condition.length; j<jlen; j++) {
-                    if (obj.parallel_repeats[obj.changes_in_condition[j]]) {
-                        matches += 1;
-                    }
-                }
-                if (matches === obj.changes_in_condition.length) {
-                    purgeme = true;
+CSL.Parallel.prototype.checkParallels = function(obj, Item) {
+    var purgeme = false;
+    if (obj.parallel_result && obj.parallel_condition) {
+        purgeme = true;
+        if (obj.parallel_result === obj.parallel_condition) {
+            purgeme = false;
+        }
+        if (purgeme && obj.changes_in_condition && obj.parallel_repeats) {
+            //if (purgeme && obj.changes_in_condition && obj.parallel_repeats)
+            purgeme = false;
+            var matches = 0;
+            for (var j=0,jlen=obj.changes_in_condition.length; j<jlen; j++) {
+                if (obj.parallel_repeats[obj.changes_in_condition[j]]) {
+                    matches += 1;
                 }
             }
-        }
-        if (purgeme) {
-            var buffer = [];
-            while (obj.blobs.length > obj.pos) {
-                buffer.push(obj.blobs.pop());
-            }
-            if (buffer.length) {
-                buffer.pop();
-            }
-            while (buffer.length) {
-                obj.blobs.push(buffer.pop());
+            if (matches === obj.changes_in_condition.length) {
+                purgeme = true;
             }
         }
-        this.parallel_conditional_blobs_list.pop();
     }
+    return purgeme;
 };
+
+
+CSL.Parallel.prototype.purgeGroupsIfParallel = function() {};

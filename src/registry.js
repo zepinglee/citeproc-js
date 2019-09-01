@@ -67,7 +67,10 @@ CSL.Registry = function (state) {
     // See CSL.NameOutput.prototype.outputNames
     // and CSL.Registry.prototype.doinserts
     this.authorstrings = {};
-
+    
+    // for parallel delimiter support
+    this.masterMap = {};
+    
     //
     // shared scratch vars
     this.mylist = [];
