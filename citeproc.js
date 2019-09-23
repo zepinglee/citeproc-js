@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.25",
+    PROCESSOR_VERSION: "1.2.26",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1257,6 +1257,54 @@ var CSL = {
             }
         }
         return lst;
+    },
+    
+    GET_COURT_CLASS: function(state, Item){
+        // Get authority as a string
+        var cls = "";
+        var authority = null;
+        var country = Item.jurisdiction ? Item.jurisdiction.split(":")[0] : null;
+        if (country && Item.authority) {
+            if ("string" === typeof Item.authority) {
+                authority = Item.authority;
+            } else {
+                if (Item.authority[0] && Item.authority[0].literal) {
+                    authority = Item.authority[0].literal;
+                }
+            }
+        }
+        if (authority) {
+            if (this.lang && state.locale[this.lang].opts.court_classes && state.locale[this.lang].opts.court_classes[country] && state.locale[this.lang].opts.court_classes[country][authority]) {
+                cls = state.locale[this.lang].opts.court_classes[country][authority];
+            } else if (state.locale[state.opt["default-locale"][0]].opts.court_classes && state.locale[state.opt["default-locale"][0]].opts.court_classes[country] && state.locale[state.opt["default-locale"][0]].opts.court_classes[country][authority]) {
+                cls = state.locale[state.opt["default-locale"][0]].opts.court_classes[country][authority]
+            }
+        }
+        return cls;
+    },
+
+    SET_COURT_CLASSES: function(state, lang, myxml, dataObj) {
+        var nodes = myxml.getNodesByName(dataObj, 'court-class');
+        for (var pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
+            var courtclass = nodes[pos];
+            var attributes = myxml.attributes(courtclass);
+            var cls = attributes["@name"];
+            var country = attributes["@country"];
+            var courts = attributes["@courts"];
+            
+            if (cls && country && courts) {
+                courts = courts.trim().split(/\s+/);
+                if (!state.locale[lang].opts.court_classes) {
+                    state.locale[lang].opts.court_classes = {};
+                }
+                if (!state.locale[lang].opts.court_classes[country]) {
+                    state.locale[lang].opts.court_classes[country] = {};
+                }
+                for (var i=0,ilen=courts.length;i<ilen;i++) {
+                    state.locale[lang].opts.court_classes[country][courts[i]] = cls;
+                }
+            }
+        }
     }
 };
 
@@ -9252,6 +9300,10 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             this.locale[lang_out].dates[myxml.getAttributeValue(date, "form")] = date;
         }
     }
+    //
+    // Xml: get list of nodes by node type
+    //
+    CSL.SET_COURT_CLASSES(this, lang_out, myxml, locale);
 };
 
 
@@ -10146,6 +10198,10 @@ CSL.Node.group = {
                                         }
                                     }
                                 }
+                                
+                                var lang = state.opt.lang ? state.opt.lang : state.opt["default-locale"][0];
+                                CSL.SET_COURT_CLASSES(state, lang, myXml, myXml.dataObj);
+                                
                                 if (!state.juris[jurisdiction].types) {
                                     state.juris[jurisdiction].types = CSL.MODULE_TYPES;
                                 }
@@ -10742,6 +10798,11 @@ CSL.Node.key = {
                     var altvar = false;
                     var transfall = true;
                     func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
+                } else if ("court-class" === variable) {
+                    func = function(state, Item) {
+                        var cls = CSL.GET_COURT_CLASS(state, Item);
+                        state.output.append(cls, "empty");
+                    }
                 } else {
                     func = function (state, Item) {
                         var varval = Item[variable];
@@ -15139,6 +15200,12 @@ CSL.Node.text = {
                                     state.tmp.group_context.tip.variable_success = true;
                                 }
                             };
+                        } else if (this.variables_real[0] === "court-class") {
+                            func = function(state, Item) {
+                                var cls = CSL.GET_COURT_CLASS(state, Item);
+                                state.output.append(cls, "empty");
+
+                            }
                         } else {
                             // anything left over just gets output in the normal way.
                             func = function (state, Item) {
@@ -16014,6 +16081,21 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
         this.tests.push(maketest(me));
 };
 
+
+CSL.Attributes["@court-class"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
+    var maketest = function (arg) {
+        return function(Item) {
+            var cls = CSL.GET_COURT_CLASS(state, Item);
+            if (cls === arg) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+    };
+    this.tests.push(maketest(arg));
+};
 
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
