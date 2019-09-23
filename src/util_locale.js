@@ -381,5 +381,9 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             this.locale[lang_out].dates[myxml.getAttributeValue(date, "form")] = date;
         }
     }
+    //
+    // Xml: get list of nodes by node type
+    //
+    CSL.SET_COURT_CLASSES(this, lang_out, myxml, locale);
 };
 

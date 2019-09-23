@@ -393,6 +393,12 @@ CSL.Node.text = {
                                     state.tmp.group_context.tip.variable_success = true;
                                 }
                             };
+                        } else if (this.variables_real[0] === "court-class") {
+                            func = function(state, Item) {
+                                var cls = CSL.GET_COURT_CLASS(state, Item);
+                                state.output.append(cls, "empty");
+
+                            }
                         } else {
                             // anything left over just gets output in the normal way.
                             func = function (state, Item) {

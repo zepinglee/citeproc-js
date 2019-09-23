@@ -192,6 +192,10 @@ CSL.Node.group = {
                                         }
                                     }
                                 }
+                                
+                                var lang = state.opt.lang ? state.opt.lang : state.opt["default-locale"][0];
+                                CSL.SET_COURT_CLASSES(state, lang, myXml, myXml.dataObj);
+                                
                                 if (!state.juris[jurisdiction].types) {
                                     state.juris[jurisdiction].types = CSL.MODULE_TYPES;
                                 }

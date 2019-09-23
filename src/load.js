@@ -1233,5 +1233,53 @@ var CSL = {
             }
         }
         return lst;
+    },
+    
+    GET_COURT_CLASS: function(state, Item){
+        // Get authority as a string
+        var cls = "";
+        var authority = null;
+        var country = Item.jurisdiction ? Item.jurisdiction.split(":")[0] : null;
+        if (country && Item.authority) {
+            if ("string" === typeof Item.authority) {
+                authority = Item.authority;
+            } else {
+                if (Item.authority[0] && Item.authority[0].literal) {
+                    authority = Item.authority[0].literal;
+                }
+            }
+        }
+        if (authority) {
+            if (this.lang && state.locale[this.lang].opts.court_classes && state.locale[this.lang].opts.court_classes[country] && state.locale[this.lang].opts.court_classes[country][authority]) {
+                cls = state.locale[this.lang].opts.court_classes[country][authority];
+            } else if (state.locale[state.opt["default-locale"][0]].opts.court_classes && state.locale[state.opt["default-locale"][0]].opts.court_classes[country] && state.locale[state.opt["default-locale"][0]].opts.court_classes[country][authority]) {
+                cls = state.locale[state.opt["default-locale"][0]].opts.court_classes[country][authority]
+            }
+        }
+        return cls;
+    },
+
+    SET_COURT_CLASSES: function(state, lang, myxml, dataObj) {
+        var nodes = myxml.getNodesByName(dataObj, 'court-class');
+        for (var pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
+            var courtclass = nodes[pos];
+            var attributes = myxml.attributes(courtclass);
+            var cls = attributes["@name"];
+            var country = attributes["@country"];
+            var courts = attributes["@courts"];
+            
+            if (cls && country && courts) {
+                courts = courts.trim().split(/\s+/);
+                if (!state.locale[lang].opts.court_classes) {
+                    state.locale[lang].opts.court_classes = {};
+                }
+                if (!state.locale[lang].opts.court_classes[country]) {
+                    state.locale[lang].opts.court_classes[country] = {};
+                }
+                for (var i=0,ilen=courts.length;i<ilen;i++) {
+                    state.locale[lang].opts.court_classes[country][courts[i]] = cls;
+                }
+            }
+        }
     }
 };

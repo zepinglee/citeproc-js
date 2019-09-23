@@ -150,6 +150,11 @@ CSL.Node.key = {
                     var altvar = false;
                     var transfall = true;
                     func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
+                } else if ("court-class" === variable) {
+                    func = function(state, Item) {
+                        var cls = CSL.GET_COURT_CLASS(state, Item);
+                        state.output.append(cls, "empty");
+                    }
                 } else {
                     func = function (state, Item) {
                         var varval = Item[variable];

@@ -806,6 +806,21 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
 };
 
 
+CSL.Attributes["@court-class"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
+    var maketest = function (arg) {
+        return function(Item) {
+            var cls = CSL.GET_COURT_CLASS(state, Item);
+            if (cls === arg) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+    };
+    this.tests.push(maketest(arg));
+};
+
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
 CSL.Attributes["@is-parallel"] = function (state, arg) {
