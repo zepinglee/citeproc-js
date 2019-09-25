@@ -808,17 +808,20 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
 
 CSL.Attributes["@court-class"] = function (state, arg) {
     this.tests ? {} : this.tests = [];
-    var maketest = function (arg) {
+	var tryclasses = arg.split(/\s+/);
+    var maketest = function (tryclass) {
         return function(Item) {
             var cls = CSL.GET_COURT_CLASS(state, Item);
-            if (cls === arg) {
+            if (cls === tryclass) {
                 return true;
             } else {
                 return false;
             }
         };
     };
-    this.tests.push(maketest(arg));
+    for (var i=0,ilen=tryclasses.length; i<ilen; i++) {
+        this.tests.push(maketest(tryclasses[i]));
+    }
 };
 
 // These are not evaluated as conditions immediately: they only

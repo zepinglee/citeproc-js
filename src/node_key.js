@@ -152,7 +152,9 @@ CSL.Node.key = {
                     func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                 } else if ("court-class" === variable) {
                     func = function(state, Item) {
-                        var cls = CSL.GET_COURT_CLASS(state, Item);
+                        CSL.INIT_JURISDICTION_MACROS(state, Item, "juris-main")
+                        // true is for sortKey mode
+                        var cls = CSL.GET_COURT_CLASS(state, Item, true);
                         state.output.append(cls, "empty");
                     }
                 } else {
