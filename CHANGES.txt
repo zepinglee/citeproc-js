@@ -1,6 +1,12 @@
 Summary of changes to citeproc-js since version 1.2 release.
 
 =========================
+Changes in version 1.2.27
+=========================
+
+Fix several issues with court-class support
+
+=========================
 Changes in version 1.2.26
 =========================
 
