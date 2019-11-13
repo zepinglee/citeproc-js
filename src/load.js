@@ -755,7 +755,7 @@ var CSL = {
                             vals[title.main] = splitTitle[0];
                             vals[title.subjoin] = splitTitle[1];
                             vals[title.sub] = splitTitle[2];
-                            if (this.opt.development_extensions.implicit_short_title) {
+                            if (this.opt.development_extensions.implicit_short_title && Item.type !== "legal_case") {
                                 if (!Item[title.short] && !vals[title.main].match(/^[\-\.[0-9]+$/)) {
                                     var punct = vals[title.subjoin].trim();
                                     if (["?", "!"].indexOf(punct) === -1) {
