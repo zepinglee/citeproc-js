@@ -1,4 +1,11 @@
-Summary of changes to citeproc-js since version 1.2 release.
+=========================
+Changes in version 1.2.28
+=========================
+
+- Avoid auto-split of titles on legal_case type
+- Update CSL schemata (for court-class support)
+- Update style tests
+- Update modules
 
 =========================
 Changes in version 1.2.27
