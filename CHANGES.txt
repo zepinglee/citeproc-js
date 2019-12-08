@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.2.29
+=========================
+
+- Drop time from ISO date strings before parsing
+
+=========================
 Changes in version 1.2.28
 =========================
 
