@@ -286,6 +286,7 @@ CSL.DateParser = function () {
         var yearIsNegative = false;
         var lst;
         if (txt) {
+            txt = txt.replace(/^(.*[0-9])T[0-9].*/, "$1");
             // If string leads with a minus sign, strip and memo it.
             if (txt.slice(0, 1) === "-") {
                 yearIsNegative = true;
