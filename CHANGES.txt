@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.2.30
+=========================
+
+- Accommodate citations with no items in author-only mode.
+
+  Report by Alf Eaton: https://github.com/Juris-M/citeproc-js/issues/127
+
+=========================
 Changes in version 1.2.29
 =========================
 
