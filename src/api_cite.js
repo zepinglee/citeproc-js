@@ -159,7 +159,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
     // attach the sorted list to the citation item
     citation.sortedItems = sortedItems;
-    
+
     // build reconstituted citations list in current document order
     var citationByIndex = [];
     var citationById = {};
@@ -487,10 +487,15 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             if (prevCitation.properties.mode === "author-only" && j > 1) {
                                 old_last_id_offset = 2;
                             }
-                            oldlastid =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1].id;
-                            oldlastxloc =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1]["locator-extra"];
-                            if (prevCitation.sortedItems[0].slice(-1)[0].legislation_id) {
-                                oldlastid = prevCitation.sortedItems[0].slice(-1)[0].legislation_id;
+                            var adjusted_offset = (j - old_last_id_offset);
+                            if (citations[adjusted_offset].sortedItems.length) {
+                                oldlastid =  citations[adjusted_offset].sortedItems.slice(-1)[0][1].id;
+                                oldlastxloc =  citations[j - old_last_id_offset].sortedItems.slice(-1)[0][1]["locator-extra"];
+                            }
+                            if (prevCitation.sortedItems.length) {
+                                if (prevCitation.sortedItems[0].slice(-1)[0].legislation_id) {
+                                    oldlastid = prevCitation.sortedItems[0].slice(-1)[0].legislation_id;
+                                }
                             }
                         }
                         if (j > 0 && k === 0 && prevCitation.properties.noteIndex !== thisCitation.properties.noteIndex) {
