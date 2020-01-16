@@ -1,4 +1,14 @@
 =========================
+Changes in version 1.2.31
+=========================
+
+- Fix error in title-case treatment of text-case="title". At last!
+
+  https://github.com/Juris-M/citeproc-js/issues/120
+
+- Tweak behavior of is-numeric
+
+=========================
 Changes in version 1.2.30
 =========================
 
