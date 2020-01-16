@@ -623,6 +623,7 @@ var CSL = {
         "number",
         "number-of-pages",
         "number-of-volumes",
+        "version",
         "volume",
         // "section", ??? add this?
         "supplement",

@@ -243,7 +243,10 @@ CSL.Node.text = {
 
                     // Deal with multi-fields and ordinary fields separately.
                     if (CSL.MULTI_FIELDS.indexOf(this.variables_real[0]) > -1
-                        || ["language-name", "language-name-original"].indexOf(this.variables_real[0]) > -1) {
+                        || this.variables_real[0].indexOf("-main") > -1
+                        || this.variables_real[0].indexOf("-sub") > -1
+                        || ["language-name", "language-name-original"].indexOf(this.variables_real[0]) > -1
+                       ) {
 
                         // multi-fields
                         // Initialize transform factory according to whether
