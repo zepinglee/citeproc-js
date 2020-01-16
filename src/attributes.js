@@ -53,7 +53,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                 if (state.tmp.shadow_numbers[variable].numeric) {
                     return true;
                 }
-            } else if (["title", "locator-extra","version"].indexOf(variable) > -1) {
+            } else if (["title","version"].indexOf(variable) > -1) {
                 if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
                     return true;
                 }
