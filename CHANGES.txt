@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.2.32
+=========================
+
+- Fix crash bug on single quotes inside tags
+
+=========================
 Changes in version 1.2.31
 =========================
 
