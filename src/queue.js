@@ -479,6 +479,7 @@ CSL.Output.Queue.prototype.string = function (state, myblobs, blob) {
                 if (state.normalDecorIsOrphan(blobjr, params)) {
                     continue;
                 }
+                if (!params[0]) continue;
                 if ("string" === typeof blobs_start) {
                     blobs_start = state.fun.decorate[params[0]][params[1]].call(blob, state, blobs_start, params[2]);
                 }
