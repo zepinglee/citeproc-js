@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.2.33
+=========================
+
+- Properly apply subsequent-author-substitute to cs:text rendered via cs:substitute.
+  See: https://forums.zotero.org/discussion/comment/350407
+
+=========================
 Changes in version 1.2.32
 =========================
 
