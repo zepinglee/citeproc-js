@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.2.34
+=========================
+
+- Implement use-first on institution names rewritten with institution-parts="short"
+
+=========================
 Changes in version 1.2.33
 =========================
 
