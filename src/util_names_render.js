@@ -1004,6 +1004,17 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
         }
     }
     if (use_short_form) {
+        var delimiter = this.institution.strings.delimiter;
+        var use_first = this.institution.strings["use-first"];
+        if (use_first) {
+            if (!delimiter) {
+                delimiter = "|";
+            }
+            var buf = [];
+            for (var i=0,ilen=short_form.length;i<ilen;i++) {
+                short_form[i] = short_form[i].split("|").slice(0, use_first).join(delimiter);
+            }
+        }
         name["short"] = short_form;
     } else {
         name["short"] = [];
