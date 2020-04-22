@@ -1,4 +1,16 @@
 =========================
+Changes in version 1.2.35
+=========================
+
+- Make backslash-escape-hyphen handling more robust.
+
+- Always set label on non-numeric values as singular.
+
+  https://github.com/Juris-M/citeproc-js/issues/124
+
+- Recognize some roman numerals ([ixv]) as numeric.
+
+=========================
 Changes in version 1.2.34
 =========================
 
