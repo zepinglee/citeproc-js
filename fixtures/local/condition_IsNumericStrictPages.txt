@@ -4,7 +4,7 @@ citation
 
 >>===== RESULT =====>>
 Volume is numeric: 4 / Page is numeric: 123
-Volume is non-numeric: Volume 10 / Page is non-numeric: ix
+Volume is non-numeric: Volume 10 / Page is numeric: ix
 Volume is numeric: L100 / Page is numeric: 123
 Volume is non-numeric: cm / Page is numeric: e678
 Volume is numeric: 2b / Page is numeric: 2b

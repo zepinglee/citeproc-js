@@ -293,16 +293,34 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         
         str = normalizeFieldValue(str, defaultLabel);
 
+        var jmrex, jsrex, mystr;
+        if (str.indexOf("\\-") > -1) {
+            jmrex = new RegExp(joinerMatchRex.source.replace("\\-", ""));
+            jsrex = new RegExp(joinerSplitRex.source.replace("\\-", ""));
+            var lst = str.split("\\-");
+            for (var i=0,ilen=lst.length;i<ilen;i++) {
+                lst[i] = lst[i].replace(/\-/g, "\u2013");
+            }
+            mystr = lst.join("\\-");
+            mystr = mystr.replace(/\\/g, "");
+        } else {
+            jmrex = joinerMatchRex;
+            jsrex = joinerSplitRex;
+            mystr = str;
+        }
+        // jmrex = joinerMatchRex;
+        // jsrex = joinerSplitRex;
+        
         // Split chunks and collate delimiters.
         var elems = [];
-        var m = str.match(joinerMatchRex);
+        var m = mystr.match(jmrex);
         if (m) {
             for (var i=0, ilen=m.length; i<ilen; i++) {
                 if (m[i].match(andRex)) {
                     m[i] = " " + localeAmpersand + " ";
                 }
             }
-            var lst = str.split(joinerSplitRex);
+            var lst = mystr.split(jsrex);
             var recombine = false;
             for (var i in lst) {
                 if (("" + lst[i]).replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {
@@ -311,7 +329,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 }
             }
             if (recombine) {
-                elems = [str];
+                elems = [mystr];
             } else {
                 for (var i=0,ilen=lst.length-1; i<ilen; i++) {
                     elems.push(lst[i]);
@@ -323,7 +341,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 //print("  fixup: "+elems);
             }
         } else {
-            var elems = [str];
+            var elems = [mystr];
         }
         // Split elements within each chunk build list of value objects.
         var values = [];
@@ -368,11 +386,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                             filteredOrigLabel = origLabel;
                         }
                         //var origLabel = j > 1 ? m[j-1] : "";
-                        str = lst[j] ? lst[j].trim() : "";
+                        mystr = lst[j] ? lst[j].trim() : "";
                         if (j === (lst.length-1)) {
-                            values.push(composeNumberInfo(filteredOrigLabel, label, str, elems[i+1]));
+                            values.push(composeNumberInfo(filteredOrigLabel, label, mystr, elems[i+1]));
                         } else {
-                            values.push(composeNumberInfo(filteredOrigLabel, label, str));
+                            values.push(composeNumberInfo(filteredOrigLabel, label, mystr));
                         }
                     }
                 }
@@ -406,7 +424,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             currentLabelInfo.collapsible = false;
         }
         var mVal = val.match(/^[0-9]+([-,:a-zA-Z]*)$/);
-        var mCurrentLabel = master.value.match(/^[0-9]+([-,:a-zA-Z]*)$/);
+        var mCurrentLabel = master.value.match(/^(?:[0-9]+|[ixv]+)([-,:a-zA-Z]*|\-[0-9]+)$/);
         if (!val || !mVal || !mCurrentLabel || isEscapedHyphen) {
             currentLabelInfo.collapsible = false;
             if (!val || !mCurrentLabel) {
@@ -800,8 +818,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             setPluralsAndNumerics(values);
             //print("setPluralsAndNumerics(): "+JSON.stringify(values, null, 2));
 
+            for (var obj of values) {
+                if (!obj.numeric) obj.plural = 0;
+            }
             this.tmp.shadow_numbers[variable].values = values;
-
+            // me.sys.print(JSON.stringify(values))
         }
 
         if (node) {
