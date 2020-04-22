@@ -27,7 +27,11 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             plural = state.tmp.shadow_numbers[node.strings.term].plural;
             if (!state.tmp.shadow_numbers[node.strings.term].labelForm
                 && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
-                state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+                if (node.strings.form) {
+                    state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+                } else if (state.tmp.group_context.tip.label_form) {
+                    state.tmp.shadow_numbers[node.strings.term].labelForm = state.tmp.group_context.tip.label_form;
+                }
                 state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
                 state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
             }
