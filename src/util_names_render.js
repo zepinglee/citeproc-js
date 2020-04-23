@@ -1019,6 +1019,12 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
     } else {
         name["short"] = [];
     }
+    if (this.state.tmp.abbrev_trimmer[varname]) {
+        for (var i=0,ilen=name["short"].length;i<ilen;i++) {
+            var frag = name["short"][i];
+            name["short"][i] = frag.replace(this.state.tmp.abbrev_trimmer[varname], "").trim();
+        }
+    }
     return name;
 };
 

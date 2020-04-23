@@ -1432,6 +1432,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     }
     this.tmp.cite_renders_content = false;
     this.tmp.probably_rendered_something = false;
+    this.tmp.abbrev_trimmer = {};
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;

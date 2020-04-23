@@ -377,13 +377,18 @@ CSL.Transform = function (state) {
     // in one place.  Obviously this module could do with a little
     // tidying up.
     function quashCheck(value) {
-        var m = value.match(/^!([-,_a-z]+)>>>/);
+        var m = value.match(/^!((?:[-_a-z]+(?:(?:.*)))(?:,(?:[-_a-z]+(?:(?:.*))))*)>>>/);
         if (m) {
             var fields = m[1].split(",");
             value = value.slice(m[0].length);
             for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
-                if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
-                    state.tmp.done_vars.push(fields[i]);
+                var rawField = fields[i];
+                var mm = rawField.match(/^([-_a-z]+)(?:\:(.*))*$/);
+                var field = mm[1];
+                if (mm[2]) {
+                    state.tmp.abbrev_trimmer[field] = mm[2];
+                } else if (state.tmp.done_vars.indexOf(field) === -1) {
+                    state.tmp.done_vars.push(field);
                 }
             }
         }
