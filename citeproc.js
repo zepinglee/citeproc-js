@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.35",
+    PROCESSOR_VERSION: "1.2.36",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1183,7 +1183,7 @@ var CSL = {
                 termStartAlpha = flags.condition.termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
             }
             var num = state.tmp.just_did_number;
-            if (empty) {
+            if (empty || flags.condition.valueTerm) {
                 // i.e. Big L. Rev. 100, 102
                 //      Little L. Rev. 102
                 //      L. Rev. for Plan 9, 102
@@ -1192,9 +1192,6 @@ var CSL = {
                 } else {
                     testres = false;
                 }
-            } else if (flags.condition.valueTerm) {
-                // i.e. Ibid. at 102
-                testres = false;
             } else {
                 if (termStartAlpha) {
                     testres = true;
@@ -8182,6 +8179,7 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     }
     this.tmp.cite_renders_content = false;
     this.tmp.probably_rendered_something = false;
+    this.tmp.abbrev_trimmer = {};
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
@@ -13914,6 +13912,12 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
     } else {
         name["short"] = [];
     }
+    if (this.state.tmp.abbrev_trimmer[varname]) {
+        for (var i=0,ilen=name["short"].length;i<ilen;i++) {
+            var frag = name["short"][i];
+            name["short"][i] = frag.replace(this.state.tmp.abbrev_trimmer[varname], "").trim();
+        }
+    }
     return name;
 };
 
@@ -14188,7 +14192,11 @@ CSL.evaluateLabel = function (node, state, Item, item) {
             plural = state.tmp.shadow_numbers[node.strings.term].plural;
             if (!state.tmp.shadow_numbers[node.strings.term].labelForm
                 && !state.tmp.shadow_numbers[node.strings.term].labelDecorations) {
-                state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+                if (node.strings.form) {
+                    state.tmp.shadow_numbers[node.strings.term].labelForm = node.strings.form;
+                } else if (state.tmp.group_context.tip.label_form) {
+                    state.tmp.shadow_numbers[node.strings.term].labelForm = state.tmp.group_context.tip.label_form;
+                }
                 state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
                 state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
             }
@@ -17468,13 +17476,18 @@ CSL.Transform = function (state) {
     // in one place.  Obviously this module could do with a little
     // tidying up.
     function quashCheck(value) {
-        var m = value.match(/^!([-,_a-z]+)>>>/);
+        var m = value.match(/^!((?:[-_a-z]+(?:(?:.*)))(?:,(?:[-_a-z]+(?:(?:.*))))*)>>>/);
         if (m) {
             var fields = m[1].split(",");
             value = value.slice(m[0].length);
             for (var i = 0, ilen = fields.length; i < ilen; i += 1) {
-                if (state.tmp.done_vars.indexOf(fields[i]) === -1) {
-                    state.tmp.done_vars.push(fields[i]);
+                var rawField = fields[i];
+                var mm = rawField.match(/^([-_a-z]+)(?:\:(.*))*$/);
+                var field = mm[1];
+                if (mm[2]) {
+                    state.tmp.abbrev_trimmer[field] = mm[2];
+                } else if (state.tmp.done_vars.indexOf(field) === -1) {
+                    state.tmp.done_vars.push(field);
                 }
             }
         }
@@ -19620,7 +19633,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             currentLabelInfo.collapsible = false;
         }
         var mVal = val.match(/^[0-9]+([-,:a-zA-Z]*)$/);
-        var mCurrentLabel = master.value.match(/^(?:[0-9]+|[ixv]+)([-,:a-zA-Z]*|\-[0-9]+)$/);
+        var mCurrentLabel = master.value.match(/^(?:[0-9]+|[ixv]+)([-,:a-zA-Z]*|\-[\-0-9]+)$/);
         if (!val || !mVal || !mCurrentLabel || isEscapedHyphen) {
             currentLabelInfo.collapsible = false;
             if (!val || !mCurrentLabel) {

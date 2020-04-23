@@ -1,4 +1,18 @@
 =========================
+Changes in version 1.2.36
+=========================
+
+- Provide for partial trimming of abbreviated authority
+  based on markup in abbreviated container-title.
+
+- Treat values without label and those with a custom label
+  identically in comma-safe group conditional.
+
+- Apply label-form on macro wrapper to embedded labels
+
+- Treat hyphenated escape-hyphenated numbers as plural
+
+=========================
 Changes in version 1.2.35
 =========================
 
