@@ -81,6 +81,13 @@ CSL.Node.layout = {
                 if (!state.tmp.just_looking && state.registry.registry[Item.id] && state.registry.registry[Item.id].parallel) {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }
+                // trimmer is not available in getAmbiguousCite
+                if (state.tmp.abbrev_trimmer && Item.jurisdiction) {
+                    for (var field in state.tmp.abbrev_trimmer.QUASHES[Item.jurisdiction]) {
+                        state.tmp.done_vars.push(field);
+                    }
+                }
+
                 //CSL.debug(" === init rendered_name === ");
                 state.tmp.rendered_name = false;
             };

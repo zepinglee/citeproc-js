@@ -1068,6 +1068,9 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.last_years_used = [];
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
+    this.tmp.abbrev_trimmer = {
+        QUASHES: {}
+    };
 
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix + citation_prefix);
     //var use_layout_prefix = this.citation.opt.layout_prefix;
@@ -1427,7 +1430,6 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     }
     this.tmp.cite_renders_content = false;
     this.tmp.probably_rendered_something = false;
-    this.tmp.abbrev_trimmer = {};
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
@@ -1516,6 +1518,11 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.nameset_counter = 0;
     this.tmp.years_used = [];
     this.tmp.names_max.clear();
+    if (!item || item.parallel === "first" || !item.parallel) {
+        this.tmp.abbrev_trimmer = {
+            QUASHES: {}
+        };
+    }
 
     this.tmp.splice_delimiter = this[this.tmp.area].opt.layout_delimiter;
     //this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;

@@ -376,7 +376,7 @@ CSL.Transform = function (state) {
     // The name transform code is placed here to keep similar things
     // in one place.  Obviously this module could do with a little
     // tidying up.
-    function quashCheck(value) {
+    function quashCheck(jurisdiction, value) {
         var m = value.match(/^!((?:[-_a-z]+(?:(?:.*)))(?:,(?:[-_a-z]+(?:(?:.*))))*)>>>/);
         if (m) {
             var fields = m[1].split(",");
@@ -385,9 +385,22 @@ CSL.Transform = function (state) {
                 var rawField = fields[i];
                 var mm = rawField.match(/^([-_a-z]+)(?:\:(.*))*$/);
                 var field = mm[1];
+                // trimmer is not available in getAmbiguousCite
+                var trimmer = state.tmp.abbrev_trimmer;
                 if (mm[2]) {
-                    state.tmp.abbrev_trimmer[field] = mm[2];
+                    if (trimmer && jurisdiction) {
+                        if (!trimmer[jurisdiction]) {
+                            trimmer[jurisdiction] = {};
+                        }
+                        trimmer[jurisdiction][field] = mm[2];
+                    }
                 } else if (state.tmp.done_vars.indexOf(field) === -1) {
+                    if (trimmer && jurisdiction) {
+                        if (!trimmer.QUASHES[jurisdiction]) {
+                            trimmer.QUASHES[jurisdiction] = {};
+                        }
+                        trimmer.QUASHES[jurisdiction][field] = true;
+                    }
                     state.tmp.done_vars.push(field);
                 }
             }
@@ -486,7 +499,7 @@ CSL.Transform = function (state) {
                 // hack syntax in this abbreviation short form.
                 if (primary) {
                     // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
-                    primary = quashCheck(primary);
+                    primary = quashCheck(Item.jurisdiction, primary);
                 }
             }
             if (publisherCheck(this, Item, primary, family_var)) {
