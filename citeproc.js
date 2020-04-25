@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.1",
+    PROCESSOR_VERSION: "1.3.2",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -7801,6 +7801,9 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.last_years_used = [];
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
+    this.tmp.abbrev_trimmer = {
+        QUASHES: {}
+    };
 
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix + citation_prefix);
     //var use_layout_prefix = this.citation.opt.layout_prefix;
@@ -8160,7 +8163,6 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     }
     this.tmp.cite_renders_content = false;
     this.tmp.probably_rendered_something = false;
-    this.tmp.abbrev_trimmer = {};
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
@@ -8249,6 +8251,11 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.nameset_counter = 0;
     this.tmp.years_used = [];
     this.tmp.names_max.clear();
+    if (!item || item.parallel === "first" || !item.parallel) {
+        this.tmp.abbrev_trimmer = {
+            QUASHES: {}
+        };
+    }
 
     this.tmp.splice_delimiter = this[this.tmp.area].opt.layout_delimiter;
     //this.tmp.splice_delimiter = this[this.tmp.area].opt.delimiter;
@@ -11005,6 +11012,13 @@ CSL.Node.layout = {
                 if (!state.tmp.just_looking && state.registry.registry[Item.id] && state.registry.registry[Item.id].parallel) {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }
+                // trimmer is not available in getAmbiguousCite
+                if (state.tmp.abbrev_trimmer && Item.jurisdiction) {
+                    for (var field in state.tmp.abbrev_trimmer.QUASHES[Item.jurisdiction]) {
+                        state.tmp.done_vars.push(field);
+                    }
+                }
+
                 //CSL.debug(" === init rendered_name === ");
                 state.tmp.rendered_name = false;
             };
@@ -13822,8 +13836,9 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
     var long_form = name["long"];
     var short_form = name["long"].slice();
     var use_short_form = false;
+    var itemJurisdiction = this.Item.jurisdiction;
     if (this.state.sys.getAbbreviation) {
-        var jurisdiction = this.Item.jurisdiction;
+        var jurisdiction = itemJurisdiction;
         for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
             var abbrevKey = long_form[j];
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", abbrevKey);
@@ -13849,10 +13864,14 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
     } else {
         name["short"] = [];
     }
-    if (this.state.tmp.abbrev_trimmer[varname]) {
-        for (var i=0,ilen=name["short"].length;i<ilen;i++) {
-            var frag = name["short"][i];
-            name["short"][i] = frag.replace(this.state.tmp.abbrev_trimmer[varname], "").trim();
+    // trimmer is not available in getAmbiguousCite
+    if (itemJurisdiction) {
+        var trimmer = this.state.tmp.abbrev_trimmer;
+        if (trimmer && trimmer[itemJurisdiction] && trimmer[itemJurisdiction][varname]) {
+            for (var i=0,ilen=name["short"].length;i<ilen;i++) {
+                var frag = name["short"][i];
+                name["short"][i] = frag.replace(trimmer[itemJurisdiction][varname], "").trim();
+            }
         }
     }
     return name;
@@ -13895,15 +13914,16 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
     splitInstitution = splitInstitution.split("|");
     if (this.institution.strings.form === "short" && this.state.sys.getAbbreviation) {
         // On a match, drop unused elements to yield a single key.
-        var jurisdiction = this.Item.jurisdiction;
+        var itemJurisdiction = this.Item.jurisdiction;
         for (var j = splitInstitution.length; j > 0; j += -1) {
+            var jurisdiction = itemJurisdiction;
             var str = splitInstitution.slice(0, j).join("|");
             var abbrevKey = str;
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", abbrevKey);
             if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][abbrevKey]) {
                 var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][abbrevKey];
 
-                splitLst = this.state.transform.quashCheck(splitLst);
+                splitLst = this.state.transform.quashCheck(itemJurisdiction, splitLst);
 
                 // If the abbreviation has date cut-offs, find the most recent
                 // abbreviation within scope.
@@ -17370,7 +17390,7 @@ CSL.Transform = function (state) {
     // The name transform code is placed here to keep similar things
     // in one place.  Obviously this module could do with a little
     // tidying up.
-    function quashCheck(value) {
+    function quashCheck(jurisdiction, value) {
         var m = value.match(/^!((?:[-_a-z]+(?:(?:.*)))(?:,(?:[-_a-z]+(?:(?:.*))))*)>>>/);
         if (m) {
             var fields = m[1].split(",");
@@ -17379,9 +17399,22 @@ CSL.Transform = function (state) {
                 var rawField = fields[i];
                 var mm = rawField.match(/^([-_a-z]+)(?:\:(.*))*$/);
                 var field = mm[1];
+                // trimmer is not available in getAmbiguousCite
+                var trimmer = state.tmp.abbrev_trimmer;
                 if (mm[2]) {
-                    state.tmp.abbrev_trimmer[field] = mm[2];
+                    if (trimmer && jurisdiction) {
+                        if (!trimmer[jurisdiction]) {
+                            trimmer[jurisdiction] = {};
+                        }
+                        trimmer[jurisdiction][field] = mm[2];
+                    }
                 } else if (state.tmp.done_vars.indexOf(field) === -1) {
+                    if (trimmer && jurisdiction) {
+                        if (!trimmer.QUASHES[jurisdiction]) {
+                            trimmer.QUASHES[jurisdiction] = {};
+                        }
+                        trimmer.QUASHES[jurisdiction][field] = true;
+                    }
                     state.tmp.done_vars.push(field);
                 }
             }
@@ -17480,7 +17513,7 @@ CSL.Transform = function (state) {
                 // hack syntax in this abbreviation short form.
                 if (primary) {
                     // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
-                    primary = quashCheck(primary);
+                    primary = quashCheck(Item.jurisdiction, primary);
                 }
             }
             if (publisherCheck(this, Item, primary, family_var)) {

@@ -1,4 +1,11 @@
 ========================
+Changes in version 1.3.2
+========================
+
+- Implement cross-cite element trimming and suppression, as
+  required for parallel citations and subsequent history.
+
+========================
 Changes in version 1.3.1
 ========================
 
