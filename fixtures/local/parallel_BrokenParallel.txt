@@ -69,7 +69,7 @@ Amaya v. Home Ice, Fuel &#38; Supply Co., 379 P. 2d 513 (Cal. 1963); Dillon v. L
         </else-if>
         <else>
           <group delimiter=", ">
-            <group is-parallel="first">
+            <group parallel-first="title">
               <text variable="title"/>
             </group>
             <group delimiter=" ">
@@ -79,7 +79,7 @@ Amaya v. Home Ice, Fuel &#38; Supply Co., 379 P. 2d 513 (Cal. 1963); Dillon v. L
                 <number variable="page"/>
                 <number variable="locator"/>
               </group>
-              <group delimiter=" " prefix="(" suffix=")" changes-in="jurisdiction" is-parallel="last">
+              <group delimiter=" " prefix="(" suffix=")" parallel-last="jurisdiction authority issued">
                 <names variable="authority">
                   <name/>
                   <institution institution-parts="short"/>

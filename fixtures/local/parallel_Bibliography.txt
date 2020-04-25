@@ -91,7 +91,7 @@ bibliography
   <bibliography>
     <layout>
 	  <group delimiter=", ">
-        <group is-parallel="first">
+        <group parallel-first="title">
           <text variable="title"/>
         </group>
         <group delimiter=" ">
@@ -101,7 +101,7 @@ bibliography
             <text variable="page"/>
             <text variable="locator" prefix=", "/>
           </group>
-          <group is-parallel="last">
+          <group parallel-last="issued">
             <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
           </group>
         </group>

@@ -1239,7 +1239,7 @@ citation
         <group delimiter=", ">
           <text variable="title"/>
           <group delimiter=" ">
-            <group delimiter=" " is-parallel="true">
+            <group delimiter=" " parallel-last="volume legislation number container-title">
               <text macro="us-code-detail"/>
             </group>
             <text label-form="symbol" macro="std-locator-non-page-label"/>
@@ -2244,12 +2244,12 @@ citation
         <text value="note"/>
         <text variable="first-reference-note-number"/>
       </group>
-      <group delimiter=" " is-parallel="true">
+      <group delimiter=" " parallel-last="volume container-title page-first">
         <number variable="volume"/>
         <text variable="container-title"/>
         <number variable="page-first"/>
       </group>
-      <group delimiter=" " is-parallel="false">
+      <group delimiter=" ">
         <text value="at"/>
         <number variable="page-first"/>
       </group>

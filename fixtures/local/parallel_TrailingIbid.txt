@@ -76,7 +76,7 @@ citation
         </else-if>
         <else>
           <group delimiter=", ">
-            <group is-parallel="first" parallel-delimiter-override=", ">
+            <group parallel-first="title" parallel-delimiter-override=", ">
               <text variable="title"/>
             </group>
             <group delimiter=" ">
@@ -86,12 +86,16 @@ citation
                 <number variable="page"/>
                 <number variable="locator"/>
               </group>
-              <group delimiter=" " prefix="(" suffix=")" changes-in="jurisdiction" is-parallel="last">
-                <names variable="authority">
-                  <name/>
-                  <institution institution-parts="short"/>
-                </names>
-                <date variable="issued" form="text" date-parts="year"/>
+              <group delimiter=" " prefix="(" suffix=")">
+                <group parallel-last="authority">
+                  <names variable="authority">
+                    <name/>
+                    <institution institution-parts="short"/>
+                  </names>
+                </group>
+                <group parallel-last="issued">
+                  <date variable="issued" form="text" date-parts="year"/>
+                </group>
               </group>
             </group>
           </group>

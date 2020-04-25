@@ -104,14 +104,14 @@ citation
       <choose>
       <if position="first">
         <group delimiter=", ">
-          <group parallel-delimiter-override=", " is-parallel="first">
+          <group parallel-delimiter-override=", " parallel-first="title">
             <text variable="title"/>
           </group>
           <group delimiter=" ">
             <text variable="volume"/>
             <text variable="container-title"/>
             <text variable="page"/>
-            <group is-parallel="last">
+            <group parallel-last="issued">
               <date variable="issued" prefix="(" suffix=")">
                 <date-part name="year"/>
               </date>
@@ -128,7 +128,7 @@ citation
       </else-if>
       <else-if position="subsequent">
         <group delimiter=", ">
-          <group parallel-delimiter-override=", " is-parallel="first">
+          <group parallel-delimiter-override=", " parallel-first="title">
             <text variable="title"/>
           </group>
           <group delimiter=" ">

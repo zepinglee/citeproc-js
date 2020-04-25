@@ -150,7 +150,7 @@ reversion though, like this:
       <group delimiter=", ">
         <group delimiter=" ">
           <group delimiter=", ">
-            <group parallel-delimiter-override=", " is-parallel="first" delimiter=", ">
+            <group parallel-delimiter-override=", " parallel-first="author" delimiter=", ">
               <text macro="author"/>
               <text variable="title" font-style="italic"/>
             </group>
@@ -168,7 +168,7 @@ reversion though, like this:
                     </group>
                   </if>
                 </choose>
-                <group is-parallel="last">
+                <group parallel-last="issued">
                   <date date-parts="year-month-day" form="text" variable="issued"/>
                 </group>
                 <group delimiter=" ">

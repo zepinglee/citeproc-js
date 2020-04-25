@@ -633,25 +633,25 @@ bibliography
   </macro>
   <macro name="legal-case-first">
     <group delimiter=", ">
-      <group is-parallel="first">
+      <group parallel-first="title">
         <text variable="title"/>
       </group>
-
-<group delimiter=" ">
+      <group delimiter=" ">
         <text variable="volume"/>
         <text variable="container-title"/>
         <text variable="page"/>
         <group prefix="(" suffix=")" delimiter=" ">
           <text variable="authority" form="short"/>
-          <group is-parallel="last">
+          <group parallel-last="issued">
             <date variable="issued">
               <date-part name="year"/>
-  	        </date>
+            </date>
           </group>
-  	    </group>
-	  </group>
-	</group>
+        </group>
+      </group>
+    </group>
   </macro>
+
   <citation 
          disambiguate-add-names="true"
          et-al-min="4"

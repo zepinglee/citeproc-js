@@ -179,11 +179,11 @@ citation
           <choose>
             <if type="legal_case bill legislation manuscript" match="any">
               <group delimiter=" ">
-              <group parallel-delimiter-override=", " is-parallel="first">
+              <group parallel-delimiter-override=", " parallel-first="title-short">
                 <text variable="title-short"/>
               </group>
               <group delimiter=" ">
-                <group is-parallel="first">
+                <group parallel-first="issued">
                   <text macro="date-parenthesis"/>
                 </group>
                 <text macro="article-case-info"/>
@@ -200,11 +200,11 @@ citation
           <group delimiter=" ">
             <group delimiter=", ">
               <group delimiter=" ">
-                <group parallel-delimiter-override=", " is-parallel="first">
+                <group parallel-delimiter-override=", " parallel-first="title">
                   <text macro="title"/>
                 </group>
                 <group delimiter=" ">
-                  <group is-parallel="first">
+                  <group parallel-first="issued">
                     <text macro="date-parenthesis"/>
                   </group>
                   <text macro="article-case-info"/>

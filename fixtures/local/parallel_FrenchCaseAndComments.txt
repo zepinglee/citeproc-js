@@ -158,7 +158,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 			  <text macro="bb-point-locator-comma"/>
 			</group>
 			<group prefix="(" suffix=")" delimiter=" ">
-              <group is-parallel="first" prefix="[" suffix="]">
+              <group parallel-first="authority issued" prefix="[" suffix="]">
                 <names variable="authority">
                   <name form="short"/>
                 </names>
@@ -173,27 +173,27 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
       <else>
 	<!-- Civil law cases -->
 	<group delimiter=", ">
-          <group parallel-delimiter-override=", " is-parallel="first">
+          <group parallel-first="authority">
             <names variable="authority">
               <name form="short"/>
             </names>
           </group>
 		  <text variable="title" form="short"/>
-          <group is-parallel="first">
+          <group parallel-first="issued">
   	 	    <date variable="issued" form="text"/>
           </group>
-          <group delimiter=", " is-parallel="first" changes-in="container-title volume">
-		    <text variable="container-title" font-style="italic" strip-periods="true"/>
-		    <number variable="volume"/>
+          <group delimiter=", " parallel-first="container-title" parallel-delimiter-override=", ">
+		      <text variable="container-title" font-style="italic" strip-periods="true"/>
+		      <number variable="volume"/>
           </group>
           <group delimiter=" ">
-            <group is-parallel="first" changes-in="container-title volume section">
+            <group parallel-first="section page">
 			  <text variable="section"/>
             </group>
             <label variable="page" form="short"/>
             <number variable="page"/>
 		  </group>
-          <group is-parallel="first">
+          <group parallel-first="number">
              <number variable="number"/>
           </group>
           <group delimiter=" ">

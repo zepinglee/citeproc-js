@@ -127,8 +127,10 @@ citation
   </locale>
   <macro name="mcgill-treaty-first">
     <group delimiter=", ">
-      <group is-parallel="first" parallel-delimiter-override=", ">
+      <group parallel-first="title" parallel-delimiter-override=", ">
         <text variable="title"/>
+      </group>
+      <group parallel-first="author" parallel-delimiter-override=", ">
         <names variable="author">
           <name/>
           <institution and="text" delimiter=", " institution-parts="short"/>
@@ -136,7 +138,7 @@ citation
       </group>
       <group delimiter=" ">
         <group delimiter=", ">
-          <group delimiter=" " is-parallel="first">
+          <group delimiter=" " parallel-first="event-date available-date issued original-date" parallel-delimiter-override=", ">
             <choose>
               <if variable="event-date">
                 <date date-parts="year-month-day" form="text" variable="event-date"/>

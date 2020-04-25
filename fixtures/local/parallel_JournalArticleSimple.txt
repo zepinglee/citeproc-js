@@ -39,14 +39,14 @@ Jim v. Bob, 444 U.S. 400 (1965); Smith v. Noakes, 222 U.S. 200, 333 L.Ed. 300 (1
       <choose>
         <if position="first">
           <group delimiter=", ">
-            <group parallel-delimiter-override=", " is-parallel="first">
+            <group parallel-delimiter-override=", " parallel-first="title">
               <text variable="title"/>
             </group>
             <group delimiter=" ">
               <text variable="volume"/>
               <text variable="container-title"/>
               <text variable="page"/>
-              <group is-parallel="last">
+              <group parallel-last="issued">
                 <date variable="issued" date-parts="year" form="text" prefix="(" suffix=")"/>
               </group>
             </group>
