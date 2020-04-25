@@ -82,12 +82,9 @@ CSL.Node.group = {
                         output_tip: state.output.current.tip,
                         label_form: label_form,
                         label_capitalize_if_first: label_capitalize_if_first,
-                        parallel_condition: this.strings.set_parallel_condition,
-                        changes_in_condition: this.strings.set_changes_in_condition,
-                        no_repeat_condition: this.strings.set_no_repeat_condition,
+                        parallel_last: this.strings.parallel_last,
+                        parallel_first: this.strings.parallel_first,
                         parallel_delimiter_override: this.strings.set_parallel_delimiter_override,
-                        parallel_result: undefined,
-                        parallel_repeats: undefined,
                         condition: condition,
                         force_suppress: force_suppress,
                         done_vars: state.tmp.group_context.tip.done_vars.slice()
@@ -244,36 +241,19 @@ CSL.Node.group = {
                         }
                         var blobs = state.output.current.value().blobs;
                         var pos = state.output.current.value().blobs.length - 1;
-                        if (!state.tmp.just_looking && (flags.parallel_condition || flags.no_repeat_condition || flags.parallel_delimiter_override)) {
-                            var parallel_condition_object = {
-                                blobs: blobs,
-                                condition: flags.condition,
-                                parallel_condition: flags.parallel_condition,
-                                parallel_result: flags.parallel_result,
-                                changes_in_condition: flags.changes_in_condition,
-                                parallel_repeats: flags.parallel_repeats,
-                                no_repeat_condition: flags.no_repeat_condition,
-                                no_repeat_repeats: flags.no_repeat_repeats,
-                                parallel_delimiter_override: flags.parallel_delimiter_override,
-                                id: Item.id,
-                                pos: pos
-                            };
-                            if (state.parallel.checkRepeats(parallel_condition_object)) {
-                                if (blobs) {
-                                    blobs.pop();
-                                }
-                                if (parallel_condition_object.parallel_delimiter_override) {
-                                    state.output.queue.slice(-1)[0].parallel_delimiter = parallel_condition_object.parallel_delimiter_override;
-                                }
-                            }
-                            if (state.parallel.checkParallels(parallel_condition_object, Item)) {
+                        if (!state.tmp.just_looking && (flags.parallel_last || flags.parallel_first || flags.parallel_delimiter_override)) {
+                            // flags.parallel_last
+                            // flags.parallel_first
+                            var hasRepeat = state.parallel.checkRepeats(flags);
+                            if (hasRepeat) {
                                 if (blobs) {
                                     blobs.pop();
                                 }
                             }
-                            if (state.tmp.area === "citation" && !item.prefix && ["mid", "last"].indexOf(parallel_condition_object.parallel_result) > -1) {
-                                if (parallel_condition_object.parallel_delimiter_override) {
-                                    state.output.queue.slice(-1)[0].parallel_delimiter = parallel_condition_object.parallel_delimiter_override;
+                            if (state.tmp.cite_index > 0 && (hasRepeat || (!flags.parallel_first && !flags.parallel_last))) {
+                                //state.sys.print(`${state.tmp.cite_index} ${JSON.stringify(state.tmp.suppress_repeats, null, 2)}`)
+                                if (flags.parallel_delimiter_override && state.tmp.suppress_repeats[state.tmp.cite_index-1].SIBLING) {
+                                    state.output.queue.slice(-1)[0].parallel_delimiter = flags.parallel_delimiter_override;
                                 }
                             }
                         }

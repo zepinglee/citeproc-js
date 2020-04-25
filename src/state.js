@@ -3,8 +3,6 @@
 CSL.Engine.Opt = function () {
     this.parallel = {
         enable: false,
-        no_repeat: null,
-        changes_in: {}
     },
     this.has_disambiguate = false;
     this.mode = "html";
@@ -153,7 +151,6 @@ CSL.Engine.Opt = function () {
     this.development_extensions.static_statute_locator = false;
     this.development_extensions.csl_reverse_lookup_support = false;
     this.development_extensions.wrap_url_and_doi = false;
-    this.development_extensions.handle_parallel_articles = false;
     this.development_extensions.thin_non_breaking_space_html_hack = false;
     this.development_extensions.apply_citation_wrapper = false;
     this.development_extensions.main_title_from_short_title = false;
@@ -239,11 +236,9 @@ CSL.Engine.Tmp = function () {
         variable_success: false,
         output_tip: undefined,
         label_form:  undefined,
-        parallel_condition: undefined,
-        parallel_result: undefined,
-        parallel_repeats: undefined,
-        no_repeat_condition: undefined,
-        no_repeat_repeats: undefined,
+        parallel_first: undefined,
+        parallel_last: undefined,
+        parallel_delimiter_override: undefined,
         condition: false,
         force_suppress: false,
         done_vars: []

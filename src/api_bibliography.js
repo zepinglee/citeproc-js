@@ -97,7 +97,7 @@ CSL.Engine.prototype.makeBibliography = function (bibsection) {
  * Compose individual cites into a single string.
  */
 CSL.getBibliographyEntries = function (bibsection) {
-    var ret, input, include, anymatch, allmatch, bib_entry, res, item, spec, lllen, pppos, topblobs, entry_item_ids, debug, collapse_parallel, i, ilen, siblings, skips, sortedItems, eyetem, entry_item_data, j, jlen;
+    var ret, input, include, anymatch, allmatch, bib_entry, res, item, spec, lllen, pppos, topblobs, entry_item_ids, debug, i, ilen, siblings, skips, sortedItems, eyetem, entry_item_data, j, jlen;
     ret = [];
     entry_item_data = [];
     this.tmp.area = "bibliography";
@@ -105,7 +105,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.tmp.last_rendered_name = false;
     this.tmp.bibliography_errors = [];
     this.tmp.bibliography_pos = 0;
-
+    
     // For paged returns: disable generated entries and
     // do not fetch full items as a batch (input variable
     // consists of ids only in this case)
@@ -263,31 +263,30 @@ CSL.getBibliographyEntries = function (bibsection) {
         }
 
         // 2019-06-25 Hacked to conform to new parallels evaluation method
+        // 2020-04-25 Revised to work with latest, and final, parallel-first/parallel-last attributes
         entry_item_ids = [];
         if (this.registry.registry[item.id].master
             && !(bibsection && bibsection.page_start && bibsection.page_length)) {
-
+            // Fetch item content
             sortedItems = [[item, {id: item.id}]];
-            var siblings = this.registry.registry[item.id].siblings;
+            siblings = this.registry.registry[item.id].siblings;
             for (var j=0,jlen=siblings.length; j<jlen; j++) {
-                sortedItems.push([{id: siblings[j]}, {id: siblings[j]}]);
+               sortedItems.push([this.refetchItem(siblings[j]), {id: siblings[j]}]);
             }
-            collapse_parallel = true;
+            // Adjust parameters
             this.parallel.StartCitation(sortedItems);
             this.output.queue[0].strings.delimiter = ", ";
             this.tmp.term_predecessor = false;
-            entry_item_ids.push("" + CSL.getCite.call(this, item, sortedItems[0][1]));
-            skips[item.id] = true;
-            siblings = this.registry.registry[item.id].siblings;
-            for (j = 0, jlen = siblings.length; j < jlen; j += 1) {
-                var k = this.registry.registry[item.id].siblings[j];
-                eyetem = this.refetchItem(k);
-                entry_item_ids.push("" + CSL.getCite.call(this, eyetem, sortedItems[j+1][1]));
-                skips[eyetem.id] = true;
+            this.tmp.cite_index = 0;
+            // Run cites
+            for (j = 0, jlen = sortedItems.length; j < jlen; j += 1) {
+                entry_item_ids.push("" + CSL.getCite.call(this, sortedItems[j][0], sortedItems[j][1]));
+                this.tmp.cite_index++;
+                skips[sortedItems[j][0].id] = true;
             }
-            this.parallel.purgeGroupsIfParallel();
         } else if (!this.registry.registry[item.id].siblings) {
             this.tmp.term_predecessor = false;
+            this.tmp.cite_index = 0;
             entry_item_ids.push("" + CSL.getCite.call(this, item));
             if (bibsection && bibsection.page_start && bibsection.page_length) {
                 page_item_count += 1;
@@ -316,9 +315,8 @@ CSL.getBibliographyEntries = function (bibsection) {
             // of blobs.  this inconsistency is a source of confusion, and
             // should be cleaned up across the code base in the first
             // instance, before making any other changes to output code.
-            if (collapse_parallel || !this.output.queue[0].blobs[0].blobs[0].strings) {
+            if (!this.output.queue[0].blobs[0].blobs[0].strings) {
                 topblobs = this.output.queue[0].blobs;
-                collapse_parallel = false;
             } else {
                 topblobs = this.output.queue[0].blobs[0].blobs;
             }

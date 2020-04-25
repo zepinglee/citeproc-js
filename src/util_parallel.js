@@ -7,173 +7,127 @@ CSL.Parallel = function (state) {
     this.state = state;
 };
 
-CSL.Parallel.Partnerships = function(state, items) {
-    this.state = state;
-    this.items = items.concat([[{},{}]]);
-    this.partnerMap = null;
-    this.partnerStatus = null;
-    this.repeatMap = null;
-};
-
-CSL.Parallel.Partnerships.prototype.update = function(i) {
-    var currItem = this.items[i][0];
-    var nextItem = this.items[i+1][0];
-    this.partnerStatus = null;
-    if (this.partnerMap) {
-        if (this.partnerMap[nextItem.id]) {
-            this.partnerStatus = "mid";
-        } else {
-            this.partnerMap = null;
-            this.partnerStatus = "last";
-        }
-    } else {
-        // set partnerMap for this and its partner if none present
-        if (this._setPartnerMap(i)) {
-            this.partnerStatus = "first";
-        }
-    }
-    // set repeatMap for this and its partner
-    // This really isn't the place for this stuff, if we can avoid it.
-    // We're tracking ALL VARIABLES, after which we'll filter out the
-    // ones we're interested in. Very wasteful. And that goes for
-    // the partnerMap code as well.
-    // At the very least, this should all be disabled if the style
-    // does not use one of is-parallel or no-repeat.
-}
-
-CSL.Parallel.Partnerships.prototype.getPartnerStatus = function(i) {
-    return this.partnerStatus;
-}
-
-CSL.Parallel.Partnerships.prototype.getID = function(i) {
-    return this.items[i][0].id;
-}
-
-CSL.Parallel.Partnerships.prototype._setPartnerMap = function(i) {
-    var currItem = this.items[i][0];
-    var nextItem = this.items[i+1][0]
-    var hasMap = false;
-    if (currItem.seeAlso) {
-        if (currItem.seeAlso.indexOf(nextItem.id) > -1) {
-            this.partnerMap = {};
-            for (var j=0,jlen=currItem.seeAlso.length; j<jlen; j++) {
-                this.partnerMap[currItem.seeAlso[j]] = true;
-            }
-            hasMap = true;
-        }
-    }
-    return hasMap;
-}
-
-CSL.Parallel.Partnerships.prototype._getPartnerRepeats = function(i, mode) {
-    var currItem = this.items[i][0];
-    var nextItem = this.items[i+1][0];
-    var rex = /(?:type|multi|id|seeAlso|.*-sub|.*-subjoin|.*-main)/;
-    var ret = {};
-    for (var key in this.state.opt.parallel[mode]) {
-        if (currItem[key]) {
-            if (key.match(rex)) {
-                continue;
-            }
-            if (!currItem[key]) continue;
-            if (typeof currItem[key] === "string") {
-                if (currItem[key] === nextItem[key]) {
-                    ret[key] = true;
-                }
-            } else if (typeof currItem[key] === "object") {
-                // Could do better than this, should be proper deepEqual polyfill
-                if (JSON.stringify(currItem[key]) === JSON.stringify(nextItem[key])) {
-                    ret[key] = true;
-                }
-            }
-        }
-    }
-    return ret;
-}
-
 CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
-    this.parallel_conditional_blobs_list = [];
-    if (sortedItems.length > 1) {
-        var partners = new CSL.Parallel.Partnerships(this.state, sortedItems);
-        var masterID = false;
-        for (var i=0,ilen=sortedItems.length; i<ilen; i++) {
-            partners.update(i);
-            var status = partners.getPartnerStatus();
-            var currentID = partners.getID(i);
-            if (status === "first") {
-                sortedItems[i][1].parallel = "first";
-                if (i < ilen-1) {
-                    sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i, "changes_in");
-                    sortedItems[i][1].parallel_repeats = sortedItems[i+1][1].parallel_repeats;
+    // This array carries the repeat markers used in rendering the cite.
+    this.state.tmp.suppress_repeats = [];
+    if (sortedItems.length < 2) return;
+    var idxEnd = 0;
+    var parallelMatchList = false;
+    var siblingRanges = [];
+    // Okay, shit. This is hard.
+    // Start is fine.
+    // End is failing to tag a penultimate item.
+    
+    for (var i=0,ilen=sortedItems.length-1;i<ilen;i++) {
+        var freshMatchList = false;
+        var info = {};
+        if (sortedItems[i][0].seeAlso && !parallelMatchList) {
+            freshMatchList = true;
+            parallelMatchList = [sortedItems[i][0].id].concat(sortedItems[i][0].seeAlso);
+            var tempMatchList = parallelMatchList.slice();
+            var remainder = sortedItems.slice(i);
+            remainder[0][1].parallel = "first";
+            for (var j=0,jlen=remainder.length;j<jlen;j++) {
+                var itemID = remainder[j][0].id;
+                var ididx = tempMatchList.indexOf(itemID);
+                idxEnd = false;
+                if (ididx === -1) {
+                    idxEnd = (i+j-1);
+                } else if ((i+j) === (sortedItems.length-1)) {
+                    idxEnd = (i+j);
                 }
-                masterID = currentID;
-                this.state.registry.registry[masterID].master = true;
-                this.state.registry.registry[masterID].siblings = [];
-            } else if (status === "mid") {
-                sortedItems[i][1].parallel = "mid";
-                if (i < ilen-1) {
-                    sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i, "changes_in");
+                if (idxEnd) {
+                    siblingRanges.push([i, idxEnd]);
+                    break;
+                } else {
+                    tempMatchList = tempMatchList.slice(0, ididx).concat(tempMatchList.slice(ididx+1));
                 }
-                this.state.registry.registry[masterID].siblings.push(currentID);
-                this.state.registry.masterMap[currentID] = masterID;
-            } else if (status === "last") {
-                sortedItems[i][1].parallel = "last";
-                if (i < ilen-1) {
-                    sortedItems[i+1][1].parallel_repeats = partners._getPartnerRepeats(i, "changes_in");
-                }
-                this.state.registry.registry[masterID].siblings.push(currentID);
-                this.state.registry.masterMap[currentID] = masterID;
             }
-            // Set repeats map here?
-            if (this.state.opt.parallel.no_repeat) {
-                if (i < ilen-1) {
-                    sortedItems[i+1][1].no_repeat_repeats = partners._getPartnerRepeats(i, "no_repeat");
+        }
+        if (parallelMatchList) {
+            if (i > 0 && freshMatchList) {
+                this.state.tmp.suppress_repeats[i-1].START = true;
+                freshMatchList = false;
+            }
+            var currItem = sortedItems[i][0];
+            var nextItem = sortedItems[i+1][0];
+            for (var varname in this.state.opt.track_repeat) {
+                    // if (varname === "title") {
+                    //    this.state.sys.print(`curr: ${currItem}, next: ${JSON.stringify(nextItem, null, 2)}`);
+                    // }
+                if (!currItem[varname] || !nextItem[varname]) {
+                    // Go ahead and render any value with an empty partner
+                    info[varname] = false;
+                } else if ("string" === typeof nextItem[varname] || "number" === typeof nextItem[varname]) {
+                    // Simple comparison of string values
+                    if (currItem[varname] == nextItem[varname]) {
+                        info[varname] = true;
+                    } else {
+                        info[varname] = false;
+                    }
+                } else if ("undefined" === typeof currItem[varname].length) {
+                    // If a date, use only the year
+                    info[varname] = false;
+                    var currYear = currItem[varname].year;
+                    var nextYear = nextItem[varname].year;
+                    if (currYear && nextYear) {
+                        if (currYear == nextYear) {
+                            info[varname] = true;
+                        }
+                    }
+                } else {
+                    // If a creator value, kludge it
+                    var currVal = JSON.stringify(currItem[varname]);
+                    var nextVal = JSON.stringify(nextItem[varname]);
+                    if (currVal === nextVal) {
+                        info[varname] = true;
+                    } else {
+                        info[varname] = false;
+                    }
                 }
+            }
+            
+        }
+        if (idxEnd === i) {
+            info.END = true;
+            parallelMatchList = false;
+        }
+        this.state.tmp.suppress_repeats.push(info);
+    }
+    for (var j=0,jlen=siblingRanges.length;j<jlen;j++) {
+        var masterID = sortedItems[siblingRanges[j][0]][0].id;
+        this.state.registry.registry[masterID].master = true;
+        this.state.registry.registry[masterID].siblings = [];
+        var start = siblingRanges[j][0];
+        var end = siblingRanges[j][1];
+        for (var k=start; k<end; k++) {
+            this.state.tmp.suppress_repeats[k].SIBLING = true;
+            var siblingID = sortedItems[k+1][0].id;
+            sortedItems[k+1][1].parallel = "other";
+            this.state.registry.registry[masterID].siblings.push(siblingID);
+        }
+    }
+    // this.state.sys.print(JSON.stringify(this.state.tmp.suppress_repeats, null, 2));
+};
+
+CSL.Parallel.prototype.checkRepeats = function(params) {
+    var idx = this.state.tmp.cite_index;
+    var ret = false;
+    if (params.parallel_first) {
+        for (var varname in params.parallel_first) {
+            var arr = [{}].concat(this.state.tmp.suppress_repeats);
+            if (arr[idx][varname] && !arr[idx].START) {
+                return true;
             }
         }
     }
-};
-
-
-CSL.Parallel.prototype.checkRepeats = function(obj) {
-    var purgeme = false;
-    if (obj.no_repeat_repeats && obj.no_repeat_condition) {
-        var matches = 0;
-        for (var j=0,jlen=obj.no_repeat_condition.length; j<jlen; j++) {
-            if (obj.no_repeat_repeats[obj.no_repeat_condition[j]]) {
-                matches += 1;
-            }
-        }
-        if (matches === obj.no_repeat_condition.length) {
-            purgeme = true;
-        }
-    }
-    return purgeme;
-};
-
-CSL.Parallel.prototype.checkParallels = function(obj, Item) {
-    var purgeme = false;
-    if (obj.parallel_result && obj.parallel_condition) {
-        purgeme = true;
-        if (obj.parallel_result === obj.parallel_condition) {
-            purgeme = false;
-        }
-        if (purgeme && obj.changes_in_condition && obj.parallel_repeats) {
-            //if (purgeme && obj.changes_in_condition && obj.parallel_repeats)
-            purgeme = false;
-            var matches = 0;
-            for (var j=0,jlen=obj.changes_in_condition.length; j<jlen; j++) {
-                if (obj.parallel_repeats[obj.changes_in_condition[j]]) {
-                    matches += 1;
-                }
-            }
-            if (matches === obj.changes_in_condition.length) {
-                purgeme = true;
+    if (params.parallel_last) {
+        var arr = this.state.tmp.suppress_repeats.concat([{}]);
+        for (var varname in params.parallel_last) {
+            if (arr[idx][varname] && !arr[idx].END) {
+                return true;
             }
         }
     }
-    return purgeme;
+    return false;
 };
-
-
-CSL.Parallel.prototype.purgeGroupsIfParallel = function() {};

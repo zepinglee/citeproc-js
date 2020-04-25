@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.2.36",
+    PROCESSOR_VERSION: "1.3.1",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -533,10 +533,6 @@ var CSL = {
         "suffix",
         "delimiter"
     ],
-
-    PARALLEL_MATCH_VARS: ["container-title"],
-    PARALLEL_TYPES: ["bill","gazette","regulation","legislation","legal_case","treaty","article-magazine","article-journal"],
-    PARALLEL_COLLAPSING_MID_VARSET: ["volume", "issue", "container-title", "section", "collection-number"],
 
     LOOSE: 0,
     STRICT: 1,

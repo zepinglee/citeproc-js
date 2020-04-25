@@ -826,27 +826,31 @@ CSL.Attributes["@court-class"] = function (state, arg) {
 
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
-CSL.Attributes["@is-parallel"] = function (state, arg) {
+CSL.Attributes["@parallel-first"] = function (state, arg) {
     state.opt.parallel.enable = true;
-    this.strings.set_parallel_condition = arg;
-};
-CSL.Attributes["@changes-in"] = function (state, arg) {
-    var lst = arg.split(/\s+/);
-    for (var i=0,ilen=lst.length;i<ilen;i++) {
-        state.opt.parallel.changes_in[lst[i]] = true;
+    var vars = arg.split(/\s+/);
+    if (!state.opt.track_repeat) {
+        state.opt.track_repeat = {};
     }
-    this.strings.set_changes_in_condition = lst;
-};
-CSL.Attributes["@no-repeat"] = function (state, arg) {
-    if (!state.opt.parallel.no_repeat) {
-        state.opt.parallel.no_repeat = {};
+    this.strings.parallel_first = {};
+    for (var i in vars) {
+        var v = vars[i];
+        this.strings.parallel_first[v] = true;
+        state.opt.track_repeat[v] = true;
     }
-    var lst = arg.split(/\s+/);
+};
+CSL.Attributes["@parallel-last"] = function (state, arg) {
     state.opt.parallel.enable = true;
-    for (var i=0,ilen=lst.length;i<ilen;i++) {
-        state.opt.parallel.no_repeat[lst[i]] = true;
+    var vars = arg.split(/\s+/);
+    if (!state.opt.track_repeat) {
+        state.opt.track_repeat = {};
     }
-    this.strings.set_no_repeat_condition = lst;
+    this.strings.parallel_last = {};
+    for (var i in vars) {
+        var v = vars[i];
+        this.strings.parallel_last[v] = true;
+        state.opt.track_repeat[v] = true;
+    }
 };
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override = arg;

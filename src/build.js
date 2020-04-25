@@ -140,7 +140,6 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     if (this.opt.version.slice(0,4) === "1.1m") {
         this.opt.development_extensions.static_statute_locator = true;
-        this.opt.development_extensions.handle_parallel_articles = true;
         this.opt.development_extensions.main_title_from_short_title = true;
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
@@ -757,10 +756,6 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 CSL.Engine.prototype.refetchItem = function (id) {
     return this.registry.refhash[id];
 };
-
-CSL.Engine.prototype.refetchItem = function (id) {
-    return this.registry.refhash[id];
-}
 
 // Executed during style build
 CSL.Engine.prototype.setOpt = function (token, name, value) {
