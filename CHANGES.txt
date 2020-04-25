@@ -1,3 +1,19 @@
+========================
+Changes in version 1.3.1
+========================
+
+- Introducing a simplified (and now stable) mechanism for parallel
+  citation support. Like 2019 revision, assumes cites to be rendered
+  in parallel share IDs in a seeAlso array attribute. Just three
+  group attributes perform the magic:
+  * parallel-first (render in 1st position, then only when one of the
+        specified variables differs)
+  * parallel-last (render in last position, and on any change from 1st
+        in any of the specified variables)
+  * parallel-delimiter-override: use a special delimiter if collapsed,
+        or if neither parallel-first nor parallel-last is set on the
+        group.
+
 =========================
 Changes in version 1.2.36
 =========================
