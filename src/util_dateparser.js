@@ -260,14 +260,29 @@ CSL.DateParser = function () {
             lst[i] = parseInt(lst[i], 10);
         }
         if (lst.length === 1 || (lst.length === 2 && !lst[1])) {
-            ret[("month" + suff)] = "" + lst[0];
+            var month = lst[0];
+            if (month) {
+                ret[("month" + suff)] = "" + lst[0];
+            }
         } else if (lst.length === 2) {
             if (lst[this.monthGuess] > 12) {
-                ret[("month" + suff)] = "" + lst[this.dayGuess];
-                ret[("day" + suff)] = "" + lst[this.monthGuess];
+                var month = lst[this.dayGuess];
+                var day = lst[this.monthGuess];
+                if (month) {
+                    ret[("month" + suff)] = "" + month;
+                    if (day) {
+                        ret[("day" + suff)] = "" + day;
+                    }
+                }
             } else {
-                ret[("month" + suff)] = "" + lst[this.monthGuess];
-                ret[("day" + suff)] = "" + lst[this.dayGuess];
+                var month = lst[this.monthGuess];
+                var day = lst[this.dayGuess];
+                if (month) {
+                    ret[("month" + suff)] = "" + month;
+                    if (day) {
+                        ret[("day" + suff)] = "" + day;
+                    }
+                }
             }
         }
     };
