@@ -1,4 +1,10 @@
 ========================
+Changes in version 1.3.5
+========================
+
+- Use title-short for parallel title match.
+
+========================
 Changes in version 1.3.4
 ========================
 

@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.4",
+    PROCESSOR_VERSION: "1.3.5",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -16896,7 +16896,14 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
                     info[varname] = false;
                 } else if ("string" === typeof nextItem[varname] || "number" === typeof nextItem[varname]) {
                     // Simple comparison of string values
-                    if (currItem[varname] == nextItem[varname]) {
+                    if (varname === "title" && currItem["title-short"] && nextItem["title-short"]) {
+                        var currVal = currItem["title-short"];
+                        var nextVal = nextItem["title-short"];
+                    } else {
+                        var currVal = currItem[varname];
+                        var nextVal = nextItem[varname];
+                    }
+                    if (currVal == nextVal) {
                         info[varname] = true;
                     } else {
                         info[varname] = false;
