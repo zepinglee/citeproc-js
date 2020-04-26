@@ -60,7 +60,14 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
                     info[varname] = false;
                 } else if ("string" === typeof nextItem[varname] || "number" === typeof nextItem[varname]) {
                     // Simple comparison of string values
-                    if (currItem[varname] == nextItem[varname]) {
+                    if (varname === "title" && currItem["title-short"] && nextItem["title-short"]) {
+                        var currVal = currItem["title-short"];
+                        var nextVal = nextItem["title-short"];
+                    } else {
+                        var currVal = currItem[varname];
+                        var nextVal = nextItem[varname];
+                    }
+                    if (currVal == nextVal) {
                         info[varname] = true;
                     } else {
                         info[varname] = false;
