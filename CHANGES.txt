@@ -1,4 +1,12 @@
 ========================
+Changes in version 1.3.3
+========================
+
+- Recognize a vertical bar ("|") character in a numeric field as
+  signifying a numeric plural. Useful for multiple descriptive docket
+  numbers in cites to unpublished cases.
+
+========================
 Changes in version 1.3.2
 ========================
 
