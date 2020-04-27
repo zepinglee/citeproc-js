@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.5",
+    PROCESSOR_VERSION: "1.3.6",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -19518,7 +19518,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 if (m.length > 0) {
                     var slug = m[0].trim();
                     var notAlabel = !CSL.STATUTE_SUBDIV_STRINGS[slug]
-                        || !me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
+                        || "undefined" === typeof me.getTerm(CSL.STATUTE_SUBDIV_STRINGS[slug])
                         || (["locator", "number", "locator-extra"].indexOf(variable) === -1 && CSL.STATUTE_SUBDIV_STRINGS[slug] !== variable);
                     if (notAlabel) {
                         if (i === 0) {

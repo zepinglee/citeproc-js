@@ -1,4 +1,11 @@
 ========================
+Changes in version 1.3.6
+========================
+
+- Fix a bug in inline locator markup triggered by
+  empty term definitions.
+
+========================
 Changes in version 1.3.5
 ========================
 
