@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.6",
+    PROCESSOR_VERSION: "1.3.7",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -15387,7 +15387,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
             var label;
             state.processNumber(false, item, "locator");
             label = state.tmp.shadow_numbers.locator.label;
-            if (trylabel === label) {
+            if (label && trylabel === label) {
                 return true;
             } else {
                 return false;
