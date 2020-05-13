@@ -3029,7 +3029,7 @@ citation
 {
     "default": {
         "place": {
-            "kh": "Kh."
+            "KH": "Kh."
         }
     }
 }

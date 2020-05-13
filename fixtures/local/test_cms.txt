@@ -6,7 +6,7 @@ citation
 {
     "default": {
         "place": {
-            "au.int": "A.U."
+            "AU.INT": "A.U."
         }
     }
 }
