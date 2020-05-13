@@ -1,4 +1,16 @@
 ========================
+Changes in version 1.3.9
+========================
+
+- Extend normalization of jurisdiction codes to country var.
+
+- Fix inheritance of jurisdiction submodules.
+
+- Enable inheritance of submodule locator macro.
+
+- Recognize admin-flag and dummy creator fields in schema
+
+========================
 Changes in version 1.3.8
 ========================
 
