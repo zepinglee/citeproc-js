@@ -96,7 +96,7 @@ CSL.Transform = function (state) {
             quashCountry = normalizedKey.indexOf(":") === -1;
         }
         // Fix up jurisdiction codes
-        if (family_var === "jurisdiction" && basevalue === basevalue.toLowerCase()) {
+        if (["jurisdiction", "country"].indexOf(family_var) > -1 && basevalue === basevalue.toLowerCase()) {
             normalizedKey = basevalue.toUpperCase();
         }
         
