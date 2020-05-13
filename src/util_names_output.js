@@ -404,6 +404,10 @@ CSL.NameOutput.prototype.outputNames = function () {
 
     // For name_SubstituteOnNamesSpanNamesSpanFail
     this.variables = [];
+    
+    // Reset stop-last after rendering
+    this.state.tmp.authority_stop_last = 0;
+
     //SNIP-START
     if (this.debug) {
         print("(19)");
