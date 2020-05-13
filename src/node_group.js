@@ -160,8 +160,8 @@ CSL.Node.group = {
                 var if_start = new CSL.Token("if", CSL.START);
 
                 func = (function (macroName) {
-                    return function (Item) {
-                        return CSL.INIT_JURISDICTION_MACROS(state, Item, macroName);
+                    return function (Item, item) {
+                        return CSL.INIT_JURISDICTION_MACROS(state, Item, item, macroName);
                     }
                 }(this.juris));
                 
@@ -172,10 +172,14 @@ CSL.Node.group = {
                 var text_node = new CSL.Token("text", CSL.SINGLETON);
                 func = function (state, Item, item) {
                     // This will run the juris- token list.
+                    var itemItem = Item;
+                    if (item && item["best-jurisdiction"] && this.juris === "juris-locator") {
+                        itemItem = item;
+                    }
                     var next = 0;
-                    if (state.juris[Item["best-jurisdiction"]][this.juris]) {
-                        while (next < state.juris[Item["best-jurisdiction"]][this.juris].length) {
-                            next = CSL.tokenExec.call(state, state.juris[Item["best-jurisdiction"]][this.juris][next], Item, item);
+                    if (state.juris[itemItem["best-jurisdiction"]][this.juris]) {
+                        while (next < state.juris[itemItem["best-jurisdiction"]][this.juris].length) {
+                            next = CSL.tokenExec.call(state, state.juris[itemItem["best-jurisdiction"]][this.juris][next], Item, item);
                         }
                     }
                 };

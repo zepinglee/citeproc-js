@@ -151,8 +151,8 @@ CSL.Node.key = {
                     var transfall = true;
                     func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                 } else if ("court-class" === variable) {
-                    func = function(state, Item) {
-                        CSL.INIT_JURISDICTION_MACROS(state, Item, "juris-main")
+                    func = function(state, Item, item) {
+                        CSL.INIT_JURISDICTION_MACROS(state, Item, item, "juris-main")
                         // true is for sortKey mode
                         var cls = CSL.GET_COURT_CLASS(state, Item, true);
                         state.output.append(cls, "empty");

@@ -158,7 +158,8 @@ var CSL = {
         "report": true,
         "regulation": true,
         "standard": true,
-        "patent": true
+        "patent": true,
+        "locator": true
     },
     checkNestedBrace: function(state) {
         if (state.opt.xclass === "note") {
@@ -1290,7 +1291,7 @@ var CSL = {
         }
     },
 
-    INIT_JURISDICTION_MACROS: function (state, Item, macroName) {
+    INIT_JURISDICTION_MACROS: function (state, Item, item, macroName) {
         if (!state.sys.retrieveStyleModule || !CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) {
             return false;
         }
@@ -1353,6 +1354,11 @@ var CSL = {
         // Identify the best jurisdiction for the item and return true, otherwise return false
         for (var i=0,ilen=jurisdictionList.length;i<ilen;i++) {
             var jurisdiction = jurisdictionList[i];
+            if (item) {
+                if (state.juris[jurisdiction] && !item["best-jurisdiction"] && state.juris[jurisdiction].types.locator) {
+                    item["best-jurisdiction"] = jurisdiction;
+                }
+            }
             if(state.juris[jurisdiction] && state.juris[jurisdiction].types[Item.type]) {
                 Item["best-jurisdiction"] = jurisdiction;
                 return true;
