@@ -1,3 +1,10 @@
+=========================
+Changes in version 1.3.10
+=========================
+
+- Return is-numeric for strings beginning and ending with a number, and
+  consisting only of numbers and forward-slash characters.
+
 ========================
 Changes in version 1.3.9
 ========================

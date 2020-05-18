@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.9",
+    PROCESSOR_VERSION: "1.3.10",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -20010,8 +20010,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
         setVariableParams(this.tmp.shadow_numbers, variable, values);
         // hack in support for non-numeric numerics like "91 Civ. 5442 (RPP)|91 Civ. 5471"
+        var info = this.tmp.shadow_numbers[variable];
         if (variable === "number") {
-            var info = this.tmp.shadow_numbers[variable];
             if (info.values.length === 1 && info.values[0].value.indexOf("|") > -1) {
                 info.values[0].value = info.values[0].value.replace(/\|/g, ", ");
                 info.values[0].numeric = true;
@@ -20019,6 +20019,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 info.values[0].collapsible = false;
                 info.numeric = true;
                 info.plural = 1;
+                info.collapsible = false;
+            }
+        }
+        if (info.values.length === 1) {
+            if (info.values[0].value.match(/^[0-9]+(?:\/[0-9]+)+$/)) {
+                info.values[0].numeric = true;
+                info.values[0].plural = 0;
+                info.values[0].collapsible = false;
+                info.numeric = true;
+                info.plural = 0;
                 info.collapsible = false;
             }
         }
