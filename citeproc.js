@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.10",
+    PROCESSOR_VERSION: "1.3.12",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1190,10 +1190,18 @@ var CSL = {
                     testres = false;
                 }
             } else {
-                if (termStartAlpha) {
-                    testres = true;
+                if (num) {
+                    if (termStartAlpha || ["always", "after-number"].indexOf(state.opt.require_comma_on_symbol) > -1) {
+                        testres = true;
+                    } else {
+                        testres = false;
+                    }
                 } else {
-                    testres = false;
+                    if (termStartAlpha || state.opt.require_comma_on_symbol === "always") {
+                        testres = true;
+                    } else {
+                        testres = false;
+                    }
                 }
             }
         }
@@ -16187,6 +16195,10 @@ CSL.Attributes["@reject"] = function (state, arg) {
     // jurisdiction support, as it makes macros that adapt to shifting
     // local term definitions possible.
 };
+
+CSL.Attributes["@require-comma-on-symbol-after-number"] = function (state, arg) {
+    state.opt.require_comma_on_symbol = arg;
+}
 
 CSL.Attributes["@gender"] = function (state, arg) {
     this.gender = arg;

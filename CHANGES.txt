@@ -1,4 +1,19 @@
 =========================
+Changes in version 1.3.12
+=========================
+
+- Replace locale style option require-comma-on-symbol-after-number with
+  global style attribute require-comma-on-symbol, with values "never",
+  "always", and "after-number"
+
+=========================
+Changes in version 1.3.11
+=========================
+
+- Add style option require-comma-on-symbol-after-number attribute
+  to control behavior of require/reject group condition
+
+=========================
 Changes in version 1.3.10
 =========================
 
