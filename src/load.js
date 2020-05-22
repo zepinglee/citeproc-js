@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.10",
+    PROCESSOR_VERSION: "1.3.12",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1166,10 +1166,18 @@ var CSL = {
                     testres = false;
                 }
             } else {
-                if (termStartAlpha || state.opt.require_comma_on_symbol_after_number) {
-                    testres = true;
+                if (num) {
+                    if (termStartAlpha || ["always", "after-number"].indexOf(state.opt.require_comma_on_symbol) > -1) {
+                        testres = true;
+                    } else {
+                        testres = false;
+                    }
                 } else {
-                    testres = false;
+                    if (termStartAlpha || state.opt.require_comma_on_symbol === "always") {
+                        testres = true;
+                    } else {
+                        testres = false;
+                    }
                 }
             }
         }

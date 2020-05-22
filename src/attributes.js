@@ -884,9 +884,7 @@ CSL.Attributes["@reject"] = function (state, arg) {
 };
 
 CSL.Attributes["@require-comma-on-symbol-after-number"] = function (state, arg) {
-    if (arg === "true" || arg === true) {
-        state.opt.require_comma_on_symbol_after_number = true;
-    }
+    state.opt.require_comma_on_symbol = arg;
 }
 
 CSL.Attributes["@gender"] = function (state, arg) {
