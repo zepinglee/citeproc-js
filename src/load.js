@@ -1166,7 +1166,7 @@ var CSL = {
                     testres = false;
                 }
             } else {
-                if (termStartAlpha) {
+                if (termStartAlpha || state.opt.require_comma_on_symbol_after_number) {
                     testres = true;
                 } else {
                     testres = false;

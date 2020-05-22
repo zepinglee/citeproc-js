@@ -883,6 +883,12 @@ CSL.Attributes["@reject"] = function (state, arg) {
     // local term definitions possible.
 };
 
+CSL.Attributes["@require-comma-on-symbol-after-number"] = function (state, arg) {
+    if (arg === "true" || arg === true) {
+        state.opt.require_comma_on_symbol_after_number = true;
+    }
+}
+
 CSL.Attributes["@gender"] = function (state, arg) {
     this.gender = arg;
 };
