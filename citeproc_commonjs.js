@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.12",
+    PROCESSOR_VERSION: "1.3.13",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -16196,7 +16196,7 @@ CSL.Attributes["@reject"] = function (state, arg) {
     // local term definitions possible.
 };
 
-CSL.Attributes["@require-comma-on-symbol-after-number"] = function (state, arg) {
+CSL.Attributes["@require-comma-on-symbol"] = function (state, arg) {
     state.opt.require_comma_on_symbol = arg;
 }
 

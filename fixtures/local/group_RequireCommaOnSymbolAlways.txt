@@ -35,7 +35,7 @@ Some Other Book or Other, ¶ 1
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      require-comma-on-symbol-after-number="always"
+      require-comma-on-symbol="always"
       version="1.1mlz1">
   <info>
     <title>Test fixture</title>
