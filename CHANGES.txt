@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.3.14
+=========================
+
+- Extend "statute" shorthand labels to cover all pinpoint labels listed
+  in IndigoBook.
+
+=========================
 Changes in version 1.3.13
 =========================
 
