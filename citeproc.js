@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.14",
+    PROCESSOR_VERSION: "1.3.16",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -154,7 +154,7 @@ var CSL = {
         "folio": "fol.",
         "note": "n.",
         "hypothetical": "hypo.",
-        "illustration[s]": "illus.",
+        "illustration": "illus.",
         "introduction": "intro.",
         "line": "l.",
         "issue": "no.",
@@ -171,7 +171,7 @@ var CSL = {
         "subdivision": "subdiv.",
         "subsection": "subsec.",
         "supplement": "supp.",
-        "table4": "tbl.",
+        "table": "tbl.",
         "title": "tit.",
         "volume": "vol."
     },
