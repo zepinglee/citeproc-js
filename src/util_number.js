@@ -348,9 +348,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var label = defaultLabel;
         var origLabel = "";
         for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/g);
+            
+            // AHA! HERE'S THE CULPRIT!!!
+            // Words up to four characters are treated as honorary short-form labels.
+            // Some valid labels are longer than four chars, so we stir those in explicitly
+            
+            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z]|subpara|subch|amend|bibliog|annot|illus|princ|intro|sched|subdiv|subsec)(?:\.| ) *)/g);
             if (m) {
-                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/);
+                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z]|subpara|subch|amend|bibliog|annot|illus|princ|intro|sched|subdiv|subsec)(?:\.| ) *)/);
                 // Head off disaster by merging parsed labels on non-numeric values into content
                 for (var j=lst.length-1;j>0;j--) {
                     if (lst[j-1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
