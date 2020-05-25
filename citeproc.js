@@ -76,10 +76,11 @@ var CSL = {
         }
     },
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((art|ch|subch|col|fig|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\\.)\\s+(.*)"),
 
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
-    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:art|bk|ch|subch|col|fig|fol|l|n|no|op|p|pp|para|subpara|supp|pt|r|sec|subsec|sv|sch|tit|vrs|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
+ 
     STATUTE_SUBDIV_STRINGS: {
         "vrs.": "verse",
 		"sv.": "sub-verbo",
@@ -105,7 +106,7 @@ var CSL = {
         "fol.": "folio",
         "n.": "note",
         "hypo.": "hypothetical",
-        "illus.": "illustration[s]",
+        "illus.": "illustration",
         "intro.": "introduction",
         "l.": "line",
         "no.": "issue",
@@ -119,7 +120,7 @@ var CSL = {
         "r.": "rule",
         "sched.": "schedule",
         "sec.": "section",
-        "serial ser.": "series,",
+        "ser.": "series,",
         "subdiv.": "subdivision",
         "subsec.": "subsection",
         "supp.": "supplement",
@@ -149,7 +150,7 @@ var CSL = {
         "department": "dept.",
         "division": "div.",
         "example": "ex.",
-        "figure1": "fig.",
+        "figure": "fig.",
         "folio": "fol.",
         "note": "n.",
         "hypothetical": "hypo.",
@@ -166,7 +167,7 @@ var CSL = {
         "rule": "r.",
         "schedule": "sched.",
         "section": "sec.",
-        "series,": "serial ser.",
+        "series,": "ser.",
         "subdivision": "subdiv.",
         "subsection": "subsec.",
         "supplement": "supp.",
@@ -176,30 +177,50 @@ var CSL = {
     },
 
     LOCATOR_LABELS_MAP: {
+        "vrs": "verse",
+		"sv": "sub-verbo",
+        "subpara": "subparagraph",
+        "op": "opus",
+        "subch": "subchapter",
+        "add": "addendum",
+        "amend": "amendment",
+        "annot": "annotation",
+        "app": "appendix",
         "art": "article",
+        "bibliog": "bibliography",
         "bk": "book",
         "ch": "chapter",
-        "subch": "subchapter",
+        "cl": "clause",
         "col": "column",
-        "fig": "figure",
+        "cmt": "comment",
+        "dec": "decision",
+        "dept": "department",
+        "div": "division",
+        "ex": "example",
+        "fig": "figure1",
         "fol": "folio",
-        "l": "line",
         "n": "note",
+        "hypo": "hypothetical",
+        "illus": "illustration",
+        "intro": "introduction",
+        "l": "line",
         "no": "issue",
-        "op": "opus",
         "p": "page",
         "pp": "page",
         "para": "paragraph",
-        "subpara": "subparagraph",
         "pt": "part",
+        "pmbl": "preamble",
+        "princ": "principle",
+        "pub": "publication",
         "r": "rule",
-		"sec": "section",
-		"subsec": "subsection",
-		"supp": "supplement",
-		"sv": "sub-verbo",
-        "sch": "schedule",
+        "sched": "schedule",
+        "sec": "section",
+        "ser": "series,",
+        "subdiv": "subdivision",
+        "subsec": "subsection",
+        "supp": "supplement",
+        "tbl": "table",
         "tit": "title",
-        "vrs": "verse",
         "vol": "volume"
     },
     MODULE_MACROS: {
@@ -9756,7 +9777,7 @@ CSL.Node.date = {
                 }
                 state.output.startTag("date", this);
                 if (this.variables[0] === "issued"
-                    && Item.type === "legal_case"
+                    && (Item.type === "legal_case" || Item.type === "legislation")
                     && !state.tmp.extension
                     && "" + Item["collection-number"] === "" + state.tmp.date_object.year
                     && this.dateparts.length === 1
@@ -9772,7 +9793,6 @@ CSL.Node.date = {
                     for (var key in state.tmp.date_object) {
                         if (state.tmp.date_object.hasOwnProperty(key)) {
                             if (key.slice(0, 4) === "year") {
-
                                 state.tmp.issued_date = {};
                                 var lst = state.output.current.mystack.slice(-2)[0].blobs;
                                 state.tmp.issued_date.list = lst;
@@ -19576,9 +19596,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var label = defaultLabel;
         var origLabel = "";
         for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/g);
+            
+            // AHA! HERE'S THE CULPRIT!!!
+            // Words up to four characters are treated as honorary short-form labels.
+            // Some valid labels are longer than four chars, so we stir those in explicitly
+            
+            var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z]|subpara|subch|amend|bibliog|annot|illus|princ|intro|sched|subdiv|subsec)(?:\.| ) *)/g);
             if (m) {
-                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])(?:\.| ) *)/);
+                var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z]|subpara|subch|amend|bibliog|annot|illus|princ|intro|sched|subdiv|subsec)(?:\.| ) *)/);
                 // Head off disaster by merging parsed labels on non-numeric values into content
                 for (var j=lst.length-1;j>0;j--) {
                     if (lst[j-1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
