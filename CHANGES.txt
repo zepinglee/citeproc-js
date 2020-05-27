@@ -1,4 +1,14 @@
 =========================
+Changes in version 1.3.17
+=========================
+
+- Process leading short-code labels on the page variable, removing the short-code
+  and replacing it with the form="short" form of the relevant term, if available.
+  If a companion cs:label is set in a conditional page="page" (or other available
+  term), the form and other styling will be applied to the term and it will be
+  rendered separately from the content.
+
+=========================
 Changes in version 1.3.16
 =========================
 
