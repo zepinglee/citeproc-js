@@ -432,6 +432,11 @@ CSL.Attributes["@page"] = function (state, arg) {
             } else {
                 label = state.tmp.shadow_numbers.page.label;
             }
+            if (state.tmp.shadow_numbers.page.values.length > 0) {
+                if (state.tmp.shadow_numbers.page.values[0].gotosleepability) {
+                    state.tmp.shadow_numbers.page.values[0].labelVisibility = false;
+                }
+            }
             if (trylabel === label) {
                 return true;
             } else {
