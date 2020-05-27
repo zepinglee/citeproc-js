@@ -44,6 +44,10 @@ citation
         <single>para.</single>
         <multiple>paras.</multiple>
       </term>
+      <term name="chapter" form="short">
+        <single>ch.</single>
+        <multiple>chs.</multiple>
+      </term>
     </terms>
   </locale>
   <citation>
@@ -53,7 +57,8 @@ citation
           <label variable="volume"/>
           <number variable="volume"/>
         </group>
-        <text variable="page"/>
+        <number variable="page"/>
+	</group>
       </group>
     </layout>
   </citation>
