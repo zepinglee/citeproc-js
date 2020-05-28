@@ -2,7 +2,7 @@
 
 CSL.Node.group = {
     build: function (state, target, realGroup) {
-        var func, execs, done_vars;
+        var func, execs;
         this.realGroup = realGroup;
         if (this.tokentype === CSL.START) {
             CSL.Util.substituteStart.call(this, state, target);
@@ -57,13 +57,11 @@ CSL.Node.group = {
                             test: this.strings.reject,
                             not: true
                         };
-                        done_vars = [];
                     } else if (this.strings.require) {
                         condition = {
                             test: this.strings.require,
                             not: false
                         };
-                        done_vars = [];
                     }
                     // CONDITION
                     //if (!state.tmp.just_looking) {

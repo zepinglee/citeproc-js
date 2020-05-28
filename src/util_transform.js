@@ -506,7 +506,9 @@ CSL.Transform = function (state) {
                 // hack syntax in this abbreviation short form.
                 if (primary) {
                     // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
-                    primary = quashCheck(Item.jurisdiction, primary);
+                    if (!state.tmp.just_looking) {
+                        primary = quashCheck(Item.jurisdiction, primary);
+                    }
                 }
             }
             if (publisherCheck(this, Item, primary, family_var)) {

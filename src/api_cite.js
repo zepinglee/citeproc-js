@@ -1068,9 +1068,11 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.last_years_used = [];
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
-    this.tmp.abbrev_trimmer = {
-        QUASHES: {}
-    };
+    if (!this.tmp.just_looking) {
+        this.tmp.abbrev_trimmer = {
+            QUASHES: {}
+        };
+    }
 
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix + citation_prefix);
     //var use_layout_prefix = this.citation.opt.layout_prefix;

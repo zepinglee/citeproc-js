@@ -1021,12 +1021,14 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
         name["short"] = [];
     }
     // trimmer is not available in getAmbiguousCite
-    if (itemJurisdiction) {
-        var trimmer = this.state.tmp.abbrev_trimmer;
-        if (trimmer && trimmer[itemJurisdiction] && trimmer[itemJurisdiction][varname]) {
-            for (var i=0,ilen=name["short"].length;i<ilen;i++) {
-                var frag = name["short"][i];
-                name["short"][i] = frag.replace(trimmer[itemJurisdiction][varname], "").trim();
+    if (!this.state.tmp.just_looking) {
+        if (itemJurisdiction) {
+            var trimmer = this.state.tmp.abbrev_trimmer;
+            if (trimmer && trimmer[itemJurisdiction] && trimmer[itemJurisdiction][varname]) {
+                for (var i=0,ilen=name["short"].length;i<ilen;i++) {
+                    var frag = name["short"][i];
+                    name["short"][i] = frag.replace(trimmer[itemJurisdiction][varname], "").trim();
+                }
             }
         }
     }

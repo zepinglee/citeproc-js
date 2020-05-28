@@ -82,7 +82,7 @@ CSL.Node.layout = {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }
                 // trimmer is not available in getAmbiguousCite
-                if (state.tmp.abbrev_trimmer && Item.jurisdiction) {
+                if (!state.tmp.just_looking && state.tmp.abbrev_trimmer && Item.jurisdiction) {
                     for (var field in state.tmp.abbrev_trimmer.QUASHES[Item.jurisdiction]) {
                         state.tmp.done_vars.push(field);
                     }
