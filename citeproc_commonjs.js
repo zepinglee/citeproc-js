@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.18",
+    PROCESSOR_VERSION: "1.3.19",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -7894,9 +7894,11 @@ CSL.getCitationCluster = function (inputList, citation) {
     this.tmp.last_years_used = [];
     this.tmp.backref_index = [];
     this.tmp.cite_locales = [];
-    this.tmp.abbrev_trimmer = {
-        QUASHES: {}
-    };
+    if (!this.tmp.just_looking) {
+        this.tmp.abbrev_trimmer = {
+            QUASHES: {}
+        };
+    }
 
     var use_layout_prefix = this.output.checkNestedBrace.update(this.citation.opt.layout_prefix + citation_prefix);
     //var use_layout_prefix = this.citation.opt.layout_prefix;
@@ -10154,7 +10156,7 @@ CSL.Node["et-al"] = {
 
 CSL.Node.group = {
     build: function (state, target, realGroup) {
-        var func, execs, done_vars;
+        var func, execs;
         this.realGroup = realGroup;
         if (this.tokentype === CSL.START) {
             CSL.Util.substituteStart.call(this, state, target);
@@ -10209,13 +10211,11 @@ CSL.Node.group = {
                             test: this.strings.reject,
                             not: true
                         };
-                        done_vars = [];
                     } else if (this.strings.require) {
                         condition = {
                             test: this.strings.require,
                             not: false
                         };
-                        done_vars = [];
                     }
                     // CONDITION
                     //if (!state.tmp.just_looking) {
@@ -11109,7 +11109,7 @@ CSL.Node.layout = {
                     state.tmp.done_vars.push("first-reference-note-number");
                 }
                 // trimmer is not available in getAmbiguousCite
-                if (state.tmp.abbrev_trimmer && Item.jurisdiction) {
+                if (!state.tmp.just_looking && state.tmp.abbrev_trimmer && Item.jurisdiction) {
                     for (var field in state.tmp.abbrev_trimmer.QUASHES[Item.jurisdiction]) {
                         state.tmp.done_vars.push(field);
                     }
@@ -13965,12 +13965,14 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
         name["short"] = [];
     }
     // trimmer is not available in getAmbiguousCite
-    if (itemJurisdiction) {
-        var trimmer = this.state.tmp.abbrev_trimmer;
-        if (trimmer && trimmer[itemJurisdiction] && trimmer[itemJurisdiction][varname]) {
-            for (var i=0,ilen=name["short"].length;i<ilen;i++) {
-                var frag = name["short"][i];
-                name["short"][i] = frag.replace(trimmer[itemJurisdiction][varname], "").trim();
+    if (!this.state.tmp.just_looking) {
+        if (itemJurisdiction) {
+            var trimmer = this.state.tmp.abbrev_trimmer;
+            if (trimmer && trimmer[itemJurisdiction] && trimmer[itemJurisdiction][varname]) {
+                for (var i=0,ilen=name["short"].length;i<ilen;i++) {
+                    var frag = name["short"][i];
+                    name["short"][i] = frag.replace(trimmer[itemJurisdiction][varname], "").trim();
+                }
             }
         }
     }
@@ -17636,7 +17638,9 @@ CSL.Transform = function (state) {
                 // hack syntax in this abbreviation short form.
                 if (primary) {
                     // The abbreviate() function could use a cleanup, after Zotero correct to use title-short
-                    primary = quashCheck(Item.jurisdiction, primary);
+                    if (!state.tmp.just_looking) {
+                        primary = quashCheck(Item.jurisdiction, primary);
+                    }
                 }
             }
             if (publisherCheck(this, Item, primary, family_var)) {

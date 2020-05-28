@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.3.19
+=========================
+
+- Fix a bug in parallel cites triggered by disambiguate="true". The
+  disambiguate conditional can trigger mid-cluster rendering via
+  getAmbiguousCite. The fix avoids touching citation-wide quash
+  records when getAmbiguousCite is run.
+
+=========================
 Changes in version 1.3.18
 =========================
 
