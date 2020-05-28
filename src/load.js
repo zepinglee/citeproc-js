@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.17",
+    PROCESSOR_VERSION: "1.3.18",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -52,10 +52,10 @@ var CSL = {
         }
     },
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\\.)\\s+(.*)"),
 
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
-    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
  
     STATUTE_SUBDIV_STRINGS: {
         "vrs.": "verse",
@@ -78,7 +78,8 @@ var CSL = {
         "dept.": "department",
         "div.": "division",
         "ex.": "example",
-        "fig.": "figure1",
+        "fig.": "figure",
+        "fld.": "field",
         "fol.": "folio",
         "n.": "note",
         "hypo.": "hypothetical",
@@ -127,6 +128,7 @@ var CSL = {
         "division": "div.",
         "example": "ex.",
         "figure": "fig.",
+        "field": "fld.",
         "folio": "fol.",
         "note": "n.",
         "hypothetical": "hypo.",
@@ -173,7 +175,8 @@ var CSL = {
         "dept": "department",
         "div": "division",
         "ex": "example",
-        "fig": "figure1",
+        "fig": "figure",
+        "fld": "field",
         "fol": "folio",
         "n": "note",
         "hypo": "hypothetical",
