@@ -1520,10 +1520,12 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.nameset_counter = 0;
     this.tmp.years_used = [];
     this.tmp.names_max.clear();
-    if (!item || item.parallel === "first" || !item.parallel) {
-        this.tmp.abbrev_trimmer = {
-            QUASHES: {}
-        };
+    if (!this.tmp.just_looking) {
+        if (!item || item.parallel === "first" || !item.parallel) {
+            this.tmp.abbrev_trimmer = {
+                QUASHES: {}
+            };
+        }
     }
 
     this.tmp.splice_delimiter = this[this.tmp.area].opt.layout_delimiter;
