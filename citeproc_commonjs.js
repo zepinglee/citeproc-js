@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.19",
+    PROCESSOR_VERSION: "1.3.20",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -8346,10 +8346,12 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.nameset_counter = 0;
     this.tmp.years_used = [];
     this.tmp.names_max.clear();
-    if (!item || item.parallel === "first" || !item.parallel) {
-        this.tmp.abbrev_trimmer = {
-            QUASHES: {}
-        };
+    if (!this.tmp.just_looking) {
+        if (!item || item.parallel === "first" || !item.parallel) {
+            this.tmp.abbrev_trimmer = {
+                QUASHES: {}
+            };
+        }
     }
 
     this.tmp.splice_delimiter = this[this.tmp.area].opt.layout_delimiter;
