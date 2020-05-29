@@ -1341,6 +1341,10 @@ CSL.Attributes["@near-note-distance"] = function (state, arg) {
     state[this.name].opt["near-note-distance"] = parseInt(arg, 10);
 };
 
+CSL.Attributes["@substring"] = function (state, arg) {
+    this.substring = parseInt(arg, 10);
+};
+
 CSL.Attributes["@text-case"] = function (state, arg) {
     var func = function (state, Item) {
         if (arg === "normal") {

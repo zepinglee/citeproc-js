@@ -99,7 +99,12 @@ CSL.Node.number = {
                 state.processNumber.call(state, node, Item, varname, Item.type);
             }
 
-            CSL.Util.outputNumericField(state, varname, Item.id);
+            if (this.substring) {
+                var val = Item[varname].slice(this.substring);
+                state.output.append(val, node);
+            } else {
+                CSL.Util.outputNumericField(state, varname, Item.id);
+            }
 
             if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
                && !state.tmp.just_looking) {
