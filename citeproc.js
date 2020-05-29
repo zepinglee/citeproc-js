@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.20",
+    PROCESSOR_VERSION: "1.3.21",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -14780,7 +14780,12 @@ CSL.Node.number = {
                 state.processNumber.call(state, node, Item, varname, Item.type);
             }
 
-            CSL.Util.outputNumericField(state, varname, Item.id);
+            if (this.substring) {
+                var val = Item[varname].slice(this.substring);
+                state.output.append(val, node);
+            } else {
+                CSL.Util.outputNumericField(state, varname, Item.id);
+            }
 
             if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
                && !state.tmp.just_looking) {
@@ -16719,6 +16724,10 @@ CSL.Attributes["@entry-spacing"] = function (state, arg) {
 
 CSL.Attributes["@near-note-distance"] = function (state, arg) {
     state[this.name].opt["near-note-distance"] = parseInt(arg, 10);
+};
+
+CSL.Attributes["@substring"] = function (state, arg) {
+    this.substring = parseInt(arg, 10);
 };
 
 CSL.Attributes["@text-case"] = function (state, arg) {

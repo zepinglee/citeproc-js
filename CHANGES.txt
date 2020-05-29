@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.3.21
+=========================
+
+- Add "substring" attribute to cs:numeric, specifically to address a
+  US citation requirement for patents.
+
+=========================
 Changes in version 1.3.20
 =========================
 
