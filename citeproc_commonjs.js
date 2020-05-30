@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.21",
+    PROCESSOR_VERSION: "1.3.22",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -19453,7 +19453,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var symbolAnd = "\\s*&\\s*";
     var andRex = new RegExp("^" + symbolAnd+ "$");
     var joinerMatchRex = new RegExp("(" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*)", "g");
-    var joinerSplitRex = new RegExp("(?:" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*|\\s*&\\s*)");
+    var joinerSplitRex = new RegExp("(?:" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*)");
 
     // This guesses whether the symbol form is defined or not.
     // It's the best we can do, because when locales are built, all of the
@@ -19591,12 +19591,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var elems = [];
         var m = mystr.match(jmrex);
         if (m) {
+            var lst = mystr.split(jsrex);
             for (var i=0, ilen=m.length; i<ilen; i++) {
                 if (m[i].match(andRex)) {
-                    m[i] = " " + localeAmpersand + " ";
+                    if (lst[i].match(/[a-zA-Z]$/) && lst[i].match(/^[a-zA-Z]/)) {
+                        m[i] = localeAmpersand;
+                    } else {
+                        m[i] = " " + localeAmpersand + " ";
+                    }
                 }
             }
-            var lst = mystr.split(jsrex);
             var recombine = false;
             for (var i in lst) {
                 if (("" + lst[i]).replace(/^[a-z]\.\s+/, "").match(/[^\s0-9ivxlcmIVXLCM]/)) {

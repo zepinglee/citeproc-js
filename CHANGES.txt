@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.3.22
+=========================
+
+- Exception to allow ampersand (&) between letters without adjacent spaces (as in "Q&A").
+
+=========================
 Changes in version 1.3.21
 =========================
 
