@@ -61,7 +61,7 @@ citation
     </names>
   </macro>
   <citation disambiguate-add-names="true" et-al-min="4" et-al-use-first="1">
-    <layout>
+<layout>
       <group delimiter="; ">
         <text macro="test-name-person-full"/>
         <text macro="test-name-person-short"/>
@@ -76,6 +76,9 @@ citation
 >>===== ABBREVIATIONS =====>>
 {
     "default": {
+        "institution-part": {
+	    "Big Corporation": "DAMN"
+	},
         "institution-entire": {
             "Big Corporation": "Big Corp."
         }
