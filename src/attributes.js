@@ -829,6 +829,27 @@ CSL.Attributes["@court-class"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@has-subunit"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
+    var maketest = function(namevar) {
+        return function (Item) {
+            var subunit_count = 0;
+            for (var i in Item[namevar]) {
+                var name = Item[namevar][i];
+                if (!name.given) {
+                    var institution = name.literal ? name.literal : name.family;
+                    var length = institution.split("|").length;
+                    if (subunit_count === 0 || length < subunit_count) {
+                        subunit_count = length;
+                    }
+                }
+            }
+            return (subunit_count > 1);
+        };
+    };
+    this.tests.push(maketest(arg));
+}
+
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
 CSL.Attributes["@parallel-first"] = function (state, arg) {
@@ -856,6 +877,9 @@ CSL.Attributes["@parallel-last"] = function (state, arg) {
         this.strings.parallel_last[v] = true;
         state.opt.track_repeat[v] = true;
     }
+};
+CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
+    this.parallel_last_to_first = true;
 };
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override = arg;

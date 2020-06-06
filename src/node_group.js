@@ -71,7 +71,7 @@ CSL.Node.group = {
                     //    var params = ["variable_success", "force_suppress","term_intended", "variable_attempt"]
                     //    print("PUSH parent="+JSON.stringify(state.tmp.group_context.tip, params))
                     //}
-                    state.tmp.group_context.push({
+                    var context = {
                         old_term_predecessor: state.tmp.term_predecessor,
                         term_intended: false,
                         variable_attempt: false,
@@ -80,13 +80,46 @@ CSL.Node.group = {
                         output_tip: state.output.current.tip,
                         label_form: label_form,
                         label_capitalize_if_first: label_capitalize_if_first,
-                        parallel_last: this.strings.parallel_last,
-                        parallel_first: this.strings.parallel_first,
                         parallel_delimiter_override: this.strings.set_parallel_delimiter_override,
                         condition: condition,
                         force_suppress: force_suppress,
                         done_vars: state.tmp.group_context.tip.done_vars.slice()
-                    });
+                    };
+                    if(this.strings.parallel_first) {
+                        var parallel_first = state.tmp.group_context.tip.parallel_first;
+                        if (!parallel_first) {
+                            parallel_first = {};
+                        }
+                        Object.assign(parallel_first, this.strings.parallel_first);
+                        context.parallel_first = parallel_first;
+                    }
+                    if(this.strings.parallel_last) {
+                        var parallel_last = state.tmp.group_context.tip.parallel_last;
+                        if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
+                            parallel_last = {};
+                        }
+                        if (!parallel_last) {
+                            parallel_last = {};
+                        }
+                        Object.assign(parallel_last, this.strings.parallel_last);
+                        context.parallel_last = parallel_last;
+
+                        if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
+                            var parallel_first = state.tmp.group_context.tip.parallel_first;
+                            if (!parallel_first) {
+                                parallel_first = {};
+                            }
+                            Object.assign(parallel_first, this.strings.parallel_last);
+                            context.parallel_first = parallel_first;
+                        }
+
+                    }
+                    state.tmp.group_context.push(context);
+
+                    if (state.tmp.abbrev_trimmer && this.parallel_last_to_first) {
+                        state.tmp.abbrev_trimmer.LAST_TO_FIRST = true;
+                    }
+                    
                     //if (!state.tmp.just_looking) {
                     //    print("       flags="+JSON.stringify(state.tmp.group_context.tip, params))
                     //}
