@@ -1,4 +1,15 @@
 =========================
+Changes in version 1.3.23
+=========================
+
+- Add has-subunit test condition, applicable to the "authority" field. Returns true
+  when the field contains a "|" vertical-bar field separpator.
+
+- Add parellel-last-to-first group attribute. Remaps all parallel-last variable
+  tests in subsequent cites in a related group to parallel-first, and so suppresses
+  their output. Needed for most vendor-neutral citation forms in the US jurisdiction.
+
+=========================
 Changes in version 1.3.22
 =========================
 

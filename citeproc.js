@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.22",
+    PROCESSOR_VERSION: "1.3.23",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -10227,7 +10227,7 @@ CSL.Node.group = {
                     //    var params = ["variable_success", "force_suppress","term_intended", "variable_attempt"]
                     //    print("PUSH parent="+JSON.stringify(state.tmp.group_context.tip, params))
                     //}
-                    state.tmp.group_context.push({
+                    var context = {
                         old_term_predecessor: state.tmp.term_predecessor,
                         term_intended: false,
                         variable_attempt: false,
@@ -10236,13 +10236,46 @@ CSL.Node.group = {
                         output_tip: state.output.current.tip,
                         label_form: label_form,
                         label_capitalize_if_first: label_capitalize_if_first,
-                        parallel_last: this.strings.parallel_last,
-                        parallel_first: this.strings.parallel_first,
                         parallel_delimiter_override: this.strings.set_parallel_delimiter_override,
                         condition: condition,
                         force_suppress: force_suppress,
                         done_vars: state.tmp.group_context.tip.done_vars.slice()
-                    });
+                    };
+                    if(this.strings.parallel_first) {
+                        var parallel_first = state.tmp.group_context.tip.parallel_first;
+                        if (!parallel_first) {
+                            parallel_first = {};
+                        }
+                        Object.assign(parallel_first, this.strings.parallel_first);
+                        context.parallel_first = parallel_first;
+                    }
+                    if(this.strings.parallel_last) {
+                        var parallel_last = state.tmp.group_context.tip.parallel_last;
+                        if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
+                            parallel_last = {};
+                        }
+                        if (!parallel_last) {
+                            parallel_last = {};
+                        }
+                        Object.assign(parallel_last, this.strings.parallel_last);
+                        context.parallel_last = parallel_last;
+
+                        if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
+                            var parallel_first = state.tmp.group_context.tip.parallel_first;
+                            if (!parallel_first) {
+                                parallel_first = {};
+                            }
+                            Object.assign(parallel_first, this.strings.parallel_last);
+                            context.parallel_first = parallel_first;
+                        }
+
+                    }
+                    state.tmp.group_context.push(context);
+
+                    if (state.tmp.abbrev_trimmer && this.parallel_last_to_first) {
+                        state.tmp.abbrev_trimmer.LAST_TO_FIRST = true;
+                    }
+                    
                     //if (!state.tmp.just_looking) {
                     //    print("       flags="+JSON.stringify(state.tmp.group_context.tip, params))
                     //}
@@ -16214,6 +16247,27 @@ CSL.Attributes["@court-class"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@has-subunit"] = function (state, arg) {
+    this.tests ? {} : this.tests = [];
+    var maketest = function(namevar) {
+        return function (Item) {
+            var subunit_count = 0;
+            for (var i in Item[namevar]) {
+                var name = Item[namevar][i];
+                if (!name.given) {
+                    var institution = name.literal ? name.literal : name.family;
+                    var length = institution.split("|").length;
+                    if (subunit_count === 0 || length < subunit_count) {
+                        subunit_count = length;
+                    }
+                }
+            }
+            return (subunit_count > 1);
+        };
+    };
+    this.tests.push(maketest(arg));
+}
+
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
 CSL.Attributes["@parallel-first"] = function (state, arg) {
@@ -16241,6 +16295,9 @@ CSL.Attributes["@parallel-last"] = function (state, arg) {
         this.strings.parallel_last[v] = true;
         state.opt.track_repeat[v] = true;
     }
+};
+CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
+    this.parallel_last_to_first = true;
 };
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override = arg;
