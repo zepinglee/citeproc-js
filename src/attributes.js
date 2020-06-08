@@ -3,7 +3,7 @@
 CSL.Attributes = {};
 
 CSL.Attributes["@disambiguate"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     if (arg === "true") {
         state.opt.has_disambiguate = true;
         var func = function (Item) {
@@ -35,7 +35,7 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-numeric"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var variables = arg.split(/\s+/);
     var maketest = function(variable) {
         return function (Item, item) {
@@ -68,7 +68,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
 
 
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var variables = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (myvariable) {
@@ -87,7 +87,7 @@ CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
 
 
 CSL.Attributes["@locator"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
@@ -110,7 +110,7 @@ CSL.Attributes["@locator"] = function (state, arg) {
 
 
 CSL.Attributes["@position"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
     var trypositions = arg.split(/\s+/);
@@ -168,7 +168,7 @@ CSL.Attributes["@position"] = function (state, arg) {
 };
 
 CSL.Attributes["@type"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     // XXX This is ALWAYS composed as an "any" match
     var types = arg.split(/\s+/);
     // Strip off any boolean prefix.
@@ -190,7 +190,7 @@ CSL.Attributes["@type"] = function (state, arg) {
 };
 
 CSL.Attributes["@variable"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var func;
     this.variables = arg.split(/\s+/);
     this.variables_real = this.variables.slice();
@@ -417,7 +417,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 
 CSL.Attributes["@page"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
@@ -452,7 +452,7 @@ CSL.Attributes["@page"] = function (state, arg) {
 
 // a near duplicate of code above
 CSL.Attributes["@number"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var trylabels = arg.split(/\s+/);
     var maketest = function(trylabel) {
         return function (Item) {
@@ -476,7 +476,7 @@ CSL.Attributes["@number"] = function (state, arg) {
 };
 
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var tryjurisdictions = arg.split(/\s+/);
     // Strip off any boolean prefix.
     for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
@@ -511,7 +511,7 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
 
 
 CSL.Attributes["@context"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var func = function () {
         if (["bibliography", "citation"].indexOf(arg) > -1) {
 		    var area = state.tmp.area.slice(0, arg.length);
@@ -527,7 +527,7 @@ CSL.Attributes["@context"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-year-only"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item) {
@@ -545,7 +545,7 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item) {
@@ -563,7 +563,7 @@ CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-day"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
         return function(Item) {
@@ -581,7 +581,7 @@ CSL.Attributes["@has-day"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-plural"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var func = function (Item) {
         var nameList = Item[arg];
         if (nameList && nameList.length) {
@@ -612,7 +612,7 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
 };
 
 CSL.Attributes["@locale"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var ret, langspec, lang, lst, i, ilen;
     // Style default
     var locale_default = state.opt["default-locale"][0];
@@ -718,7 +718,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
 };
 
 CSL.Attributes["@alternative-node-internal"] = function (state) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var maketest = function () {
         return function() {
             return !state.tmp.abort_alternative;
@@ -729,7 +729,7 @@ CSL.Attributes["@alternative-node-internal"] = function (state) {
 };
 
 CSL.Attributes["@locale-internal"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var langspec, lang, lst, i, ilen;
         // For if and if-else
 
@@ -812,7 +812,7 @@ CSL.Attributes["@locale-internal"] = function (state, arg) {
 
 
 CSL.Attributes["@court-class"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
 	var tryclasses = arg.split(/\s+/);
     var maketest = function (tryclass) {
         return function(Item) {
@@ -830,7 +830,7 @@ CSL.Attributes["@court-class"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-subunit"] = function (state, arg) {
-    this.tests ? {} : this.tests = [];
+    if (!this.tests) {this.tests = []; };
     var maketest = function(namevar) {
         return function (Item) {
             var subunit_count = 0;
@@ -858,10 +858,10 @@ CSL.Attributes["@parallel-first"] = function (state, arg) {
     if (!state.opt.track_repeat) {
         state.opt.track_repeat = {};
     }
-    this.strings.parallel_first = {};
+    this.parallel_first = {};
     for (var i in vars) {
         var v = vars[i];
-        this.strings.parallel_first[v] = true;
+        this.parallel_first[v] = true;
         state.opt.track_repeat[v] = true;
     }
 };
@@ -871,15 +871,23 @@ CSL.Attributes["@parallel-last"] = function (state, arg) {
     if (!state.opt.track_repeat) {
         state.opt.track_repeat = {};
     }
-    this.strings.parallel_last = {};
+    this.parallel_last = {};
     for (var i in vars) {
         var v = vars[i];
-        this.strings.parallel_last[v] = true;
+        this.parallel_last[v] = true;
         state.opt.track_repeat[v] = true;
     }
 };
 CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
     this.parallel_last_to_first = true;
+};
+CSL.Attributes["@parallel-last-override"] = function (state, arg) {
+    var vars = arg.split(/\s+/);
+    this.parallel_last_override = {};
+    for (var i in vars) {
+        var v = vars[i];
+        this.parallel_last_override[v] = true;
+    }
 };
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override = arg;

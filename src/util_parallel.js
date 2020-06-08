@@ -122,6 +122,11 @@ CSL.Parallel.prototype.checkRepeats = function(params) {
     var ret = false;
     if (params.parallel_first) {
         for (var varname in params.parallel_first) {
+            if (params.parallel_last_override) {
+                if (params.parallel_last_override[varname]) {
+                    continue;
+                }
+            }
             var arr = [{}].concat(this.state.tmp.suppress_repeats);
             if (arr[idx][varname] && !arr[idx].START) {
                 return true;
@@ -130,6 +135,13 @@ CSL.Parallel.prototype.checkRepeats = function(params) {
     }
     if (params.parallel_last) {
         var arr = this.state.tmp.suppress_repeats.concat([{}]);
+        if (params.parallel_last_override) {
+            for (var v in params.parallel_last_override) {
+                if (params.parallel_first && params.parallel_first[v]) {
+                    params.parallel_last[v] = true;
+                }
+            }
+        }
         for (var varname in params.parallel_last) {
             if (arr[idx][varname] && !arr[idx].END) {
                 return true;

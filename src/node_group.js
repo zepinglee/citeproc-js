@@ -63,14 +63,6 @@ CSL.Node.group = {
                             not: false
                         };
                     }
-                    // CONDITION
-                    //if (!state.tmp.just_looking) {
-                    //    print("  pushing condition[" + state.tmp.group_context.mystack.length + "]: "+condition+" "+force_suppress);
-                    //}
-                    //if (!state.tmp.just_looking) {
-                    //    var params = ["variable_success", "force_suppress","term_intended", "variable_attempt"]
-                    //    print("PUSH parent="+JSON.stringify(state.tmp.group_context.tip, params))
-                    //}
                     var context = {
                         old_term_predecessor: state.tmp.term_predecessor,
                         term_intended: false,
@@ -85,15 +77,15 @@ CSL.Node.group = {
                         force_suppress: force_suppress,
                         done_vars: state.tmp.group_context.tip.done_vars.slice()
                     };
-                    if(this.strings.parallel_first) {
+                    if(this.parallel_first) {
                         var parallel_first = state.tmp.group_context.tip.parallel_first;
                         if (!parallel_first) {
                             parallel_first = {};
                         }
-                        Object.assign(parallel_first, this.strings.parallel_first);
+                        Object.assign(parallel_first, this.parallel_first);
                         context.parallel_first = parallel_first;
                     }
-                    if(this.strings.parallel_last) {
+                    if(this.parallel_last) {
                         var parallel_last = state.tmp.group_context.tip.parallel_last;
                         if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
                             parallel_last = {};
@@ -101,7 +93,7 @@ CSL.Node.group = {
                         if (!parallel_last) {
                             parallel_last = {};
                         }
-                        Object.assign(parallel_last, this.strings.parallel_last);
+                        Object.assign(parallel_last, this.parallel_last);
                         context.parallel_last = parallel_last;
 
                         if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
@@ -109,10 +101,17 @@ CSL.Node.group = {
                             if (!parallel_first) {
                                 parallel_first = {};
                             }
-                            Object.assign(parallel_first, this.strings.parallel_last);
+                            Object.assign(parallel_first, this.parallel_last);
                             context.parallel_first = parallel_first;
                         }
-
+                    }
+                    if(this.parallel_last_override) {
+                        var parallel_last_override = state.tmp.group_context.tip.parallel_last_override;
+                        if (!parallel_last_override) {
+                            parallel_last_override = {};
+                        }
+                        Object.assign(parallel_last_override, this.parallel_last_override);
+                        context.parallel_last_override = parallel_last_override;
                     }
                     state.tmp.group_context.push(context);
 
