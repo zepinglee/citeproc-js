@@ -1,3 +1,12 @@
+========================
+Changes in version 1.4.1
+========================
+
+- Match for @jurisdiction is now an exact "any" match, similar to
+  @type. This is a backward-incompatible change for CSL-M styles that
+  use this condition to match the argument as an exact match OR parent
+  of the item jurisdiction, hence the change to minor version number.
+
 =========================
 Changes in version 1.3.24
 =========================

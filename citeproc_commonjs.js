@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.3.24",
+    PROCESSOR_VERSION: "1.4.1",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -15896,37 +15896,24 @@ CSL.Attributes["@number"] = function (state, arg) {
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
     var tryjurisdictions = arg.split(/\s+/);
-    // Strip off any boolean prefix.
-    for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
-        tryjurisdictions[i] = tryjurisdictions[i].split(":");
-    }
-    var maketests = function (tryjurisdiction) {
+    
+    // This forces a match=any method, similar to @type
+    var maketests = function (tryjurisdictions) {
         return function(Item) {
             if (!Item.jurisdiction) {
                 return false;
             }
-            var jurisdictions = Item.jurisdiction.split(":");
-            for (var i=0,ilen=jurisdictions.length;i<ilen;i+=1) {
-                jurisdictions[i] = jurisdictions[i].split(":");
-            }
-            for (i=tryjurisdiction.length;i>0;i+=-1) {
-                var tryjurisdictionStr = tryjurisdiction.slice(0,i).join(":");
-                var jurisdiction = jurisdictions.slice(0,i).join(":");
-                if (tryjurisdictionStr !== jurisdiction) {
-                    return false;
+            var jurisdiction = Item.jurisdiction;
+            for (var i=0,ilen=tryjurisdictions.length;i<ilen;i++) {
+                if (jurisdiction === tryjurisdictions[i]) {
+                    return true;
                 }
-                // this should be okay to enable.
-                // break;
             }
-            return true;
+            return false;
         };
     };
-    for (var i=0,ilen=tryjurisdictions.length;i<ilen;i+=1) {
-        var tryjurisdictionSlice = tryjurisdictions[i].slice();
-        this.tests.push(maketests(tryjurisdictionSlice));
-    }
+    this.tests.push(maketests(tryjurisdictions));
 };
-
 
 CSL.Attributes["@context"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
