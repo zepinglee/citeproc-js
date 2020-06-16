@@ -168,6 +168,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.prioritize_disambiguate_condition = false;
     this.development_extensions.force_short_title_casing_alignment = true;
     this.development_extensions.implicit_short_title = false;
+    this.development_extensions.force_title_abbrev_fallback = false;
 };
 
 CSL.Engine.Tmp = function () {

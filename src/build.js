@@ -144,6 +144,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
         this.opt.development_extensions.force_jurisdiction = true;
+        this.opt.development_extensions.force_title_abbrev_fallback = true;
     }
     // We seem to have two language specs flying around:
     //   this.opt["default-locale"], and this.opt.lang

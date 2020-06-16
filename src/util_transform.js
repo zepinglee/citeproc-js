@@ -160,6 +160,11 @@ CSL.Transform = function (state) {
         if (!value && !quashCountry && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
+        if (state.opt.development_extensions.force_title_abbrev_fallback) {
+            if (variable === "title" && value === basevalue && Item["title-short"]) {
+                value = Item["title-short"];
+            }
+        }
         return value;
     }
 
