@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.2",
+    PROCESSOR_VERSION: "1.4.3",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -10246,23 +10246,23 @@ CSL.Node.group = {
                     }
                     if(this.parallel_last) {
                         var parallel_last = state.tmp.group_context.tip.parallel_last;
-                        if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
-                            parallel_last = {};
-                        }
                         if (!parallel_last) {
                             parallel_last = {};
                         }
                         Object.assign(parallel_last, this.parallel_last);
                         context.parallel_last = parallel_last;
-
-                        if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
-                            var parallel_first = state.tmp.group_context.tip.parallel_first;
-                            if (!parallel_first) {
-                                parallel_first = {};
-                            }
-                            Object.assign(parallel_first, this.parallel_last);
-                            context.parallel_first = parallel_first;
+                    }
+                    if (state.tmp.abbrev_trimmer && state.tmp.abbrev_trimmer.LAST_TO_FIRST && context.parallel_last) {
+                        if (!context.parallel_first) {
+                            context.parallel_first = {};
                         }
+                        for (var varname in state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
+                            if (context.parallel_last[varname]) {
+                                context.parallel_first[varname] = true;
+                                delete context.parallel_last[varname];
+                            }
+                        }
+                        delete context.parallel_last;
                     }
                     if(this.parallel_last_override) {
                         var parallel_last_override = state.tmp.group_context.tip.parallel_last_override;
@@ -10275,7 +10275,12 @@ CSL.Node.group = {
                     state.tmp.group_context.push(context);
 
                     if (state.tmp.abbrev_trimmer && this.parallel_last_to_first) {
-                        state.tmp.abbrev_trimmer.LAST_TO_FIRST = true;
+                        if (!state.tmp.abbrev_trimmer.LAST_TO_FIRST) {
+                            state.tmp.abbrev_trimmer.LAST_TO_FIRST = {};
+                        }
+                        for (var varname in this.parallel_last_to_first) {
+                            state.tmp.abbrev_trimmer.LAST_TO_FIRST[varname] = true;
+                        }
                     }
                     
                     //if (!state.tmp.just_looking) {
@@ -16286,7 +16291,11 @@ CSL.Attributes["@parallel-last"] = function (state, arg) {
     }
 };
 CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
-    this.parallel_last_to_first = true;
+    var vars = arg.split(/\s+/);
+    this.parallel_last_to_first = {};
+    for (var i=0,ilen=vars.length;i<ilen;i++) {
+        this.parallel_last_to_first[vars[i]] = true;
+    }
 };
 CSL.Attributes["@parallel-last-override"] = function (state, arg) {
     var vars = arg.split(/\s+/);

@@ -1,4 +1,11 @@
 ========================
+Changes in version 1.4.3
+========================
+
+- Amend parallel-last-to-first to take a list of variable names rather
+  than simply "true" as argument.
+
+========================
 Changes in version 1.4.2
 ========================
 
