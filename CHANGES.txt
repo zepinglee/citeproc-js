@@ -1,4 +1,12 @@
 ========================
+Changes in version 1.4.2
+========================
+
+- In CSL-M mode only, rendering title with form="short" will first attempt
+  to abbreviate from external source, then (this is the difference) use the
+  value of title-short, if available, falling back to the full form.
+
+========================
 Changes in version 1.4.1
 ========================
 

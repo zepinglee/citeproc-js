@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.1",
+    PROCESSOR_VERSION: "1.4.2",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -3753,6 +3753,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
         this.opt.development_extensions.force_jurisdiction = true;
+        this.opt.development_extensions.force_title_abbrev_fallback = true;
     }
     // We seem to have two language specs flying around:
     //   this.opt["default-locale"], and this.opt.lang
@@ -6415,6 +6416,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.prioritize_disambiguate_condition = false;
     this.development_extensions.force_short_title_casing_alignment = true;
     this.development_extensions.implicit_short_title = false;
+    this.development_extensions.force_title_abbrev_fallback = false;
 };
 
 CSL.Engine.Tmp = function () {
@@ -17366,6 +17368,11 @@ CSL.Transform = function (state) {
 	    }
         if (!value && !quashCountry && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
+        }
+        if (state.opt.development_extensions.force_title_abbrev_fallback) {
+            if (variable === "title" && value === basevalue && Item["title-short"]) {
+                value = Item["title-short"];
+            }
         }
         return value;
     }
