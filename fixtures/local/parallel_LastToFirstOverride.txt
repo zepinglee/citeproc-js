@@ -63,9 +63,9 @@ Initial test checkin
             <if>
               <conditions match="all">
                 <condition match="all" variable="authority page collection-number"/>
-                <condition match="none" variable="containeer-title archive"/>
+                <condition match="none" variable="container-title archive"/>
               </conditions>
-              <group delimiter="-" parallel-last-to-first="true">
+              <group delimiter="-" parallel-last-to-first="issued">
                 <number variable="collection-number"/>
                 <names variable="authority">
                   <name/>
