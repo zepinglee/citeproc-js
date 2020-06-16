@@ -866,7 +866,11 @@ CSL.Attributes["@parallel-last"] = function (state, arg) {
     }
 };
 CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
-    this.parallel_last_to_first = true;
+    var vars = arg.split(/\s+/);
+    this.parallel_last_to_first = {};
+    for (var i=0,ilen=vars.length;i<ilen;i++) {
+        this.parallel_last_to_first[vars[i]] = true;
+    }
 };
 CSL.Attributes["@parallel-last-override"] = function (state, arg) {
     var vars = arg.split(/\s+/);
