@@ -97,8 +97,8 @@ citation
   <!-- Titles -->
   <macro name="title">
     <choose>
-      <if type="legal_case">
-        <text variable="title" font-style="italic" strip-periods="true" form="short"/>
+      <if match="all" type="legal_case">
+        <text variable="title" font-style="italic" strip-periods="true"/>
       </if>
       <else>
         <text variable="title" quotes="true" text-case="title"/>
