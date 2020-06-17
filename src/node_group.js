@@ -71,6 +71,7 @@ CSL.Node.group = {
                         variable_success_parent: state.tmp.group_context.tip.variable_success,
                         output_tip: state.output.current.tip,
                         label_form: label_form,
+                        label_static: state.tmp.group_context.tip.label_static,
                         label_capitalize_if_first: label_capitalize_if_first,
                         parallel_delimiter_override: this.strings.set_parallel_delimiter_override,
                         condition: condition,
@@ -103,7 +104,6 @@ CSL.Node.group = {
                                 delete context.parallel_last[varname];
                             }
                         }
-                        delete context.parallel_last;
                     }
                     if(this.parallel_last_override) {
                         var parallel_last_override = state.tmp.group_context.tip.parallel_last_override;

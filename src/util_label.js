@@ -52,9 +52,14 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 CSL.castLabel = function (state, node, term, plural, mode) {
     var label_form = node.strings.form;
     var label_capitalize_if_first = node.strings.capitalize_if_first;
-    if (state.tmp.group_context.tip.label_form && label_form !== "static") {
-        label_form = state.tmp.group_context.tip.label_form;
+    if (state.tmp.group_context.tip.label_form) {
+        if (label_form === "static") {
+            state.tmp.group_context.tip.label_static = true;
+        } else {
+            label_form = state.tmp.group_context.tip.label_form;
+        }
     }
+
     if (state.tmp.group_context.tip.label_capitalize_if_first) {
         label_capitalize_if_first = state.tmp.group_context.tip.label_capitalize_if_first;
     }

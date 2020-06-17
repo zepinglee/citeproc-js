@@ -886,6 +886,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
     var nums = state.tmp.shadow_numbers[varname].values;
     var masterLabel = nums.length ? nums[0].label : null;
     var labelForm = state.tmp.shadow_numbers[varname].labelForm;
+    var tryStatic = state.tmp.group_context.tip.label_static;
     var embeddedLabelForm;
     if (labelForm) {
         embeddedLabelForm = labelForm;
@@ -908,10 +909,27 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
                 labelName = CSL.STATUTE_SUBDIV_STRINGS[num.label];
             }
             if (labelName) {
+                // Simplify this some day.
                 if (num.label === masterLabel) {
-                    label = state.getTerm(labelName, labelForm, num.plural);
+                    if (tryStatic) {
+                        label = state.getTerm(labelName, "static", num.plural);
+                        if (label.indexOf("%s") === -1) {
+                            label = "";
+                        }
+                    }
+                    if (!label) {
+                        label = state.getTerm(labelName, labelForm, num.plural);
+                    }
                 } else {
-                    label = state.getTerm(labelName, embeddedLabelForm, num.plural);
+                    if (tryStatic) {
+                        label = state.getTerm(labelName, "static", num.plural);
+                        if (label.indexOf("%s") === -1) {
+                            label = "";
+                        }
+                    }
+                    if (!label) {
+                        label = state.getTerm(labelName, embeddedLabelForm, num.plural);
+                    }
                 }
                 if (labelCapitalizeIfFirst) {
                     label = CSL.Output.Formatters["capitalize-first"](state, label);
