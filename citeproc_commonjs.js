@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.3",
+    PROCESSOR_VERSION: "1.4.4",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -10230,6 +10230,7 @@ CSL.Node.group = {
                         variable_success_parent: state.tmp.group_context.tip.variable_success,
                         output_tip: state.output.current.tip,
                         label_form: label_form,
+                        label_static: state.tmp.group_context.tip.label_static,
                         label_capitalize_if_first: label_capitalize_if_first,
                         parallel_delimiter_override: this.strings.set_parallel_delimiter_override,
                         condition: condition,
@@ -10262,7 +10263,6 @@ CSL.Node.group = {
                                 delete context.parallel_last[varname];
                             }
                         }
-                        delete context.parallel_last;
                     }
                     if(this.parallel_last_override) {
                         var parallel_last_override = state.tmp.group_context.tip.parallel_last_override;
@@ -14318,9 +14318,14 @@ CSL.evaluateLabel = function (node, state, Item, item) {
 CSL.castLabel = function (state, node, term, plural, mode) {
     var label_form = node.strings.form;
     var label_capitalize_if_first = node.strings.capitalize_if_first;
-    if (state.tmp.group_context.tip.label_form && label_form !== "static") {
-        label_form = state.tmp.group_context.tip.label_form;
+    if (state.tmp.group_context.tip.label_form) {
+        if (label_form === "static") {
+            state.tmp.group_context.tip.label_static = true;
+        } else {
+            label_form = state.tmp.group_context.tip.label_form;
+        }
     }
+
     if (state.tmp.group_context.tip.label_capitalize_if_first) {
         label_capitalize_if_first = state.tmp.group_context.tip.label_capitalize_if_first;
     }
@@ -20231,6 +20236,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
     var nums = state.tmp.shadow_numbers[varname].values;
     var masterLabel = nums.length ? nums[0].label : null;
     var labelForm = state.tmp.shadow_numbers[varname].labelForm;
+    var tryStatic = state.tmp.group_context.tip.label_static;
     var embeddedLabelForm;
     if (labelForm) {
         embeddedLabelForm = labelForm;
@@ -20253,10 +20259,27 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
                 labelName = CSL.STATUTE_SUBDIV_STRINGS[num.label];
             }
             if (labelName) {
+                // Simplify this some day.
                 if (num.label === masterLabel) {
-                    label = state.getTerm(labelName, labelForm, num.plural);
+                    if (tryStatic) {
+                        label = state.getTerm(labelName, "static", num.plural);
+                        if (label.indexOf("%s") === -1) {
+                            label = "";
+                        }
+                    }
+                    if (!label) {
+                        label = state.getTerm(labelName, labelForm, num.plural);
+                    }
                 } else {
-                    label = state.getTerm(labelName, embeddedLabelForm, num.plural);
+                    if (tryStatic) {
+                        label = state.getTerm(labelName, "static", num.plural);
+                        if (label.indexOf("%s") === -1) {
+                            label = "";
+                        }
+                    }
+                    if (!label) {
+                        label = state.getTerm(labelName, embeddedLabelForm, num.plural);
+                    }
                 }
                 if (labelCapitalizeIfFirst) {
                     label = CSL.Output.Formatters["capitalize-first"](state, label);

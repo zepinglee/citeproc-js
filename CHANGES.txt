@@ -1,4 +1,10 @@
 ========================
+Changes in version 1.4.4
+========================
+
+- Fixes for placeholder labels.
+
+========================
 Changes in version 1.4.3
 ========================
 
