@@ -1,4 +1,10 @@
 ========================
+Changes in version 1.4.5
+========================
+
+- Apply limit-day-ordinals-to-day-1 to the individual elements of date ranges.
+
+========================
 Changes in version 1.4.4
 ========================
 
