@@ -69,9 +69,12 @@ CSL.Node.layout = {
             // rendering of variables
             //
             // initalize done vars
-            func = function (state, Item) {
+            func = function (state, Item, item) {
 
                 state.tmp.done_vars = [];
+                if (item && item["author-only"]) {
+                    state.tmp.done_vars.push("locator");
+                }
                 if (state.opt.suppressedJurisdictions[Item["country"]]
                     && Item["country"]
                     && ["treaty", "patent"].indexOf(Item.type) === -1) {
