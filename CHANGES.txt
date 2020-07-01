@@ -1,4 +1,12 @@
 ========================
+Changes in version 1.4.6
+========================
+
+- Suppress locator if author-only
+
+  https://github.com/Juris-M/citeproc-js/issues/131#issuecomment-652457239
+
+========================
 Changes in version 1.4.5
 ========================
 
