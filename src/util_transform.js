@@ -661,6 +661,9 @@ CSL.Transform = function (state) {
                 state.output.append(primary, primary_tok);
                 state.tmp.probably_rendered_something = true;
             }
+            if (state.tmp.can_block_substitute) {
+                state.tmp.name_node.children.push(state.output.current.value());
+            }
             return null;
         };
     }

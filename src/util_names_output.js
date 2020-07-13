@@ -228,8 +228,6 @@ CSL.NameOutput.prototype.outputNames = function () {
         print("(10)");
     }
     //SNIP-END
-    this.state.tmp.name_node = {};
-    this.state.tmp.name_node.children = [];
     this.renderAllNames();
     //SNIP-START
     if (this.debug) {

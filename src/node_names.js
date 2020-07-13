@@ -36,6 +36,8 @@ CSL.Node.names = {
             // init names
             func = function (state) {
                 state.tmp.can_substitute.push(true);
+                state.tmp.name_node = {};
+                state.tmp.name_node.children = [];
                 state.nameOutput.init(this);
             };
             this.execs.push(func);
