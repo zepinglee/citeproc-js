@@ -1,4 +1,17 @@
 ========================
+Changes in version 1.4.7
+========================
+
+- Avoid crash when text is substituted for a name with bibliography substitution
+  rule "partial-each".
+
+  Addresses https://github.com/Juris-M/citeproc-js/issues/140
+
+- Support locale-specific text-casing.
+
+  Addresses https://forums.zotero.org/discussion/83567/uppercase-letter-problem-in-turkish
+
+========================
 Changes in version 1.4.6
 ========================
 
