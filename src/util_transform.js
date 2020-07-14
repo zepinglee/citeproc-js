@@ -236,21 +236,21 @@ CSL.Transform = function (state) {
 
             ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
 
-            opts = state.opt[locale_type];
+            opts = state.opt[locale_type] ? state.opt[locale_type].slice() : [];
             var hasVal = false;
 
             if (locale_type === 'locale-orig') {
-                if (stopOrig) {
-                    ret = {name:"", usedOrig:stopOrig};
-                } else {
-                    ret = {name:Item[field], usedOrig:false, locale:getFieldLocale(Item,field)};
+                if (!stopOrig) {
+                    ret.name = Item[field];
+                    ret.usedOrig = false;
                 }
                 hasVal = true;
                 usingOrig = true;
             } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
                 // If we want the original, or if we don't have any specific guidance and we 
                 // definitely want output, just return the original value.
-                var ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                ret.name = Item[field];
+                ret.usedOrig = true;
                 hasVal = true;
                 usingOrig = true;
             }
@@ -499,6 +499,12 @@ CSL.Transform = function (state) {
                 }
                 return null;
             }
+            
+            // tmp.lang_array carries the current locale IDs of the style
+            // and the item. Field-level locale IDs are added here, so
+            // we clone it to allow reset.
+            var oldLangArray = state.tmp.lang_array.slice();
+
             // True is for transform fallback
             var res = getTextSubField.call(this, Item, variables[0], slot.primary, true, null, family_var);
             primary = res.name;
@@ -517,6 +523,7 @@ CSL.Transform = function (state) {
                 }
             }
             if (publisherCheck(this, Item, primary, family_var)) {
+                state.tmp.lang_array = oldLangArray;
                 return null;
             }
 
@@ -582,13 +589,15 @@ CSL.Transform = function (state) {
             if ("title" === variables[0]) {
                 primary = CSL.demoteNoiseWords(state, primary, this["leading-noise-words"]);
             }
-
             if (secondary || tertiary) {
 
                 state.output.openLevel("empty");
 
                 // A little too aggressive maybe.
                 primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
+                if (primary_locale) {
+                    state.tmp.lang_array = [primary_locale].concat(oldLangArray);
+                }
                 state.output.append(primary, primary_tok);
                 state.tmp.probably_rendered_something = true;
 
@@ -610,6 +619,9 @@ CSL.Transform = function (state) {
                     }
                     if (secondary_locale !== "en" && secondary_tok.strings["text-case"] === "title") {
                         secondary_tok.strings["text-case"] = "passthrough";
+                    }
+                    if (secondary_locale) {
+                        state.tmp.lang_array = [secondary_locale].concat(oldLangArray);
                     }
                     var secondary_outer = new CSL.Token();
                     secondary_outer.decorations.push(["@font-style", "normal"]);
@@ -643,6 +655,9 @@ CSL.Transform = function (state) {
                     if (tertiary_locale !== "en" && tertiary_tok.strings["text-case"] === "title") {
                         tertiary_tok.strings["text-case"] = "passthrough";
                     }
+                    if (tertiary_locale) {
+                        state.tmp.lang_array = [tertiary_locale].concat(oldLangArray);
+                    }
                     var tertiary_outer = new CSL.Token();
                     tertiary_outer.decorations.push(["@font-style", "normal"]);
                     tertiary_outer.decorations.push(["@font-weight", "normal"]);
@@ -656,11 +671,18 @@ CSL.Transform = function (state) {
                     // partners of a parallel cite?
                     // See note above.
                 }
+
                 state.output.closeLevel();
             } else {
+                if (primary_locale) {
+                    state.tmp.lang_array = [primary_locale].concat(oldLangArray);
+                }
                 state.output.append(primary, primary_tok);
                 state.tmp.probably_rendered_something = true;
             }
+
+            state.tmp.lang_array = oldLangArray;
+                
             if (state.tmp.can_block_substitute) {
                 state.tmp.name_node.children.push(state.output.current.value());
             }

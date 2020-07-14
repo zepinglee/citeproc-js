@@ -1462,6 +1462,15 @@ CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
 
 
 CSL.citeStart = function (Item, item, blockShadowNumberReset) {
+    this.tmp.lang_array = [];
+    if (Item.language) {
+        // Guard against garbage locales in user input
+        var m = Item.language.match(/^([a-zA-Z]+).*/);
+        if (m) {
+            this.tmp.lang_array.push(m[1].toLowerCase());
+        }
+    }
+    this.tmp.lang_array.push(this.opt.lang);
     if (!blockShadowNumberReset) {
         this.tmp.shadow_numbers = {};
     }
