@@ -1,4 +1,10 @@
 ========================
+Changes in version 1.4.8
+========================
+
+- Fix bug in labels when "page" label used with "page-first" variable.
+
+========================
 Changes in version 1.4.7
 ========================
 
