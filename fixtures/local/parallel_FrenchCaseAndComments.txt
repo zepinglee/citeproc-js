@@ -6,6 +6,13 @@ citation
 This is an example of "parallel" citation collapsing based on rendered
 content, with a French case and comment string citation.
 
+The comment portion of this result is, I believe, WRONG. The delimiter
+between page-pinpoint/author elements of the same journal should be
+comma (subject to confirmation if there is demand in France). This
+will require an extension to implement---probably something like
+parallel-delimiter-override-on-fail, with supporting code in
+node_group.js.
+
 
 >>===== RESULT =====>>
 Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-variant:small-caps;">J. Sainte-Rose</span>; <i>D</i>, 2000, somm. p. 358, <span style="font-variant:small-caps;">Ph. Delebecque</span>, p. 900, <span style="font-variant:small-caps;">S. Piedelievre</span>.
@@ -18,8 +25,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
             "id": "ITEM-1"
         }, 
         {
-            "id": "ITEM-2",
-            "prefix": "; "
+            "id": "ITEM-2"
         }, 
         {
             "id": "ITEM-3"
@@ -182,7 +188,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
           <group parallel-first="issued">
   	 	    <date variable="issued" form="text"/>
           </group>
-          <group delimiter=", " parallel-first="container-title" parallel-delimiter-override=", ">
+          <group delimiter=", " parallel-first="container-title" parallel-delimiter-override-on-suppress=", ">
 		      <text variable="container-title" font-style="italic" strip-periods="true"/>
 		      <number variable="volume"/>
           </group>

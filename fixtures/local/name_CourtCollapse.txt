@@ -48,7 +48,7 @@ Court of Error, 01/10/1950, 123, 02/20/1960, 456, 03/30/1960, 789; Court of Corr
   <citation>
     <layout delimiter="; ">
 <group delimiter=", ">
-  <group parallel-first="authority" parallel-delimiter-override=", ">
+  <group parallel-first="authority" parallel-delimiter-override-on-suppress=", ">
     <names variable="authority">
       <name/>
       <institution/>
