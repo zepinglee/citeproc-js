@@ -1,4 +1,12 @@
 ========================
+Changes in version 1.4.9
+========================
+
+- Give priority to latest node, not parent node, for parallel-delimiter-override.
+
+- Implement parallel-delimiter-override-on-suppress for special cases.
+
+========================
 Changes in version 1.4.8
 ========================
 
