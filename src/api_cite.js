@@ -910,6 +910,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         parallel_first: flags.parallel_first,
         parallel_last_override: flags.parallel_last_override,
         parallel_delimiter_override: flags.parallel_delimiter_override,
+        parallel_delimiter_override_on_suppress: flags.parallel_delimiter_override_on_suppress,
         condition: flags.condition,
         force_suppress: flags.force_suppress,
         done_vars: flags.done_vars.slice()

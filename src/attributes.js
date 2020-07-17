@@ -883,6 +883,9 @@ CSL.Attributes["@parallel-last-override"] = function (state, arg) {
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override = arg;
 };
+CSL.Attributes["@parallel-delimiter-override-on-suppress"] = function (state, arg) {
+    this.strings.set_parallel_delimiter_override_on_suppress = arg;
+};
 
 
 CSL.Attributes["@require"] = function (state, arg) {
