@@ -128,7 +128,7 @@ CSL.Parallel.prototype.checkRepeats = function(params) {
                 }
             }
             var arr = [{}].concat(this.state.tmp.suppress_repeats);
-            if (arr[idx] && arr[idx][varname] && !arr[idx].START) {
+            if (arr[idx][varname] && !arr[idx].START) {
                 return true;
             }
         }
@@ -143,7 +143,7 @@ CSL.Parallel.prototype.checkRepeats = function(params) {
             }
         }
         for (var varname in params.parallel_last) {
-            if (arr[idx] && arr[idx][varname] && !arr[idx].END) {
+            if (arr[idx][varname] && !arr[idx].END) {
                 return true;
             }
         }

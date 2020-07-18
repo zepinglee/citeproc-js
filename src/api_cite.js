@@ -811,8 +811,6 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
 
 CSL.Engine.prototype.process_CitationCluster = function (sortedItems, citation) {
     var str = "";
-    // Parallels must be evaluated in the calling function
-    //this.parallel.StartCitation(sortedItems);
     if (citation && citation.properties && citation.properties.mode === "composite") {
         citation.properties.mode = "author-only";
         var firstChunk = CSL.getCitationCluster.call(this, sortedItems, citation);
@@ -881,9 +879,6 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
         inputList.sort(this.citation.srt.compareCompositeKeys);
     }
     this.tmp.citation_errors = [];
-    if (this.opt.parallel.enable) {
-        this.parallel.StartCitation(inputList);
-    }
     var str = CSL.getCitationCluster.call(this, inputList);
     return str;
 };
@@ -1152,8 +1147,12 @@ CSL.getCitationCluster = function (inputList, citation) {
             inputList[0][1]["suppress-author"] = true;
         }
     }
+    if (this.opt.parallel.enable) {
+        this.parallel.StartCitation(inputList);
+    }
     for (pos = 0; pos < len; pos += 1) {
 
+        // Also for parallels only
         this.tmp.cite_index = pos;
 
         Item = inputList[pos][0];
