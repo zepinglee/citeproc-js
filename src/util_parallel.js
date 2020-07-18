@@ -14,9 +14,6 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
     var idxEnd = 0;
     var parallelMatchList = false;
     var siblingRanges = [];
-    // Okay, shit. This is hard.
-    // Start is fine.
-    // End is failing to tag a penultimate item.
     
     for (var i=0,ilen=sortedItems.length-1;i<ilen;i++) {
         var freshMatchList = false;
