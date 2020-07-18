@@ -286,9 +286,11 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             if (this.registry[key].siblings) {
                 if (this.registry[key].siblings.length == 1) {
                     var loneSiblingID = this.registry[key].siblings[0];
-                    this.registry[loneSiblingID].master = true;
-                    this.registry[loneSiblingID].siblings.pop();
-                    this.registry[loneSiblingID].parallel = false;
+                    if (this.registry[loneSiblingID].siblings) {
+                        this.registry[loneSiblingID].siblings.pop();
+                        this.registry[loneSiblingID].master = true;
+                        this.registry[loneSiblingID].parallel = false;
+                    }
                 } else if (this.registry[key].siblings.length > 1) {
                     var removeIDs = [key];
                     if (this.registry[key].master) {
