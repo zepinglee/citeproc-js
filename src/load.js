@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.10",
+    PROCESSOR_VERSION: "1.4.11",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {

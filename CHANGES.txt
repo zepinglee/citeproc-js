@@ -1,4 +1,15 @@
 =========================
+Changes in version 1.4.11
+=========================
+
+- Fix in-browser failures of toLocaleUpperCase and toLocaleLowerCase.
+
+  Details: https://github.com/Juris-M/citeproc-js/issues/142
+
+- Fix another potential cause of processor crash with parallels on
+  some refresh operations.
+
+=========================
 Changes in version 1.4.10
 =========================
 
