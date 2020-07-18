@@ -188,10 +188,9 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
                     }
                 }
                 if (s.length < m[2].length) {
-                    extra = s.toLocaleLowerCase();
+                    extra = CSL.toLocaleLowerCase.call(state, s);
                 }
             }
-            // namelist[i] = m[1].toLocaleUpperCase() + extra;
             namelist[i] = m[1] + extra;
             if (i < (ilen - 1)) {
                 if (terminator.match("%s")) {

@@ -21,14 +21,14 @@ CSL.Output.Formatters = (function () {
         "<sup>": "</sup>"
     };
 
-    function _capitalise (langArray, word) {
+    function _capitalise (word) {
         // Weird stuff is (.) transpiled with regexpu
         //   https://github.com/mathiasbynens/regexpu
         var m = word.match(/(^\s*)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
         // Do not uppercase lone Greek letters
         // (No case transforms in Greek citations, but chars used in titles to science papers)
         if (m && !(m[2].match(/^[\u0370-\u03FF]$/) && !m[3])) {
-            return m[1] + m[2].toLocaleUpperCase(langArray) + m[3];
+            return m[1] + CSL.toLocaleUpperCase.call(this, m[2]) + m[3];
         }
         return word;
     }
@@ -166,8 +166,8 @@ CSL.Output.Formatters = (function () {
         if (config.lastWordPos) {
             var lastWords = wordDoppel.split(config.doppel.strings[config.lastWordPos.strings]);
             var lastWord = lastWords.strings[config.lastWordPos.words];
-            if (lastWord.length > 1 && lastWord.toLocaleLowerCase(config.lang_array).match(config.skipWordsRex)) {
-                lastWord = _capitalise(config.lang_array, lastWord);
+            if (lastWord.length > 1 && CSL.toLocaleLowerCase.call(this, lastWord).match(config.skipWordsRex)) {
+                lastWord = _capitalise.call(this, lastWord);
                 lastWords.strings[config.lastWordPos.words] = lastWord;
             }
             config.doppel.strings[config.lastWordPos.strings] = wordDoppel.join(lastWords);
@@ -199,7 +199,7 @@ CSL.Output.Formatters = (function () {
                 for (var i=0,ilen=words.length;i<ilen;i++) {
                     var word = words[i];
                     if (word) {
-                        words[i] = word.toLocaleLowerCase(state.tmp.lang_array);
+                        words[i] = CSL.toLocaleLowerCase.call(state, word);
                     }
                 }
                 return words.join(" ");
@@ -209,7 +209,7 @@ CSL.Output.Formatters = (function () {
             afterPunct: null,
             isFirst: null
         };
-        return _textcaseEngine(config, string);
+        return _textcaseEngine.call(state, config, string);
     }
 
     /**
@@ -231,7 +231,7 @@ CSL.Output.Formatters = (function () {
                         // 1. Field language tag, if any
                         // 2. Item language tag, if any
                         // 3. Value of state.opt.lang
-                        words[i] = word.toLocaleUpperCase(state.tmp.lang_array);
+                        words[i] = CSL.toLocaleUpperCase.call(state, word);
                     }
                 }
                 return words.join(" ");
@@ -241,7 +241,7 @@ CSL.Output.Formatters = (function () {
             afterPunct: null,
             isFirst: null
         };
-        return _textcaseEngine(config, string);
+        return _textcaseEngine.call(state, config, string);
     }
 
     /**
@@ -250,7 +250,6 @@ CSL.Output.Formatters = (function () {
      */
     function sentence(state, string) {
         var config = {
-            langArray: state.tmp.lang_array,
             quoteState: [],
             capitaliseWords: function(str) {
                 var words = str.split(" ");
@@ -258,10 +257,10 @@ CSL.Output.Formatters = (function () {
                     var word = words[i];
                     if (word) {
                         if (config.isFirst) {
-                            words[i] = _capitalise(state.tmp.lang_array, word);
+                            words[i] = _capitalise.call(state, word);
                             config.isFirst = false;
                         } else {
-                            words[i] = word.toLocaleLowerCase(state.tmp.lang_array);
+                            words[i] = CSL.toLocaleLowerCase.call(state, word);
                         }
                     }
                 }
@@ -272,12 +271,11 @@ CSL.Output.Formatters = (function () {
             afterPunct: null,
             isFirst: true
         };
-        return _textcaseEngine(config, string);
+        return _textcaseEngine.call(state, config, string);
     }
 
     function title(state, string) {
         var config = {
-            langArray: state.tmp.lang_array,
             quoteState: [],
             capitaliseWords: function(str, i, followingTag) {
                 if (str.trim()) {
@@ -289,17 +287,17 @@ CSL.Output.Formatters = (function () {
                         if (!word) {
                             continue;
                         }
-                        if (word.length > 1 && !word.toLocaleLowerCase(state.tmp.lang_array).match(config.skipWordsRex)) {
+                        if (word.length > 1 && !CSL.toLocaleLowerCase.call(state, word).match(config.skipWordsRex)) {
                             // Capitalize every word that is not a stop-word
-                            words[j] = _capitalise(state.tmp.lang_array, words[j]);
+                            words[j] = _capitalise.call(state, words[j]);
                         } else if (j === (words.length - 1) && followingTag === "-") {
-                            words[j] = _capitalise(state.tmp.lang_array, words[j]);
+                            words[j] = _capitalise.call(state, words[j]);
                         } else if (config.isFirst) {
                             // Capitalize first word, even if a stop-word
-                            words[j] = _capitalise(state.tmp.lang_array, words[j]);
+                            words[j] = _capitalise.call(state, words[j]);
                         } else if (config.afterPunct) {
                             // Capitalize after punctuation
-                            words[j] = _capitalise(state.tmp.lang_array, words[j]);
+                            words[j] = _capitalise.call(state, words[j]);
                         }
                         config.afterPunct = false;
                         config.isFirst = false;
@@ -317,7 +315,7 @@ CSL.Output.Formatters = (function () {
             afterPunct: false,
             isFirst: true
         };
-        return _textcaseEngine(config, string);
+        return _textcaseEngine.call(state, config, string);
     }
     
     
@@ -327,7 +325,6 @@ CSL.Output.Formatters = (function () {
      */
     function capitalizeFirst(state, string) {
         var config = {
-            langArray: state.tmp.lang_array,
             quoteState: [],
             capitaliseWords: function(str) {
                 var words = str.split(" ");
@@ -335,7 +332,7 @@ CSL.Output.Formatters = (function () {
                     var word = words[i];
                     if (word) {
                         if (config.isFirst) {
-                            words[i] = _capitalise(state.tmp.lang_array, word);
+                            words[i] = _capitalise.call(state, word);
                             config.isFirst = false;
                             break;
                         }
@@ -348,7 +345,7 @@ CSL.Output.Formatters = (function () {
             afterPunct: null,
             isFirst: true
         };
-        return _textcaseEngine(config, string);
+        return _textcaseEngine.call(state, config, string);
     }
 
     /**
@@ -359,14 +356,13 @@ CSL.Output.Formatters = (function () {
      */
     function capitalizeAll (state, string) {
         var config = {
-            langArray: state.tmp.lang_array,
             quoteState: [],
             capitaliseWords: function(str) {
                 var words = str.split(" ");
                 for (var i=0,ilen=words.length;i<ilen;i++) {
                     var word = words[i];
                     if (word) {
-                        words[i] = _capitalise(state.tmp.lang_array, word);
+                        words[i] = _capitalise.call(state, word);
                     }
                 }
                 return words.join(" ");
@@ -376,7 +372,7 @@ CSL.Output.Formatters = (function () {
             afterPunct: null,
             isFirst: null
         };
-        return _textcaseEngine(config, string);
+        return _textcaseEngine.call(state, config, string);
     }
     return {
         passthrough: passthrough,

@@ -52,6 +52,26 @@ var CSL = {
         }
     },
 
+    toLocaleUpperCase(str) {
+        var arr = this.tmp.lang_array;
+        try {
+            str = str.toLocaleUpperCase(arr);
+        } catch (e) {
+            str = str.toUpperCase();
+        }
+        return str;
+    },
+
+    toLocaleLowerCase(str) {
+        var arr = this.tmp.lang_array;
+        try {
+            str = str.toLocaleLowerCase(arr);
+        } catch (e) {
+            str = str.toLowerCase();
+        }
+        return str;
+    },
+
     LOCATOR_LABELS_REGEXP: new RegExp("^((vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\\.)\\s+(.*)"),
 
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,

@@ -672,7 +672,7 @@ CSL.Registry.prototype.sorttokens = function (nosort) {
  */
 CSL.Registry.Comparifier = function (state, keyset) {
     var sort_directions, len, pos, compareKeys;
-    var sortCompare = CSL.getSortCompare(state.opt["default-locale-sort"]);
+    var sortCompare = CSL.getSortCompare.call(state, state.opt["default-locale-sort"]);
     sort_directions = state[keyset].opt.sort_directions;
     this.compareKeys = function (a, b) {
         len = a.sortkeys ? a.sortkeys.length : 0;

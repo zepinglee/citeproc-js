@@ -4,6 +4,7 @@ CSL.getSortCompare = function (default_locale) {
     if (CSL.stringCompare) {
         return CSL.stringCompare;
     }
+    var me = this;
     var strcmp;
     var strcmp_opts = {
         sensitivity:"base",
@@ -17,10 +18,7 @@ CSL.getSortCompare = function (default_locale) {
         default_locale = "en-US";
     }
     strcmp = function (a, b) {
-        //var ret = a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase(),default_locale,strcmp_opts);
-        // print(ret+' ('+a+') :: ('+b+')');
-        //return ret;
-        return a.toLocaleLowerCase().localeCompare(b.toLocaleLowerCase(),default_locale,strcmp_opts);
+        return CSL.toLocaleLowerCase.call(me, a).localeCompare(CSL.toLocaleLowerCase.call(me, b),default_locale,strcmp_opts);
     };
     var stripPunct = function (str) {
         return str.replace(/^[\[\]\'\"]*/g, "");
