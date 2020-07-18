@@ -1,3 +1,12 @@
+=========================
+Changes in version 1.4.10
+=========================
+
+- Fix a serious bug affecting Jurism. A parallel-citation counter was not
+  reset when citations were updated implicitly by processCitationCluster,
+  triggering a processor crash. (This bug does not affect Zotero, nor other
+  systems that do not exercise the parallel citation extensions.)
+
 ========================
 Changes in version 1.4.9
 ========================
