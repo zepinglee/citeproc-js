@@ -770,7 +770,10 @@ var CSL = {
         var narrowSpace = narrowSpaceLocale ? "\u202f" : "";
         // XXX In this function, split on split-char, but prefer exact match
         // XXX of subtitle to a split-char in title if found.
-        var segments = ["", "container-"];
+        var segments = [""];
+        if (this.opt.development_extensions.split_container_title) {
+            segments.push("container-");
+        }
         for (var i=0,ilen=segments.length;i<ilen;i++) {
             var seg = segments[i];
             var title = CSL.TITLE_FIELD_SPLITS(seg);
@@ -1282,7 +1285,8 @@ var CSL = {
         "main_title_from_short_title",
         "uppercase_subtitles",
         "force_short_title_casing_alignment",
-        "implicit_short_title"
+        "implicit_short_title",
+        "split_container_title"
     ],
 
     TITLE_SPLIT_REGEXP: (function() {
