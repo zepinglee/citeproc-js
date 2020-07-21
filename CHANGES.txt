@@ -1,4 +1,23 @@
 =========================
+Changes in version 1.4.12
+=========================
+
+- Do not attempt split of container-title unless affirmatively
+  configured to do so. For it to work properly, an override field must
+  be available in the client on any item for which it is
+  invoked. Otherwise, an abbreviated container title with a period
+  mid-string will be truncated at the first period. Some items that
+  deliver container-title to the processor in ZOtero do not have an
+  override field ("Journal Abbrev.""), so disabling the split for
+  now. To enable, set:
+
+  citeproc.opt.development_extensions.split_container_title = true;
+
+  ... or before building the processor, with:
+
+  sys.split_container_title = true;
+
+=========================
 Changes in version 1.4.11
 =========================
 
