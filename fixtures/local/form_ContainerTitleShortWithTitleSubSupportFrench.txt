@@ -3,7 +3,6 @@ citation
 <<===== MODE =====<<
 
 
-
 >>===== RESULT =====>>
 Title input with immediate colon : Should normalize and start with uppercase
 Title input with immediate double-colon : Should normalize and start with uppercase
@@ -191,7 +190,8 @@ Comment on “Pigs can fly : A meta-analysis”—Authors’ response
 
 >>===== OPTIONS =====>>
 {
-    "uppercase_subtitles": true
+    "uppercase_subtitles": true,
+    "split_container_title": true
 }
 <<===== OPTIONS =====<<
 
