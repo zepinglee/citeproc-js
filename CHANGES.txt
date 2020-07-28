@@ -1,4 +1,18 @@
 =========================
+Changes in version 1.4.13
+=========================
+
+- Fix a crashing bug triggered by parallels in MLZ mode
+
+- Fix operation of delimiter-precedes-last="after-inverted-name"
+
+  Details: https://github.com/Juris-M/citeproc-js/issues/143#issuecomment-662186248
+
+- Test variables in parallel-first and parallel-last as "all", not "any"
+
+  Details: https://github.com/Juris-M/schema/commit/5a8d44b7b8de49af9ca63ab56f06d02cd92a623b#commitcomment-40947432
+
+=========================
 Changes in version 1.4.12
 =========================
 
