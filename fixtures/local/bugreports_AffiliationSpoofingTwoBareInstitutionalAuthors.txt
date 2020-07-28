@@ -81,6 +81,7 @@ citation
    <macro name="author-short">
       <names variable="author">
          <name form="short" and="symbol" delimiter=", " initialize-with=". "/>
+	 <institution and="text"/>
          <substitute>
             <names variable="editor"/>
             <names variable="translator"/>

@@ -48,7 +48,7 @@ bibliography
     <layout>
       <names variable="author">
         <name and="symbol" name-as-sort-order="first"/>
-		<institution/>
+        <institution and="text"/>
       </names>
     </layout>
   </bibliography>

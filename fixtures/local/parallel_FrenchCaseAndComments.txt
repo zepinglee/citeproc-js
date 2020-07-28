@@ -193,7 +193,7 @@ Cass. 1ere civ., March 28, 2000, <i>JCP G</i>, 2000, 10296, <span style="font-va
 		      <number variable="volume"/>
           </group>
           <group delimiter=" ">
-            <group parallel-first="section page">
+            <group parallel-first="section container-title">
 			  <text variable="section"/>
             </group>
             <label variable="page" form="short"/>

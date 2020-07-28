@@ -138,7 +138,7 @@ citation
       </group>
       <group delimiter=" ">
         <group delimiter=", ">
-          <group delimiter=" " parallel-first="event-date available-date issued original-date" parallel-delimiter-override=", ">
+          <group delimiter=" " parallel-first="event-date" parallel-delimiter-override=", ">
             <choose>
               <if variable="event-date">
                 <date date-parts="year-month-day" form="text" variable="event-date"/>

@@ -116,6 +116,7 @@ bibliography
   <macro name="contributors">
     <names variable="author">
       <name and="text" delimiter=", " delimiter-precedes-last="always" name-as-sort-order="first" sort-separator=", " />
+      <institution delimiter-precedes-last="always"/>
       <label form="verb-short" prefix=", " suffix="." text-case="lowercase" />
       <substitute>
         <text macro="editor" />
@@ -391,8 +392,7 @@ bibliography
         "author": [
             {
                 "family": "Malone", 
-                "given": "Nolan J.", 
-                "static-ordering": false
+                "given": "Nolan J."
             }, 
             {
                 "literal": "U.S. Bureau of the Census"

@@ -31,6 +31,7 @@ John Doe, Jane Roe, Richard Noakes, and Deacon Snoakes
     <layout delimiter="&#x0A;">
       <names variable="author">
         <name and="symbol"/>
+        <institution and="text"/>
       </names>
     </layout>
   </citation>

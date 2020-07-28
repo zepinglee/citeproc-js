@@ -40,6 +40,7 @@ substitute-use-first always includes the requested institution name parts.
         <institution 
           institution-parts="long" 
           delimiter=", "
+          delimiter-precedes-last="never"
           part-separator=" of "
           substitute-use-first="1"
           use-last="1"/>

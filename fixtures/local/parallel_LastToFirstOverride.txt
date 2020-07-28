@@ -46,7 +46,7 @@ Initial test checkin
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      version="1.0">
+      version="1.1mlz1">
   <info>
     <id />
     <title />
@@ -92,7 +92,7 @@ Initial test checkin
               </conditions>
             </if>
             <else>
-              <group parallel-last="authority" parallel-last-override="authority">
+              <group parallel-last="authority">
                 <names variable="authority">
                   <name/>
                   <institution institution-parts="short"/>

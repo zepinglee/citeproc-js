@@ -18,7 +18,7 @@ being hard-wired into the processor.
 wrong, but this is correctly following the CSL markup.)
 
 >>===== RESULT =====>>
-葉俊榮, 台大法律系, 林子儀, 簡資修、中研院法律所
+葉俊榮, 台大法律系, 林子儀, 簡資修與中研院法律所
 <<===== RESULT =====<<
 
 >>===== OPTIONS =====>>
