@@ -116,34 +116,28 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
 
 CSL.Parallel.prototype.checkRepeats = function(params) {
     var idx = this.state.tmp.cite_index;
-    var ret = false;
-    if (params.parallel_first) {
+    if (params.parallel_first && Object.keys(params.parallel_first).length > 0 && this.state.tmp.suppress_repeats) {
+        var arr = [{}].concat(this.state.tmp.suppress_repeats);
+        var ret = true;
         for (var varname in params.parallel_first) {
-            if (params.parallel_last_override) {
-                if (params.parallel_last_override[varname]) {
-                    continue;
-                }
-            }
-            var arr = [{}].concat(this.state.tmp.suppress_repeats);
-            if (arr[idx][varname] && !arr[idx].START) {
-                return true;
+            if (!arr[idx][varname] || arr[idx].START) {
+                // true --> suppress the entry
+                // Test here evaluates as "all", not "any"
+                ret = false;
             }
         }
+        return ret;
     }
-    if (params.parallel_last) {
+    if (params.parallel_last && Object.keys(params.parallel_last).length > 0  && this.state.tmp.suppress_repeats) {
         var arr = this.state.tmp.suppress_repeats.concat([{}]);
-        if (params.parallel_last_override) {
-            for (var v in params.parallel_last_override) {
-                if (params.parallel_first && params.parallel_first[v]) {
-                    params.parallel_last[v] = true;
-                }
-            }
-        }
+        var ret = Object.keys(params.parallel_last).length > 0 ? true : false;
         for (var varname in params.parallel_last) {
-            if (arr[idx][varname] && !arr[idx].END) {
-                return true;
+            if (!arr[idx][varname] || arr[idx].END) {
+                // "all" match, as above.
+                ret = false;
             }
         }
+        return ret;
     }
     return false;
 };

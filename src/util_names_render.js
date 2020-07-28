@@ -77,6 +77,7 @@ CSL.NameOutput.prototype.renderInstitutionNames = function () {
 
             // XXXX FROM HERE (instututions)
             var institution = this._renderInstitutionName(v, name, slot, j);
+
             //this.institutions[v][j] = this._join(institution, "");
             this.institutions[v][j] = institution;
         }
@@ -169,6 +170,9 @@ CSL.NameOutput.prototype._renderInstitutionName = function (v, name, slot, j) {
         break;
     }
     var blob = this._join(institution, " ");
+    if (blob) {
+        blob.isInstitution = true;
+    }
     this.state.tmp.name_node.children.push(blob);
     return blob;
 };
@@ -462,6 +466,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             return hasJoiningPunctuation(blob.blobs[blob.blobs.length-1]);
         }
     }
+    
     var has_hyphenated_non_dropping_particle = hasJoiningPunctuation(non_dropping_particle);
 
     var blob, merged, first, second;
@@ -540,6 +545,7 @@ CSL.NameOutput.prototype._renderOnePersonalName = function (value, pos, i, j) {
             merged = this._join([first, second], sort_sep);
             blob = this._join([merged, suffix], sort_sep);
         }
+        blob.isInverted = true;
     } else { // plain vanilla
         if (name["dropping-particle"] && name.family && !name["non-dropping-particle"]) {
             var dp = name["dropping-particle"];

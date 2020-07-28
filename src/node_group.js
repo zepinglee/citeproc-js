@@ -106,6 +106,8 @@ CSL.Node.group = {
                             }
                         }
                     }
+                    
+                    /*
                     if(this.parallel_last_override) {
                         var parallel_last_override = state.tmp.group_context.tip.parallel_last_override;
                         if (!parallel_last_override) {
@@ -114,6 +116,7 @@ CSL.Node.group = {
                         Object.assign(parallel_last_override, this.parallel_last_override);
                         context.parallel_last_override = parallel_last_override;
                     }
+                     */
                     state.tmp.group_context.push(context);
 
                     if (state.tmp.abbrev_trimmer && this.parallel_last_to_first) {
@@ -288,9 +291,10 @@ CSL.Node.group = {
                         var blobs = state.output.current.value().blobs;
                         var pos = state.output.current.value().blobs.length - 1;
                         if (!state.tmp.just_looking && (flags.parallel_last || flags.parallel_first || flags.parallel_delimiter_override || flags.parallel_delimiter_override_on_suppress)) {
-// HOWDY
                             // flags.parallel_last
                             // flags.parallel_first
+
+                            // Returns true ONLY if all variables listed on this group are repeats.
                             var hasRepeat = state.parallel.checkRepeats(flags);
                             if (hasRepeat) {
                                 if (blobs) {
