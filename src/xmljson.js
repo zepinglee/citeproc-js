@@ -458,7 +458,7 @@ CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
                     institution.attrs.delimiter = attributes.delimiter;
                 }
                 if (attributes.and) {
-                    institution.attrs.and = "text";
+                    institution.attrs.and = attributes.and;
                 }
             }
             myjson.children = myjson.children.slice(0,insertPos+1).concat([institution]).concat(myjson.children.slice(insertPos+1));
