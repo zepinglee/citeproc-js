@@ -26,7 +26,8 @@ CSL.Node.institution = {
                     this.and_term = state.tmp.institution_delimiter;
                 }
                 if ("undefined" === typeof this.and_term && state.tmp.and_term) {
-                    this.and_term = state.getTerm("and", "long", 0);
+                    // this.and_term = state.getTerm("and", "long", 0);
+                    this.and_term = state.tmp.and_term;
                 }
                 if (CSL.STARTSWITH_ROMANESQUE_REGEXP.test(this.and_term)) {
                     this.and_prefix_single = " ";
