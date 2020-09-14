@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.13",
+    PROCESSOR_VERSION: "1.4.15",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -8163,16 +8163,20 @@ CSL.getCitationCluster = function (inputList, citation) {
                 if (this.opt.development_extensions.throw_on_empty) {
                     CSL.error("Citation would render no content");
                 } else {
-                    composite = "[NO_PRINTED_FORM]"
+                    composite = "[NO_PRINTED_FORM]";
                 }
             }
             return composite;
         }
         if ("object" === typeof composite && composite.length === 0 && !item["suppress-author"]) {
-            var errStr = "[CSL STYLE ERROR: reference with no printed form.]";
-            var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
-            var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
-            composite.push(preStr + errStr + sufStr);
+            if (pos === 0) {
+                var errStr = "[CSL STYLE ERROR: reference with no printed form.]";
+                var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
+                var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
+                composite.push(preStr + errStr + sufStr);
+            } else {
+                objects[objects.length -1] += (txt_esc(this.citation.opt.layout_suffix));
+            }
         }
         if (buffer.length && "string" === typeof composite[0]) {
             composite.reverse();

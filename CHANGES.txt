@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.15
+=========================
+
+- Print "no printed reference" warning only if the first citation
+  in a series renders nothing.
+
+=========================
 Changes in version 1.4.13
 =========================
 
