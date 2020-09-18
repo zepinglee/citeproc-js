@@ -8,21 +8,24 @@ CSL.Node.layout = {
             if (state.build.area === "bibliography") {
                 suffix_token = new CSL.Token("text", CSL.SINGLETON);
                 func = function(state) {
-                    var suffix;
-                    if (state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale]) {
-                        suffix = state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale].suffix;
-                    } else {
-                        suffix = state.bibliography.opt.layout_suffix;
-                    }
+                    // Suppress suffix on all but the last item in bibliography parallels
+                    if (!state.tmp.parallel_and_not_last) {
+                        var suffix;
+                        if (state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale]) {
+                            suffix = state.tmp.cite_affixes[state.tmp.area][state.tmp.last_cite_locale].suffix;
+                        } else {
+                            suffix = state.bibliography.opt.layout_suffix;
+                        }
 
-                    // If @display is used, layout suffix is placed on the last
-                    // immediate child of the layout, which we assume will be a
-                    // @display group node.
-                    var topblob = state.output.current.value();
-                    if (state.opt.using_display) {
-                        topblob.blobs[topblob.blobs.length-1].strings.suffix = suffix;
-                    } else {
-                        topblob.strings.suffix = suffix;
+                        // If @display is used, layout suffix is placed on the last
+                        // immediate child of the layout, which we assume will be a
+                        // @display group node.
+                        var topblob = state.output.current.value();
+                        if (state.opt.using_display) {
+                            topblob.blobs[topblob.blobs.length-1].strings.suffix = suffix;
+                        } else {
+                            topblob.strings.suffix = suffix;
+                        }
                     }
                     if (state.bibliography.opt["second-field-align"]) {
                         // closes bib_other

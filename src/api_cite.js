@@ -1323,8 +1323,13 @@ CSL.getCitationCluster = function (inputList, citation) {
                 var preStr = pos === 0 ? txt_esc(this.citation.opt.layout_prefix) : "";
                 var sufStr = pos === (myblobs.length - 1) ? txt_esc(this.citation.opt.layout_suffix) : "";
                 composite.push(preStr + errStr + sufStr);
-            } else {
-                objects[objects.length -1] += (txt_esc(this.citation.opt.layout_suffix));
+            } else if (pos === myblobs.length - 1) {
+                var tmpobj = objects[objects.length - 1];
+                if (typeof tmpobj === "string") {
+                    objects[objects.length -1] += (txt_esc(this.citation.opt.layout_suffix));
+                } else if (typeof tmpobj === "object") {
+                    tmpobj.strings.suffix += (txt_esc(this.citation.opt.layout_suffix));
+                }
             }
         }
         if (buffer.length && "string" === typeof composite[0]) {
@@ -1429,7 +1434,7 @@ CSL.getCitationCluster = function (inputList, citation) {
  * (This is dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
+CSL.getCite = function (Item, item, noOp, blockShadowNumberReset) {
     var next, error_object;
     var areaOrig = this.tmp.area;
     if (item && item["author-only"] && this.intext && this.intext.tokens.length > 0) {
@@ -1478,6 +1483,17 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     if (!blockShadowNumberReset) {
         this.tmp.shadow_numbers = {};
     }
+    
+    if (!this.tmp.just_looking) {
+        if (this.registry.registry[Item.id].siblings) {
+            this.tmp.parallel_siblings = this.registry.registry[Item.id].siblings.slice();
+            this.tmp.parallel_master = Item.id;
+        } else if (this.tmp.parallel_siblings && this.tmp.parallel_siblings.indexOf(Item.id) === -1) {
+            delete this.tmp.parallel_siblings;
+            delete this.tmp.parallel_master;
+        }
+    }
+    
     this.tmp.disambiguate_count = 0;
     this.tmp.disambiguate_maxMax = 0;
     this.tmp.same_author_as_previous_cite = false;

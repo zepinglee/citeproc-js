@@ -289,7 +289,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
                     if (this.registry[loneSiblingID].siblings) {
                         this.registry[loneSiblingID].siblings.pop();
                         this.registry[loneSiblingID].master = true;
-                        this.registry[loneSiblingID].parallel = false;
+                        // this.registry[loneSiblingID].parallel = false;
                     }
                 } else if (this.registry[key].siblings.length > 1) {
                     var removeIDs = [key];
@@ -297,11 +297,12 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
                         var newmasterID = this.registry[key].siblings[0];
                         var newmaster = this.registry[newmasterID];
                         newmaster.master = true;
-                        newmaster.parallel = false;
+                        // newmaster.parallel_delimiter is set externally, if at all
+                        // newmaster.parallel = false;
                         removeIDs.push(newmasterID);
-                        for (var k = 0, klen = this.registry[key].siblings.length; k < klen; k += 1) {
-                            this.registry[this.registry[key].siblings[k]].parallel = newmasterID;
-                        }
+                        // for (var k = 0, klen = this.registry[key].siblings.length; k < klen; k += 1) {
+                        //     this.registry[this.registry[key].siblings[k]].parallel = newmasterID;
+                        // }
                     }
                     var buffer = [];
                     for (var k = this.registry[key].siblings.length - 1; k > -1; k += -1) {

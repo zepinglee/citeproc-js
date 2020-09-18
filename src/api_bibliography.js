@@ -275,11 +275,20 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             // Adjust parameters
             this.parallel.StartCitation(sortedItems);
-            this.output.queue[0].strings.delimiter = ", ";
+            if (this.registry.registry[item.id].parallel_delimiter_override) {
+                this.output.queue[0].strings.delimiter = this.registry.registry[item.id].parallel_delimiter_override;
+            } else {
+                this.output.queue[0].strings.delimiter = ", ";
+            }
             this.tmp.term_predecessor = false;
             this.tmp.cite_index = 0;
             // Run cites
             for (j = 0, jlen = sortedItems.length; j < jlen; j += 1) {
+                if (j < (sortedItems.length - 1)) {
+                    this.tmp.parallel_and_not_last = true;
+                } else {
+                    delete this.tmp.parallel_and_not_last;
+                }
                 entry_item_ids.push("" + CSL.getCite.call(this, sortedItems[j][0], sortedItems[j][1]));
                 this.tmp.cite_index++;
                 skips[sortedItems[j][0].id] = true;

@@ -258,6 +258,9 @@ CSL.Node.group = {
                     var flags = state.tmp.group_context.pop();
                     if (flags.parallel_delimiter_override) {
                         state.tmp.group_context.tip.parallel_delimiter_override = flags.parallel_delimiter_override;
+                        if (!state.tmp.just_looking && state.tmp.parallel_master) {
+                            state.registry.registry[state.tmp.parallel_master].parallel_delimiter_override = flags.parallel_delimiter_override;
+                        }
                     }
                     if (flags.parallel_delimiter_override_on_suppress) {
                         state.tmp.group_context.tip.parallel_delimiter_override_on_suppress = flags.parallel_delimiter_override_on_suppress;
