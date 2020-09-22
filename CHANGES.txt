@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.16
+=========================
+
+- Implement no-repeat attribute on cs:group, to suppress
+  output on non-parallel items only, when designated variables
+  match on predecessor.
+
+=========================
 Changes in version 1.4.15
 =========================
 
