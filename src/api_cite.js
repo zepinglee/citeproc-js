@@ -901,6 +901,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         variable_success: flags.variable_success,
         output_tip: flags.output_tip,
         label_form: flags.label_form,
+        non_parallel: flags.non_parallel,
         parallel_last: flags.parallel_last,
         parallel_first: flags.parallel_first,
         parallel_last_override: flags.parallel_last_override,
@@ -1434,7 +1435,7 @@ CSL.getCitationCluster = function (inputList, citation) {
  * (This is dual-purposed for generating individual
  * entries in a bibliography.)
  */
-CSL.getCite = function (Item, item, noOp, blockShadowNumberReset) {
+CSL.getCite = function (Item, item, prevItemID, blockShadowNumberReset) {
     var next, error_object;
     var areaOrig = this.tmp.area;
     if (item && item["author-only"] && this.intext && this.intext.tokens.length > 0) {
@@ -1442,6 +1443,7 @@ CSL.getCite = function (Item, item, noOp, blockShadowNumberReset) {
     }
     this.tmp.cite_renders_content = false;
     this.tmp.probably_rendered_something = false;
+    this.tmp.prevItemID = prevItemID;
 
     CSL.citeStart.call(this, Item, item, blockShadowNumberReset);
     next = 0;
@@ -1482,16 +1484,6 @@ CSL.citeStart = function (Item, item, blockShadowNumberReset) {
     this.tmp.lang_array.push(this.opt.lang);
     if (!blockShadowNumberReset) {
         this.tmp.shadow_numbers = {};
-    }
-    
-    if (!this.tmp.just_looking) {
-        if (this.registry.registry[Item.id].siblings) {
-            this.tmp.parallel_siblings = this.registry.registry[Item.id].siblings.slice();
-            this.tmp.parallel_master = Item.id;
-        } else if (this.tmp.parallel_siblings && this.tmp.parallel_siblings.indexOf(Item.id) === -1) {
-            delete this.tmp.parallel_siblings;
-            delete this.tmp.parallel_master;
-        }
     }
     
     this.tmp.disambiguate_count = 0;

@@ -886,7 +886,19 @@ CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
 CSL.Attributes["@parallel-delimiter-override-on-suppress"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override_on_suppress = arg;
 };
-
+CSL.Attributes["@no-repeat"] = function (state, arg) {
+    state.opt.parallel.enable = true;
+    var vars = arg.split(/\s+/);
+    if (!state.opt.track_repeat) {
+        state.opt.track_repeat = {};
+    }
+    this.non_parallel = {};
+    for (var i in vars) {
+        var v = vars[i];
+        this.non_parallel[v] = true;
+        state.opt.track_repeat[v] = true;
+    }
+};
 
 CSL.Attributes["@require"] = function (state, arg) {
     this.strings.require = arg;
