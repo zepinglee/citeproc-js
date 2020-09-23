@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.16",
+    PROCESSOR_VERSION: "1.4.17",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1215,7 +1215,7 @@ var CSL = {
 
     UPDATE_GROUP_CONTEXT_CONDITION: function (state, termtxt, valueTerm) {
         if (state.tmp.group_context.tip.condition) {
-            if (state.tmp.group_context.tip.condition.test) {
+            if (!state.tmp.group_context.tip.condition.termtxt) {
                 state.tmp.group_context.tip.condition.termtxt = termtxt;
                 state.tmp.group_context.tip.condition.valueTerm = valueTerm;
             }

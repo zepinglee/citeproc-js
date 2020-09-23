@@ -30,6 +30,11 @@ CSL.Node.group = {
                 }
                 
                 if (this.realGroup) {
+                    
+                    if (state.tmp.group_context.tip.condition) {
+                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.prefix);
+                    }
+                    
                     var condition = false;
                     var force_suppress = false;
 
