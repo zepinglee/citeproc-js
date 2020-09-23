@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.16",
+    PROCESSOR_VERSION: "1.4.17",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1239,7 +1239,7 @@ var CSL = {
 
     UPDATE_GROUP_CONTEXT_CONDITION: function (state, termtxt, valueTerm) {
         if (state.tmp.group_context.tip.condition) {
-            if (state.tmp.group_context.tip.condition.test) {
+            if (!state.tmp.group_context.tip.condition.termtxt) {
                 state.tmp.group_context.tip.condition.termtxt = termtxt;
                 state.tmp.group_context.tip.condition.valueTerm = valueTerm;
             }
@@ -10245,6 +10245,11 @@ CSL.Node.group = {
                 }
                 
                 if (this.realGroup) {
+                    
+                    if (state.tmp.group_context.tip.condition) {
+                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.prefix);
+                    }
+                    
                     var condition = false;
                     var force_suppress = false;
 
@@ -14961,6 +14966,7 @@ CSL.Node.number = {
 
             if (["locator", "locator-extra"].indexOf(varname) > -1) {
                 // amazing that we reach this. should abort sooner if no content?
+                CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, node.strings.prefix);
                 state.processNumber.call(state, node, item, varname, Item.type);
             } else {
                 if (!state.tmp.group_context.tip.condition) {

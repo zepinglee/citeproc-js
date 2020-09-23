@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.17
+=========================
+
+- Examine prefixes on cs:number and cs:group in comma-safe evaluation.
+
+=========================
 Changes in version 1.4.16
 =========================
 
