@@ -837,6 +837,10 @@ CSL.Attributes["@has-subunit"] = function (state, arg) {
     this.tests.push(maketest(arg));
 }
 
+CSL.Attributes["@disable-duplicate-year-suppression"] = function (state, arg) {
+	state.opt.disable_duplicate_year_suppression = arg.split(/\s+/);
+}
+
 // These are not evaluated as conditions immediately: they only
 // set parameters that are picked up during processing.
 CSL.Attributes["@parallel-first"] = function (state, arg) {
