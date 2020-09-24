@@ -23,7 +23,7 @@ Hastings v. Perkins, 1930 P. 217 (Eng. C.A. 1930).
 <style 
       xmlns="http://purl.org/net/xbiblio/csl"
       class="note"
-      disable-duplicate-year-suppression=""
+      disable-duplicate-year-suppression="gb"
       version="1.0">
   <info>
     <title>Chicago Manual of Style (Author-Date format)</title>

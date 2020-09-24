@@ -125,6 +125,7 @@ CSL.Node.date = {
                 state.output.startTag("date", this);
                 if (this.variables[0] === "issued"
                     && (Item.type === "legal_case" || Item.type === "legislation")
+                    && state.opt.disable_duplicate_year_suppression.indexOf(Item.country) === -1
                     && !state.tmp.extension
                     && "" + Item["collection-number"] === "" + state.tmp.date_object.year
                     && this.dateparts.length === 1
