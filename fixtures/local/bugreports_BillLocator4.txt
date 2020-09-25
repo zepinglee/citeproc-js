@@ -11,7 +11,7 @@ citation
 
 >>===== OPTIONS =====>>
 {
-   "static_statute_locator":true
+   "consolidate_legal_items":true
 }
 <<===== OPTIONS =====<<
 	 

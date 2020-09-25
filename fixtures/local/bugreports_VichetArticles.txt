@@ -13,7 +13,7 @@ citation
     "locator_parsing_for_plurals": true,
     "locator_label_parse": true,
     "jurisdiction_subfield": true,
-    "static_statute_locator": false,
+    "consolidate_legal_items": false,
     "csl_reverse_lookup_support": false,
     "clobber_locator_if_no_statute_section": false
 }

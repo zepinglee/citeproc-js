@@ -13,7 +13,7 @@ Book A
     "clobber_locator_if_no_statute_section": false, 
     "handle_parallel_articles": true, 
     "main_title_from_short_title": true, 
-    "static_statute_locator": true
+    "consolidate_legal_items": true
 }
 <<===== OPTIONS =====<<
 

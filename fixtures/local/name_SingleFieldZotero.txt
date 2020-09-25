@@ -7,7 +7,7 @@ bibliography
     "clobber_locator_if_no_statute_section": false, 
     "handle_parallel_articles": false, 
     "rtl_support": false, 
-    "static_statute_locator": false
+    "consolidate_legal_items": false
 }
 <<===== OPTIONS =====<<
 
