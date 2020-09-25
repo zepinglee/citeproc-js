@@ -830,6 +830,21 @@ CSL.Attributes["@court-class"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@chapter-count"] = function (state, arg) {
+    if (!this.tests) {this.tests = []; };
+	var tryval = parseInt(arg, 10);
+    var maketest = function (tryval) {
+        return function(Item) {
+            if (state.tmp.chapter_count[Item.chapters_id] === tryval) {
+                return true;
+            }
+            return false;
+        };
+    };
+    this.tests.push(maketest(tryval));
+}
+
+
 CSL.Attributes["@has-subunit"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
     var maketest = function(namevar) {
@@ -853,6 +868,10 @@ CSL.Attributes["@has-subunit"] = function (state, arg) {
 
 CSL.Attributes["@disable-duplicate-year-suppression"] = function (state, arg) {
 	state.opt.disable_duplicate_year_suppression = arg.split(/\s+/);
+}
+
+CSL.Attributes["@consolidate-chapter-items"] = function (state, arg) {
+    state.bibliography.opt.consolidate_chapter_items = arg === "true" ? true : false;
 }
 
 // These are not evaluated as conditions immediately: they only

@@ -168,13 +168,26 @@ CSL.getBibliographyEntries = function (bibsection) {
     var processed_item_ids = [];
 
     var consolidatedIDs = {};
+    this.tmp.chapter_count = {};
     input = input.filter(o => {
         var ret = o;
-        if (o.legislation_id || o.chapters_id) {
+        if (o.legislation_id) {
             if (consolidatedIDs[o.legislation_id]) {
                 ret = false;
             } else {
                 consolidatedIDs[o.legislation_id] = true;
+            }
+        } else if (o.chapters_id) {
+            if (!this.tmp.chapter_count[o.chapters_id]) {
+                this.tmp.chapter_count[o.chapters_id] = 0;
+            }
+            this.tmp.chapter_count[o.chapters_id]++;
+            if (this.bibliography.opt.consolidate_chapter_items) {
+                if (consolidatedIDs[o.chapters_id]) {
+                    ret = false;
+                } else {
+                    consolidatedIDs[o.chapters_id] = true;
+                }
             }
         }
         return ret;
