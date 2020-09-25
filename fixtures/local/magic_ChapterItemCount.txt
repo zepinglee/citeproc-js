@@ -4,7 +4,8 @@ bibliography
 
 >>===== RESULT =====>>
 <div class="csl-bib-body">
-  <div class="csl-entry">My Compendium</div>
+  <div class="csl-entry">Compendium</div>
+  <div class="csl-entry">Article Zero, Bundle of Articles</div>
 </div>
 <<===== RESULT =====<<
 
@@ -16,9 +17,6 @@ bibliography
             "citationItems": [
                 {
                     "id": "ITEM-1"
-                },
-                {
-                    "id": "ITEM-2"
                 }
             ], 
             "properties": {
@@ -26,6 +24,36 @@ bibliography
             }
         }, 
         [], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-2", 
+            "citationItems": [
+                {
+                    "id": "ITEM-2"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 2
+            }
+        }, 
+        [["CITATION-1", 1]], 
+        []
+    ],
+    [
+        {
+            "citationID": "CITATION-3", 
+            "citationItems": [
+                {
+                    "id": "ITEM-3"
+                }
+            ], 
+            "properties": {
+                "noteIndex": 3
+            }
+        }, 
+        [["CITATION-1", 1],["CITATION-2", 2]], 
         []
     ]
 ]
@@ -57,7 +85,17 @@ bibliography
   </citation>
   <bibliography consolidate-chapter-items="true">
     <layout>
-      <text variable="container-title"/>
+      <choose>
+        <if chapter-count="1">
+          <group delimiter=", ">
+            <text variable="title"/>
+            <text variable="container-title"/>
+          </group>
+        </if>
+        <else>
+          <text variable="container-title"/>
+        </else>
+      </choose>
     </layout>
   </bibliography>
 </style>
@@ -69,13 +107,19 @@ bibliography
     {
         "id": "ITEM-1", 
         "title": "My Chapter One",
-        "container-title": "My Compendium",
+        "container-title": "Compendium",
         "type": "chapter"
     },
     {
         "id": "ITEM-2", 
         "title": "My Chapter Two",
-        "container-title": "My Compendium",
+        "container-title": "Compendium",
+        "type": "chapter"
+    },
+    {
+        "id": "ITEM-3", 
+        "title": "Article Zero",
+        "container-title": "Bundle of Articles",
         "type": "chapter"
     }
 ]
