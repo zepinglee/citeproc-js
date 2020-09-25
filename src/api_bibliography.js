@@ -167,6 +167,19 @@ CSL.getBibliographyEntries = function (bibsection) {
 
     var processed_item_ids = [];
 
+    var consolidatedIDs = {};
+    input = input.filter(o => {
+        var ret = o;
+        if (o.legislation_id || o.chapters_id) {
+            if (consolidatedIDs[o.legislation_id]) {
+                ret = false;
+            } else {
+                consolidatedIDs[o.legislation_id] = true;
+            }
+        }
+        return ret;
+    });
+
     for (i = 0, ilen = input.length; i < ilen; i += 1) {
         
         // For paged returns

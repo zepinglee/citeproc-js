@@ -76,7 +76,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
 CSL.Engine.prototype.setNumberLabels = function (Item) {
      if (Item.number
         && ["bill", "gazette", "legislation","regulation","treaty"].indexOf(Item.type) > -1
-        && this.opt.development_extensions.static_statute_locator
+        && this.opt.development_extensions.consolidate_legal_items
         && !this.tmp.shadow_numbers["number"]) {
 
         this.tmp.shadow_numbers["number"] = {};

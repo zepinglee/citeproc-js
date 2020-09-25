@@ -139,7 +139,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.styleName = this.cslXml.getStyleId(this.cslXml.dataObj, true);
 
     if (this.opt.version.slice(0,4) === "1.1m") {
-        this.opt.development_extensions.static_statute_locator = true;
+        this.opt.development_extensions.consolidate_legal_items = true;
         this.opt.development_extensions.main_title_from_short_title = true;
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
@@ -643,9 +643,8 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             }
         }
     }
-    if (this.opt.development_extensions.static_statute_locator) {
+    if (this.opt.development_extensions.consolidate_legal_items) {
         if (Item.type && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1) {
-            
             var varname;
             var elements = ["type", "title", "jurisdiction", "genre", "volume", "container-title"];
             var legislation_id = [];
@@ -665,6 +664,20 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 				}
 			}
 			Item.legislation_id = legislation_id.join("::");
+        }
+    }
+    if (this.opt.development_extensions.consolidate_legal_items) {
+        if (Item.type === "chapter") {
+            var varname;
+            var elements = ["type", "container-title", "publisher"];
+            var chapters_id = [];
+            for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
+                varname = elements[i];
+				if (Item[varname]) {
+					chapters_id.push(Item[varname]);
+				}
+			}
+			Item.chapters_id = chapters_id.join("::");
         }
     }
     // For authority to name shape in legal styles

@@ -281,16 +281,12 @@ StdRhinoTest.prototype.run = function(){
     if (this.submode["xslfo"]) {
         this.style.setOutputFormat("xslfo");
     }
-    //this.style.setParseNames(true);
-    //this.style.opt.development_extensions.static_statute_locator = true;
-    //this.style.opt.development_extensions.clobber_locator_if_no_statute_section = true;
-    //this.style.opt.development_extensions.handle_parallel_articles = true;
-	for (var opt in this.test.options) {
+    for (var opt in this.test.options) {
         if (opt === "variableWrapper") {
             continue;
         }
-		this.style.opt.development_extensions[opt] = this.test.options[opt];
-	}
+        this.style.opt.development_extensions[opt] = this.test.options[opt];
+    }
 
     
 

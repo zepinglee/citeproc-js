@@ -167,6 +167,20 @@ CSL.Attributes["@position"] = function (state, arg) {
     }
 };
 
+CSL.Attributes["@strict-subsequent"] = function (state, arg) {
+    if (!this.tests) {this.tests = []; };
+    var tryval = arg === "true" ? true : false;
+    var maketest = function(tryval) {
+        return function (Item, item) {
+            if (!state.tmp.just_looking && tryval === item.real_subsequent) {
+                return true;
+            }
+            return false;
+        }
+    }
+    this.tests.push(maketest(tryval));
+}
+
 CSL.Attributes["@type"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
     // XXX This is ALWAYS composed as an "any" match

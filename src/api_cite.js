@@ -135,7 +135,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
             this.transform.loadAbbreviation("default", "hereinafter", Item.id);
         }
         item = CSL.parseLocator.call(this, item);
-        if (this.opt.development_extensions.static_statute_locator) {
+        if (this.opt.development_extensions.consolidate_legal_items) {
             this.remapSectionVariable([[Item,item]]);
         }
         if (this.opt.development_extensions.locator_label_parse) {
@@ -390,13 +390,18 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                 //
                 for (k = 0, klen = citations[j].sortedItems.length; k < klen; k += 1) {
                     item = citations[j].sortedItems[k];
-                    var myid = item[0].id;
+                    // Okay ...
+                    // We set up three IDs for use in position evaluation.
+                    // item_id is the real Item.id
+                    // first_id is the legislation_id or Item.id (so statutes backref to first in set, chapters to specific chapter)
+                    // last_id is the legislation_id or chapters_id (so statute AND chapter distance is from any ref in set)
+                    // (replaces myid)
+                    var item_id = item[0].id;
+                    var first_id = item[0].legislation_id ? item[0].legislation_id : item[0].id;
+                    var last_id = item[0].legislation_id ? item[0].legislation_id : item[0].chapters_id ? item[0].chapters_id : item[0].id;
                     var myxloc = item[1]["locator-extra"];
                     var mylocator = item[1].locator;
                     var mylabel = item[1].label;
-                    if (item[0].legislation_id) {
-                        myid = item[0].legislation_id;
-                    }
                     var incitationid;
                     var incitationxloc;
                     if (k > 0) {
@@ -422,10 +427,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     if (flag === CSL.PREVIEW) {
                         if (onecitation.citationID != citation.citationID) {
                             if ("undefined" === typeof first_ref[item[1].id]) {
-                                first_ref[myid] = onecitation.properties.noteIndex;
-                                last_ref[myid] = onecitation.properties.noteIndex;
+                                first_ref[first_id] = onecitation.properties.noteIndex;
+                                last_ref[last_id] = onecitation.properties.noteIndex;
                             } else {
-                                last_ref[myid] = onecitation.properties.noteIndex;
+                                last_ref[last_id] = onecitation.properties.noteIndex;
                             }
                             continue;
                         }
@@ -436,24 +441,24 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     oldvalue["near-note"] = item[1]["near-note"];
                     item[1]["first-reference-note-number"] = 0;
                     item[1]["near-note"] = false;
-                    if (this.registry.citationreg.citationsByItemId[myid]) {
+                    if (this.registry.citationreg.citationsByItemId[item_id]) {
                         if (this.opt.xclass === 'note' && this.opt.has_disambiguate) {
-                            var oldCount = this.registry.registry[myid]["citation-count"];
-                            var newCount = this.registry.citationreg.citationsByItemId[myid].length;
-                            this.registry.registry[myid]["citation-count"] = this.registry.citationreg.citationsByItemId[myid].length;
+                            var oldCount = this.registry.registry[last_id]["citation-count"];
+                            var newCount = this.registry.citationreg.citationsByItemId[item_id].length;
+                            this.registry.registry[last_id]["citation-count"] = this.registry.citationreg.citationsByItemId[item_id].length;
                             if ("number" === typeof oldCount) {
                                 var oldCountCheck = (oldCount < 2);
                                 var newCountCheck = (newCount < 2);
                                 if (oldCountCheck !== newCountCheck) {
-                                    for (var l=0,llen=this.registry.citationreg.citationsByItemId[myid].length;l<llen;l++) {
-                                        rerunAkeys[this.registry.registry[myid].ambig] = true;
-                                        this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[myid][l].citationID] = true;
+                                    for (var l=0,llen=this.registry.citationreg.citationsByItemId[item_id].length;l<llen;l++) {
+                                        rerunAkeys[this.registry.registry[last_id].ambig] = true;
+                                        this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[item_id][l].citationID] = true;
                                     }
                                 }
                             } else {
-                                for (var l=0,llen=this.registry.citationreg.citationsByItemId[myid].length;l<llen;l++) {
-                                    rerunAkeys[this.registry.registry[myid].ambig] = true;
-                                    this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[myid][l].citationID] = true;
+                                for (var l=0,llen=this.registry.citationreg.citationsByItemId[item_id].length;l<llen;l++) {
+                                    rerunAkeys[this.registry.registry[last_id].ambig] = true;
+                                    this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[item_id][l].citationID] = true;
                                 }
                             }
                         }
@@ -461,12 +466,12 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     var oldlastid;
                     var oldlastxloc;
 
-                    if ("undefined" === typeof first_ref[myid] && onecitation.properties.mode !== "author-only") {
-                        first_ref[myid] = onecitation.properties.noteIndex;
-                        if (this.registry.registry[myid]) {
-                            this.registry.registry[myid]['first-reference-note-number'] = onecitation.properties.noteIndex;
+                    if ("undefined" === typeof last_ref[last_id] && onecitation.properties.mode !== "author-only") {
+                        first_ref[first_id] = onecitation.properties.noteIndex;
+                        if (this.registry.registry[first_id]) {
+                            this.registry.registry[first_id]['first-reference-note-number'] = onecitation.properties.noteIndex;
                         }
-                        last_ref[myid] = onecitation.properties.noteIndex;
+                        last_ref[last_id] = onecitation.properties.noteIndex;
                         item[1].position = CSL.POSITION_FIRST;
                     } else {
                         //
@@ -513,7 +518,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             if (prevCitation.sortedItems[0][0].legislation_id) {
                                 oldid = prevCitation.sortedItems[0][0].legislation_id;
                             }
-                            if ((oldid  == myid && prevCitation.properties.noteIndex >= (thisCitation.properties.noteIndex - 1))) {
+                            if ((oldid  == first_id && prevCitation.properties.noteIndex >= (thisCitation.properties.noteIndex - 1))) {
                                 var prevxloc = prevCitation.sortedItems[0][1]["locator-extra"];
                                 var thisxloc = thisCitation.sortedItems[0][1]["locator-extra"];
                                 if ((citationsInNote[prevCitation.properties.noteIndex] === 1 || prevCitation.properties.noteIndex === 0) && prevxloc === thisxloc) {
@@ -525,7 +530,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             } else {
                                 suprame = true;
                             }
-                        } else if (k > 0 && incitationid == myid && incitationxloc == myxloc) {
+                        } else if (k > 0 && incitationid == first_id && incitationxloc == myxloc) {
                             // Case 2: immediately preceding source in this onecitation
                             // (1) Threshold conditions
                             //     (a) there must be an imediately preceding reference to  the
@@ -533,7 +538,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             ibidme = true;
                         } else if (k === 0 && j > 0 && prevCitation.properties.noteIndex == thisCitation.properties.noteIndex
                                    && prevCitation.sortedItems.length 
-                                   && oldlastid == myid && oldlastxloc == myxloc) {
+                                   && oldlastid == first_id && oldlastxloc == myxloc) {
                             // ... in case there are separate citations in the same note ...
                             // Case 2 [take 2]: immediately preceding source in this onecitation
                             // (1) Threshold conditions
@@ -612,38 +617,39 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         }
                         if (suprame) {
                             item[1].position = CSL.POSITION_SUBSEQUENT;
+                            item[1].real_subsequent = !!first_ref[first_id];
                         }
                         if (suprame || ibidme) {
                             if (onecitation.properties.mode === "author-only") {
                                 item[1].position = CSL.POSITION_FIRST;
                             }
-                            if (first_ref[myid] != onecitation.properties.noteIndex) {
-                                item[1]["first-reference-note-number"] = first_ref[myid];
-                                if (this.registry.registry[myid]) {
+                            if (first_ref[first_id] != onecitation.properties.noteIndex) {
+                                item[1]["first-reference-note-number"] = first_ref[first_id];
+                                if (this.registry.registry[first_id]) {
                                     // This is either the earliest recorded number, or the number of the current citation, whichever is smaller.
-                                    var oldFirst = this.registry.citationreg.citationsByItemId[myid][0].properties.noteIndex;
+                                    var oldFirst = this.registry.citationreg.citationsByItemId[item_id][0].properties.noteIndex;
                                     var newFirst = onecitation.properties.noteIndex;
-                                    this.registry.registry[myid]['first-reference-note-number'] = newFirst < oldFirst ? newFirst: oldFirst;
+                                    this.registry.registry[first_id]['first-reference-note-number'] = newFirst < oldFirst ? newFirst: oldFirst;
                                 }
                             }
                         }
                     }
                     if (onecitation.properties.noteIndex) {
-                        var note_distance = parseInt(onecitation.properties.noteIndex, 10) - parseInt(last_ref[myid], 10);
+                        var note_distance = parseInt(onecitation.properties.noteIndex, 10) - parseInt(last_ref[last_id], 10);
                         if (item[1].position !== CSL.POSITION_FIRST 
                             && note_distance <= this.citation.opt["near-note-distance"]) {
                             item[1]["near-note"] = true;
                         }
-                        last_ref[myid] = onecitation.properties.noteIndex;
+                        last_ref[last_id] = onecitation.properties.noteIndex;
                     }
                     if (onecitation.citationID != citation.citationID) {
                         for (n = 0, nlen = CSL.POSITION_TEST_VARS.length; n < nlen; n += 1) {
                             var param = CSL.POSITION_TEST_VARS[n];
                             if (item[1][param] !== oldvalue[param]) {
-                                if (this.registry.registry[myid]) {
+                                if (this.registry.registry[first_id]) {
                                     if (param === 'first-reference-note-number') {
-                                        rerunAkeys[this.registry.registry[myid].ambig] = true;
-                                        this.tmp.taintedItemIDs[myid] = true;
+                                        rerunAkeys[this.registry.registry[first_id].ambig] = true;
+                                        this.tmp.taintedItemIDs[first_id] = true;
                                     }
                                 }
                                 this.tmp.taintedCitationIDs[onecitation.citationID] = true;
@@ -868,7 +874,7 @@ CSL.Engine.prototype.makeCitationCluster = function (rawList) {
         newitem = [Item, item];
         inputList.push(newitem);
     }
-    if (this.opt.development_extensions.static_statute_locator) {
+    if (this.opt.development_extensions.consolidate_legal_items) {
         this.remapSectionVariable(inputList);
     }
     if (inputList && inputList.length > 1 && this.citation_sort.tokens.length > 0) {

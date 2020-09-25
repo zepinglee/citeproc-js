@@ -140,6 +140,7 @@ CSL.Engine.Opt = function () {
     };
 
     this.has_layout_locale = false;
+    this.disable_duplicate_year_suppression = [];
 
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
@@ -148,7 +149,8 @@ CSL.Engine.Opt = function () {
     this.development_extensions.locator_label_parse = true;
     this.development_extensions.raw_date_parsing = true;
     this.development_extensions.clean_up_csl_flaws = true;
-    this.development_extensions.static_statute_locator = false;
+    this.development_extensions.consolidate_legal_items = false;
+    this.development_extensions.consolidate_chapter_items = false;
     this.development_extensions.csl_reverse_lookup_support = false;
     this.development_extensions.wrap_url_and_doi = false;
     this.development_extensions.thin_non_breaking_space_html_hack = false;
