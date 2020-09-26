@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.17",
+    PROCESSOR_VERSION: "1.4.18",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -322,7 +322,7 @@ var CSL = {
         "country": "place",
         "number": "number",
         "place": "place",
-        "archive": "collection-title",
+        "archive": "container-title",
         "title-short": "title",
         "genre": "title",
         "event": "title",

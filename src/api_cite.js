@@ -394,11 +394,11 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     // We set up three IDs for use in position evaluation.
                     // item_id is the real Item.id
                     // first_id is the legislation_id or Item.id (so statutes backref to first in set, chapters to specific chapter)
-                    // last_id is the legislation_id or chapters_id (so statute AND chapter distance is from any ref in set)
+                    // last_id is the legislation_id or container_id (so statute AND chapter distance is from any ref in set)
                     // (replaces myid)
                     var item_id = item[0].id;
                     var first_id = item[0].legislation_id ? item[0].legislation_id : item[0].id;
-                    var last_id = item[0].legislation_id ? item[0].legislation_id : item[0].chapters_id ? item[0].chapters_id : item[0].id;
+                    var last_id = item[0].legislation_id ? item[0].legislation_id : item[0].container_id ? item[0].container_id : item[0].id;
                     var myxloc = item[1]["locator-extra"];
                     var mylocator = item[1].locator;
                     var mylabel = item[1].label;

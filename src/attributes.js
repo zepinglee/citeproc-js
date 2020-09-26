@@ -830,12 +830,12 @@ CSL.Attributes["@court-class"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@chapter-count"] = function (state, arg) {
+CSL.Attributes["@container-item-count"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
 	var tryval = parseInt(arg, 10);
     var maketest = function (tryval) {
         return function(Item) {
-            if (state.tmp.chapter_count[Item.chapters_id] === tryval) {
+            if (state.tmp.container_item_count[Item.container_id] === tryval) {
                 return true;
             }
             return false;
@@ -870,8 +870,18 @@ CSL.Attributes["@disable-duplicate-year-suppression"] = function (state, arg) {
 	state.opt.disable_duplicate_year_suppression = arg.split(/\s+/);
 }
 
-CSL.Attributes["@consolidate-chapter-items"] = function (state, arg) {
-    state.bibliography.opt.consolidate_chapter_items = arg === "true" ? true : false;
+CSL.Attributes["@consolidate-containers"] = function (state, arg) {
+    CSL.Attributes["@track-container-items"](state, arg);
+    var args = arg.split(/\s+/);
+    state.bibliography.opt.consolidate_containers = args;
+}
+
+CSL.Attributes["@track-container-items"] = function (state, arg) {
+    var args = arg.split(/\s+/);
+    if (!state.bibliography.opt.track_container_items) {
+        state.bibliography.opt.track_container_items = [];
+    }
+    state.bibliography.opt.track_container_items = state.bibliography.opt.track_container_items.concat(args);
 }
 
 // These are not evaluated as conditions immediately: they only

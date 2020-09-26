@@ -140,6 +140,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     if (this.opt.version.slice(0,4) === "1.1m") {
         this.opt.development_extensions.consolidate_legal_items = true;
+        this.opt.development_extensions.consolidate_container_items = true;
         this.opt.development_extensions.main_title_from_short_title = true;
         this.opt.development_extensions.expect_and_symbol_form = true;
         this.opt.development_extensions.require_explicit_legal_case_title_short = true;
@@ -666,18 +667,18 @@ CSL.Engine.prototype.retrieveItem = function (id) {
 			Item.legislation_id = legislation_id.join("::");
         }
     }
-    if (this.opt.development_extensions.consolidate_legal_items) {
-        if (Item.type === "chapter") {
+    if (this.bibliography.opt.track_container_items) {
+        if (this.bibliography.opt.track_container_items.indexOf(Item.type) > -1) {
             var varname;
-            var elements = ["type", "container-title", "publisher"];
-            var chapters_id = [];
+            var elements = ["type", "container-title", "publisher", "edition"];
+            var container_id = [];
             for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
                 varname = elements[i];
 				if (Item[varname]) {
-					chapters_id.push(Item[varname]);
+					container_id.push(Item[varname]);
 				}
 			}
-			Item.chapters_id = chapters_id.join("::");
+			Item.container_id = container_id.join("::");
         }
     }
     // For authority to name shape in legal styles

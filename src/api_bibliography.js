@@ -168,7 +168,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     var processed_item_ids = [];
 
     var consolidatedIDs = {};
-    this.tmp.chapter_count = {};
+    this.tmp.container_item_count = {};
     input = input.filter(o => {
         var ret = o;
         if (o.legislation_id) {
@@ -177,16 +177,16 @@ CSL.getBibliographyEntries = function (bibsection) {
             } else {
                 consolidatedIDs[o.legislation_id] = true;
             }
-        } else if (o.chapters_id) {
-            if (!this.tmp.chapter_count[o.chapters_id]) {
-                this.tmp.chapter_count[o.chapters_id] = 0;
+        } else if (o.container_id) {
+            if (!this.tmp.container_item_count[o.container_id]) {
+                this.tmp.container_item_count[o.container_id] = 0;
             }
-            this.tmp.chapter_count[o.chapters_id]++;
-            if (this.bibliography.opt.consolidate_chapter_items) {
-                if (consolidatedIDs[o.chapters_id]) {
+            this.tmp.container_item_count[o.container_id]++;
+            if (this.bibliography.opt.consolidate_containers.indexOf(o.type) > -1) {
+                if (consolidatedIDs[o.container_id]) {
                     ret = false;
                 } else {
-                    consolidatedIDs[o.chapters_id] = true;
+                    consolidatedIDs[o.container_id] = true;
                 }
             }
         }
