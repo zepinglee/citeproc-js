@@ -77,7 +77,7 @@ citation
 <<== RESULT ==<<
 
 >>===== CSL =====>>
-<style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.1mlz1">
+<style xmlns="http://purl.org/net/xbiblio/csl" class="note" version="1.1mlz1" track-container-items="chapter">
   <info>
     <title>Test fixture</title>
     <id>http://citationstyles.org/tests/fixture</id>

@@ -83,10 +83,10 @@ bibliography
       <text value="BOGUS"/>
     </layout>
   </citation>
-  <bibliography consolidate-chapter-items="true">
+  <bibliography consolidate-containers="chapter">
     <layout>
       <choose>
-        <if chapter-count="1">
+        <if container-item-count="1">
           <group delimiter=", ">
             <text variable="title"/>
             <text variable="container-title"/>

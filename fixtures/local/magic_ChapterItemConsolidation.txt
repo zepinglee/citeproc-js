@@ -55,7 +55,7 @@ bibliography
       <text value="BOGUS"/>
     </layout>
   </citation>
-  <bibliography consolidate-chapter-items="true">
+  <bibliography consolidate-containers="chapter">
     <layout>
       <text variable="container-title"/>
     </layout>
