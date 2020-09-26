@@ -340,6 +340,11 @@ CSL.Attributes["@variable"] = function (state, arg) {
                         output = true;
                     }
                     break;
+                } else if ("first-container-reference-note-number" === variable) {
+                    if (item && item["first-container-reference-note-number"]) {
+                        output = true;
+                    }
+                    break;
                 } else if ("hereinafter" === variable) {
                     if (state.transform.abbrevs["default"].hereinafter[Item.id]
                         && state.sys.getAbbreviation
@@ -394,7 +399,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
         var maketest = function (variable) {
             return function(Item,item){
                 var myitem = Item;
-                if (item && ["locator", "locator-extra", "first-reference-note-number", "locator-date"].indexOf(variable) > -1) {
+                if (item && ["locator", "locator-extra", "first-reference-note-number", "first-container-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
                 }
                 // We don't run loadAbbreviation() here; it is run by the application-supplied
