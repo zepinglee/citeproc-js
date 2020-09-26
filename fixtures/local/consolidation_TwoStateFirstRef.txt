@@ -117,8 +117,6 @@ citation
     <layout delimiter="; ">
       <choose>
         <if position="subsequent">
-          <choose>
-            <if strict-subsequent="true">
               <group delimiter=", ">
                 <text variable="title"/>
                 <group delimiter=" ">
@@ -130,8 +128,8 @@ citation
                   <text variable="first-container-reference-note-number"/>
                 </group>
               </group>
-            </if>
-            <else>
+        </if>
+        <else-if position="container-subsequent">
               <group delimiter=", ">
                 <text variable="title"/>
                 <text variable="container-title"/>
@@ -140,9 +138,7 @@ citation
                   <text variable="first-container-reference-note-number"/>
                 </group>
               </group>
-            </else>
-          </choose>
-        </if>
+        </else-if>
         <else>
           <group delimiter=" ">
             <group delimiter=", ">

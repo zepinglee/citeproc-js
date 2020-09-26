@@ -94,19 +94,15 @@ citation
           <text value="ibid"/>
         </if>
         <else-if position="subsequent">
-          <choose>
-            <if strict-subsequent="true">
               <text variable="title"/>
-            </if>
-            <else>
+        </else-if>
+        <else-if position="container-subsequent">
               <group delimiter=". ">
                 <group delimiter=" in ">
                   <text variable="title"/>
                   <text variable="container-title"/>
                 </group>
               </group>
-            </else>
-          </choose>
         </else-if>
         <else>
           <group delimiter=" ">
