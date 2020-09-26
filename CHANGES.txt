@@ -1,4 +1,33 @@
 =========================
+Changes in version 1.4.19
+=========================
+
+Numerous changes to consolidation and position code
+    - Allow a selection of types of consolidation, rather than binding to chapter.
+    - Rename recently added chapter attributes to suit the above.
+    - Add track-container-items attribute.
+    - Change abbrev category of archive from collection-title to container-title
+      (fixes a failing IndigoBook test)
+
+=========================
+Changes in version 1.4.18
+=========================
+
+- Add disable-duplicate-year-suppression style option.
+  https://github.com/Juris-M/citeproc-js/issues/146
+
+- Implement strict-subsequent to enable two levels of the "subsequent"
+  position, for use in chapter items.
+  https://github.com/Juris-M/zotero/issues/76
+
+- Consolidate chapter and legislation items.
+
+- Implement chapter-item-consolidation attribute on cs:bibliography.
+
+- Implement chapter-count condition attribute for use in cs:bibliography.
+
+
+=========================
 Changes in version 1.4.17
 =========================
 
