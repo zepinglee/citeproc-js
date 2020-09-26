@@ -11,7 +11,7 @@ Pick.
 >>== ABBREVIATIONS ==>>
 {
     "default": {
-        "collection-title": {
+        "container-title": {
             "Pickwick Papers": "Pick."
         }
     }
