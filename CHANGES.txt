@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.20
+=========================
+
+- Implement first-container-reference-note-number
+
+- Fix bugs in first-reference-note-number
+
+=========================
 Changes in version 1.4.19
 =========================
 
