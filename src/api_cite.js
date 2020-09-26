@@ -631,8 +631,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                         }
                         if (suprame) {
-                            item[1].position = CSL.POSITION_SUBSEQUENT;
-                            item[1].real_subsequent = !!first_ref[first_id];
+                            item[1].position = CSL.POSITION_CONTAINER_SUBSEQUENT;
+                            if (first_ref[first_id]) {
+                                item[1].position = CSL.POSITION_SUBSEQUENT;
+                            }
                             if (!first_ref[first_id]) {
                                 first_ref[first_id] = onecitation.properties.noteIndex;
                             }
@@ -951,7 +953,7 @@ CSL.getAmbiguousCite = function (Item, disambig, visualForm, item) {
         this.tmp.disambig_request = false;
     }
     var itemSupp = {
-        position: 1,
+        position: CSL.POSITION_SUBSEQUENT,
         "near-note": true
     };
 

@@ -150,6 +150,8 @@ CSL.Attributes["@position"] = function (state, arg) {
         var tryposition = trypositions[i];
         if (tryposition === "first") {
             tryposition = CSL.POSITION_FIRST;
+        } else if (tryposition === "container-subsequent") {
+            tryposition = CSL.POSITION_CONTAINER_SUBSEQUENT;
         } else if (tryposition === "subsequent") {
             tryposition = CSL.POSITION_SUBSEQUENT;
         } else if (tryposition === "ibid") {
@@ -166,20 +168,6 @@ CSL.Attributes["@position"] = function (state, arg) {
         }
     }
 };
-
-CSL.Attributes["@strict-subsequent"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
-    var tryval = arg === "true" ? true : false;
-    var maketest = function(tryval) {
-        return function (Item, item) {
-            if (!state.tmp.just_looking && tryval === item.real_subsequent) {
-                return true;
-            }
-            return false;
-        }
-    }
-    this.tests.push(maketest(tryval));
-}
 
 CSL.Attributes["@type"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };

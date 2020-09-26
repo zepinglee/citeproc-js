@@ -150,6 +150,7 @@ CSL.Util.substituteStart = function (state, target) {
                 }
                 var positionMap = [
                     "first",
+                    "container-subsequent",
                     "subsequent",
                     "ibid",
                     "ibid-with-locator"
@@ -161,6 +162,10 @@ CSL.Util.substituteStart = function (state, target) {
                 var firstReferenceNoteNumber = 0;
                 if (item && item['first-reference-note-number']) {
                     firstReferenceNoteNumber = item['first-reference-note-number'];
+                }
+                var firstContainerReferenceNoteNumber = 0;
+                if (item && item['first-container-reference-note-number']) {
+                    firstContainerReferenceNoteNumber = item['first-container-reference-note-number'];
                 }
                 var citationNumber = 0;
                 // XXX Will this EVER happen?
@@ -179,6 +184,7 @@ CSL.Util.substituteStart = function (state, target) {
                     position: positionMap[position],
                     "note-number": noteNumber,
                     "first-reference-note-number": firstReferenceNoteNumber,
+                    "first-container-reference-note-number": firstContainerReferenceNoteNumber,
                     "citation-number": citationNumber,
                     "index": index,
                     "mode": state.opt.mode
