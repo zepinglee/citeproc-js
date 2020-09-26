@@ -55,7 +55,7 @@ Noakes, supra note 2, at 89.
             "id": "ITEM-1",
             "locator": "67",
             "note-number": "4",
-            "position": 1
+            "position": 2
         }
     ],
     [
@@ -64,7 +64,7 @@ Noakes, supra note 2, at 89.
             "id": "ITEM-3",
             "locator": "78",
             "note-number": "5",
-            "position": 1
+            "position": 2
         }
     ],
     [
@@ -73,7 +73,7 @@ Noakes, supra note 2, at 89.
             "id": "ITEM-5",
             "locator": "89",
             "note-number": "5",
-            "position": 1
+            "position": 2
         }
     ]
 ]

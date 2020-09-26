@@ -16,7 +16,7 @@ Note is near!
         {
             "id": "ITEM-1",
             "near-note": true,
-            "position": 1
+            "position": 2
         }
     ]
 ]
