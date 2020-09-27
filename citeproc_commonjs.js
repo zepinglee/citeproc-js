@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.22",
+    PROCESSOR_VERSION: "1.4.23",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -16516,7 +16516,7 @@ CSL.Attributes["@container-item-multiple"] = function (state, arg) {
     this.tests.push(maketest(retval));
 };
 
-CSL.Attributes["@container-item-subsequent-in-bibliography"] = function (state, arg) {
+CSL.Attributes["@container-subsequent-in-bibliography"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
 	var retval = "true" === arg ? true : false;
     var maketest = function (retval) {
@@ -16565,6 +16565,9 @@ CSL.Attributes["@track-container-items"] = function (state, arg) {
     var args = arg.split(/\s+/);
     if (!state.bibliography.opt.track_container_items) {
         state.bibliography.opt.track_container_items = [];
+    }
+    if (!state.bibliography.opt.consolidate_containers) {
+        state.bibliography.opt.consolidate_containers = [];
     }
     state.bibliography.opt.track_container_items = state.bibliography.opt.track_container_items.concat(args);
 }
