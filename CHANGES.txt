@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.4.24
+=========================
+
+- Final form of attributes for container consolidation:
+  - Rename track-container-items to track-containers
+  - Rename container-subsequent-in-bibliography to container-subsequent
+  - Rename container-item-multiple to container-multiple
+
+=========================
 Changes in version 1.4.23
 =========================
 
