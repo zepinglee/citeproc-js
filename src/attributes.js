@@ -823,7 +823,7 @@ CSL.Attributes["@court-class"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@container-item-multiple"] = function (state, arg) {
+CSL.Attributes["@container-multiple"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
 	var retval = "true" === arg ? true : false;
     var maketest = function (retval) {
