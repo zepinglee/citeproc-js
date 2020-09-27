@@ -562,11 +562,19 @@ var CSL = {
     SECONDARY: 2,
     
     POSITION_FIRST: 0,
-    POSITION_CONTAINER_SUBSEQUENT: 1,
-    POSITION_SUBSEQUENT: 2,
-    POSITION_IBID: 3,
-    POSITION_IBID_WITH_LOCATOR: 4,
+    POSITION_SUBSEQUENT: 1,
+    POSITION_IBID: 2,
+    POSITION_IBID_WITH_LOCATOR: 3,
+    POSITION_CONTAINER_SUBSEQUENT: 4,
 
+    POSITION_MAP: {
+        "0": 0,
+        "4": 1,
+        "1": 2,
+        "2": 3,
+        "3": 4
+    },
+    
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort", "intext"],

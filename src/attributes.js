@@ -115,13 +115,13 @@ CSL.Attributes["@position"] = function (state, arg) {
     state.opt.update_mode = CSL.POSITION;
     var trypositions = arg.split(/\s+/);
     var testSubsequentNear = function (Item, item) {
-        if (item && item.position >= CSL.POSITION_SUBSEQUENT && item["near-note"]) {
+        if (item && CSL.POSITION_MAP[item.position] >= CSL.POSITION_MAP[CSL.POSITION_SUBSEQUENT] && item["near-note"]) {
             return true;
         }
         return false;
     };
     var testSubsequentNotNear = function (Item, item) {
-        if (item && item.position == CSL.POSITION_SUBSEQUENT && !item["near-note"]) {
+        if (item && CSL.POSITION_MAP[item.position] == CSL.POSITION_MAP[CSL.POSITION_SUBSEQUENT] && !item["near-note"]) {
             return true;
         }
         return false;
@@ -137,7 +137,7 @@ CSL.Attributes["@position"] = function (state, arg) {
             if (item && typeof item.position === "number") {
                 if (item.position === 0 && tryposition === 0) {
                     return true;
-                } else if (tryposition > 0 && item.position >= tryposition) {
+                } else if (tryposition > 0 && CSL.POSITION_MAP[item.position] >= CSL.POSITION_MAP[tryposition]) {
                     return true;
                 }
             } else if (tryposition === 0) {
@@ -823,20 +823,35 @@ CSL.Attributes["@court-class"] = function (state, arg) {
     }
 };
 
-CSL.Attributes["@container-item-count"] = function (state, arg) {
+CSL.Attributes["@container-item-multiple"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
-	var tryval = parseInt(arg, 10);
-    var maketest = function (tryval) {
+	var retval = "true" === arg ? true : false;
+    var maketest = function (retval) {
         return function(Item) {
-            if (state.tmp.container_item_count[Item.container_id] === tryval) {
-                return true;
+            if (!state.tmp.container_item_count[Item.container_id]) {
+                return !retval;
+            } else if (state.tmp.container_item_count[Item.container_id] > 1) {
+                return retval;
             }
-            return false;
+            return !retval;
         };
     };
-    this.tests.push(maketest(tryval));
-}
+    this.tests.push(maketest(retval));
+};
 
+CSL.Attributes["@container-item-subsequent-in-bibliography"] = function (state, arg) {
+    if (!this.tests) {this.tests = []; };
+	var retval = "true" === arg ? true : false;
+    var maketest = function (retval) {
+        return function(Item) {
+            if (state.tmp.container_item_pos[Item.container_id] > 1) {
+                return retval;
+            }
+            return !retval;
+        };
+    };
+    this.tests.push(maketest(retval));
+};
 
 CSL.Attributes["@has-subunit"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };

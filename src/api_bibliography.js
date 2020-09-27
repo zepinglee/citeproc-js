@@ -193,6 +193,8 @@ CSL.getBibliographyEntries = function (bibsection) {
         return ret;
     });
 
+    this.tmp.container_item_pos = {};
+
     for (i = 0, ilen = input.length; i < ilen; i += 1) {
         
         // For paged returns
@@ -278,6 +280,14 @@ CSL.getBibliographyEntries = function (bibsection) {
         if (debug) {
             CSL.debug("BIB: " + item.id);
         }
+
+        if (item.container_id) {
+            if (!this.tmp.container_item_pos[item.container_id]) {
+                this.tmp.container_item_pos[item.container_id] = 0;
+            }
+            this.tmp.container_item_pos[item.container_id]++;
+        }
+        
         //SNIP-END
         bib_entry = new CSL.Token("group", CSL.START);
         bib_entry.decorations = [["@bibliography", "entry"]].concat(this.bibliography.opt.layout_decorations);
