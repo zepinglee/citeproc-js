@@ -1,4 +1,27 @@
 =========================
+Changes in version 1.4.22
+=========================
+
+- REVERT changes to internal CSL.POSITION_* values. This and
+  subsequent versions are backward-compatible with existing systems
+  and documents (!).
+
+- Fine tuning of container consolidation tools
+  - Assure position literals are backward compatible with existing documents.
+  - Rename container-item-pos to container-item-multiple with boolean argument.
+  - Add container-subsequent-in-bibliography attribute to allow shrinkage in following items.
+
+=========================
+Changes in version 1.4.21
+=========================
+
+- Replace strict-subsequent with position test container-subsequent
+
+  NOTE: This release changes the internal values of the CSL.POSITION_*
+        flags. Code that sets these values literally can be expected to
+        break.
+
+=========================
 Changes in version 1.4.20
 =========================
 
