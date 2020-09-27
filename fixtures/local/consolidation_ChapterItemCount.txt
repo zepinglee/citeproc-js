@@ -86,14 +86,14 @@ bibliography
   <bibliography consolidate-containers="chapter">
     <layout>
       <choose>
-        <if container-item-multiple="false">
+        <if container-multiple="true">
+          <text variable="container-title"/>
+        </if>
+        <else>
           <group delimiter=", ">
             <text variable="title"/>
             <text variable="container-title"/>
           </group>
-        </if>
-        <else>
-          <text variable="container-title"/>
         </else>
       </choose>
     </layout>
