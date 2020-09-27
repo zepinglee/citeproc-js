@@ -20,7 +20,7 @@ Malone, U.S. Bureau of the Census, <i>Evaluating Components of International Mig
     [
         {
             "id": "ITEM-6", 
-            "position": 2
+            "position": 1
         }
     ]
 ]

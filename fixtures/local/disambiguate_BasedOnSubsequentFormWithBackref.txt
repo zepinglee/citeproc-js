@@ -43,7 +43,7 @@ Roe, Her Book, supra note 2.
             "first-reference-note-number": "1",
             "id": "ITEM-1",
             "note-number": "4",
-            "position": 2
+            "position": 1
         }
     ],
     [
@@ -51,7 +51,7 @@ Roe, Her Book, supra note 2.
             "first-reference-note-number": "2",
             "id": "ITEM-3",
             "note-number": "5",
-            "position": 2
+            "position": 1
         }
     ]
 ]
