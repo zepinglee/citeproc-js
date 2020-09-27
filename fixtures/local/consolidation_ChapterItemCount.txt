@@ -86,7 +86,7 @@ bibliography
   <bibliography consolidate-containers="chapter">
     <layout>
       <choose>
-        <if container-item-count="1">
+        <if container-item-multiple="false">
           <group delimiter=", ">
             <text variable="title"/>
             <text variable="container-title"/>
