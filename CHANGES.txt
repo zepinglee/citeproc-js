@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.25
+=========================
+
+- Use non-breaking-space join between particles and family name
+  everywhere if the locale is "fr", "ru", or "cs".
+  https://github.com/citation-style-language/schema/pull/333#issuecomment-671505987
+
+=========================
 Changes in version 1.4.24
 =========================
 
