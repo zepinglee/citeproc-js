@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.25",
+    PROCESSOR_VERSION: "1.4.26",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -72,10 +72,10 @@ var CSL = {
         return str;
     },
 
-    LOCATOR_LABELS_REGEXP: new RegExp("^((vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\\.)\\s+(.*)"),
+    LOCATOR_LABELS_REGEXP: new RegExp("^((vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|rn|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\\.)\\s+(.*)"),
 
-    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
-    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|rn|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
+    STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|rn|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
  
     STATUTE_SUBDIV_STRINGS: {
         "vrs.": "verse",
@@ -115,6 +115,7 @@ var CSL = {
         "princ.": "principle",
         "pub.": "publication",
         "r.": "rule",
+        "rn.": "randnummer",
         "sched.": "schedule",
         "sec.": "section",
         "ser.": "series,",
@@ -163,6 +164,7 @@ var CSL = {
         "principle": "princ.",
         "publication": "pub.",
         "rule": "r.",
+        "randnummer": "rn.",
         "schedule": "sched.",
         "section": "sec.",
         "series,": "ser.",
@@ -212,6 +214,7 @@ var CSL = {
         "princ": "principle",
         "pub": "publication",
         "r": "rule",
+        "rn": "randnummer",
         "sched": "schedule",
         "sec": "section",
         "ser": "series,",

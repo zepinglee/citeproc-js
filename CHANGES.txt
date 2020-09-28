@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.26
+=========================
+
+- Add the rn. short-code for randnummer (marginal number).
+  https://github.com/Juris-M/zotero/issues/82
+
+=========================
 Changes in version 1.4.25
 =========================
 
