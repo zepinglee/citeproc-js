@@ -1,4 +1,14 @@
 =========================
+Changes in version 1.4.29
+=========================
+
+- Fix behavior of comma-safe-numbers-only
+
+- Fix an untested coding bug affecting numbers followed
+  by a non-number value within the scope of a
+  comma-safe-numbers-only group
+
+=========================
 Changes in version 1.4.28
 =========================
 
