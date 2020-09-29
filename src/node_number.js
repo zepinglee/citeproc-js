@@ -93,8 +93,8 @@ CSL.Node.number = {
                 // amazing that we reach this. should abort sooner if no content?
                 state.processNumber.call(state, node, item, varname, Item.type);
             } else {
-                if (!state.tmp.group_context.tip.condition) {
-                    state.tmp.just_did_number = true;
+                if (!state.tmp.group_context.tip.condition && Item[varname]) {
+                    state.tmp.just_did_number = ("" + Item[varname]).match(/[0-9]$/);
                 }
                 // UPDATE_GROUP_CONTEXT_CONDITION is run by processNumber
                 state.processNumber.call(state, node, Item, varname, Item.type);

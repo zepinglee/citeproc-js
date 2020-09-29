@@ -43,6 +43,8 @@ CSL.Node["date-part"] = {
                 state.tmp.probably_rendered_something = true;
             }
 
+            var last_string_output = "";
+
             first_date = true;
             value = "";
             value_end = "";
@@ -50,6 +52,7 @@ CSL.Node["date-part"] = {
 
             // Render literal only when year is included in date output
             if (state.tmp.date_object.literal && "year" === this.strings.name) {
+                last_string_output = state.tmp.date_object.literal;
                 state.output.append(state.tmp.date_object.literal, this);
             }
 
@@ -157,11 +160,13 @@ CSL.Node["date-part"] = {
                                 var range_delimiter = state.getTerm("year-range-delimiter");
                                 value_end = value_end.slice(value_end.indexOf(range_delimiter) + 1);
                             }
+                            last_string_output = value_end;
                             state.dateput.append(value_end, this);
                             if (first_date) {
                                 state.dateput.current.value().blobs[0].strings.prefix = "";
                             }
                         }
+                        last_string_output = value;
                         state.output.append(value, this);
                         curr = state.output.current.value();
                         curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
@@ -180,6 +185,7 @@ CSL.Node["date-part"] = {
                         state.dateput.openLevel(state.tmp.date_token);
                         state.tmp.date_collapse_at = [];
                     } else {
+                        last_string_output = value;
                         state.output.append(value, this);
                         // print("collapse_at: "+state.tmp.date_collapse_at);
                         if (state.tmp.date_collapse_at.indexOf(this.strings.name) > -1) {
@@ -195,14 +201,17 @@ CSL.Node["date-part"] = {
                                     first_date = true;
                                 }
                                 state.dateput.openLevel("empty");
+                                last_string_output = value_end;
                                 state.dateput.append(value_end, this);
                                 if (first_date) {
                                     state.dateput.current.value().blobs[0].strings.prefix = "";
                                 }
                                 if (bc) {
+                                    last_string_output = bc;
                                     state.dateput.append(bc);
                                 }
                                 if (ad) {
+                                    last_string_output = ad;
                                     state.dateput.append(ad);
                                 }
                                 state.dateput.closeLevel();
@@ -210,13 +219,16 @@ CSL.Node["date-part"] = {
                         }
                     }
                 } else {
+                    last_string_output = value;
                     state.output.append(value, this);
                 }
 
                 if (bc) {
+                    last_string_output = bc;
                     state.output.append(bc);
                 }
                 if (ad) {
+                    last_string_output = ad;
                     state.output.append(ad);
                 }
                 state.output.closeLevel();
@@ -238,8 +250,10 @@ CSL.Node["date-part"] = {
                         // XXXXXXXXXXXXXXXXXXX was replace([false, false, true]);
                         //state.tmp.group_context.replace([false, false, true]);
                         state.tmp.group_context.tip.variable_success = true;
+                        last_string_output = "winter";
                         state.output.append(state.getTerm(("season-0" + value)), this);
                     } else if (value) {
+                        last_string_output = value;
                         state.output.append(value, this);
                     }
                 }
@@ -248,6 +262,7 @@ CSL.Node["date-part"] = {
             if (Item[date_variable] && (value || state.tmp.have_collapsed) && !state.opt.has_year_suffix && "year" === this.strings.name && !state.tmp.just_looking) {
                 if (state.registry.registry[Item.id] && state.registry.registry[Item.id].disambig.year_suffix !== false && !state.tmp.has_done_year_suffix) {
                     state.tmp.has_done_year_suffix = true;
+                    last_string_output = "a";
                     num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
                     // first argument is for number particle [a-zA-Z], never present on dates
                     number = new CSL.NumericBlob(false, num, this, Item.id);
@@ -269,7 +284,9 @@ CSL.Node["date-part"] = {
                     state.output.append(number, "literal");
                 }
             }
-
+            if (last_string_output && !state.tmp.group_context.tip.condition) {
+                state.tmp.just_did_number = last_string_output.match(/[0-9]$/);
+            }
         };
         this.execs.push(func);
         target.push(this);
