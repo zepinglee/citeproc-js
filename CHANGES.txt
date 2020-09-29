@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.28
+=========================
+
+- Fix inheritance of name-delimiter.
+
+=========================
 Changes in version 1.4.27
 =========================
 
