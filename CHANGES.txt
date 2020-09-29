@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.27
+=========================
+
+- Implement comma-safe-numbers-only reject/require mode.
+
+- Fix a bug in container consolidation
+
+=========================
 Changes in version 1.4.26
 =========================
 

@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.26",
+    PROCESSOR_VERSION: "1.4.27",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1268,28 +1268,25 @@ var CSL = {
                 termStartAlpha = flags.condition.termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
             }
             var num = state.tmp.just_did_number;
-            if (empty || flags.condition.valueTerm) {
-                // i.e. Big L. Rev. 100, 102
-                //      Little L. Rev. 102
-                //      L. Rev. for Plan 9, 102
-                if (num) {
+            if (num) {
+                if (empty || flags.condition.valueTerm) {
+                    testres = true;
+                } else if (termStartAlpha) {
+                    testres = true;
+                } else if (["always", "after-number"].indexOf(state.opt.require_comma_on_symbol) > -1) {
                     testres = true;
                 } else {
                     testres = false;
                 }
             } else {
-                if (num) {
-                    if (termStartAlpha || ["always", "after-number"].indexOf(state.opt.require_comma_on_symbol) > -1) {
-                        testres = true;
-                    } else {
-                        testres = false;
-                    }
+                if (empty || flags.condition.valueTerm) {
+                    testres = false;
+                } else if (termStartAlpha) {
+                    testres = true;
+                } else if (state.opt.require_comma_on_symbol === "always") {
+                    testres = true;
                 } else {
-                    if (termStartAlpha || state.opt.require_comma_on_symbol === "always") {
-                        testres = true;
-                    } else {
-                        testres = false;
-                    }
+                    testres = false;
                 }
             }
         }
