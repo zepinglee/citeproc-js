@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.30
+=========================
+
+- Make comma-safe* attributes work with dates
+
+=========================
 Changes in version 1.4.29
 =========================
 
