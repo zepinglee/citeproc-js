@@ -447,21 +447,21 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     item[1]["near-note"] = false;
                     if (this.registry.citationreg.citationsByItemId[item_id]) {
                         if (this.opt.xclass === 'note' && this.opt.has_disambiguate) {
-                            var oldCount = this.registry.registry[last_id]["citation-count"];
+                            var oldCount = this.registry.registry[first_id]["citation-count"];
                             var newCount = this.registry.citationreg.citationsByItemId[item_id].length;
-                            this.registry.registry[last_id]["citation-count"] = this.registry.citationreg.citationsByItemId[item_id].length;
+                            this.registry.registry[first_id]["citation-count"] = this.registry.citationreg.citationsByItemId[item_id].length;
                             if ("number" === typeof oldCount) {
                                 var oldCountCheck = (oldCount < 2);
                                 var newCountCheck = (newCount < 2);
                                 if (oldCountCheck !== newCountCheck) {
                                     for (var l=0,llen=this.registry.citationreg.citationsByItemId[item_id].length;l<llen;l++) {
-                                        rerunAkeys[this.registry.registry[last_id].ambig] = true;
+                                        rerunAkeys[this.registry.registry[first_id].ambig] = true;
                                         this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[item_id][l].citationID] = true;
                                     }
                                 }
                             } else {
                                 for (var l=0,llen=this.registry.citationreg.citationsByItemId[item_id].length;l<llen;l++) {
-                                    rerunAkeys[this.registry.registry[last_id].ambig] = true;
+                                    rerunAkeys[this.registry.registry[first_id].ambig] = true;
                                     this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[item_id][l].citationID] = true;
                                 }
                             }
