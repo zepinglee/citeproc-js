@@ -185,7 +185,7 @@ CSL.Node.text = {
                         if (term !== "") {
                             state.tmp.group_context.tip.term_intended = true;
                         }
-                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, term);
+                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, term, null, this);
                         
                         // capitalize the first letter of a term, if it is the
                         // first thing rendered in a citation (or if it is
@@ -417,7 +417,7 @@ CSL.Node.text = {
                     func = function (state) {
                         state.tmp.group_context.tip.term_intended = true;
                         // true flags that this is a literal-value term
-                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.value, true);
+                        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.value, true, this);
                         state.output.append(this.strings.value, this);
                     };
                     this.execs.push(func);

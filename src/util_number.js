@@ -886,6 +886,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 CSL.Util.outputNumericField = function(state, varname, itemID) {
 
     state.output.openLevel(state.tmp.shadow_numbers[varname].masterStyling);
+    var masterStyling = state.tmp.shadow_numbers[varname].masterStyling;
     var nums = state.tmp.shadow_numbers[varname].values;
     var masterLabel = nums.length ? nums[0].label : null;
     var labelForm = state.tmp.shadow_numbers[varname].labelForm;
@@ -948,6 +949,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         numStyling.type = num.styling.type;
         numStyling.num = num.styling.num;
         numStyling.gender = num.styling.gender;
+        
         if (labelPlaceholderPos > 0 && labelPlaceholderPos < (label.length-2)) {
             numStyling.strings.prefix += label.slice(0,labelPlaceholderPos);
             numStyling.strings.suffix = label.slice(labelPlaceholderPos+2) + numStyling.strings.suffix;
@@ -967,6 +969,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         }
         if (num.collapsible) {
             var blob;
+            CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, masterStyling.strings.prefix, null, masterStyling);
             if (num.value.match(/^[1-9][0-9]*$/)) {
                 blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
             } else {

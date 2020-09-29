@@ -91,12 +91,12 @@ CSL.Node.number = {
 
             if (["locator", "locator-extra"].indexOf(varname) > -1) {
                 // amazing that we reach this. should abort sooner if no content?
-                CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, node.strings.prefix);
                 state.processNumber.call(state, node, item, varname, Item.type);
             } else {
                 if (!state.tmp.group_context.tip.condition) {
                     state.tmp.just_did_number = true;
                 }
+                // UPDATE_GROUP_CONTEXT_CONDITION is run by processNumber
                 state.processNumber.call(state, node, Item, varname, Item.type);
             }
 
