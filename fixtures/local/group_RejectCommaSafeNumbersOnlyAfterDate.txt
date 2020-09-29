@@ -6,7 +6,7 @@ citation
 
 >>===== RESULT =====>>
 ..[0] 2005, 123
->>[1] 2005, 123
+>>[1] 101a 123
 <<===== RESULT =====<<
 
 
@@ -71,6 +71,7 @@ citation
     <layout>
       <group delimiter=" ">
         <group delimiter=", ">
+          <number variable="number"/>
           <date variable="issued">
             <date-part name="year" form="long" suffix=""/>
           </date>
@@ -106,9 +107,7 @@ citation
         "id": "ITEM-2", 
         "title": "abc",
         "type": "book",
-        "issued": {
-          "raw": "2005"
-        }
+        "number": "101a"
     }
 ]
 <<===== INPUT =====<<
