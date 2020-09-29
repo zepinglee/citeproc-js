@@ -959,6 +959,7 @@ CSL.Attributes["@no-repeat"] = function (state, arg) {
 };
 
 CSL.Attributes["@require"] = function (state, arg) {
+    state.opt.use_context_condition = true;
     this.strings.require = arg;
 
     // Introduced to constrain rendering of the group with a
@@ -972,6 +973,7 @@ CSL.Attributes["@require"] = function (state, arg) {
 };
 
 CSL.Attributes["@reject"] = function (state, arg) {
+    state.opt.use_context_condition = true;
     this.strings.reject = arg;
 
     // Introduced to constrain rendering of the group with a

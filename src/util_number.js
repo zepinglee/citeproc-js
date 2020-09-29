@@ -967,9 +967,9 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
                 state.output.append(label+num.labelSuffix, "empty");
             }
         }
+        CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, masterStyling.strings.prefix, null, masterStyling, num.value);
         if (num.collapsible) {
             var blob;
-            CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, masterStyling.strings.prefix, null, masterStyling);
             if (num.value.match(/^[1-9][0-9]*$/)) {
                 blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
             } else {

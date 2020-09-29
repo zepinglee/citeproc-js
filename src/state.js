@@ -141,6 +141,7 @@ CSL.Engine.Opt = function () {
 
     this.has_layout_locale = false;
     this.disable_duplicate_year_suppression = [];
+    this.use_context_condition = false;
 
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
