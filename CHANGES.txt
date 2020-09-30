@@ -1,4 +1,14 @@
 =========================
+Changes in version 1.4.31
+=========================
+
+- Recognize suffix on cs:date for comma-safe evaluations.
+
+- Include leading particle in numeric value for comma-safe evaluation
+
+- Make comma-safe evaluation work when style token not passed as argument (bugfix)
+
+=========================
 Changes in version 1.4.30
 =========================
 
