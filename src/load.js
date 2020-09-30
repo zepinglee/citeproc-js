@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.30",
+    PROCESSOR_VERSION: "1.4.31",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1249,9 +1249,9 @@ var CSL = {
         } else {
             // If not inside a conditional group, raise numeric flag
             // if and only if the current term string ends in a number.
-            if (token.decorations.filter(o => o[0] === "@vertical-align").length > 0) {
+            if (token && token.decorations.filter(o => o[0] === "@vertical-align").length > 0) {
                 state.tmp.just_did_number = false;
-            } else if (token.strings.suffix) {
+            } else if (token && token.strings.suffix) {
                 state.tmp.just_did_number = false;
             } else if (str) {
                 if (str.match(/[0-9]$/)) {
