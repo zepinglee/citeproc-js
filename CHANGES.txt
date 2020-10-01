@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.33
+=========================
+
+- Really fix comma-safe group bug this time.
+
+=========================
 Changes in version 1.4.32
 =========================
 
