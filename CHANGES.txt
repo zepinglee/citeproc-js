@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.4.32
+=========================
+
+- Fix comma-safe bug in direct application of suffix on cs:date
+
+- Recognize macro suffix in comma-safe evaluation
+  https://github.com/Juris-M/citeproc-js/issues/151#issuecomment-702022105
+
+=========================
 Changes in version 1.4.31
 =========================
 
