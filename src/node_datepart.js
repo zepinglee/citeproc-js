@@ -286,7 +286,9 @@ CSL.Node["date-part"] = {
             }
             if (last_string_output && !state.tmp.group_context.tip.condition) {
                 state.tmp.just_did_number = last_string_output.match(/[0-9]$/);
-                state.tmp.just_did_number = !state.output.current.tip.strings.suffix;
+                if (state.output.current.tip.strings.suffix) {
+                    state.tmp.just_did_number = false;
+                }
             }
         };
         this.execs.push(func);

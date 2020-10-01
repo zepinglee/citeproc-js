@@ -267,6 +267,13 @@ CSL.Node.group = {
             // quashnonfields
             func = function (state, Item, item) {
                 state.output.endTag();
+                if (!this.realGroup) {
+                    if (!state.tmp.group_context.tip.condition) {
+                        if (this.strings.suffix) {
+                            state.tmp.just_did_number = false;
+                        }
+                    }
+                }
                 if (this.realGroup) {
                     var flags = state.tmp.group_context.pop();
                     if (flags.parallel_delimiter_override) {
