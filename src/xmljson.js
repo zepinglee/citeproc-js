@@ -27,7 +27,6 @@ CSL.XmlJSON = function (dataObj) {
         name:"institution",
         attrs:{
             "institution-parts":"long",
-            "delimiter":", ",
             "substitute-use-first":"1",
             "use-last":"1"
         },
