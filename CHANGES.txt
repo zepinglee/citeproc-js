@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.4.34
+=========================
+
+- Fix bug in name-delimiter as applied to literal ("single-field") names, by
+  removing the explicit delimiter from the implicit cs:institutions node created
+  by citeproc-js on style instantiation, and allowing delimiter inheritance to
+  take effect.
+
+=========================
 Changes in version 1.4.33
 =========================
 
