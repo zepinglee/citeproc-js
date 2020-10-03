@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.35
+=========================
+
+- Add a "country" test, which unlike the "jurisdiction" test will be useful.
+
+=========================
 Changes in version 1.4.34
 =========================
 
