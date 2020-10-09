@@ -333,6 +333,9 @@ CSL.NameOutput.prototype.outputNames = function () {
     // set on element_trace.
     // Need to rescue the value for collapse comparison.
     var namesToken = CSL.Util.cloneToken(this.names);
+    if (this.state.tmp.group_context.tip.condition) {
+        CSL.UPDATE_GROUP_CONTEXT_CONDITION(this.state, this.names.strings.prefix, null, this.names);
+    }
     this.state.output.append(blob, namesToken);
     if (this.state.tmp.term_predecessor_name) {
         this.state.tmp.term_predecessor = true;
