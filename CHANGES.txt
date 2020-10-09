@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.37
+=========================
+
+- Include cs:text prefix and variable in require/reject evaluation.
+  https://github.com/Juris-M/citeproc-js/pull/166
+
+=========================
 Changes in version 1.4.36
 =========================
 
