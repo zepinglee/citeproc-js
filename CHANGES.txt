@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.38
+=========================
+
+- Test primary of cs:text items with multilingual variants as in 1.4.37.
+
+=========================
 Changes in version 1.4.37
 =========================
 
