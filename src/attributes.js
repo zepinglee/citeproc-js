@@ -952,14 +952,6 @@ CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
         this.parallel_last_to_first[vars[i]] = true;
     }
 };
-CSL.Attributes["@parallel-last-override"] = function (state, arg) {
-    var vars = arg.split(/\s+/);
-    this.parallel_last_override = {};
-    for (var i in vars) {
-        var v = vars[i];
-        this.parallel_last_override[v] = true;
-    }
-};
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
     this.strings.set_parallel_delimiter_override = arg;
 };
