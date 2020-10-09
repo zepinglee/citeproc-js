@@ -677,7 +677,7 @@ CSL.Transform = function (state) {
                 if (primary_locale) {
                     state.tmp.lang_array = [primary_locale].concat(oldLangArray);
                 }
-                CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, null, null, primary_tok);
+                CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, null, null, primary_tok, primary_tok.strings.prefix + primary);
                 state.output.append(primary, primary_tok);
                 state.tmp.probably_rendered_something = true;
             }
