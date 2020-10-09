@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.36
+=========================
+
+- Fix bug in consolidation code. Always insert to registry with Item.id.
+
+=========================
 Changes in version 1.4.35
 =========================
 

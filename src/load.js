@@ -35,7 +35,7 @@
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.35",
+    PROCESSOR_VERSION: "1.4.36",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -1272,17 +1272,17 @@ var CSL = {
         } else if (flags.condition.test === "empty-label-no-decor") {
             testres = !flags.condition.termtxt || flags.condition.termtxt.indexOf("%s") > -1;
         } else if (["comma-safe", "comma-safe-numbers-only"].indexOf(flags.condition.test) > -1) {
-            var empty = !flags.condition.termtxt;
+            var locale_term = flags.condition.termtxt;
             var termStartAlpha = false;
             if (flags.condition.termtxt) {
                 termStartAlpha = flags.condition.termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
             }
             var num = state.tmp.just_did_number;
             if (num) {
-                if (empty) {
-                    testres = true;
-                } else if (flags.condition.valueTerm) {
+                if (flags.condition.valueTerm) {
                     testres = numbersOnly ? false : true;
+                } else if (!locale_term) {
+                    testres = true;
                 } else if (termStartAlpha) {
                     testres = numbersOnly ? false : true;
                 } else if (["always", "after-number"].indexOf(state.opt.require_comma_on_symbol) > -1) {
@@ -1291,7 +1291,9 @@ var CSL = {
                     testres = false;
                 }
             } else {
-                if (empty || flags.condition.valueTerm) {
+                if (flags.condition.valueTerm) {
+                    testres = false;
+                } else if (!locale_term) {
                     testres = false;
                 } else if (termStartAlpha) {
                     testres = numbersOnly ? false : true;
