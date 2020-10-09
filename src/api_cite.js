@@ -449,19 +449,19 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         if (this.opt.xclass === 'note' && this.opt.has_disambiguate) {
                             var oldCount = this.registry.registry[first_id]["citation-count"];
                             var newCount = this.registry.citationreg.citationsByItemId[item_id].length;
-                            this.registry.registry[first_id]["citation-count"] = this.registry.citationreg.citationsByItemId[item_id].length;
+                            this.registry.registry[item[0].id]["citation-count"] = this.registry.citationreg.citationsByItemId[item_id].length;
                             if ("number" === typeof oldCount) {
                                 var oldCountCheck = (oldCount < 2);
                                 var newCountCheck = (newCount < 2);
                                 if (oldCountCheck !== newCountCheck) {
                                     for (var l=0,llen=this.registry.citationreg.citationsByItemId[item_id].length;l<llen;l++) {
-                                        rerunAkeys[this.registry.registry[first_id].ambig] = true;
+                                        rerunAkeys[this.registry.registry[item[0].id].ambig] = true;
                                         this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[item_id][l].citationID] = true;
                                     }
                                 }
                             } else {
                                 for (var l=0,llen=this.registry.citationreg.citationsByItemId[item_id].length;l<llen;l++) {
-                                    rerunAkeys[this.registry.registry[first_id].ambig] = true;
+                                    rerunAkeys[this.registry.registry[item[0].id].ambig] = true;
                                     this.tmp.taintedCitationIDs[this.registry.citationreg.citationsByItemId[item_id][l].citationID] = true;
                                 }
                             }
@@ -645,21 +645,21 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             }
                             if (first_container_ref[last_id] != onecitation.properties.noteIndex) {
                                 item[1]['first-container-reference-note-number'] = first_container_ref[last_id];
-                                if (this.registry.registry[first_id]) {
-                                    this.registry.registry[first_id]['first-container-reference-note-number'] = first_container_ref[last_id];
+                                if (this.registry.registry[item[0].id]) {
+                                    this.registry.registry[item[0].id]['first-container-reference-note-number'] = first_container_ref[last_id];
                                 }
                             }
                             if (first_ref[first_id] != onecitation.properties.noteIndex) {
                                 item[1]["first-reference-note-number"] = first_ref[first_id];
-                                if (this.registry.registry[first_id]) {
+                                if (this.registry.registry[item[0].id]) {
                                     // This is either the earliest recorded number, or the number of the current citation, whichever is smaller.
                                     /*
                                     var oldFirst = this.registry.citationreg.citationsByItemId[item_id][0].properties.noteIndex;
                                     var newFirst = onecitation.properties.noteIndex;
-                                    this.registry.registry[first_id]['first-reference-note-number'] = newFirst < oldFirst ? newFirst: oldFirst;
+                                    this.registry.registry[item[0].id]['first-reference-note-number'] = newFirst < oldFirst ? newFirst: oldFirst;
                                      */
                                     // Try this instead?
-                                    this.registry.registry[first_id]['first-reference-note-number'] = first_ref[first_id];
+                                    this.registry.registry[item[0].id]['first-reference-note-number'] = first_ref[first_id];
                                 }
                             }
                         }
@@ -676,10 +676,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         for (n = 0, nlen = CSL.POSITION_TEST_VARS.length; n < nlen; n += 1) {
                             var param = CSL.POSITION_TEST_VARS[n];
                             if (item[1][param] !== oldvalue[param]) {
-                                if (this.registry.registry[first_id]) {
+                                if (this.registry.registry[item[0].id]) {
                                     if (param === 'first-reference-note-number') {
-                                        rerunAkeys[this.registry.registry[first_id].ambig] = true;
-                                        this.tmp.taintedItemIDs[first_id] = true;
+                                        rerunAkeys[this.registry.registry[item[0].id].ambig] = true;
+                                        this.tmp.taintedItemIDs[item[0].id] = true;
                                     }
                                 }
                                 this.tmp.taintedCitationIDs[onecitation.citationID] = true;
