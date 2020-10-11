@@ -447,7 +447,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                     item[1]["near-note"] = false;
                     if (this.registry.citationreg.citationsByItemId[item_id]) {
                         if (this.opt.xclass === 'note' && this.opt.has_disambiguate) {
-                            var oldCount = this.registry.registry[first_id]["citation-count"];
+                            var oldCount = this.registry.registry[item[0].id]["citation-count"];
                             var newCount = this.registry.citationreg.citationsByItemId[item_id].length;
                             this.registry.registry[item[0].id]["citation-count"] = this.registry.citationreg.citationsByItemId[item_id].length;
                             if ("number" === typeof oldCount) {
