@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.39
+=========================
+
+- Fix line missed in registry bugfix
+
+- Evaluate prefix on cs:names is require/reject context
+
+=========================
 Changes in version 1.4.38
 =========================
 
