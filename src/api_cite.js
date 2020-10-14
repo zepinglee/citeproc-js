@@ -132,7 +132,7 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
         }
         Item = this.retrieveItem("" + item.id);
         if (Item.id) {
-            this.transform.loadAbbreviation("default", "hereinafter", Item.id);
+            this.transform.loadAbbreviation("default", "hereinafter", Item.id, Item.language);
         }
         item = CSL.parseLocator.call(this, item);
         if (this.opt.development_extensions.consolidate_legal_items) {

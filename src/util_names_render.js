@@ -1024,7 +1024,7 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
         var jurisdiction = itemJurisdiction;
         for (var j = 0, jlen = long_form.length; j < jlen; j += 1) {
             var abbrevKey = long_form[j];
-            jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", abbrevKey);
+            jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", abbrevKey, this.Item.language);
             if (this.state.transform.abbrevs[jurisdiction]["institution-part"][abbrevKey]) {
                 short_form[j] = this.state.transform.abbrevs[jurisdiction]["institution-part"][abbrevKey];
                 use_short_form = true;
@@ -1104,7 +1104,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
             var jurisdiction = itemJurisdiction;
             var str = splitInstitution.slice(0, j).join("|");
             var abbrevKey = str;
-            jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", abbrevKey);
+            jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", abbrevKey, this.Item.language);
             if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][abbrevKey]) {
                 var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][abbrevKey];
 

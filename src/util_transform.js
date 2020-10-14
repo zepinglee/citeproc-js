@@ -111,7 +111,7 @@ CSL.Transform = function (state) {
             } else {
                 preferredJurisdiction = "default";
             }
-            var jurisdiction = state.transform.loadAbbreviation(preferredJurisdiction, myabbrev_family, normalizedKey, Item.type);
+            var jurisdiction = state.transform.loadAbbreviation(preferredJurisdiction, myabbrev_family, normalizedKey, Item.language);
 
             // Some rules:
             // # variable === "country"
@@ -329,9 +329,13 @@ CSL.Transform = function (state) {
     // Setter for abbreviation lists
     // This initializes a single abbreviation based on known
     // data.
-    function loadAbbreviation(jurisdiction, category, orig, itemType) {
+    function loadAbbreviation(jurisdiction, category, orig, lang) {
         if (!jurisdiction) {
             jurisdiction = "default";
+        }
+        var domain = CSL.getAbbrevsDomain(state, lang);
+        if (domain) {
+            jurisdiction += ("@" + domain);
         }
         if (!orig) {
             if (!state.transform.abbrevs[jurisdiction]) {
@@ -350,9 +354,12 @@ CSL.Transform = function (state) {
         //
         // See testrunner_stdrhino.js for an example.
         if (state.sys.getAbbreviation) {
-            jurisdiction = state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, jurisdiction, category, orig, itemType, true);
+            jurisdiction = state.sys.getAbbreviation(state.opt.styleID, state.transform.abbrevs, jurisdiction, category, orig);
             if (!jurisdiction) {
                 jurisdiction = "default";
+                if (domain) {
+                    jurisdiction += ("@" + domain);
+                }
             }
         }
         return jurisdiction;

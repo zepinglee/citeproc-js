@@ -728,7 +728,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         } else {
             normalizedKey = Item.title;
         }
-        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", normalizedKey, Item.type);
+        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "title", normalizedKey, Item.language);
         if (this.transform.abbrevs[jurisdiction].title) {
             if (this.transform.abbrevs[jurisdiction].title[normalizedKey]) {
                 Item["title-short"] = this.transform.abbrevs[jurisdiction].title[normalizedKey];
@@ -744,7 +744,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         } else {
             normalizedKey = Item["container-title"];
         }
-        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", normalizedKey);
+        var jurisdiction = this.transform.loadAbbreviation(Item.jurisdiction, "container-title", normalizedKey, Item.language);
         if (this.transform.abbrevs[jurisdiction]["container-title"]) {
             if (this.transform.abbrevs[jurisdiction]["container-title"][normalizedKey]) {
                 Item["container-title-short"] = this.transform.abbrevs[jurisdiction]["container-title"][normalizedKey];

@@ -318,6 +318,34 @@ var CSL = {
         this["title-phrase"] = {};
     },
 
+    getAbbrevsDomain: function (state, lang) {
+        if (state.opt.availableAbbrevDomains) {
+		    var domain = null;
+	        var globalDomainPreference = state.locale[state.opt.lang].opts["jurisdiction-preference"];
+		    var itemDomainPreference = null;
+		    if (state.locale[lang]) {
+			    itemDomainPreference = state.locale[lang].opts["jurisdiction-preference"];
+		    }
+		    if (itemDomainPreference) {
+			    for (var j=itemDomainPreference.length-1; j > -1; j--) {
+				    if (state.opt.availableAbbrevDomains.indexOf(itemDomainPreference[j]) > -1) {
+					    domain = itemDomainPreference[j];
+					    break;
+				    }
+			    }
+		    }
+		    if (!domain && globalDomainPreference) {
+			    for (var j=globalDomainPreference.length-1; j > -1; j--) {
+				    if (state.opt.availableAbbrevDomains.indexOf(globalDomainPreference[j]) > -1) {
+					    domain = globalDomainPreference[j];
+					    break;
+				    }
+			    }
+		    }
+        }
+        return domain;
+    },
+    
     FIELD_CATEGORY_REMAP: {
         "title": "title",
         "container-title": "container-title",

@@ -388,7 +388,7 @@ CSL.NameOutput.prototype.outputNames = function () {
             }
             author_title = author_title.join(", ");
             if (author_title && this.state.sys.getAbbreviation) {
-                this.state.transform.loadAbbreviation("default", "classic", author_title);
+                this.state.transform.loadAbbreviation("default", "classic", author_title, this.Item.language);
                 if (this.state.transform.abbrevs["default"].classic[author_title]) {
                     this.state.tmp.done_vars.push("title");
                     this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);

@@ -793,7 +793,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         // No need for this.
         //val = ("" + val).replace(/^\"/, "").replace(/\"$/, "");
 
-        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", val);
+        var jurisdiction = this.transform.loadAbbreviation(ItemObject.jurisdiction, "number", val, ItemObject.language);
         if (this.transform.abbrevs[jurisdiction].number) {
             if (this.transform.abbrevs[jurisdiction].number[val]) {
                 val = this.transform.abbrevs[jurisdiction].number[val];
