@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.40
+=========================
+
+- Implement item-level locale arbitration of jurisdiction-preference for abbrevs
+
+=========================
 Changes in version 1.4.39
 =========================
 
