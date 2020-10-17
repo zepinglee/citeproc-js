@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.41
+=========================
+
+- Make availableAbbrevDomains persistent, extend abbrev key
+  normalization to number and classic
+
+=========================
 Changes in version 1.4.40
 =========================
 
