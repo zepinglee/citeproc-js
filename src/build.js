@@ -724,7 +724,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             noHints = true;
         }
         if (this.sys.normalizeAbbrevsKey) {
-            normalizedKey = this.sys.normalizeAbbrevsKey(Item.title);
+             normalizedKey = this.sys.normalizeAbbrevsKey("title", Item.title);
         } else {
             normalizedKey = Item.title;
         }

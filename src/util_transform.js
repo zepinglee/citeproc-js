@@ -333,7 +333,8 @@ CSL.Transform = function (state) {
         if (!jurisdiction) {
             jurisdiction = "default";
         }
-        var domain = CSL.getAbbrevsDomain(state, lang);
+        var country = jurisdiction.split(":")[0];
+        var domain = CSL.getAbbrevsDomain(state, country, lang);
         if (domain) {
             jurisdiction += ("@" + domain);
         }

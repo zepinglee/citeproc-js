@@ -318,9 +318,9 @@ var CSL = {
         this["title-phrase"] = {};
     },
 
-    getAbbrevsDomain: function (state, lang) {
-        if (state.opt.availableAbbrevDomains) {
-		    var domain = null;
+    getAbbrevsDomain: function (state, country, lang) {
+		var domain = null;
+        if (state.opt.availableAbbrevDomains && country && country !== "default") {
 	        var globalDomainPreference = state.locale[state.opt.lang].opts["jurisdiction-preference"];
 		    var itemDomainPreference = null;
 		    if (state.locale[lang]) {
@@ -328,7 +328,7 @@ var CSL = {
 		    }
 		    if (itemDomainPreference) {
 			    for (var j=itemDomainPreference.length-1; j > -1; j--) {
-				    if (state.opt.availableAbbrevDomains.indexOf(itemDomainPreference[j]) > -1) {
+				    if (state.opt.availableAbbrevDomains[country].indexOf(itemDomainPreference[j]) > -1) {
 					    domain = itemDomainPreference[j];
 					    break;
 				    }
@@ -336,7 +336,7 @@ var CSL = {
 		    }
 		    if (!domain && globalDomainPreference) {
 			    for (var j=globalDomainPreference.length-1; j > -1; j--) {
-				    if (state.opt.availableAbbrevDomains.indexOf(globalDomainPreference[j]) > -1) {
+				    if (state.opt.availableAbbrevDomains[country].indexOf(globalDomainPreference[j]) > -1) {
 					    domain = globalDomainPreference[j];
 					    break;
 				    }
