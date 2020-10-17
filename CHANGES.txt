@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.42
+=========================
+
+- Fall back from institution-entire abbrev to institution-part abbrev
+
+- Adjust output of NL legal_case in module
+
+=========================
 Changes in version 1.4.41
 =========================
 
