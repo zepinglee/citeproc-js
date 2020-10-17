@@ -3,7 +3,7 @@ citation
 <<===== MODE =====<<
 
 >>===== RESULT =====>>
-???
+HR 22 Juni 1995.
 <<===== RESULT =====<<
 
 
@@ -749,16 +749,14 @@ citation
 			"_keys": {}
 		},
 		"authority": "hoge",
-		"collection-number": "1995",
 		"container-title": "Reporter Name",
-		"number": "1234",
 		"page": "567",
 		"title": "Netherlands Case",
 		"jurisdiction": "nl",
 		"issued": {
 			"date-parts": [
 				[
-					"1995",
+					1995,
 					6,
 					22
 				]
