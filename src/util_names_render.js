@@ -1104,9 +1104,15 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
             var jurisdiction = itemJurisdiction;
             var str = splitInstitution.slice(0, j).join("|");
             var abbrevKey = str;
-            jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-entire", abbrevKey, this.Item.language);
-            if (this.state.transform.abbrevs[jurisdiction]["institution-entire"][abbrevKey]) {
-                var splitLst = this.state.transform.abbrevs[jurisdiction]["institution-entire"][abbrevKey];
+            
+            var segment = "institution-entire";
+            jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, segment, abbrevKey, this.Item.language);
+            if (!this.state.transform.abbrevs[jurisdiction][segment][abbrevKey]) {
+                segment = "institution-part";
+                jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, segment, abbrevKey, this.Item.language);
+            }
+            if (this.state.transform.abbrevs[jurisdiction][segment][abbrevKey]) {
+                var splitLst = this.state.transform.abbrevs[jurisdiction][segment][abbrevKey];
 
                 splitLst = this.state.transform.quashCheck(itemJurisdiction, splitLst);
 
