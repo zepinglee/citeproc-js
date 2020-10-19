@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.44
+=========================
+
+- Fix a bug in fallback from institution-entire to institution-part
+
+=========================
 Changes in version 1.4.43
 =========================
 
