@@ -143,6 +143,8 @@ CSL.Engine.Opt = function () {
     this.disable_duplicate_year_suppression = [];
     this.use_context_condition = false;
 
+    this.jurisdiction_fallbacks = {};
+
     this.development_extensions = {};
     this.development_extensions.field_hack = true;
     this.development_extensions.allow_field_hack_date_override = true;
