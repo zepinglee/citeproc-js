@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.43
+=========================
+
+- Implement fallback attribute on cs:law-module
+  https://github.com/Juris-M/zotero/issues/95
+
+=========================
 Changes in version 1.4.42
 =========================
 
