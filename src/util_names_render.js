@@ -1108,6 +1108,7 @@ CSL.NameOutput.prototype._splitInstitution = function (value, v, i) {
             var segment = "institution-entire";
             jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, segment, abbrevKey, this.Item.language);
             if (!this.state.transform.abbrevs[jurisdiction][segment][abbrevKey]) {
+                jurisdiction = itemJurisdiction;
                 segment = "institution-part";
                 jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, segment, abbrevKey, this.Item.language);
             }
