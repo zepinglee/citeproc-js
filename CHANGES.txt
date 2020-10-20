@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.4.45
+=========================
+
+- Fix bug in parallel-referencing code.
+
+- Update schema (fix missing or misplaced attributes and elements),
+  fix syntax issues in style modules, update style tests.
+
+=========================
 Changes in version 1.4.44
 =========================
 
