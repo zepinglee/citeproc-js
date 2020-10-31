@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.46
+=========================
+
+- Enable trailing-punctuation suppression in in-text styles.
+
+=========================
 Changes in version 1.4.45
 =========================
 
