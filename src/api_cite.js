@@ -1112,7 +1112,7 @@ CSL.getCitationCluster = function (inputList, citation) {
     //var use_layout_prefix = this.citation.opt.layout_prefix;
 
     var suppressTrailingPunctuation = false;
-    if (this.opt.xclass === "note" && this.citation.opt.suppressTrailingPunctuation) {
+    if (this.citation.opt.suppressTrailingPunctuation) {
         suppressTrailingPunctuation = true;
     }
     if (citationID) {
