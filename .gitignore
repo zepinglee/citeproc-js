@@ -1,4 +1,6 @@
 *~
+.cslTestFixtures
+ignored
 node_modules
 test
 .cslValidationPos
