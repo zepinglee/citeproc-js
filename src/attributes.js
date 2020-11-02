@@ -1550,12 +1550,16 @@ CSL.Attributes["@use-first"] = function (state, arg) {
     this.strings["use-first"] = parseInt(arg, 10);
 };
 
-CSL.Attributes["@stop-last"] = function (state, arg) {
-    this.strings["stop-last"] = parseInt(arg, 10) * -1;
-};
-
 CSL.Attributes["@use-last"] = function (state, arg) {
     this.strings["use-last"] = parseInt(arg, 10);
+};
+
+CSL.Attributes["@stop-first"] = function (state, arg) {
+    this.strings["stop-first"] = parseInt(arg, 10);
+};
+
+CSL.Attributes["@stop-last"] = function (state, arg) {
+    this.strings["stop-last"] = parseInt(arg, 10) * -1;
 };
 
 

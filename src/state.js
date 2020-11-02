@@ -174,6 +174,7 @@ CSL.Engine.Opt = function () {
     this.development_extensions.implicit_short_title = false;
     this.development_extensions.force_title_abbrev_fallback = false;
     this.development_extensions.split_container_title = false;
+    this.development_extensions.legacy_institution_name_ordering = false;
 };
 
 CSL.Engine.Tmp = function () {
