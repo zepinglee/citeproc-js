@@ -212,6 +212,11 @@ CSL.Node.text = {
                             }
                         }
                         state.output.append(myterm, this);
+                        if (state.tmp.can_block_substitute) {
+                            // Black magic here. This causes the cs:substitution condition to pass,
+                            // blocking further rendering within its scope. 
+                            state.tmp.can_substitute.replace(false, CSL.LITERAL);
+                        }
                     };
                     this.execs.push(func);
                     state.build.term = false;
@@ -419,6 +424,11 @@ CSL.Node.text = {
                         // true flags that this is a literal-value term
                         CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.value, true, this);
                         state.output.append(this.strings.value, this);
+                        if (state.tmp.can_block_substitute) {
+                            // Black magic here. This causes the cs:substitution condition to pass,
+                            // blocking further rendering within its scope. 
+                            state.tmp.can_substitute.replace(false, CSL.LITERAL);
+                        }
                     };
                     this.execs.push(func);
                     // otherwise no output
