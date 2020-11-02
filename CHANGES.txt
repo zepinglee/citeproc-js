@@ -1,4 +1,18 @@
 =========================
+Changes in version 1.4.47
+=========================
+
+- Changes to institution name attributes
+  - Apply use-first and use-last to elements as entered, not as reversed
+  - Add stop-first to mirror stop-last
+  - Render as entered by default, require explicit reverse-order to reverse
+  - Make code less unreadable
+
+- Remove implicit institution name truncation
+
+- Recognize strings and terms in cs:substitute
+
+=========================
 Changes in version 1.4.46
 =========================
 
