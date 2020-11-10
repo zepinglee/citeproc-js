@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.48
+=========================
+
+- Fix disambig with demote-non-dropping-particle=never
+
+  https://github.com/Juris-M/citeproc-js/issues/171
+
+=========================
 Changes in version 1.4.47
 =========================
 
