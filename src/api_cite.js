@@ -351,17 +351,17 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
     var citations;
     if (this.opt.update_mode === CSL.POSITION) {
         for (var i = 0; i < 2; i += 1) {
-            citations = [textCitations, noteCitations][i];
             var first_ref = {};
             var last_ref = {};
             var first_container_ref = {};
+            citations = [textCitations, noteCitations][i];
             for (j = 0, jlen = citations.length; j < jlen; j += 1) {
                 var onecitation = citations[j];
                 if (!citations[j].properties.noteIndex) {
                     citations[j].properties.noteIndex = 0;
                 }
                 citations[j].properties.noteIndex = parseInt(citations[j].properties.noteIndex, 10);
-                if (j > 0 && citations[j - 1].properties.noteIndex > citations[j].properties.noteIndex) {
+                if (j > 0 && onecitation.properties.noteIndex && citations[j - 1].properties.noteIndex > onecitation.properties.noteIndex) {
                     citationsInNote = {};
                     first_ref = {};
                     last_ref = {};
@@ -632,11 +632,10 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                         }
                         if (suprame) {
                             item[1].position = CSL.POSITION_CONTAINER_SUBSEQUENT;
-                            if (first_ref[first_id]) {
-                                item[1].position = CSL.POSITION_SUBSEQUENT;
-                            }
-                            if (!first_ref[first_id]) {
+                            if ("undefined" === typeof first_ref[first_id]) {
                                 first_ref[first_id] = onecitation.properties.noteIndex;
+                            } else {
+                                item[1].position = CSL.POSITION_SUBSEQUENT;
                             }
                         }
                         if (suprame || ibidme) {
@@ -671,6 +670,8 @@ CSL.Engine.prototype.processCitationCluster = function (citation, citationsPre, 
                             item[1]["near-note"] = true;
                         }
                         last_ref[last_id] = onecitation.properties.noteIndex;
+                    } else if (item[1].position !== CSL.POSITION_FIRST) {
+                        item[1]["near-note"] = true;
                     }
                     if (onecitation.citationID != citation.citationID) {
                         for (n = 0, nlen = CSL.POSITION_TEST_VARS.length; n < nlen; n += 1) {
