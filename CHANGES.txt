@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.49
+=========================
+
+- Fix in-text backref behavior (previously completely non-functional).
+
+=========================
 Changes in version 1.4.48
 =========================
 
