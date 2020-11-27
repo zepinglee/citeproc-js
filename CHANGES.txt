@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.50
+=========================
+
+- Fix page-range-format to work equally with hyphen and en-dash.
+
+=========================
 Changes in version 1.4.49
 =========================
 
