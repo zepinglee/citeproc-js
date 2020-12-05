@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.51
+=========================
+
+- Fix crashing bug triggered by parallels initialization failure (affects CSL-M styles only).
+
+=========================
 Changes in version 1.4.50
 =========================
 
