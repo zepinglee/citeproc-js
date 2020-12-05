@@ -946,6 +946,7 @@ CSL.Attributes["@parallel-last"] = function (state, arg) {
     }
 };
 CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
+    state.opt.parallel.enable = true;
     var vars = arg.split(/\s+/);
     this.parallel_last_to_first = {};
     for (var i=0,ilen=vars.length;i<ilen;i++) {
@@ -953,9 +954,11 @@ CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
     }
 };
 CSL.Attributes["@parallel-delimiter-override"] = function (state, arg) {
+    state.opt.parallel.enable = true;
     this.strings.set_parallel_delimiter_override = arg;
 };
 CSL.Attributes["@parallel-delimiter-override-on-suppress"] = function (state, arg) {
+    state.opt.parallel.enable = true;
     this.strings.set_parallel_delimiter_override_on_suppress = arg;
 };
 CSL.Attributes["@no-repeat"] = function (state, arg) {
