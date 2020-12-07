@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.52
+=========================
+
+- Add is-multiple test. Returns true if the target variable contains one or more
+  spaces.
+
+=========================
 Changes in version 1.4.51
 =========================
 
