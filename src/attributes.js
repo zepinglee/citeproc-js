@@ -627,6 +627,18 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
     this.tests.push(func);
 };
 
+CSL.Attributes["@is-multiple"] = function (state, arg) {
+    if (!this.tests) {this.tests = []; };
+    var func = function (Item) {
+        var val = ("" + Item[arg]);
+        if (val.indexOf(" ") > -1) {
+            return true;
+        }
+        return false;
+    };
+    this.tests.push(func);
+};
+
 CSL.Attributes["@locale"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
     var ret, langspec, lang, lst, i, ilen;
