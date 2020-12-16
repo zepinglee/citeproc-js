@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.4.53
+=========================
+
+- Remove sort mask from macros calling an empty date, and set date
+  keys as pure numeric strings
+
+  https://github.com/citation-style-language/styles/pull/5169
+
+=========================
 Changes in version 1.4.52
 =========================
 
