@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.54
+=========================
+
+- Support in-text markup in name elements.
+
+  https://github.com/Juris-M/citeproc-js/issues/173
+
+=========================
 Changes in version 1.4.53
 =========================
 
