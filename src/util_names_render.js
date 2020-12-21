@@ -774,8 +774,8 @@ CSL.NameOutput.prototype._nameSuffix = function (name) {
 
     var str = name.suffix, ret;
 
-    if ("string" === typeof this.state.inheritOpt(this.name, "initialize-with")) {
-        str = CSL.Util.Names.initializeWith(this.state, name.suffix, this.state.inheritOpt(this.name, "initialize-with"), true);
+    if (str && "string" === typeof this.state.inheritOpt(this.name, "initialize-with")) {
+        str = CSL.Util.Names.initializeWith(this.state, str, this.state.inheritOpt(this.name, "initialize-with"), true);
     }
 
     str = this._stripPeriods("family", str);

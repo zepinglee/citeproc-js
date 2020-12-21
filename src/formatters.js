@@ -5,6 +5,8 @@ CSL.Output.Formatters = (function () {
     var tagDoppel = new CSL.Doppeler(rexStr, function(str) {
         return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3").replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?(\")[^>]*(>)/g, "$1 $2 $3;$4$5");
     });
+    var rexNameStr = "(?:[-\\s]*<\\/*(?:span\s+class=\"no(?:case|decor)\"|i|sc|b|sub|sup)>[-\\s]*|[-\\s]+)";
+    var nameDoppel = new CSL.Doppeler(rexNameStr);
     
     var wordDoppel = new CSL.Doppeler("(?:[\u0020\u00A0\u2000-\u200B\u205F\u3000]+)");
     
@@ -375,6 +377,7 @@ CSL.Output.Formatters = (function () {
         return _textcaseEngine.call(state, config, string);
     }
     return {
+        nameDoppel: nameDoppel,
         passthrough: passthrough,
         lowercase: lowercase,
         uppercase: uppercase,
