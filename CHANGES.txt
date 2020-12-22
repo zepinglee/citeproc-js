@@ -1,4 +1,13 @@
 =========================
+Changes in version 1.4.55
+=========================
+
+- Implement cite-form flag, supplied via abbreviation markup as
+  discussed here:
+
+  https://github.com/Juris-M/legal-resource-registry/issues/34#issuecomment-749249240
+
+=========================
 Changes in version 1.4.54
 =========================
 
