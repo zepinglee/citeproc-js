@@ -908,6 +908,19 @@ CSL.Attributes["@has-subunit"] = function (state, arg) {
     this.tests.push(maketest(arg));
 }
 
+CSL.Attributes["@cite-form"] = function (state, arg) {
+    if (!this.tests) {this.tests = []; };
+    var maketest = function(citeForm) {
+        return function (Item) {
+            if (Item["cite-form"] === citeForm) {
+                return true;
+            }
+            return false;
+        };
+    };
+    this.tests.push(maketest(arg));
+}
+
 CSL.Attributes["@disable-duplicate-year-suppression"] = function (state, arg) {
 	state.opt.disable_duplicate_year_suppression = arg.split(/\s+/);
 }
