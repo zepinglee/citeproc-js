@@ -631,7 +631,8 @@ CSL.Attributes["@is-multiple"] = function (state, arg) {
     if (!this.tests) {this.tests = []; };
     var func = function (Item) {
         var val = ("" + Item[arg]);
-        if (val.indexOf(" ") > -1) {
+        var lst = val.split(/(?:,\s|\sand\s|\&)/);
+        if (lst.length > 1) {
             return true;
         }
         return false;
