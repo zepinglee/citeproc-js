@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.56
+=========================
+
+- Change is-multiple test attribute to test for presence of
+  comma-space, space-and-space or ampersand.
+
+=========================
 Changes in version 1.4.55
 =========================
 
