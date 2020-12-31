@@ -195,7 +195,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     if (localeAnd === localeAmpersand) {
         localeAmpersand = "&";
     }
-    
+
     // XXXX shadow_numbers should carry an array of objects with
     // XXXX full data for each. The test of a number should be
     // XXXX a separate function, possibly supported by a splitter
@@ -785,6 +785,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         val = val.name;
     } else {
         val = ItemObject[realVariable];
+    }
+
+    if (val && realVariable === "number" && ItemObject.type === "legal_case") {
+        val = val.replace(/[\\]*-/g, "\\-");
     }
 
     // XXX HOLDING THIS
