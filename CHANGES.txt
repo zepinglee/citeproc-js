@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.57
+=========================
+
+- Preserve bare hyphens in docket numbers.
+
+=========================
 Changes in version 1.4.56
 =========================
 
