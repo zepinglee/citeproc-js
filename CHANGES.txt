@@ -1,4 +1,12 @@
 =========================
+Changes in version 1.4.58
+=========================
+
+- Smarten up is-multiple
+
+  https://github.com/Juris-M/citeproc-js/issues/174
+
+=========================
 Changes in version 1.4.57
 =========================
 
