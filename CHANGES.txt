@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.59
+=========================
+
+- Fix bug in names abbreviation fallback from institution-entire
+  to institution-part.
+
+=========================
 Changes in version 1.4.58
 =========================
 
