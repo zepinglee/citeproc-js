@@ -1,4 +1,11 @@
 =========================
+Changes in version 1.4.60
+=========================
+
+- Limit en-dash equivalence to hyphen at 1.4.50 to the page
+  variable.
+
+=========================
 Changes in version 1.4.59
 =========================
 

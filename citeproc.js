@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.59",
+    PROCESSOR_VERSION: "1.4.60",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
@@ -20190,8 +20190,10 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         str = normalizeFieldValue(str, defaultLabel);
 
         var jmrex, jsrex, mystr;
-        if (str.indexOf("\u2013") > -1) {
-            str = str.replace(/\u2013/g, "-");
+        if ("page" === variable) {
+            if (str.indexOf("\u2013") > -1) {
+                str = str.replace(/\u2013/g, "-");
+            }
         }
         if (str.indexOf("\\-") > -1) {
             jmrex = new RegExp(joinerMatchRex.source.replace("\\-", ""));
