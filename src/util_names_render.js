@@ -1029,7 +1029,7 @@ CSL.NameOutput.prototype.fixupInstitution = function (name, varname, listpos) {
                 longNameStr = this.state.transform.abbrevs[jurisdiction]["institution-entire"][longNameStr];
             } else {
                 jurisdiction = this.Item.jurisdiction;
-                jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", abbrevKey, this.Item.language);
+                jurisdiction = this.state.transform.loadAbbreviation(jurisdiction, "institution-part", longNameStr, this.Item.language);
                 if (this.state.transform.abbrevs[jurisdiction]["institution-part"][longNameStr]) {
                     longNameStr = this.state.transform.abbrevs[jurisdiction]["institution-part"][longNameStr];
                 }
