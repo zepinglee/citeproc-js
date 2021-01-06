@@ -59,7 +59,7 @@ Copyright (c) 2009-2019 Frank Bennett
 
 var CSL = {
 
-    PROCESSOR_VERSION: "1.4.60",
+    PROCESSOR_VERSION: "1.4.61",
 
     error: function(str) { // default error function
         if ("undefined" === typeof Error) {
