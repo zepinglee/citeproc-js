@@ -1,4 +1,10 @@
 =========================
+Changes in version 1.4.61
+=========================
+
+- Apply text-case to numeric variables with numeric content.
+
+=========================
 Changes in version 1.4.60
 =========================
 

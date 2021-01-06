@@ -10295,7 +10295,7 @@ CSL.Node["date-part"] = {
                     last_string_output = "x";
                     num = parseInt(state.registry.registry[Item.id].disambig.year_suffix, 10);
                     // first argument is for number particle [a-zA-Z], never present on dates
-                    number = new CSL.NumericBlob(false, num, this, Item.id);
+                    number = new CSL.NumericBlob(state, false, num, this, Item.id);
                     this.successor_prefix = state[state.build.area].opt.layout_delimiter;
                     this.splice_prefix = state[state.build.area].opt.layout_delimiter;
                     formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
@@ -15390,7 +15390,7 @@ CSL.Node.text = {
                             if (state.opt.citation_number_slug) {
                                 state.output.append(state.opt.citation_number_slug, this);
                             } else {
-                                number = new CSL.NumericBlob(false, num, this, Item.id);
+                                number = new CSL.NumericBlob(state, false, num, this, Item.id);
                                 if (state.tmp.in_cite_predecessor) {
                                     number.suppress_splice_prefix = true;
                                 }
@@ -15424,7 +15424,7 @@ CSL.Node.text = {
                             if (state[state.tmp.area].opt.cite_group_delimiter) {
                                 this.successor_prefix = state[state.tmp.area].opt.cite_group_delimiter;
                             }
-                            number = new CSL.NumericBlob(false, num, this, Item.id);
+                            number = new CSL.NumericBlob(state, false, num, this, Item.id);
                             formatter = new CSL.Util.Suffixator(CSL.SUFFIX_CHARS);
                             number.setFormatter(formatter);
                             state.output.append(number, "literal");
@@ -18625,7 +18625,7 @@ CSL.Blob.prototype.push = function (blob) {
  * @namespace Range object and friends.
  */
 
-CSL.NumericBlob = function (particle, num, mother_token, id) {
+CSL.NumericBlob = function (state, particle, num, mother_token, id) {
     // item id is used to assure that prefix delimiter is invoked only
     // when joining blobs across items
     this.id = id;
@@ -18636,6 +18636,11 @@ CSL.NumericBlob = function (particle, num, mother_token, id) {
     this.status = CSL.START;
     this.strings = {};
     if (mother_token) {
+        if (mother_token.strings["text-case"]) {
+            var textCase = mother_token.strings["text-case"];
+            this.particle = CSL.Output.Formatters[textCase](state, this.particle);
+            this.blobs = CSL.Output.Formatters[textCase](state, this.blobs);
+        }
         this.gender = mother_token.gender;
         this.decorations = mother_token.decorations;
         this.strings.prefix = mother_token.strings.prefix;
@@ -20875,9 +20880,9 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         if (num.collapsible) {
             var blob;
             if (num.value.match(/^[1-9][0-9]*$/)) {
-                blob = new CSL.NumericBlob(num.particle, parseInt(num.value, 10), numStyling, itemID);
+                blob = new CSL.NumericBlob(state, num.particle, parseInt(num.value, 10), numStyling, itemID);
             } else {
-                blob = new CSL.NumericBlob(num.particle, num.value, numStyling, itemID);
+                blob = new CSL.NumericBlob(state, num.particle, num.value, numStyling, itemID);
             }
             if ("undefined" === typeof blob.gender) {
                 blob.gender = state.locale[state.opt.lang]["noun-genders"][varname];
