@@ -291,7 +291,13 @@ CSL.Output.Formatters = (function () {
                         }
                         if (word.length > 1 && !CSL.toLocaleLowerCase.call(state, word).match(config.skipWordsRex)) {
                             // Capitalize every word that is not a stop-word
-                            words[j] = _capitalise.call(state, words[j]);
+                            if (word[0].toUpperCase() !== word[0]) {
+                                if (word.slice(1).length ===  word.slice(1).split("").filter(c => c.toLowerCase() === c).length) {
+                                    words[j] = _capitalise.call(state, words[j]);
+                                }
+                            } else {
+                                words[j] = _capitalise.call(state, words[j]);
+                            }
                         } else if (j === (words.length - 1) && followingTag === "-") {
                             words[j] = _capitalise.call(state, words[j]);
                         } else if (config.isFirst) {
