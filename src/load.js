@@ -1452,6 +1452,9 @@ var CSL = {
     },
 
     INIT_JURISDICTION_MACROS: function (state, Item, item, macroName) {
+        if (Item["best-jurisdiction"]) {
+            return true;
+        }
         if (!state.sys.retrieveStyleModule || !CSL.MODULE_MACROS[macroName] || !Item.jurisdiction) {
             return false;
         }
@@ -1481,7 +1484,7 @@ var CSL = {
             var jurisdiction = jurisdictionList[i];
             if (item) {
                 if (state.juris[jurisdiction] && !item["best-jurisdiction"] && state.juris[jurisdiction].types.locator) {
-                    item["best-jurisdiction"] = jurisdiction;
+                    Item["best-jurisdiction"] = jurisdiction;
                 }
             }
             if(state.juris[jurisdiction] && state.juris[jurisdiction].types[Item.type]) {
