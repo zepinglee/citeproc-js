@@ -8,7 +8,7 @@ CSL.Output.Formatters = (function () {
     var rexNameStr = "(?:[-\\s]*<\\/*(?:span\s+class=\"no(?:case|decor)\"|i|sc|b|sub|sup)>[-\\s]*|[-\\s]+)";
     var nameDoppel = new CSL.Doppeler(rexNameStr);
     
-    var wordDoppel = new CSL.Doppeler("(?:[\u0020\u00A0\u2000-\u200B\u205F\u3000]+)");
+    var wordDoppel = new CSL.Doppeler("(?:[\u00A0\u0020\u00A0\u2000-\u200B\u205F\u3000]+)");
     
     /**
      * INTERNAL
@@ -281,7 +281,6 @@ CSL.Output.Formatters = (function () {
             quoteState: [],
             capitaliseWords: function(str, i, followingTag) {
                 if (str.trim()) {
-                    var words = str.split(/[ \u00A0]+/);
                     var wordle = wordDoppel.split(str);
                     var words = wordle.strings;
                     for (var j=0,jlen=words.length;j<jlen;j++) {
@@ -289,23 +288,23 @@ CSL.Output.Formatters = (function () {
                         if (!word) {
                             continue;
                         }
-                        if (word.length > 1 && !CSL.toLocaleLowerCase.call(state, word).match(config.skipWordsRex)) {
+                        let lcase = CSL.toLocaleLowerCase.call(state, word);
+                        let capitalize = false;
+                        if (word.length > 1 && !lcase.match(config.skipWordsRex)) {
                             // Capitalize every word that is not a stop-word
-                            if (word[0].toUpperCase() !== word[0]) {
-                                if (word.slice(1).length ===  word.slice(1).split("").filter(c => c.toLowerCase() === c).length) {
-                                    words[j] = _capitalise.call(state, words[j]);
-                                }
-                            } else {
-                                words[j] = _capitalise.call(state, words[j]);
-                            }
+                            capitalize = true;
                         } else if (j === (words.length - 1) && followingTag === "-") {
-                            words[j] = _capitalise.call(state, words[j]);
+                            capitalize = true;
                         } else if (config.isFirst) {
                             // Capitalize first word, even if a stop-word
-                            words[j] = _capitalise.call(state, words[j]);
+                            capitalize = true;
                         } else if (config.afterPunct) {
                             // Capitalize after punctuation
-                            words[j] = _capitalise.call(state, words[j]);
+                            capitalize = true;
+                        }
+                        // Don't capitalize if word already contains capitalization
+                        if (capitalize && word === lcase) {
+                            words[j] = _capitalise.call(state, word);
                         }
                         config.afterPunct = false;
                         config.isFirst = false;
@@ -335,18 +334,22 @@ CSL.Output.Formatters = (function () {
         var config = {
             quoteState: [],
             capitaliseWords: function(str) {
-                var words = str.split(" ");
+                var wordle = wordDoppel.split(str);
+                var words = wordle.strings;
                 for (var i=0,ilen=words.length;i<ilen;i++) {
                     var word = words[i];
                     if (word) {
                         if (config.isFirst) {
-                            words[i] = _capitalise.call(state, word);
+                            // Don't capitalize if word already contains capitalization
+                            if (word === CSL.toLocaleLowerCase.call(state, word)) {
+                                words[i] = _capitalise.call(state, word);
+                            }
                             config.isFirst = false;
                             break;
                         }
                     }
                 }
-                return words.join(" ");
+                return wordDoppel.join(wordle);
             },
             skipWordsRex: null,
             tagState: [],
@@ -366,14 +369,18 @@ CSL.Output.Formatters = (function () {
         var config = {
             quoteState: [],
             capitaliseWords: function(str) {
-                var words = str.split(" ");
+                var wordle = wordDoppel.split(str);
+                var words = wordle.strings;
                 for (var i=0,ilen=words.length;i<ilen;i++) {
                     var word = words[i];
                     if (word) {
-                        words[i] = _capitalise.call(state, word);
+                        // Don't capitalize if word already contains capitalization
+                        if (word === CSL.toLocaleLowerCase.call(state, word)) {
+                            words[i] = _capitalise.call(state, word);
+                        }
                     }
                 }
-                return words.join(" ");
+                return wordDoppel.join(wordle);
             },
             skipWordsRex: null,
             tagState: [],
