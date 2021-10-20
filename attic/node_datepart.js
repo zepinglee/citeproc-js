@@ -35,7 +35,7 @@
 
 CSL.Node["date-part"] = {
 	build: function (state, target) {
-		var func, pos, len, decor;
+		var func, pos, len, decor, blob;
 		if (!this.strings.form) {
 			this.strings.form = "long";
 		}
@@ -173,7 +173,10 @@ CSL.Node["date-part"] = {
 									state.dateput.openLevel("empty");
 									state.dateput.append(value_end, this);
 									if (first_date) {
-										state.dateput.current.value().blobs[0].strings.prefix = "";
+										blob = state.dateput.current.value().blobs[0];
+										if (blob) {
+											blob.strings.prefix = "";
+										}
 									}
 									if (bc) {
 										state.dateput.append(bc);
@@ -230,5 +233,3 @@ CSL.Node["date-part"] = {
 		}
 	}
 };
-
-
