@@ -10206,7 +10206,11 @@ CSL.Node["date-part"] = {
                         last_string_output = value;
                         state.output.append(value, this);
                         curr = state.output.current.value();
-                        curr.blobs[(curr.blobs.length - 1)].strings.suffix = "";
+                        blob = curr.blobs[(curr.blobs.length - 1)];
+                        if (blob) {
+                            blob.strings.suffix = "";
+                        }
+
                         if (this.strings["range-delimiter"]) {
                             state.output.append(this.strings["range-delimiter"]);
                         } else {
