@@ -14,4 +14,4 @@ jobs:
           node-version: 16.x
       - run: npm install -g mocha
       - run: npm install -g citeproc-test-runner
-      - run: cslrun -a --reporter spec
+      - run: cslrun -a --reporter dot
