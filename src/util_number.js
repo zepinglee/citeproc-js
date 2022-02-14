@@ -986,7 +986,7 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, masterStyling.strings.prefix, null, masterStyling, `${num.particle}${num.value}`);
         if (num.collapsible) {
             var blob;
-            if (num.value.match(/^[1-9][0-9]*$/)) {
+            if (num.value.match(/^[1-9][0-9]*$/) && Number.isSafeInteger(parseInt(num.value, 10))) {
                 blob = new CSL.NumericBlob(state, num.particle, parseInt(num.value, 10), numStyling, itemID);
             } else {
                 blob = new CSL.NumericBlob(state, num.particle, num.value, numStyling, itemID);
