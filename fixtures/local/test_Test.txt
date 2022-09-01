@@ -1,0 +1,61 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== RESULT =====>>
+art. 42 true
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="note"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2009-08-10T04:49:00+09:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <group delimiter=" ">
+        <label variable="locator" form="short"/>
+        <text variable="locator"/>
+        <choose>
+          <if locator="article-locator">
+            <text value="true"/>
+          </if>
+          <else>
+            <text value="false"/>
+          </else>
+        </choose>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "ITEM-1",
+        "type": "legislation"
+    }
+]
+<<===== INPUT =====<<
+
+
+>>===== CITATION-ITEMS =====>>
+[
+    [
+        {
+            "id": "ITEM-1",
+            "locator": "42",
+            "label": "article-locator"
+        }
+    ]
+]
+<<===== CITATION-ITEMS =====<<
