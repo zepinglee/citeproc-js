@@ -211,7 +211,7 @@ CSL.Output.Formats.prototype.text = {
         return "\n"+str;
     },
     "@display/left-margin": function (state, str) {
-        return str;
+        return str + " ";
     },
     "@display/right-inline": function (state, str) {
         return str;
@@ -580,7 +580,7 @@ CSL.Output.Formats.prototype.latex = {
         return text;
     },
     "bibstart": "\\begin{thebibliography}{4}",
-    "bibend": "\end{thebibliography}",
+    "bibend": "\\end{thebibliography}",
     "@font-style/italic": "{\\em %%STRING%%}",
     "@font-style/oblique": false,
     "@font-style/normal": false,

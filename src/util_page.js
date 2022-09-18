@@ -3,7 +3,7 @@
 CSL.Util.PageRangeMangler = {};
 
 CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
-    var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago, lst, m, b, e, ret, begin, end, ret_func;
+    var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago15, chicago16, lst, m, b, e, ret, begin, end, ret_func;
     
     var range_delimiter = state.getTerm(rangeType + "-range-delimiter");
 
@@ -111,7 +111,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         return ret.join("");
     };
 
-    chicago = function (lst) {
+    chicago15 = function (lst) {
         len = lst.length;
         for (pos = 1; pos < len; pos += 2) {
             if ("object" === typeof lst[pos]) {
@@ -122,6 +122,31 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
                     m[3] = "" + (end % 100);
                 } else if (begin >= 10000) {
                     m[3] = "" + (end % 1000);
+                }
+            }
+            if (m[2].slice(1) === m[0]) {
+                m[2] = range_delimiter;
+            }
+        }
+        return stringify(lst);
+    };
+
+    chicago16 = function (lst) {
+        len = lst.length;
+        for (pos = 1; pos < len; pos += 2) {
+            if ("object" === typeof lst[pos]) {
+                m = lst[pos];
+                begin = parseInt(m[1], 10);
+                end = parseInt(m[3], 10);
+                e = "" + end;
+                if (begin > 100 && begin % 100) {
+                    for (var i = 2; i < e.length; i++) {
+                        var divisor = Math.pow(10, i);
+                        if (Math.floor(begin / divisor) === Math.floor(end / divisor)) {
+                            m[3] = "" + (end % divisor);
+                            break;
+                        }
+                    }
                 }
             }
             if (m[2].slice(1) === m[0]) {
@@ -160,7 +185,15 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
         };
     } else if (state.opt[rangeType + "-range-format"] === "chicago") {
         ret_func = function (str) {
-            return sniff(str, chicago);
+            return sniff(str, chicago15);
+        };
+    } else if (state.opt[rangeType + "-range-format"] === "chicago-15") {
+        ret_func = function (str) {
+            return sniff(str, chicago15);
+        };
+    } else if (state.opt[rangeType + "-range-format"] === "chicago-16") {
+        ret_func = function (str) {
+            return sniff(str, chicago16);
         };
     }
 
