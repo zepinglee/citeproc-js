@@ -2,12 +2,12 @@
 
 CSL.NameOutput = function(state, Item, item) {
     this.debug = false;
+    this.state = state;
     //SNIP-START
     if (this.debug) {
-        print("(1)");
+        this.state.sys.print("(1)");
     }
     //SNIP-END
-    this.state = state;
     this.Item = Item;
     this.item = item;
     this.nameset_base = 0;
@@ -161,21 +161,21 @@ CSL.NameOutput.prototype.outputNames = function () {
 
     //SNIP-START
     if (this.debug) {
-        print("(2)");
+        this.state.sys.print("(2)");
     }
     //SNIP-END
     // util_names_etalconfig.js
     this.getEtAlConfig();
     //SNIP-START
     if (this.debug) {
-        print("(3)");
+        this.state.sys.print("(3)");
     }
     //SNIP-END
     // util_names_divide.js
     this.divideAndTransliterateNames();
     //SNIP-START
     if (this.debug) {
-        print("(4)");
+        this.state.sys.print("(4)");
     }
     //SNIP-END
     // util_names_truncate.js
@@ -183,13 +183,13 @@ CSL.NameOutput.prototype.outputNames = function () {
     this.truncatePersonalNameLists();
     //SNIP-START
     if (this.debug) {
-        print("(5)");
+        this.state.sys.print("(5)");
     }
     //SNIP-END
 
     //SNIP-START
     if (this.debug) {
-        print("(6)");
+        this.state.sys.print("(6)");
     }
     //SNIP-END
     // util_names_disambig.js
@@ -199,7 +199,7 @@ CSL.NameOutput.prototype.outputNames = function () {
     this.constrainNames();
     //SNIP-START
     if (this.debug) {
-        print("(7)");
+        this.state.sys.print("(7)");
     }
     //SNIP-END
     // form="count"
@@ -213,25 +213,25 @@ CSL.NameOutput.prototype.outputNames = function () {
 
     //SNIP-START
     if (this.debug) {
-        print("(8)");
+        this.state.sys.print("(8)");
     }
     //SNIP-END
     this.setEtAlParameters();
     //SNIP-START
     if (this.debug) {
-        print("(9)");
+        this.state.sys.print("(9)");
     }
     //SNIP-END
     this.setCommonTerm(this.requireMatch);
     //SNIP-START
     if (this.debug) {
-        print("(10)");
+        this.state.sys.print("(10)");
     }
     //SNIP-END
     this.renderAllNames();
     //SNIP-START
     if (this.debug) {
-        print("(11)");
+        this.state.sys.print("(11)");
     }
     //SNIP-END
     var blob_list = [];
@@ -245,7 +245,7 @@ CSL.NameOutput.prototype.outputNames = function () {
         } else {
             //SNIP-START
             if (this.debug) {
-                print("(11a)");
+                this.state.sys.print("(11a)");
             }
             //SNIP-END
             for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
@@ -253,7 +253,7 @@ CSL.NameOutput.prototype.outputNames = function () {
             }
             //SNIP-START
             if (this.debug) {
-                print("(11b)");
+                this.state.sys.print("(11b)");
             }
             //SNIP-END
             if (this.institutions[v].length) {
@@ -265,13 +265,13 @@ CSL.NameOutput.prototype.outputNames = function () {
             }
             //SNIP-START
             if (this.debug) {
-                print("(11c)");
+                this.state.sys.print("(11c)");
             }
             //SNIP-END
             var varblob = this.joinFreetersAndInstitutionSets([this.freeters[v], institutions]);
             //SNIP-START
             if (this.debug) {
-                print("(11d)");
+                this.state.sys.print("(11d)");
             }
             //SNIP-END
         }
@@ -284,7 +284,7 @@ CSL.NameOutput.prototype.outputNames = function () {
         }
         //SNIP-START
         if (this.debug) {
-            print("(11e)");
+            this.state.sys.print("(11e)");
         }
         //SNIP-END
         if (this.common_term) {
@@ -293,14 +293,14 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     //SNIP-START
     if (this.debug) {
-        print("(12)");
+        this.state.sys.print("(12)");
     }
     //SNIP-END
     this.state.output.openLevel("empty");
     this.state.output.current.value().strings.delimiter = this.state.inheritOpt(this.names, "delimiter", "names-delimiter");
     //SNIP-START
     if (this.debug) {
-        print("(13)");
+        this.state.sys.print("(13)");
     }
     //SNIP-END
     for (i = 0, ilen = blob_list.length; i < ilen; i += 1) {
@@ -312,20 +312,20 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     //SNIP-START
     if (this.debug) {
-        print("(14)");
+        this.state.sys.print("(14)");
     }
     //SNIP-END
     this.state.output.closeLevel("empty");
     //SNIP-START
     if (this.debug) {
-        print("(15)");
+        this.state.sys.print("(15)");
     }
     //SNIP-END
     var blob = this.state.output.pop();
     this.state.tmp.name_node.top = blob;
     //SNIP-START
     if (this.debug) {
-        print("(16)");
+        this.state.sys.print("(16)");
     }
     //SNIP-END
 
@@ -342,14 +342,14 @@ CSL.NameOutput.prototype.outputNames = function () {
     }
     //SNIP-START
     if (this.debug) {
-        print("(17)");
+        this.state.sys.print("(17)");
     }
     //SNIP-END
     // Also used in CSL.Util.substituteEnd (which could do with
     // some cleanup at this writing).
     //SNIP-START
     if (this.debug) {
-        print("(18)");
+        this.state.sys.print("(18)");
     }
     //SNIP-END
     if (variables[0] !== "authority") {
@@ -414,7 +414,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 
     //SNIP-START
     if (this.debug) {
-        print("(19)");
+        this.state.sys.print("(19)");
     }
     //SNIP-END
 };
@@ -506,7 +506,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             this.state.registry.authorstrings[this.Item.id] = mystr;
         } else if (!this.state.tmp.just_looking
                    && !this.state.tmp.suppress_decorations && ((this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
-            // XX1 print("RENDER: "+this.Item.id);
+            // XX1 this.state.sys.print("RENDER: "+this.Item.id);
             mystr = "";
             myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;
             oldchars = this.state.tmp.offset_characters;
@@ -515,7 +515,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             }
             if (mystr === this.state.tmp.last_primary_names_string) {
                 if (this.item["suppress-author"] || (this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length)) {
-                    // XX1 print("    CUT!");
+                    // XX1 this.state.sys.print("    CUT!");
                     this.state.tmp.name_node.top.blobs.pop();
                     this.state.tmp.name_node.children = [];
                     // If popped, avoid side-effects on character counting: we're only interested
@@ -527,7 +527,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
                     this.state.tmp.use_cite_group_delimiter = true;
                 }
             } else {
-                // XX1 print("remembering: "+mystr);
+                // XX1 this.state.sys.print("remembering: "+mystr);
                 this.state.tmp.last_primary_names_string = mystr;
                 // XXXXX A little more precision would be nice.
                 // This will clobber variable="author editor" as well as variable="author".

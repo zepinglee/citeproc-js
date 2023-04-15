@@ -1,4 +1,6 @@
-groupID: 2319948
+groupIdMap:
+  final: 2319948
+  draft: 2339078
 path:
     styletests: fixtures/styles
     local: fixtures/local

@@ -1502,6 +1502,7 @@ var CSL = {
                 }
             }
         }
+        var jurisdictionList = state.getJurisdictionList(Item.jurisdiction);
         if (state.opt.parallel.enable) {
             if (!state.parallel) {
                 state.parallel = new CSL.Parallel(state);

@@ -36,7 +36,7 @@ citation
 ..[7] <i>Bogus Book</i> (n 3)
 ..[8] <i>Callery</i> (n 6) [16]
 ..[9] <i>Boulton v Jones</i> (1857) 2 H&#38;N 564
->>[10] <i>Stubbs v Sayer</i> (CA, 8 November 1990)
+>>[10] <i>Stubbs v Sayer</i> (CA, 123-456, 8 November 1990)
 <<===== RESULT =====<<
 
 
@@ -1642,6 +1642,7 @@ citation
         "title-short": "Stubbs",
         "jurisdiction": "gb",
         "authority": "Court of Appeal",
+        "number": "123-456",
         "issued": {
           "date-parts": [
             [1990, 11, 8]
