@@ -22,6 +22,11 @@ CSL.Registry.NameReg = function (state) {
 
     set_keys = function (state, itemid, nameobj) {
         pkey = strip_periods(nameobj.family);
+
+        if (state.opt["demote-non-dropping-particle"] === "never" && nameobj["non-dropping-particle"] && nameobj["family"]) {
+            pkey = `${pkey} ${nameobj["non-dropping-particle"]}`;
+        }
+        
         skey = strip_periods(nameobj.given);
         // Drop lowercase suffixes (such as et al.) from given name field
         // for disambiguation purposes.
@@ -233,11 +238,10 @@ CSL.Registry.NameReg = function (state) {
             && pos !== 0) {
                 return;
         }
-        
+
         // A hack. Safe if the name object is used only here, for disambiguation purposes.
-        if (state.opt["demote-non-dropping-particle"] === "never" && nameobj["non-dropping-particle"] && nameobj["family"]) {
-            nameobj["family"] = nameobj["non-dropping-particle"] + " " + nameobj["family"];
-        }
+        /*
+        */
         
         //CSL.debug("INS");
         set_keys(this.state, "" + item_id, nameobj);
