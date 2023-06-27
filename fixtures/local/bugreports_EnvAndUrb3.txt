@@ -30,56 +30,32 @@ Baines, Title One; Baines, Title Two.
   <info>
     <id />
     <title />
-    <updated>2023-06-25T16:15:12+08:00</updated>
+    <updated>2023-06-25T14:41:33+08:00</updated>
   </info>
-  <macro name="title">
-    <choose>
-      <if type="book">
-        <group delimiter=": ">
-          <text variable="title" font-style="italic"/>
-          <choose>
-            <if disambiguate="true">
-              <group delimiter=" ">
-                <label variable="volume" form="short" text-case="capitalize-first"/>
-                <number variable="volume"/>
-              </group>
-            </if>
-          </choose>
-        </group>
-      </if>
-      <else>
-        <text variable="title" quotes="true"/>
-      </else>
-    </choose>
-  </macro>
-  <macro name="layout">
-    <group delimiter=", ">
-      <names variable="author">
-        <name form="short"/>
-      </names>
-      <text macro="title"/>
-      <!-- <choose>
-        <if disambiguate="true">
-          <text macro="title"/>
-        </if>
-      </choose> -->
-      <choose>
-        <if disambiguate="true">
-          <text variable="type"/>
-        </if>
-      </choose>
-      <choose>
-        <if disambiguate="true">
-          <date variable="issued">
-            <date-part name="year"/>
-          </date>
-        </if>
-      </choose>
-    </group>
-  </macro>
   <citation>
     <layout delimiter="; ">
-      <text macro="layout"/>
+      <group delimiter=", ">
+        <names variable="author">
+          <name form="short"/>
+        </names>
+        <choose>
+          <if disambiguate="true">
+            <date variable="issued">
+              <date-part name="year"/>
+            </date>
+          </if>
+        </choose>
+        <choose>
+          <if disambiguate="true">
+            <text variable="title"/>
+          </if>
+        </choose>
+        <choose>
+          <if disambiguate="true">
+            <text variable="container-title"/>
+          </if>
+        </choose>
+      </group>
     </layout>
   </citation>
 </style>
@@ -90,13 +66,14 @@ Baines, Title One; Baines, Title Two.
 [
     {
         "id": "ITEM-1",
-        "type": "book",
+        "type": "article-journal",
         "author": [
             {
                 "family": "Baines",
                 "given": "T. S."
             }
         ],
+        "container-title": "Journal",
         "issued": {
             "date-parts": [
                 [
@@ -104,8 +81,7 @@ Baines, Title One; Baines, Title Two.
                 ]
             ]
         },
-        "title": "Title",
-        "volume": "1"
+        "title": "Title One"
     },
     {
         "id": "ITEM-2",
@@ -124,7 +100,7 @@ Baines, Title One; Baines, Title Two.
                 ]
             ]
         },
-        "title": "Title"
+        "title": "Title Two"
     }
 ]
 <<===== INPUT =====<<
