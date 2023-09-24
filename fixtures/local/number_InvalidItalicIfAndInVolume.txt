@@ -1,0 +1,75 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== DESCRIPTION =====>>
+<https://github.com/Juris-M/citeproc-js/issues/229>
+<<===== DESCRIPTION =====<<
+
+
+>>===== RESULT =====>>
+<i>Title</i> <i>Bar an Baz</i>. <i>Volume</i> <i>Bar an Baz</i>
+<i>Title</i> <i>Bar and Baz</i>. <i>Volume</i> <i>Bar and Baz</i>
+<<===== RESULT =====<<
+
+
+>>===== CITATION-ITEMS =====>>
+[
+    [
+        {
+            "id": "ITEM-1"
+        }
+    ],
+    [
+        {
+            "id": "ITEM-2"
+        }
+    ]
+]
+<<===== CITATION-ITEMS =====<<
+
+
+>>===== CSL =====>>
+<style
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2023-09-24T21:00:18+08:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <group delimiter=". ">
+        <text variable="title"/>
+        <text variable="volume"/>
+      </group>
+    </layout>
+  </citation>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "ITEM-1",
+        "type": "book",
+        "title": "<i>Title</i> <i>Bar an Baz</i>",
+        "volume": "<i>Volume</i> <i>Bar an Baz</i>"
+    },
+    {
+        "id": "ITEM-2",
+        "type": "book",
+        "title": "<i>Title</i> <i>Bar and Baz</i>",
+        "volume": "<i>Volume</i> <i>Bar and Baz</i>"
+    }
+]
+<<===== INPUT =====<<
+
+
+>>===== VERSION =====>>
+1.0
+<<===== VERSION =====<<
