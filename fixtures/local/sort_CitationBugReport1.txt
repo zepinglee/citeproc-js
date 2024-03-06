@@ -1,0 +1,1447 @@
+>>===== MODE =====>>
+citation
+<<===== MODE =====<<
+
+
+>>===== DESCRIPTION =====>>
+<https://github.com/zotero-chinese/styles/issues/267>
+<<===== DESCRIPTION =====<<
+
+
+>>===== RESULT =====>>
+（Chih et al., 2008; Chen et al., 2014, 2016; Dou et al., 2016; Li et al., 2021; Liao et al., 2021; Chen et al., 2022; Jensen, 2022; 金智, 2010; 周林洁, 2014; 陈刚, 2015; 周铭山 等, 2016; 刘白璐 等, 2018; 郑志刚 等, 2019; 周泽将 等, 2019; 李实, 2021; 刘 等, 2021; Tate, G. 等, 2024）
+<<===== RESULT =====<<
+
+
+>>===== CITATION-ITEMS =====>>
+[
+	[
+		{
+			"id": "Boardreformsworld2021"
+		},
+		{
+			"id": "CEOHometownFavoritism2021"
+		},
+		{
+			"id": "ChaoEWeiPaiDongShiDaGuDongJiHuiZhuYiYuDongShiTouPiaoXingWei2019"
+		},
+		{
+			"id": "CorporateSocialResponsibility2008"
+		},
+		{
+			"id": "FundingConditionsExplain2022"
+		},
+		{
+			"id": "GongSiZhiLiJiGouChiGuYuGuJieTongBuXing2014"
+		},
+		{
+			"id": "GongTongFuYuDeMuBiaoHeShiXianLuJingXuanZe2021"
+		},
+		{
+			"id": "GuanZhiYuChuangYeLaiZiZhongGuoDeWeiGuanZhengJu2015"
+		},
+		{
+			"id": "HumanFactorAcquisitions2024"
+		},
+		{
+			"id": "JiYuChangQiJieZhiDaoXiangDeBingGouXingWeiYanJiuYiWoGuoJiaZuQiYeWeiZhengJu2018"
+		},
+		{
+			"id": "Laborunemploymentinsurance2016"
+		},
+		{
+			"id": "LocalGamblingPreferences2014"
+		},
+		{
+			"id": "MianZiGongChengHuanShiZhenCaiShiGan2016"
+		},
+		{
+			"id": "MinYingQiYeShenFenRenTongYuFengXianChengDanShuiPing2019"
+		},
+		{
+			"id": "Outputspilloverschanges2016"
+		},
+		{
+			"id": "PaiChiHuanShiBaoRong2021"
+		},
+		{
+			"id": "XinHuiJiZhunZeHuiJiXinXiZhiLiangYuGuJieTongBuXing2010"
+		},
+		{
+			"id": "fasttrackInformation2022"
+		}
+	]
+]
+<<===== CITATION-ITEMS  =====<<
+
+
+>>===== CSL =====>>
+<?xml version="1.0" encoding="utf-8"?>
+<style xmlns="http://purl.org/net/xbiblio/csl" version="1.0" class="in-text" name-as-sort-order="all" demote-non-dropping-particle="never" initialize-with=". " initialize-with-hyphen="false" page-range-format="expanded" default-locale="zh-CN">
+  <info>
+    <title>重庆大学（著者-出版年制）</title>
+    <id>http://www.zotero.org/styles/chongqing-university-author-date</id>
+    <link href="http://www.zotero.org/styles/chongqing-university-author-date" rel="self"/>
+    <link href="http://www.zotero.org/styles/011gb-t-7714-2015-author-date-bilingual-no-uppercase-no-url-doi-full-width-parentheses" rel="template"/>
+    <link href="http://graduate.cqu.edu.cn/xwsy/xwsq.htm" rel="documentation"/>
+    <author>
+      <name>Zeping Lee</name>
+      <email>zepinglee@gmail.com</email>
+    </author>
+    <category citation-format="author-date"/>
+    <summary>重庆大学博士、硕士学位论文格式标准（2023年修订）</summary>
+    <updated>2024-08-16T13:07:43+08:00</updated>
+    <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
+  </info>
+  <locale xml:lang="zh">
+    <date form="text">
+      <date-part name="year" suffix="年" range-delimiter="&#8212;"/>
+      <date-part name="month" form="numeric" suffix="月" range-delimiter="&#8212;"/>
+      <date-part name="day" suffix="日" range-delimiter="&#8212;"/>
+    </date>
+    <terms>
+      <term name="anonymous" form="short">佚名</term>
+      <term name="edition" form="short">版</term>
+      <term name="space-et-al"> 等</term>
+      <term name="open-quote">“</term>
+      <term name="close-quote">”</term>
+      <term name="open-inner-quote">‘</term>
+      <term name="close-inner-quote">’</term>
+    </terms>
+  </locale>
+  <locale>
+    <date form="numeric">
+      <date-part name="year" range-delimiter="/"/>
+      <date-part name="month" form="numeric-leading-zeros" prefix="-" range-delimiter="/"/>
+      <date-part name="day" form="numeric-leading-zeros" prefix="-" range-delimiter="/"/>
+    </date>
+    <terms>
+      <term name="space-et-al">et al.</term>
+      <term name="page-range-delimiter">-</term>
+    </terms>
+  </locale>
+  <!-- 主要责任者 -->
+  <macro name="author">
+    <names variable="author">
+      <name/>
+      <substitute>
+        <names variable="composer"/>
+        <names variable="illustrator"/>
+        <names variable="director"/>
+        <choose>
+          <if variable="container-title" match="none">
+            <names variable="editor"/>
+          </if>
+        </choose>
+        <text macro="anon"/>
+      </substitute>
+    </names>
+  </macro>
+  <!-- 正文中引用，对欧美著者只标注第一个著者的姓 -->
+  <macro name="author-intext-en">
+    <names variable="author">
+      <name form="short"/>
+      <substitute>
+        <names variable="composer"/>
+        <names variable="illustrator"/>
+        <names variable="director"/>
+        <choose>
+          <if variable="container-title" match="none">
+            <names variable="editor"/>
+          </if>
+        </choose>
+        <text macro="anon"/>
+      </substitute>
+    </names>
+  </macro>
+  <!-- 正文中的引用，对中国著者标注第一著者的姓名 -->
+  <macro name="author-intext-zh">
+    <names variable="author">
+      <!-- 国标 10.2.2 节要求姓氏与“et al.”“等”之间留适当空隙 -->
+      <name form="long"/>
+      <et-al term="space-et-al"/>
+      <substitute>
+        <names variable="composer"/>
+        <names variable="illustrator"/>
+        <names variable="director"/>
+        <choose>
+          <if variable="container-title" match="none">
+            <names variable="editor"/>
+          </if>
+        </choose>
+        <text macro="anon"/>
+      </substitute>
+    </names>
+  </macro>
+  <macro name="author-intext-narrative-zh">
+    <names variable="author">
+      <name form="long"/>
+      <substitute>
+        <names variable="composer"/>
+        <names variable="illustrator"/>
+        <names variable="director"/>
+        <choose>
+          <if variable="container-title" match="none">
+            <names variable="editor"/>
+          </if>
+        </choose>
+        <text macro="anon"/>
+      </substitute>
+    </names>
+  </macro>
+  <macro name="anon">
+    <text term="anonymous" form="short" strip-periods="true" text-case="capitalize-first"/>
+  </macro>
+  <!-- 题名 -->
+  <macro name="title">
+    <group delimiter=", ">
+      <group delimiter=": ">
+        <text variable="title"/>
+        <group delimiter="&#8195;">
+          <choose>
+            <if variable="container-title" type="chapter entry-dictionary entry-encyclopedia paper-conference" match="none">
+              <text macro="volume"/>
+              <text variable="volume-title"/>
+            </if>
+          </choose>
+          <group delimiter=", ">
+            <choose>
+              <if type="patent">
+                <text macro="patent-country"/>
+              </if>
+            </choose>
+            <choose>
+              <if type="article article-journal" match="none">
+                <!-- 预印本和期刊文章的编号用于其他位置 -->
+                <text variable="number"/>
+              </if>
+            </choose>
+            <choose>
+              <if type="collection manuscript personal_communication" match="any">
+                <!-- 档案的卷宗号 -->
+                <text variable="archive_location"/>
+              </if>
+            </choose>
+          </group>
+        </group>
+      </group>
+      <choose>
+        <if variable="container-title" type="paper-conference" match="none">
+          <choose>
+            <if variable="event-date">
+              <text variable="event-place"/>
+              <date variable="event-date" form="text"/>
+            </if>
+          </choose>
+        </if>
+      </choose>
+    </group>
+    <group delimiter="/" prefix="[" suffix="]">
+      <text macro="type-id"/>
+      <text macro="medium-id"/>
+    </group>
+  </macro>
+  <!-- 书籍的卷号（“第 x 卷”或“第 x 册”） -->
+  <macro name="volume">
+    <choose>
+      <if type="article article-journal article-magazine article-newspaper periodical" match="none">
+        <choose>
+          <if is-numeric="volume">
+            <group delimiter=" ">
+              <label variable="volume" form="short" text-case="capitalize-first"/>
+              <text variable="volume"/>
+            </group>
+          </if>
+          <else>
+            <text variable="volume"/>
+          </else>
+        </choose>
+      </if>
+    </choose>
+  </macro>
+  <!-- 专利国别 -->
+  <macro name="patent-country">
+    <choose>
+      <!-- 专利的国别应使用 `jurisdiction`，但 Zotero 没有对应的字段，所以使用 `publisher-place` 作为备选 -->
+      <if variable="jurisdiction">
+        <text variable="jurisdiction"/>
+      </if>
+      <else>
+        <text variable="publisher-place"/>
+      </else>
+    </choose>
+  </macro>
+  <!-- 文献类型标识 -->
+  <macro name="type-id">
+    <choose>
+      <if type="article bill collection hearing legal_case legislation personal_communication regulation treaty" match="any">
+        <!-- 档案，A：分类保存以备查考的文件和材料，如人事档案、科技档案、法律法规、政府文件等。
+          article 为预印本，符合“科技档案”
+        -->
+        <text value="A"/>
+      </if>
+      <else-if type="article-journal article-magazine periodical" match="any">
+        <text value="J"/>
+      </else-if>
+      <else-if type="article-newspaper">
+        <text value="N"/>
+      </else-if>
+      <else-if type="book chapter classic entry-dictionary entry-encyclopedia" match="any">
+        <text value="M"/>
+      </else-if>
+      <else-if type="dataset">
+        <text value="DS"/>
+      </else-if>
+      <else-if type="map">
+        <text value="CM"/>
+      </else-if>
+      <else-if type="paper-conference">
+        <text value="C"/>
+      </else-if>
+      <else-if type="patent">
+        <text value="P"/>
+      </else-if>
+      <else-if type="post post-weblog webpage" match="any">
+        <text value="EB"/>
+      </else-if>
+      <else-if type="report">
+        <text value="R"/>
+      </else-if>
+      <else-if type="software">
+        <text value="CP"/>
+      </else-if>
+      <else-if type="standard">
+        <text value="S"/>
+      </else-if>
+      <else-if type="thesis">
+        <text value="D"/>
+      </else-if>
+      <else>
+        <text value="Z"/>
+      </else>
+    </choose>
+  </macro>
+  <!-- 文献载体标识 -->
+  <macro name="medium-id">
+    <choose>
+      <if type="dataset post post-weblog software webpage" match="any">
+        <!-- 仅当纯电子资源显示 URL 时才出现“OL” -->
+        <choose>
+          <if variable="medium">
+            <text variable="medium"/>
+          </if>
+          <else-if variable="URL">
+            <text value="OL"/>
+          </else-if>
+        </choose>
+      </if>
+    </choose>
+  </macro>
+  <!-- 其他责任者 -->
+  <macro name="secondary-contributors">
+    <names variable="translator">
+      <name/>
+      <label form="short" prefix=", "/>
+    </names>
+  </macro>
+  <!-- 专著主要责任者 -->
+  <macro name="container-contributors">
+    <names variable="editor">
+      <name/>
+      <substitute>
+        <names variable="editorial-director"/>
+        <names variable="collection-editor"/>
+        <names variable="container-author"/>
+      </substitute>
+    </names>
+  </macro>
+  <!-- 专著题名 -->
+  <macro name="container-booklike">
+    <group delimiter=", ">
+      <choose>
+        <if variable="container-title">
+          <!-- 优先使用专著或会议论文集的题名 -->
+          <group delimiter=": ">
+            <text variable="container-title"/>
+            <text macro="volume"/>
+          </group>
+        </if>
+        <else-if type="paper-conference">
+          <!-- 有些会议没有论文集，使用会议名代替 -->
+          <text variable="event-title"/>
+        </else-if>
+      </choose>
+      <!-- 会议时间和会议地点 -->
+      <choose>
+        <if type="paper-conference" variable="event-date" match="all">
+          <date variable="event-date" form="text"/>
+          <text variable="event-place"/>
+        </if>
+      </choose>
+    </group>
+  </macro>
+  <!-- 连续出版物中的出处项 -->
+  <macro name="container-periodical">
+    <choose>
+      <if type="article-newspaper">
+        <!-- 报纸的出处项：“刊名, 出版日期(版次): 页码[引用日期]” -->
+        <group delimiter=", ">
+          <text variable="container-title"/>
+          <text macro="issued-date"/>
+        </group>
+        <text variable="page" prefix="(" suffix=")"/>
+      </if>
+      <else>
+        <!-- 期刊、杂志的出处项：“刊名, 卷(期): 页码[引用日期]” -->
+        <group delimiter=": ">
+          <group>
+            <group delimiter=", ">
+              <text variable="container-title"/>
+              <text variable="volume"/>
+            </group>
+            <text variable="issue" prefix="(" suffix=")"/>
+          </group>
+          <text variable="page"/>
+        </group>
+      </else>
+    </choose>
+    <text macro="accessed-date"/>
+  </macro>
+  <!-- 版本项 -->
+  <macro name="edition">
+    <choose>
+      <if is-numeric="edition">
+        <group delimiter=" ">
+          <number variable="edition" form="ordinal"/>
+          <label variable="edition" form="short"/>
+        </group>
+      </if>
+      <else>
+        <text variable="edition"/>
+      </else>
+    </choose>
+  </macro>
+  <!-- 连续出版物的年卷期 -->
+  <macro name="year-volume-issue">
+    <group delimiter=", ">
+      <text macro="issued-year"/>
+      <text variable="volume"/>
+    </group>
+    <text variable="issue" prefix="(" suffix=")"/>
+  </macro>
+  <!-- 出版项 -->
+  <macro name="publisher">
+    <choose>
+      <if type="patent">
+        <!-- 专利的出版项格式“公告日期[引用日期]” -->
+        <text macro="issued-date"/>
+        <text macro="accessed-date"/>
+      </if>
+      <else-if type="book chapter paper-conference periodical thesis" variable="archive archive-place publisher publisher-place page" match="any">
+        <!-- 非纯电子资源的格式“出版地: 出版者, 出版年: 页码[引用日期]” -->
+        <group delimiter=": ">
+          <group delimiter=": ">
+            <choose>
+              <if variable="publisher publisher-place" match="any">
+                <text variable="publisher-place"/>
+                <text variable="publisher"/>
+              </if>
+              <else>
+                <!-- 档案的馆藏地以及收藏机构或单位 -->
+                <text variable="archive-place"/>
+                <text variable="archive"/>
+              </else>
+            </choose>
+          </group>
+          <text variable="page"/>
+        </group>
+        <text macro="accessed-date"/>
+      </else-if>
+      <else-if variable="URL">
+        <!-- 纯电子资源联机网络文献的格式“(更新或修改日期)[引用日期]”。
+          原国标中，电子公告、无出版社的报告、法规等文献都可以作为“纯电子文献”。
+        -->
+        <choose>
+          <if type="dataset post post-weblog software webpage" match="any">
+            <!-- 限制更少的类型作为“纯电子文献“ -->
+            <choose>
+              <if has-day="issued">
+                <text macro="issued-date" prefix="(" suffix=")"/>
+              </if>
+            </choose>
+            <text macro="accessed-date"/>
+          </if>
+        </choose>
+      </else-if>
+    </choose>
+  </macro>
+  <!-- 出版年 -->
+  <macro name="issued-year">
+    <choose>
+      <if variable="issued">
+        <choose>
+          <if is-uncertain-date="issued">
+            <!-- 出版年无法确定时, 估计的出版年应置于方括号内。 -->
+            <date variable="issued" form="numeric" date-parts="year" prefix="[" suffix="]"/>
+          </if>
+          <else>
+            <date variable="issued" form="numeric" date-parts="year"/>
+          </else>
+        </choose>
+      </if>
+      <else-if type="article-journal" variable="available-date" match="all">
+        <!-- 网络首发（advance online publication）的期刊文章的日期使用 available-date -->
+        <date variable="available-date" form="numeric" date-parts="year"/>
+      </else-if>
+      <else>
+        <!-- 选取引用日期的年份作为估计的出版年 -->
+        <date variable="accessed" form="numeric" date-parts="year" prefix="[" suffix="]"/>
+      </else>
+    </choose>
+  </macro>
+  <!-- 出版日期，用于报纸文献、专利的“公告日期或公开日期”、电子资源的“更新或修改日期” -->
+  <macro name="issued-date">
+    <date variable="issued" form="numeric"/>
+  </macro>
+  <!-- 引用日期 -->
+  <macro name="accessed-date">
+    <choose>
+      <if type="dataset post post-weblog software webpage" match="any">
+        <!-- 仅当纯电子资源显示 URL 时才出现引用日期 -->
+        <choose>
+          <if variable="URL">
+            <date variable="accessed" form="numeric" prefix="[" suffix="]"/>
+          </if>
+        </choose>
+      </if>
+    </choose>
+  </macro>
+  <!-- 获取和访问路径、数字对象唯一标识符 -->
+  <macro name="access">
+    <choose>
+      <if type="dataset post post-weblog software webpage" match="any">
+        <!-- 仅纯电子资源显示 URL -->
+        <text variable="URL"/>
+      </if>
+    </choose>
+  </macro>
+  <!-- 参考文献表格式 -->
+  <macro name="entry-layout">
+    <group delimiter=". ">
+      <group delimiter=", ">
+        <text macro="author"/>
+        <text macro="issued-year"/>
+      </group>
+      <choose>
+        <if type="periodical">
+          <!-- 4.3 连续出版物 -->
+          <text macro="title"/>
+          <text macro="year-volume-issue"/>
+          <text macro="publisher"/>
+        </if>
+        <else-if type="article-journal article-magazine article-newspaper" match="any">
+          <!-- 4.4 连续出版物中的析出文献 -->
+          <text macro="title"/>
+          <text macro="container-periodical"/>
+        </else-if>
+        <else-if type="patent">
+          <!-- 4.5 专利文献 -->
+          <text macro="title"/>
+          <text macro="publisher"/>
+        </else-if>
+        <else-if type="dataset post post-weblog software webpage" match="any">
+          <!-- 4.6 电子资源 -->
+          <text macro="title"/>
+          <text macro="publisher"/>
+        </else-if>
+        <else-if type="chapter entry-dictionary entry-encyclopedia paper-conference" variable="container-title" match="any">
+          <!-- 4.2 专著中的析出文献 -->
+          <group delimiter="//">
+            <group delimiter=". ">
+              <text macro="title"/>
+              <text macro="secondary-contributors"/>
+            </group>
+            <group delimiter=". ">
+              <text macro="container-contributors"/>
+              <text macro="container-booklike"/>
+            </group>
+          </group>
+          <text macro="edition"/>
+          <text macro="publisher"/>
+        </else-if>
+        <else>
+          <!-- 4.1 专著 -->
+          <text macro="title"/>
+          <text macro="secondary-contributors"/>
+          <text macro="edition"/>
+          <text macro="publisher"/>
+        </else>
+      </choose>
+      <text macro="access"/>
+    </group>
+  </macro>
+  <citation et-al-min="2" et-al-use-first="1" disambiguate-add-givenname="true" disambiguate-add-year-suffix="true" collapse="year">
+    <sort>
+      <key variable="language"/>
+      <key macro="issued-year"/>
+      <key macro="author-intext-zh"/>
+    </sort>
+    <layout prefix="（" suffix="）" delimiter="; " locale="en">
+      <group delimiter=", ">
+        <text macro="author-intext-en"/>
+        <text macro="issued-year"/>
+      </group>
+    </layout>
+    <layout prefix="（" suffix="）" delimiter="; ">
+      <group delimiter=", ">
+        <text macro="author-intext-zh"/>
+        <text macro="issued-year"/>
+      </group>
+    </layout>
+  </citation>
+  <intext>
+    <layout locale="en">
+      <names variable="author">
+        <name et-al-min="2" et-al-use-first="1" form="short"/>
+        <substitute>
+          <names variable="composer"/>
+          <names variable="illustrator"/>
+          <names variable="director"/>
+          <choose>
+            <if variable="container-title" match="none">
+              <names variable="editor"/>
+            </if>
+          </choose>
+          <text macro="anon"/>
+        </substitute>
+      </names>
+    </layout>
+    <layout>
+      <names variable="author">
+        <name et-al-min="2" et-al-use-first="1" form="long"/>
+        <substitute>
+          <names variable="composer"/>
+          <names variable="illustrator"/>
+          <names variable="director"/>
+          <choose>
+            <if variable="container-title" match="none">
+              <names variable="editor"/>
+            </if>
+          </choose>
+          <text macro="anon"/>
+        </substitute>
+      </names>
+    </layout>
+  </intext>
+  <bibliography entry-spacing="0" et-al-min="2" et-al-use-first="1" hanging-indent="true">
+    <sort>
+      <key macro="author"/>
+      <key macro="issued-year"/>
+    </sort>
+    <layout suffix="." locale="en">
+      <text macro="entry-layout"/>
+    </layout>
+    <layout suffix=".">
+      <text macro="entry-layout"/>
+    </layout>
+  </bibliography>
+</style>
+
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+    {
+        "id": "Boardreformsworld2021",
+        "abstract": "Research Question/Issue This study examines the effects of major board reforms on firms' corporate social responsibility (CSR) performance in countries around the world. Research Findings/Insights Using a difference-in-differences design, we find robust evidence that worldwide board reforms can have significant effects on various stakeholders, resulting in increased firm CSR performance in both the environmental and social dimensions. Relative to countries that have implemented comply-or-explain reforms, countries with rule-based reforms tend to drive the increase in CSR performance post-reform. Our results hold for both first board reforms and major reforms, across different types of reforms, and across various dimensions of CSR performance. In addition, the effect of reforms on CSR performance is more pronounced for firms with higher levels of institutional ownership or lower levels of insider ownership and in countries with weaker CSR awareness and more stringent legal and regulatory environments. Further analyses show that reforms strengthen the relationship between CSR performance and future financial performance. Finally, we explore the possible mechanism through which board reforms could have a significant effect on firms' CSR performance. We find that board reforms increase a firm's likelihood of integrating CSR criteria in executive compensation. Theoretical/Academic Implications The findings of this study suggest that worldwide board reforms that aim to increase shareholders' value can also have significant effects on various stakeholders, resulting in increased firm CSR performance in both the environmental and social dimensions, a non-financial dimension of firm performance. Practitioner/Policy Implications Our evidence suggests that increases in CSR performance are an important channel through which board reforms can increase shareholder value. In addition, our findings suggest that the effectiveness of reforms on CSR varies with both firm- and country-level characteristics related to the relative influence of external shareholders. Thus, this study offers insights to policy makers interested in enhancing CSR performance in their country.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    5,
+                    7
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Liao",
+                "given": "Chih-Hsien"
+            },
+            {
+                "family": "San",
+                "given": "Ziyao"
+            },
+            {
+                "family": "Tsang",
+                "given": "Albert"
+            },
+            {
+                "family": "Yu",
+                "given": "Li"
+            }
+        ],
+        "citation-key": "Boardreformsworld2021",
+        "container-title": "Corporate Governance: An International Review",
+        "DOI": "10.1111/corg.12372",
+        "ISSN": "1467-8683",
+        "issue": "5",
+        "issued": {
+            "date-parts": [
+                [
+                    "2021"
+                ]
+            ]
+        },
+        "language": "en-US",
+        "page": "496-523",
+        "source": "Wiley Online Library",
+        "title": "Board reforms around the world: The effect on corporate social responsibility",
+        "title-short": "Board reforms around the world",
+        "type": "article-journal",
+        "URL": "https://onlinelibrary.wiley.com/doi/abs/10.1111/corg.12372",
+        "volume": "29"
+    },
+    {
+        "id": "CEOHometownFavoritism2021",
+        "abstract": "Exploiting within-firm variations in plant-level toxic releases, we document the effect of managerial hometown attachment on corporate environmental policies. Pollution intensity is 20% lower for plants near CEOs' hometowns, achieved by conducting more costly waste management activities such as source reduction, recycling, and energy recovery. Analyses using CEO turnover events provide causal inference. Hometown emission reduction is stronger for poorly-governed firms, and is significantly weakened following the exogenous reduction in agency conflicts driven by the 2003 Tax Reform Act. In addition, hometown emission reduction is most salient in firms with worse CSR performance or tighten financial constraints. Our findings reveal that CEOs' personal motives affect corporate pollution abatement, which is manifested as a form of agency problem.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2023",
+                    8,
+                    9
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Li",
+                "given": "Wei"
+            },
+            {
+                "family": "Xu",
+                "given": "Qiping"
+            },
+            {
+                "family": "Zhu",
+                "given": "Qifei"
+            }
+        ],
+        "citation-key": "CEOHometownFavoritism2021",
+        "DOI": "10.2139/ssrn.3859116",
+        "event-place": "Rochester, NY",
+        "genre": "SSRN Scholarly Paper",
+        "issued": {
+            "date-parts": [
+                [
+                    "2021",
+                    6,
+                    3
+                ]
+            ]
+        },
+        "language": "en-US",
+        "number": "3859116",
+        "publisher-place": "Rochester, NY",
+        "source": "Social Science Research Network",
+        "title": "CEO Hometown Favoritism in Corporate Environmental Policies",
+        "type": "article",
+        "URL": "https://papers.ssrn.com/abstract=3859116"
+    },
+    {
+        "id": "ChaoEWeiPaiDongShiDaGuDongJiHuiZhuYiYuDongShiTouPiaoXingWei2019",
+        "abstract": "长期以来被视作董事积极行使监督权力的投非赞成票行为在中国资本市场公司治理实践中无论从数量还是监督效果上都比预期的要少、要差。本文研究发现,实际控制人超额委派董事现象的存在往往对董事以投非赞成票方式履行监督职责构成严重干扰,成为上述结果出现的潜在原因之一。采用2006—2015年A股上市公司样本,本文实证检验了实际控制人超额委派董事对董事投非赞成票行为以及对董事投非赞成票的实际监督效果的影响。研究发现,实际控制人超额委派董事比例越高,董事投非赞成票的可能性越低,超额委派董事程度的一个标准差的变化将引起董事投非赞成票的几率比下降约17%;而以往文献证明的董事投非赞成票所带来的提升经济绩效、降低控股股东以资金占用形式实现的隧道挖掘行为等效应在实际控制人超额委派董事的情形下大打折扣,失去了应有的监督效果。因此,实际控制人没有超额委派董事,成为董事投非赞成票发挥监督效力的一个重要前提条件。由此,本文不仅从董事投非赞成票的视角为\"实际控制人超额委派董事是大股东机会主义行为显现\"提供了直接的证据,而且识别了董事投非赞成票行为具有监督效力的前提条件。在公司治理实践中,为了提高董事会监督的有效性,需要在诸如董事会组织等制度环节确保不同股东力量之间形成制衡,避免大股东机会主义行为的发生。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2021",
+                    10,
+                    19
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "郑志刚"
+            },
+            {
+                "literal": "胡晓霁"
+            },
+            {
+                "literal": "黄继承"
+            }
+        ],
+        "citation-key": "ChaoEWeiPaiDongShiDaGuDongJiHuiZhuYiYuDongShiTouPiaoXingWei2019",
+        "container-title": "中国工业经济",
+        "ISSN": "1006-480X",
+        "issue": "10",
+        "issued": {
+            "date-parts": [
+                [
+                    "2019"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "note": "CNKI citations: 28[2022-1-7]\nChinese Core Journals: <北大核心, CSSCI>",
+        "page": "155-174",
+        "source": "CNKI",
+        "title": "超额委派董事、大股东机会主义与董事投票行为",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2019&filename=GGYY201910010&uniplatform=NZKPT&v=KZLB3%25mmd2FurHJDLxoUNsEhqk5vgko5jsiltTEhMOI21Q2ZmlnAPG8O0xxCIGjiN5J%25mmd2Fl"
+    },
+    {
+        "id": "CorporateSocialResponsibility2008",
+        "abstract": "To many, recent allegations of accounting fraud (or earnings management; EM) at Enron, coupled with similar ones at many other corporations, are a strong indication of a serious decay in business ethics. In academics, this raises the concern between EM and corporate social responsibility (CSR). Since it has neither been documented, nor globally tested whether CSR mitigates or increases the extent of EM, three kinds of EM are studied: earnings smoothing, earnings aggressiveness, and earnings losses and decreases avoidance. The extents to which financial characteristics and institutional variables have an impact on the extent to which companies conduct EM are also tested. Our study investigates whether the CSR-related features of 1,653 corporations in 46 countries had a positive or negative effect on the quality of their publicly released financial information during the 1993–2002 period. There is no question that with a greater commitment to CSR, the extent of earnings smoothing is mitigated, that of earnings losses and decreases avoidance is reduced, but the extent of earnings aggressiveness is increased.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    4,
+                    17
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Chih",
+                "given": "Hsiang-Lin"
+            },
+            {
+                "family": "Shen",
+                "given": "Chung-Hua"
+            },
+            {
+                "family": "Kang",
+                "given": "Feng-Ching"
+            }
+        ],
+        "citation-key": "CorporateSocialResponsibility2008",
+        "container-title": "Journal of Business Ethics",
+        "container-title-short": "J Bus Ethics",
+        "DOI": "10.1007/s10551-007-9383-7",
+        "ISSN": "1573-0697",
+        "issue": "1",
+        "issued": {
+            "date-parts": [
+                [
+                    "2008",
+                    4,
+                    1
+                ]
+            ]
+        },
+        "language": "en-US",
+        "page": "179-198",
+        "source": "Springer Link",
+        "title": "Corporate Social Responsibility, Investor Protection, and Earnings Management: Some International Evidence",
+        "title-short": "Corporate Social Responsibility, Investor Protection, and Earnings Management",
+        "type": "article-journal",
+        "URL": "https://doi.org/10.1007/s10551-007-9383-7",
+        "volume": "79"
+    },
+    {
+        "id": "fasttrackInformation2022",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    5,
+                    18
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Chen",
+                "given": "Deqiu"
+            },
+            {
+                "family": "Ma",
+                "given": "Yujing"
+            },
+            {
+                "family": "Martin",
+                "given": "Xiumin"
+            },
+            {
+                "family": "Michaely",
+                "given": "Roni"
+            }
+        ],
+        "citation-key": "fasttrackInformation2022",
+        "container-title": "Journal of Financial Economics",
+        "container-title-short": "Journal of Financial Economics",
+        "DOI": "10.1016/j.jfineco.2021.06.025",
+        "ISSN": "0304405X",
+        "issue": "2",
+        "issued": {
+            "date-parts": [
+                [
+                    "2022",
+                    2
+                ]
+            ]
+        },
+        "language": "en-US",
+        "page": "794-823",
+        "source": "DOI.org (Crossref)",
+        "title": "On the fast track: Information acquisition costs and information production",
+        "title-short": "On the fast track",
+        "type": "article-journal",
+        "URL": "https://linkinghub.elsevier.com/retrieve/pii/S0304405X21002956",
+        "volume": "143"
+    },
+    {
+        "id": "FundingConditionsExplain2022",
+        "abstract": "The prior literature links cash holdings and returns (Simutin (2010), Palazzo (2012)). Using two signals of aggregate-funding availability, I find that the positive association between cash and returns only exists during constrained funding environments. In unconstrained periods, there is no association between cash and returns. The relation in constrained environments does not appear to be related to capital expenditures, expected return, or distress risk but is more prevalent in firms undertaking research and development (R&D) expenditures. This suggests that the association between cash and returns is more consistent with expanding (or maintaining) future growth opportunities rather than being attributable to differences in capital expenditures or risk.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    6,
+                    16
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Jensen",
+                "given": "Tyler K."
+            }
+        ],
+        "citation-key": "FundingConditionsExplain2022",
+        "container-title": "Journal of Financial and Quantitative Analysis",
+        "container-title-short": "J. Financ. Quant. Anal.",
+        "DOI": "10.1017/S0022109021000120",
+        "ISSN": "0022-1090, 1756-6916",
+        "issue": "3",
+        "issued": {
+            "date-parts": [
+                [
+                    "2022",
+                    5
+                ]
+            ]
+        },
+        "language": "en-US",
+        "note": "rate: 0",
+        "page": "1174-1203",
+        "source": "DOI.org (Crossref)",
+        "title": "Do Funding Conditions Explain the Relation Between Cash Holdings and Stock Returns?",
+        "type": "article-journal",
+        "URL": "https://www.cambridge.org/core/product/identifier/S0022109021000120/type/journal_article",
+        "volume": "57"
+    },
+    {
+        "id": "GongSiZhiLiJiGouChiGuYuGuJieTongBuXing2014",
+        "abstract": "本文旨在探讨在噪音交易较多的中国股票市场中,公司治理对股价同步性的影响。实证结果显示,以控制权和现金流权之差度量的超额控制权和股价同步性之间存在显著的负相关关系,机构持股加强了这种负向关系。进一步,本文采用南开治理指数和配对方法对公司治理综合指标和股价同步性进行研究,发现治理好的公司表现出更高的股价同步性和更好的未来盈余。本文研究表明,当噪音交易是股价同步性的主要驱动因素时,较差的公司治理,特别是较高的超额控制权,会增加基本面的不确定性,吸引较多的噪音交易,进而降低股价同步性。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2021",
+                    9,
+                    18
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "周林洁"
+            }
+        ],
+        "citation-key": "GongSiZhiLiJiGouChiGuYuGuJieTongBuXing2014",
+        "container-title": "金融研究",
+        "ISSN": "1002-7246",
+        "issue": "08",
+        "issued": {
+            "date-parts": [
+                [
+                    "2014"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "page": "146-161",
+        "source": "CNKI",
+        "title": "公司治理、机构持股与股价同步性",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2015&filename=JRYJ201408010&v="
+    },
+    {
+        "id": "GongTongFuYuDeMuBiaoHeShiXianLuJingXuanZe2021",
+        "abstract": "中国进入一个新发展阶段,共同富裕不仅是新发展阶段的一个愿景,而且被确立为一个远景目标。党的十九届六中全会再次强调推进共同富裕的重大意义,提出\"全面深化改革开放,促进共同富裕\"。本文首先阐述共同富裕的内涵和目标。共同富裕是全体人民的富裕,但不是经济上的平均主义,推进共同富裕不能采取激进的分配方式。共同富裕的长期目标是,到本世纪中叶把我国建成社会主义现代化强国,全体人民共同富裕基本实现。本文进一步考察了中国当前的发展基础,认为中国在实现共同富裕进程中面临发展水平不高、收入和财产差距过大、中等收入人群比重偏低、基本公共服务均等化程度不高等一系列挑战。为实现共同富裕,一方面需要进行深层次的改革,另一方面要加快发展速度。最后本文提出实现共同富裕的主要路径的建议,应从初次分配、再分配和三次分配方面着手,进一步缩小城乡发展差距、地区差距和收入差距。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    1,
+                    15
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "李实"
+            }
+        ],
+        "citation-key": "GongTongFuYuDeMuBiaoHeShiXianLuJingXuanZe2021",
+        "container-title": "经济研究",
+        "ISSN": "0577-9154",
+        "issue": "11",
+        "issued": {
+            "date-parts": [
+                [
+                    "2021"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "note": "<北大核心, CSSCI>",
+        "page": "4-13",
+        "source": "CNKI",
+        "title": "共同富裕的目标和实现路径选择",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&dbname=CJFDAUTO&filename=JJYJ202111001&uniplatform=NZKPT&v=9xsOiL1MsilVch2FgcFz9r5XNUnjmDGd1-G3LHBUJtCiluN6rYjvLiPH-NtogisO",
+        "volume": "56"
+    },
+    {
+        "id": "GuanZhiYuChuangYeLaiZiZhongGuoDeWeiGuanZhengJu2015",
+        "abstract": "严格地政府管制不仅扭曲了市场信号,而且提高了创业活动的成本。使用4期CGSS调查数据,本文系统评估了政府管制对个人创业概率的影响。研究发现,政府管制显著降低了个人的创业概率,平均而言,样本城市的政府管制指数每上升一个标准差,个人的创业概率将会降低1.68个百分点左右。同时,政府管制对个人创业概率的影响存在异质性。总体而言,政府管制显著降低了个人从事\"自我雇佣\"的创业概率,但并未显著降低\"自己是老板\"的创业概率。另外,政府管制显著降低了\"低社会网络组\"和\"低收入组\"的创业概率,但并未显著降低\"高社会网络组\"和\"高收入组\"的创业概率。这意味着,新一届政府推行的\"简政放权\"改革可能不仅有助于提升中国经济的创业活力,而且有助于平衡各群体间的就业机会,进而促进社会公平。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2021",
+                    12,
+                    18
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "陈刚"
+            }
+        ],
+        "citation-key": "GuanZhiYuChuangYeLaiZiZhongGuoDeWeiGuanZhengJu2015",
+        "container-title": "管理世界",
+        "DOI": "10.19744/j.cnki.11-1235/f.2015.05.009",
+        "ISSN": "1002-5502",
+        "issue": "05",
+        "issued": {
+            "date-parts": [
+                [
+                    "2015"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "page": "89-99+187-188",
+        "source": "CNKI",
+        "title": "管制与创业——来自中国的微观证据",
+        "type": "article-journal",
+        "URL": "https://t.cnki.net/kcms/detail?v=SSEximoXzMEmXRKN-2iSSciLte2S3hasS9sNDWnI3dLviafvbgcmWapVUiKnDLESFkxjCWjN2Yg4stdX-xJaKYrZohizbxrkwH_6x15Skq5Mi1twHSRhOAMaE12wMWAO&uniplatform=NZKPT"
+    },
+    {
+        "id": "HumanFactorAcquisitions2024",
+        "abstract": "The benefits of internal labor markets are largest when they include industries that utilize similar worker skills, thereby facilitating cross-industry worker reallocation and collaboration. We show that diversifying acquisitions occur more frequently among industry pairs with higher human capital transferability. Such acquisitions result in larger labor productivity gains and are less often undone in subsequent divestitures. Moreover, acquirers retain more high-skill workers and more often transfer workers to jobs in other industries inside the merged firm. Overall, our results link human capital reallocation with the value created by corporate diversification and provide an explanation for seemingly unrelated acquisitions.Authors have furnished an Internet Appendix, which is available on the Oxford University Press Web site next to the link to the final published paper online.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2023",
+                    12,
+                    26
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Tate",
+                "given": "Geoffrey"
+            },
+            {
+                "family": "Yang",
+                "given": "Liu"
+            }
+        ],
+        "citation-key": "HumanFactorAcquisitions2024",
+        "container-title": "The Review of Financial Studies",
+        "container-title-short": "The Review of Financial Studies",
+        "DOI": "10.1093/rfs/hhad056",
+        "ISSN": "0893-9454",
+        "issue": "1",
+        "issued": {
+            "date-parts": [
+                [
+                    "2024",
+                    1,
+                    1
+                ]
+            ]
+        },
+        "page": "45-88",
+        "source": "Silverchair",
+        "title": "The Human Factor in Acquisitions: Cross-industry Labor Mobility and Corporate Diversification",
+        "title-short": "The Human Factor in Acquisitions",
+        "type": "article-journal",
+        "URL": "https://doi.org/10.1093/rfs/hhad056",
+        "volume": "37"
+    },
+    {
+        "id": "JiYuChangQiJieZhiDaoXiangDeBingGouXingWeiYanJiuYiWoGuoJiaZuQiYeWeiZhengJu2018",
+        "abstract": "本文利用家族企业追求\"基业长青\"的特征,通过对比分析家族企业与非家族企业,检验了基于企业经营的不同价值导向的并购活动是否能够为企业创造价值的问题。本文实证结果发现,相比较非家族企业,为了实现长期经营的目标,家族企业的并购动机具有长期价值导向,并购意愿更强且并购绩效更好;进一步,在家族企业内部,随着家族持股水平的提高,家族企业的并购意愿和并购绩效都会显著加强。本文的研究结果表明,以长期价值为导向的并购活动可以为企业创造价值。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2021",
+                    9,
+                    17
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "刘白璐"
+            },
+            {
+                "literal": "吕长江"
+            }
+        ],
+        "citation-key": "JiYuChangQiJieZhiDaoXiangDeBingGouXingWeiYanJiuYiWoGuoJiaZuQiYeWeiZhengJu2018",
+        "container-title": "会计研究",
+        "ISSN": "1003-2886",
+        "issue": "06",
+        "issued": {
+            "date-parts": [
+                [
+                    "2018"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "page": "47-53",
+        "source": "CNKI",
+        "title": "基于长期价值导向的并购行为研究——以我国家族企业为证据",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2018&filename=KJYJ201806007&v="
+    },
+    {
+        "id": "Laborunemploymentinsurance2016",
+        "abstract": "We provide new evidence that firms appear to manage long-run earnings upward in order to manage rank and file employees’ perceptions of employment security. In particular, we exploit exogenous state-level changes in unemployment insurance benefits and test for partial unwinding of prior upward earnings management when benefits increase. Consistent with the hypothesis, we find a significant reduction in abnormal accruals, increased recognition of special items and write downs, and greater likelihood of net income-reducing restatements, following an increase in state-level unemployment benefits. A number of cross-sectional results are also consistent with the hypothesis.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    3,
+                    26
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Dou",
+                "given": "Yiwei"
+            },
+            {
+                "family": "Khan",
+                "given": "Mozaffar"
+            },
+            {
+                "family": "Zou",
+                "given": "Youli"
+            }
+        ],
+        "citation-key": "Laborunemploymentinsurance2016",
+        "container-title": "Journal of Accounting and Economics",
+        "container-title-short": "Journal of Accounting and Economics",
+        "DOI": "10.1016/j.jacceco.2015.06.001",
+        "ISSN": "01654101",
+        "issue": "1",
+        "issued": {
+            "date-parts": [
+                [
+                    "2016",
+                    2
+                ]
+            ]
+        },
+        "language": "en-US",
+        "page": "166-184",
+        "source": "DOI.org (Crossref)",
+        "title": "Labor unemployment insurance and earnings management",
+        "type": "article-journal",
+        "URL": "https://linkinghub.elsevier.com/retrieve/pii/S0165410115000452",
+        "volume": "61"
+    },
+    {
+        "id": "LocalGamblingPreferences2014",
+        "abstract": "This paper examines the role of local attitudes toward gambling on corporate innovative activity. Using a county’s Catholics-to-Protestants ratio as a proxy for local gambling preferences, we find that firms located in gambling-prone areas tend to undertake riskier projects, spend more on innovation, and experience greater innovative output. We contrast the local gambling effect with chief executive officer (CEO) overconfidence, another behavioral effect reported to influence innovation. We find that local gambling preferences are a stronger determinant of innovative activity, with CEO overconfidence being more relevant to innovation in areas where gambling attitudes are strong.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2023",
+                    4,
+                    12
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Chen",
+                "given": "Yangyang"
+            },
+            {
+                "family": "Podolski",
+                "given": "Edward J."
+            },
+            {
+                "family": "Rhee",
+                "given": "S. Ghon"
+            },
+            {
+                "family": "Veeraraghavan",
+                "given": "Madhu"
+            }
+        ],
+        "citation-key": "LocalGamblingPreferences2014",
+        "container-title": "Journal of Financial and Quantitative Analysis",
+        "DOI": "10.1017/S0022109014000246",
+        "ISSN": "0022-1090, 1756-6916",
+        "issue": "1",
+        "issued": {
+            "date-parts": [
+                [
+                    "2014",
+                    2
+                ]
+            ]
+        },
+        "language": "en-US",
+        "page": "77-106",
+        "publisher": "Cambridge University Press",
+        "source": "Cambridge University Press",
+        "title": "Local Gambling Preferences and Corporate Innovative Success",
+        "type": "article-journal",
+        "URL": "https://www.cambridge.org/core/journals/journal-of-financial-and-quantitative-analysis/article/local-gambling-preferences-and-corporate-innovative-success/DBE3616A61F42231A208A72534CB3D27",
+        "volume": "49"
+    },
+    {
+        "id": "MianZiGongChengHuanShiZhenCaiShiGan2016",
+        "abstract": "国有企业CEO同时具备\"经济人\"和\"政治人\"特征,这意味着仅从薪酬激励设计角度研究国有企业创新犹如管中窥豹,在建设创新型国家的时代背景下,国有企业CEO政治晋升激励可能是影响国有企业创新活动的另一机制。本文采用20072014年间国有上市公司CEO变更数据,研究了国有企业高管政治晋升激励对企业创新的影响。结果显示:政治晋升激励使得国有企业CEO更加专注有效的研发投入,在降低研发投入量的基础上,提高了企业创新产出。其次,我们探讨了国有企业政治晋升激励可能存在的\"面子工程\"和\"真才实干\"两种机制,发现政治晋升激励不仅提高了企业创新投入产出率,而且提高了创新产出的价值增值能力,支持了政治晋升激励下CEO创新\"真才实干\"假说。最后,我们进一步研究了薪酬激励、在职消费对创新的政治晋升激励有效性的调节作用。研究发现,相对于低薪酬激励,高薪酬激励时国有企业CEO创新的政治晋升激励有效性更高;相对于高在职消费,低在职消费时国有企业CEO创新的政治晋升激励有效性更高。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    1,
+                    19
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "周铭山"
+            },
+            {
+                "literal": "张倩倩"
+            }
+        ],
+        "citation-key": "MianZiGongChengHuanShiZhenCaiShiGan2016",
+        "container-title": "管理世界",
+        "DOI": "10.19744/j.cnki.11-1235/f.2016.12.011",
+        "ISSN": "1002-5502",
+        "issue": "12",
+        "issued": {
+            "date-parts": [
+                [
+                    "2016"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "note": "201 citations(CNKI)[2022-1-19]<北大核心, CSSCI>",
+        "page": "116-132+187-188",
+        "source": "CNKI",
+        "title": "“面子工程”还是“真才实干”?——基于政治晋升激励下的国有企业创新研究",
+        "title-short": "“面子工程”还是“真才实干”?",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2017&filename=GLSJ201612012&uniplatform=NZKPT&v=5jCPDDwQkiMCCpnd_cWct-INUUNZzlts4DH5qI2K_N8SOVS13brfMcEejupnleqR"
+    },
+    {
+        "id": "MinYingQiYeShenFenRenTongYuFengXianChengDanShuiPing2019",
+        "abstract": "民营企业身份认同问题是中国民营经济发展过程中不可回避的社会和制度问题,深刻地影响着民营企业家精神的发挥。本文以中国资本市场2003～2012年间上市时实际控制人为自然人或家族的A股民营企业为研究样本,手工搜集并整理了样本企业的初始产权获取方式,将其划分为具有严重身份认同问题的国有转制型民营企业和不具有严重身份认同问题的创业型民营企业,重点考察企业身份认同问题是否以及如何影响民营企业的风险承担水平。本文实证分析发现,由于企业合法身份认同不足问题容易引致企业产权和个人财富面临潜在的法律安全风险,身份认同问题显著降低了民营企业的风险承担水平,而且这一负向影响关系在《国有资产法》颁布之后显著减弱。上述研究结论在经过PSM倾向得分匹配、Heckman两阶段回归以及Placebo安慰剂检验等稳健性测试后仍然成立。进一步的分析发现,身份认同问题促进了以慈善捐赠活动衡量的民营企业非生产性活动。此外,本文还发现具有严重身份认同问题的国有转制型民营企业市场价值更低。本文的研究结论有助于加深关于民营企业风险承担行为问题的认识与理解,从而对如何更好地鼓励和发扬民营企业的企业家精神具有一定的启示意义。",
+        "author": [
+            {
+                "family": "周",
+                "given": "泽将"
+            },
+            {
+                "family": "罗",
+                "given": "进辉"
+            },
+            {
+                "family": "李",
+                "given": "雪"
+            }
+        ],
+        "citation-key": "MinYingQiYeShenFenRenTongYuFengXianChengDanShuiPing2019",
+        "container-title": "管理世界",
+        "DOI": "10.19744/j.cnki.11-1235/f.2019.0157",
+        "ISSN": "1002-5502",
+        "issue": "11",
+        "issued": {
+            "date-parts": [
+                [
+                    "2019"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "note": "47 citations(CNKI)[2022-5-17]<北大核心, CSSCI>",
+        "page": "193-208",
+        "source": "CNKI",
+        "title": "民营企业身份认同与风险承担水平",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2019&filename=GLSJ201911017&v=",
+        "volume": "35"
+    },
+    {
+        "id": "Outputspilloverschanges2016",
+        "abstract": "This research examines how a sovereign rating revision of one country influences the economic growth rates of other countries. Rating revisions have significant output spillover effects: A one-notch upgrade (downgrade) prompts on average a significant downward revision of about 0.03% (0.07%) in the consensus forecast of annual economic growth rates of other countries in the two-month period after the event. The spillovers are transmitted through direct and indirect trade and financial linkages between event and non-event countries. The evidence indicates that a predominance of differential (common) spillovers leads upgrades (downgrades) to produce adverse output effects for other countries.",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2023",
+                    8,
+                    15
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "Chen",
+                "given": "Sheng-Syan"
+            },
+            {
+                "family": "Chen",
+                "given": "Hsien-Yi"
+            },
+            {
+                "family": "Yang",
+                "given": "Shu-Ling"
+            },
+            {
+                "family": "Chang",
+                "given": "Chong-Chuo"
+            }
+        ],
+        "citation-key": "Outputspilloverschanges2016",
+        "container-title": "Journal of International Money and Finance",
+        "container-title-short": "Journal of International Money and Finance",
+        "DOI": "10.1016/j.jimonfin.2016.01.007",
+        "ISSN": "0261-5606",
+        "issued": {
+            "date-parts": [
+                [
+                    "2016",
+                    5,
+                    1
+                ]
+            ]
+        },
+        "language": "en-US",
+        "page": "48-63",
+        "source": "ScienceDirect",
+        "title": "Output spillovers from changes in sovereign credit ratings",
+        "type": "article-journal",
+        "URL": "https://www.sciencedirect.com/science/article/pii/S0261560616000164",
+        "volume": "63"
+    },
+    {
+        "id": "PaiChiHuanShiBaoRong2021",
+        "abstract": "已有研究指出,广义信任的缺乏会降低企业和居民的金融需求,从而阻碍金融发展,而中国传统宗族文化通行的是有限信任而非广义信任。同时,也有观点认为宗族依赖内部金融市场的社会规范会导致对外部金融的替代。这是否意味着宗族文化排斥金融发展?本文以银行发展为研究对象,基于家谱数据构建城市层面宗族文化指标,结合银行业分支机构的开设情况,对二者之间的关系和作用机制进行实证分析。基准模型和工具变量回归结果显示,宗族文化显著促进了银行发展。然后,本文借助2009年监管部门放松中小银行分支机构开设的供给端政策,证实宗族文化对银行发展的包容源于需求端。进一步区分企业和居民需求的结果支持后者。前述发现与信任和社会规范的逻...",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2021",
+                    9,
+                    10
+                ]
+            ]
+        },
+        "author": [
+            {
+                "literal": "刘"
+            },
+            {
+                "literal": "刘"
+            },
+            {
+                "literal": "李"
+            }
+        ],
+        "citation-key": "PaiChiHuanShiBaoRong2021",
+        "container-title": "经济研究",
+        "ISSN": "0577-9154",
+        "issue": "04",
+        "issued": {
+            "date-parts": [
+                [
+                    "2021"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "page": "110-125",
+        "source": "CNKI",
+        "title": "“排斥”还是“包容”:传统宗族文化与现代银行发展",
+        "title-short": "“排斥”还是“包容”",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/KCMS/detail/detail.aspx?dbcode=CJFD&dbname=CJFDLAST2021&filename=JJYJ202104008&v=",
+        "volume": "56"
+    },
+    {
+        "id": "XinHuiJiZhunZeHuiJiXinXiZhiLiangYuGuJieTongBuXing2010",
+        "abstract": "本文以2004—2008年我国A股上市公司为样本,基于私有信息交易理论,分析会计信息质量如何影响股价同步性,以及新会计准则的改革如何影响了两者之间的相关性。结果发现,会计信息质量与股价同步性正相关,并且这种正相关性仅存在于负向盈余管理的情况,而在正向盈余管理的情况中两者之间的正相关性不明显,这与我国股票市场的卖空限制有关。同时,2007年新会计准则质量的提高显著减弱了会计信息质量与股价同步性之间的正相关关系。本文不但丰富了会计信息质量和股价同步性的相关文献,而且对我国资本市场加强会计准则改革和会计信息监管具有一定的参考价值。",
+        "accessed": {
+            "date-parts": [
+                [
+                    "2022",
+                    3,
+                    28
+                ]
+            ]
+        },
+        "author": [
+            {
+                "family": "金",
+                "given": "智"
+            }
+        ],
+        "citation-key": "XinHuiJiZhunZeHuiJiXinXiZhiLiangYuGuJieTongBuXing2010",
+        "container-title": "会计研究",
+        "ISSN": "1003-2886",
+        "issue": "07",
+        "issued": {
+            "date-parts": [
+                [
+                    "2010"
+                ]
+            ]
+        },
+        "language": "zh-CN",
+        "note": "<北大核心, CSSCI, CSCD>",
+        "page": "19-26+95",
+        "source": "CNKI",
+        "title": "新会计准则、会计信息质量与股价同步性",
+        "type": "article-journal",
+        "URL": "https://kns.cnki.net/kcms/detail/detail.aspx?dbcode=CJFD&dbname=CJFD2010&filename=KJYJ201007005&uniplatform=NZKPT&v=d_EUAAAxnQ4tt2GSC7mC0jGB-f5n0AOr56G3OcYoCv7ksUJwUQ2IPi8IIyfQlpZS"
+    }
+]
+
+<<===== INPUT =====<<
+
+
+>>===== VERSION =====>>
+1.0
+<<===== VERSION =====<<
