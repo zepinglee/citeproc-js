@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] 10 paras. 1–6
+>>[0] number 10 paras. 1–6
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>

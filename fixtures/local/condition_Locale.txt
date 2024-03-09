@@ -42,9 +42,9 @@ citation
 
 
 >>===== RESULT =====>>
-Author Bob; Container Bob (編); Secondary Bob (翻訳者)
+Author Bob; Container Bob (編); Secondary Bob (訳)
 Bob Author; Bob Container (ed.); Bob Secondary (tran.)
-Author Bob; Container Bob (編); Secondary Bob (翻訳者)
+Author Bob; Container Bob (編); Secondary Bob (訳)
 <<===== RESULT =====<<
 
 >>===== CSL =====>>

@@ -31,7 +31,6 @@ Other type: 2:19-cv–00222
             <text value="Other type:"/>
           </else>
         </choose>
-        <label variable="number"/>
         <number variable="number"/>
       </group>
     </layout>

@@ -5,8 +5,8 @@ citation
 
 
 >>===== RESULT =====>>
-..[0] Hans Schrijver en Jan Pen, “A Dutch Title,” in <i>Nederlands werk</i>, red. Kees Redacteur (Amsterdam: Klopke, 2002), 132–230.
-..[1] Hans Schreiber und Marc Bleistift, „A German Title,“ in <i>Deutsches werk</i>, Hrsg. Hubert Herausgeber (Berlin: Plopke, 2002), 132–230; Pim Writer and Judith Scriber, “An English Title,” in <i>English Work</i>, ed. Kees Editor (Londen: Slopke, 2002), 132–230; Schrijver en Pen, “A Dutch Title,” 132–230.
+..[0] Hans Schrijver en Jan Pen, ‘A Dutch Title,’ in <i>Nederlands werk</i>, red. Kees Redacteur (Amsterdam: Klopke, 2002), 132–230.
+..[1] Hans Schreiber und Marc Bleistift, „A German Title,“ in <i>Deutsches werk</i>, Hrsg. Hubert Herausgeber (Berlin: Plopke, 2002), 132–230; Pim Writer and Judith Scriber, “An English Title,” in <i>English Work</i>, ed. Kees Editor (Londen: Slopke, 2002), 132–230; Schrijver en Pen, ‘A Dutch Title,’ 132–230.
 ..[2] Schreiber und Bleistift, „A German Title,“ 132–230.
 >>[3] Ibid.
 <<===== RESULT =====<<

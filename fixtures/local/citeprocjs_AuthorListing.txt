@@ -1593,7 +1593,7 @@ Not the cleanest of tests.
                        et-al-use-first="1" 
                        et-al-min="1"/>
          <et-al term="and others"/>
-      <label form="verb-short" prefix=", " suffix="." text-case="lowercase" />
+      <label form="short" prefix=", " suffix="." text-case="lowercase" />
       <substitute>
         <text macro="editor" />
         <text macro="translator" />
