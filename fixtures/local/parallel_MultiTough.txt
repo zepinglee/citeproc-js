@@ -28,12 +28,12 @@ here because of limitations in the test suite (and lack of time and
 incentive to fix it). The test did run as described before the
 reversion though, like this:
 
-林秀弥, 競争法における関連市場の画定基準, 126 <span style="font-variant:small-caps;">民商法雑誌</span> <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 1, at 23, 126 <span style="font-variant:small-caps;">民商法雑誌</span>, no. 2, 2002, at 56.
+林秀弥, 競争法における関連市場の画定基準, 126 <span style="font-variant:small-caps;">民商法雑誌</span> <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 1, にて 23, 126 <span style="font-variant:small-caps;">民商法雑誌</span>, no. 2, 2002, にて 56.
 
 
 
 >>== RESULT ==>>
-林秀弥, 競争法における関連市場の画定基準, 126 <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 1, at 23, 126 <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 2, 2002, at 56.
+林秀弥, 競争法における関連市場の画定基準, 126 <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 1, にて 23, 126 <span style="font-variant:small-caps;">Minsho ho zasshi</span>, no. 2, 2002, にて 56.
 <<== RESULT ==<<
 
 >>===== CSL =====>>

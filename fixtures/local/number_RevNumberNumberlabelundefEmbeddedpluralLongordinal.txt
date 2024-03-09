@@ -4,7 +4,7 @@ citation
 
 
 >>===== RESULT =====>>
->>[0] tenth paras. 1–6
+>>[0] number tenth paras. 1–6
 <<===== RESULT =====<<
 
 >>===== CITATIONS =====>>
