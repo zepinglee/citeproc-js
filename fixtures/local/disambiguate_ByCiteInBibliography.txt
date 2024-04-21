@@ -1,0 +1,73 @@
+>>===== MODE =====>>
+bibliography
+<<===== MODE =====<<
+
+
+>>===== DESCRIPTION =====>>
+https://github.com/redleafnew/Chinese-STD-GB-T-7714-related-csl/issues/257
+<<===== DESCRIPTION =====<<
+
+
+>>===== RESULT =====>>
+<div class="csl-bib-body">
+  <div class="csl-entry">Yang, Zuoren; Zhang, C.; Yang, Zhaoen</div>
+</div>
+<<===== RESULT =====<<
+
+
+>>===== CSL =====>>
+<style
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2022-07-05T19:23:55+08:00</updated>
+  </info>
+  <citation disambiguate-add-givenname="true" givenname-disambiguation-rule="by-cite">
+    <layout>
+      <names variable="author">
+        <name form="short"/>
+      </names>
+    </layout>
+  </citation>
+  <bibliography>
+    <layout>
+      <names variable="author">
+        <name delimiter="; " name-as-sort-order="all" initialize-with=". "/>
+      </names>
+    </layout>
+  </bibliography>
+</style>
+<<===== CSL =====<<
+
+
+>>===== INPUT =====>>
+[
+	{
+		"id": "yang2014",
+		"type": "article-journal",
+		"issue": "2",
+		"author": [
+			{
+				"family": "Yang",
+				"given": "Zuoren"
+			},
+			{
+				"family": "Zhang",
+				"given": "Chaojun"
+			},
+			{
+				"family": "Yang",
+				"given": "Zhaoen"
+			}
+		]
+	}
+]
+<<===== INPUT =====<<
+
+
+>>===== VERSION =====>>
+1.0
+<<===== VERSION =====<<
