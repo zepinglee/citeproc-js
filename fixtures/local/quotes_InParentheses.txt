@@ -1,0 +1,49 @@
+>>==== MODE ====>>
+citation
+<<==== MODE ====<<
+
+
+>>==== DESCRIPTION ====>>
+This bug is found when I rewrite the quote parsing module for fixing
+<https://github.com/zepinglee/citeproc-lua/issues/71>.
+<<==== DESCRIPTION ====<<
+
+
+>>==== RESULT ====>>
+“quote”, Hello Thing, (“quote”)
+<<==== RESULT ====<<
+
+
+>>==== CSL ====>>
+<style
+      xmlns="http://purl.org/net/xbiblio/csl"
+      class="in-text"
+      version="1.0">
+  <info>
+    <id />
+    <title />
+    <updated>2024-08-14T10:09:22+08:00</updated>
+  </info>
+  <citation>
+    <layout>
+      <text variable="title"/>
+    </layout>
+  </citation>
+</style>
+<<==== CSL ====<<
+
+
+>>==== INPUT ====>>
+[
+    {
+        "id": "ITEM-1",
+        "title": "'quote', Hello Thing, ('quote')",
+        "type": "book"
+    }
+]
+<<==== INPUT ====<<
+
+
+>>===== VERSION =====>>
+1.0
+<<===== VERSION =====<<
