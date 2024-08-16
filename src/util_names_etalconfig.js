@@ -8,7 +8,7 @@ CSL.NameOutput.prototype.getEtAlConfig = function () {
     this["et-al"].single = this.state.output.pop();
     this["et-al"].single.strings.suffix = this.etal_suffix;
     this["et-al"].single.strings.prefix = this.etal_prefix_single;
-    
+
     this.state.output.append(this.etal_term, this.etal_style, true);
     this["et-al"].multiple = this.state.output.pop();
     this["et-al"].multiple.strings.suffix = this.etal_suffix;

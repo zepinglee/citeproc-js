@@ -7,9 +7,9 @@ CSL.getSortCompare = function (default_locale) {
     var me = this;
     var strcmp;
     var strcmp_opts = {
-        sensitivity:"base",
-        ignorePunctuation:true,
-        numeric:true
+        sensitivity: "base",
+        ignorePunctuation: true,
+        numeric: true
     };
     // In order, attempt the following:
     //   (1) Set locale collation from processor language
@@ -18,13 +18,13 @@ CSL.getSortCompare = function (default_locale) {
         default_locale = "en-US";
     }
     strcmp = function (a, b) {
-        return CSL.toLocaleLowerCase.call(me, a).localeCompare(CSL.toLocaleLowerCase.call(me, b),default_locale,strcmp_opts);
+        return CSL.toLocaleLowerCase.call(me, a).localeCompare(CSL.toLocaleLowerCase.call(me, b), default_locale, strcmp_opts);
     };
     var stripPunct = function (str) {
         return str.replace(/^[\[\]\'\"]*/g, "");
     };
     var getBracketPreSort = function () {
-        if (!strcmp("[x","x")) {
+        if (!strcmp("[x", "x")) {
             return false;
         } else {
             return function (a, b) {

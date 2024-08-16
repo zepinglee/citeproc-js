@@ -1,6 +1,6 @@
 /*global CSL: true */
 
-CSL.NameOutput.prototype.checkCommonAuthor = function(requireMatch) {
+CSL.NameOutput.prototype.checkCommonAuthor = function (requireMatch) {
     if (!requireMatch) {
         return false;
     }
@@ -53,7 +53,7 @@ CSL.NameOutput.prototype.setCommonTerm = function () {
         } else if (this.label[this.variables[0]].after) {
             has_term = this.state.getTerm(this.common_term, this.label[this.variables[0]].after.strings.form, 0);
         }
-     }
+    }
 
     // When there is no common term
     if (!this.state.locale[this.state.opt.lang].terms[this.common_term]

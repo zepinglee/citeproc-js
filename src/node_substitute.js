@@ -9,7 +9,7 @@ CSL.Node.substitute = {
             var choose_start = new CSL.Token("choose", CSL.START);
             CSL.Node.choose.build.call(choose_start, state, target);
             var if_singleton = new CSL.Token("if", CSL.SINGLETON);
-            func = function() {
+            func = function () {
                 if (state.tmp.value.length && !state.tmp.common_term_match_fail) {
                     return true;
                 }
@@ -41,5 +41,3 @@ CSL.Node.substitute = {
         }
     }
 };
-
-

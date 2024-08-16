@@ -9,12 +9,12 @@ CSL.Node.names = {
             CSL.Util.substituteStart.call(this, state, target);
             state.build.substitute_level.push(1);
         }
-        
+
         if (this.tokentype === CSL.SINGLETON) {
-            state.build.names_variables[state.build.names_variables.length-1].concat(this.variables);
+            state.build.names_variables[state.build.names_variables.length - 1].concat(this.variables);
             for (var i in this.variables) {
                 var variable = this.variables[i];
-                var name_labels = state.build.name_label[state.build.name_label.length-1];
+                var name_labels = state.build.name_label[state.build.name_label.length - 1];
                 if (Object.keys(name_labels).length) {
                     name_labels[variable] = name_labels[Object.keys(name_labels)[0]];
                 }
@@ -43,7 +43,7 @@ CSL.Node.names = {
             this.execs.push(func);
 
         }
-        
+
         if (this.tokentype === CSL.END) {
 
             // Set/reset name blobs if they exist, for processing
@@ -56,7 +56,7 @@ CSL.Node.names = {
                 }
             }
             // Labels, if any
-            this.label = state.build.name_label[state.build.name_label.length-1];
+            this.label = state.build.name_label[state.build.name_label.length - 1];
             state.build.names_level += -1;
             state.build.names_variables.pop();
             state.build.name_label.pop();
@@ -164,7 +164,7 @@ CSL.Node.names = {
                 if (!state.tmp.can_substitute.pop()) {
                     state.tmp.can_substitute.replace(false, CSL.LITERAL);
                 }
-                
+
                 // For posterity ...
                 //
                 // This was enough to fix the issue reported here:

@@ -2,7 +2,7 @@
 
 CSL.Node.key = {
     build: function (state, target) {
-        
+
         target = state[state.build.root + "_sort"].tokens;
 
         var func;
@@ -64,7 +64,7 @@ CSL.Node.key = {
         };
         start_key.execs.push(func);
         target.push(start_key);
-        
+
         //
         // ops to initialize the key's output structures
         if (this.variables.length) {
@@ -151,7 +151,7 @@ CSL.Node.key = {
                     var transfall = true;
                     func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                 } else if ("court-class" === variable) {
-                    func = function(state, Item, item) {
+                    func = function (state, Item, item) {
                         CSL.INIT_JURISDICTION_MACROS(state, Item, item, "juris-main")
                         // true is for sortKey mode
                         var cls = CSL.GET_COURT_CLASS(state, Item, true);
@@ -187,7 +187,7 @@ CSL.Node.key = {
         //state.output.closeLevel("empty");
         //};
         //end_key.execs.push(func);
-        
+
         // store key for use
         func = function (state) {
             var keystring = state.output.string(state, state.output.queue);
@@ -218,7 +218,7 @@ CSL.Node.key = {
         if (state.build.date_key) {
             if (state.build.area === "citation" && state.build.extension === "_sort") {
                 // ascending sort always
-                state[state.build.area].opt.sort_directions.push([-1,1]);
+                state[state.build.area].opt.sort_directions.push([-1, 1]);
                 func = function (state, Item) {
                     // year-suffix Key
                     var year_suffix = state.registry.registry[Item.id].disambig.year_suffix;

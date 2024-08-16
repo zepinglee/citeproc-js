@@ -55,7 +55,7 @@ CSL.Token = function (name, tokentype, conditional) {
     this.tokentype = tokentype;
 
     // Conditional attributes added to bare tokens at runtime
-    
+
     /**
      * Condition evaluator.
      * <p>This is a placeholder that receives a single function, and is

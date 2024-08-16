@@ -29,11 +29,11 @@ CSL.Node.date = {
                     //if (this.variables.length && Item[this.variables[0]]){
                     if (this.variables.length
                         && !(state.tmp.just_looking
-                             && this.variables[0] === "accessed")) {
-                        
+                            && this.variables[0] === "accessed")) {
+
                         date_obj = Item[this.variables[0]];
                         if ("undefined" === typeof date_obj) {
-                            date_obj = {"date-parts": [[0]] };
+                            date_obj = { "date-parts": [[0]] };
                             if (state.opt.development_extensions.locator_date_and_revision) {
                                 if (item && this.variables[0] === "locator-date" && item["locator-date"]) {
                                     date_obj = item["locator-date"];
@@ -51,14 +51,14 @@ CSL.Node.date = {
                         // date-parts and (b) in the *_end data.
                         // (note to self: remember that season is a
                         // fallback var when month and day are empty)
-                        
+
                         //if ("undefined" === typeof this.dateparts) {
                         //    this.dateparts = ["year", "month", "day"];
                         //}
                         len = this.dateparts.length;
                         for (pos = 0; pos < len; pos += 1) {
                             part = this.dateparts[pos];
-                            if ("undefined" !== typeof state.tmp.date_object[(part +  "_end")]) {
+                            if ("undefined" !== typeof state.tmp.date_object[(part + "_end")]) {
                                 dp.push(part);
                             } else if (part === "month" && "undefined" !== typeof state.tmp.date_object.season_end) {
                                 dp.push(part);
@@ -88,7 +88,7 @@ CSL.Node.date = {
                                 break;
                             }
                         }
-                        
+
                         //
                         // (3) When finished, the first item in the
                         // list, if any, is the date-part where

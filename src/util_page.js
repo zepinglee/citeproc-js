@@ -4,7 +4,7 @@ CSL.Util.PageRangeMangler = {};
 
 CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     var rangerex, pos, len, stringify, listify, expand, minimize, minimize_internal, chicago15, chicago16, lst, m, b, e, ret, begin, end, ret_func;
-    
+
     var range_delimiter = state.getTerm(rangeType + "-range-delimiter");
 
     rangerex = /([0-9]*[a-zA-Z]+0*)?([0-9]+[a-z]*)\s*(?:\u2013|-)\s*([0-9]*[a-zA-Z]+0*)?([0-9]+[a-z]*)/;
@@ -17,7 +17,7 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
             }
         }
         var ret = lst.join("");
-        ret = ret.replace(/([^\\])\-/g, "$1"+state.getTerm(rangeType + "-range-delimiter"));
+        ret = ret.replace(/([^\\])\-/g, "$1" + state.getTerm(rangeType + "-range-delimiter"));
         return ret;
     };
 
@@ -161,8 +161,8 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
     //
     var sniff = function (str, func, minchars, isyear) {
         var ret;
-		str = "" + str;
-		var lst = expand(str);
+        str = "" + str;
+        var lst = expand(str);
         var ret = func(lst, minchars, isyear);
         return ret;
     };
@@ -199,4 +199,3 @@ CSL.Util.PageRangeMangler.getFunction = function (state, rangeType) {
 
     return ret_func;
 };
-

@@ -9,4 +9,3 @@ CSL.Node.info = {
         }
     }
 };
-

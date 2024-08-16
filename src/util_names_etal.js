@@ -5,7 +5,7 @@ CSL.NameOutput.prototype.setEtAlParameters = function () {
     for (i = 0, ilen = this.variables.length; i < ilen; i += 1) {
         var v = this.variables[i];
         if ("undefined" === typeof this.etal_spec[v]) {
-            this.etal_spec[v] = {freeters:0,institutions:0,persons:[]};
+            this.etal_spec[v] = { freeters: 0, institutions: 0, persons: [] };
         }
         this.etal_spec[this.nameset_base + i] = this.etal_spec[v];
         if (this.freeters[v].length) {

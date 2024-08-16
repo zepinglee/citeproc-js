@@ -11,7 +11,7 @@ CSL.Node.alternative = {
             CSL.Attributes["@alternative-node-internal"].call(if_tok, state);
             CSL.Node["if"].build.call(if_tok, state, target);
 
-            var func = function(state, Item) {
+            var func = function (state, Item) {
 
                 state.tmp.oldItem = Item;
                 state.tmp.oldLang = state.opt.lang;
@@ -95,7 +95,7 @@ CSL.Node.alternative = {
 
             var if_tok = new CSL.Token("if", CSL.START);
             CSL.Attributes["@alternative-node-internal"].call(if_tok, state);
-            var func = function(state) {
+            var func = function (state) {
                 state.tmp.abort_alternative = true;
             }
             if_tok.execs.push(func);
@@ -109,7 +109,7 @@ CSL.Node.alternative = {
             var choose_tok = new CSL.Token("choose", CSL.END);
             CSL.Node["choose"].build.call(choose_tok, state, target);
 
-            var func = function(state, Item) {
+            var func = function (state, Item) {
                 state.output.closeLevel();
                 state.registry.refhash[Item.id] = state.tmp.oldItem;
                 state.opt.lang = state.tmp.oldLang;

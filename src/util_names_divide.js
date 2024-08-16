@@ -44,7 +44,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
     var names;
     if ("string" === typeof Item[variable] || "number" === typeof Item[variable]) {
         CSL.debug("name variable \"" + variable + "\" is string or number, not array. Attempting to fix.");
-        names = [{literal: Item[variable] + ""}];
+        names = [{ literal: Item[variable] + "" }];
     } else if (!Item[variable]) {
         names = [];
     } else if ("number" !== typeof Item[variable].length) {
@@ -60,7 +60,7 @@ CSL.NameOutput.prototype._normalizeVariableValue = function (Item, variable) {
 CSL.NameOutput.prototype._getFreeters = function (v, values) {
     this.freeters[v] = [];
     if (this.state.opt.development_extensions.spoof_institutional_affiliations) {
-        for (var i=values.length-1;i>-1;i--) {
+        for (var i = values.length - 1; i > -1; i--) {
             if (this.isPerson(values[i])) {
                 var value = this._checkNickname(values.pop());
                 if (value) {
@@ -71,7 +71,7 @@ CSL.NameOutput.prototype._getFreeters = function (v, values) {
             }
         }
     } else {
-        for (var i=values.length-1;i>-1;i--) {
+        for (var i = values.length - 1; i > -1; i--) {
             var value = values.pop();
             if (this.isPerson(value)) {
                 var value = this._checkNickname(value);
@@ -142,7 +142,7 @@ CSL.NameOutput.prototype._checkNickname = function (name) {
                 if (myLocalName === "!here>>>") {
                     name = false;
                 } else {
-                    name = {family:myLocalName,given:''};
+                    name = { family: myLocalName, given: '' };
                 }
             }
         }

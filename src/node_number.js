@@ -58,7 +58,7 @@ CSL.Node.number = {
             if (varname === 'collection-number' && Item.type === 'legal_case') {
                 state.tmp.renders_collection_number = true;
             }
-            
+
             // For bill or legislation items that have a label-form
             // attribute set on the cs:number node rendering the locator,
             // the form and pluralism of locator terms are controlled
@@ -82,7 +82,7 @@ CSL.Node.number = {
             // util_static_locator.js, and util_label.js. It's not easy
             // to follow, but seems to do the job. Let's home for good
             // luck out there in the wild.
-            
+
             var node = this;
 
             if (state.tmp.group_context.tip.force_suppress) {
@@ -108,14 +108,14 @@ CSL.Node.number = {
             }
 
             if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
-               && !state.tmp.just_looking) {
+                && !state.tmp.just_looking) {
                 state.tmp.done_vars.push(this.variables_real[0]);
                 state.tmp.group_context.tip.done_vars.push(this.variables_real[0]);
             }
         };
         this.execs.push(func);
         target.push(this);
-        
+
         CSL.Util.substituteEnd.call(this, state, target);
     }
 };

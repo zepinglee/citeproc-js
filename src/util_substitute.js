@@ -13,7 +13,7 @@ CSL.Util.substituteStart = function (state, target) {
     this.execs.push(func);
     if (this.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
         this.decorations.reverse();
-        this.decorations.push(["@showid","true", this.cslid]);
+        this.decorations.push(["@showid", "true", this.cslid]);
         this.decorations.reverse();
     }
     //
@@ -202,7 +202,7 @@ CSL.Util.substituteEnd = function (state, target) {
 
     if (state.sys.variableWrapper
         && (this.hasVariable || (this.variables_real && this.variables_real.length))) {
-        
+
         func = function (state) {
             if (!state.tmp.just_looking && !state.tmp.suppress_decorations) {
                 state.output.endTag("variable_entry");
@@ -324,7 +324,7 @@ CSL.Util.substituteEnd = function (state, target) {
                             if (state.tmp.last_rendered_name && !rendered_name.localeCompare(state.tmp.last_rendered_name)) {
                                 str = new CSL.Blob(state[state.tmp.area].opt["subsequent-author-substitute"]);
                                 if (state.tmp.label_blob) {
-                                    state.tmp.name_node.top.blobs = [str,state.tmp.label_blob];
+                                    state.tmp.name_node.top.blobs = [str, state.tmp.label_blob];
                                 } else if (state.tmp.name_node.top.blobs.length) {
                                     state.tmp.name_node.top.blobs[0].blobs = [str];
                                 } else {
@@ -352,7 +352,7 @@ CSL.Util.substituteEnd = function (state, target) {
             // If used only for that purpose, it could be greatly simplified.
             // If cleaned up, it could do more interesting things, like control
             // the suppression of names set later than first position.
-            if (state.tmp.element_trace.mystack.length>1) {
+            if (state.tmp.element_trace.mystack.length > 1) {
                 state.tmp.element_trace.pop();
             }
         };

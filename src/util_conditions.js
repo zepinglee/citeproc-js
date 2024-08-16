@@ -14,7 +14,7 @@ CSL.Conditions.TopNode = function (state) {
             this.test = state.fun.match[this.match](this, state, this.tests);
         }
         if (state.build.substitute_level.value() === 0) {
-            func = function(state) {
+            func = function (state) {
                 state.tmp.condition_counter++;
             }
             this.execs.push(func);

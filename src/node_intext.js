@@ -8,7 +8,7 @@ CSL.Node.intext = {
             state.build.root = "intext";
             state.build.extension = "";
 
-            var func = function(state, Item) {
+            var func = function (state, Item) {
                 state.tmp.area = "intext";
                 state.tmp.root = "intext";
                 state.tmp.extension = "";
@@ -28,4 +28,3 @@ CSL.Node.intext = {
         target.push(this);
     }
 };
-

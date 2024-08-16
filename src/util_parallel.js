@@ -15,9 +15,9 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
     var parallelMatchList = false;
     var siblingRanges = [];
 
-    for (var i=0,ilen=sortedItems.length-1;i<ilen;i++) {
+    for (var i = 0, ilen = sortedItems.length - 1; i < ilen; i++) {
         var currItem = sortedItems[i][0];
-        var nextItem = sortedItems[i+1][0];
+        var nextItem = sortedItems[i + 1][0];
         var freshMatchList = false;
         var info = {};
         if (sortedItems[i][0].seeAlso && sortedItems[i][0].seeAlso.length > 0 && !parallelMatchList) {
@@ -26,27 +26,27 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
             var tempMatchList = parallelMatchList.slice();
             var remainder = sortedItems.slice(i);
             remainder[0][1].parallel = "first";
-            for (var j=0,jlen=remainder.length;j<jlen;j++) {
+            for (var j = 0, jlen = remainder.length; j < jlen; j++) {
                 var itemID = remainder[j][0].id;
                 var ididx = tempMatchList.indexOf(itemID);
                 idxEnd = false;
                 if (ididx === -1) {
-                    idxEnd = (i+j-1);
-                } else if ((i+j) === (sortedItems.length-1)) {
-                    idxEnd = (i+j);
+                    idxEnd = (i + j - 1);
+                } else if ((i + j) === (sortedItems.length - 1)) {
+                    idxEnd = (i + j);
                 }
                 if (idxEnd) {
                     siblingRanges.push([i, idxEnd]);
                     break;
                 } else {
-                    tempMatchList = tempMatchList.slice(0, ididx).concat(tempMatchList.slice(ididx+1));
+                    tempMatchList = tempMatchList.slice(0, ididx).concat(tempMatchList.slice(ididx + 1));
                 }
             }
         }
         // parallelMatchList/freshMatchList relate only to parallels.
         // no-repeat non-parallels are handled in a separate block.
         if (i > 0 && freshMatchList) {
-            this.state.tmp.suppress_repeats[i-1].START = true;
+            this.state.tmp.suppress_repeats[i - 1].START = true;
             freshMatchList = false;
         }
         for (var varname in this.state.opt.track_repeat) {
@@ -97,29 +97,29 @@ CSL.Parallel.prototype.StartCitation = function (sortedItems, out) {
         }
         this.state.tmp.suppress_repeats.push(info);
     }
-    
+
     // if (!this.state.tmp.just_looking) {
     //     this.state.sys.print(`${JSON.stringify(this.state.tmp.suppress_repeats, null, 2)}`);
     // }
-    
+
     // Set no-repeat info here?
-    for (var j=0,jlen=siblingRanges.length;j<jlen;j++) {
+    for (var j = 0, jlen = siblingRanges.length; j < jlen; j++) {
         var masterID = sortedItems[siblingRanges[j][0]][0].id;
         this.state.registry.registry[masterID].master = true;
         this.state.registry.registry[masterID].siblings = [];
         var start = siblingRanges[j][0];
         var end = siblingRanges[j][1];
-        for (var k=start; k<end; k++) {
+        for (var k = start; k < end; k++) {
             this.state.tmp.suppress_repeats[k].SIBLING = true;
-            var siblingID = sortedItems[k+1][0].id;
-            sortedItems[k+1][1].parallel = "other";
+            var siblingID = sortedItems[k + 1][0].id;
+            sortedItems[k + 1][1].parallel = "other";
             this.state.registry.registry[masterID].siblings.push(siblingID);
         }
     }
     // this.state.sys.print(JSON.stringify(this.state.tmp.suppress_repeats, null, 2));
 };
 
-CSL.Parallel.prototype.checkRepeats = function(params) {
+CSL.Parallel.prototype.checkRepeats = function (params) {
     var idx = this.state.tmp.cite_index;
     if (this.state.tmp.suppress_repeats) {
         if (params.parallel_first && Object.keys(params.parallel_first).length > 0) {

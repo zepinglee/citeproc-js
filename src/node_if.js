@@ -9,4 +9,3 @@ CSL.Node["if"] = {
         CSL.Conditions.Configure.call(this, state, pos);
     }
 };
-

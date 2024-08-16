@@ -7,7 +7,7 @@ CSL.Node.layout = {
         function setSuffix() {
             if (state.build.area === "bibliography") {
                 suffix_token = new CSL.Token("text", CSL.SINGLETON);
-                func = function(state) {
+                func = function (state) {
                     // Suppress suffix on all but the last item in bibliography parallels
                     if (!state.tmp.parallel_and_not_last) {
                         var suffix;
@@ -22,7 +22,7 @@ CSL.Node.layout = {
                         // @display group node.
                         var topblob = state.output.current.value();
                         if (state.opt.using_display) {
-                            topblob.blobs[topblob.blobs.length-1].strings.suffix = suffix;
+                            topblob.blobs[topblob.blobs.length - 1].strings.suffix = suffix;
                         } else {
                             topblob.strings.suffix = suffix;
                         }
@@ -49,8 +49,8 @@ CSL.Node.layout = {
                 if (state.opt.development_extensions.apply_citation_wrapper
                     && state.sys.wrapCitationEntry
                     && !state.tmp.just_looking
-                    && Item.system_id 
-                    && state.tmp.area === "citation") { 
+                    && Item.system_id
+                    && state.tmp.area === "citation") {
 
                     var cite_entry = new CSL.Token("group", CSL.START);
                     cite_entry.decorations = [["@cite", "entry"]];
@@ -81,7 +81,7 @@ CSL.Node.layout = {
                 if (state.opt.suppressedJurisdictions[Item["country"]]
                     && Item["country"]
                     && ["treaty", "patent"].indexOf(Item.type) === -1) {
-                    
+
                     state.tmp.done_vars.push("country");
                 }
                 if (!state.tmp.just_looking && state.registry.registry[Item.id] && state.registry.registry[Item.id].parallel) {
@@ -104,7 +104,7 @@ CSL.Node.layout = {
                 state.tmp.sort_key_flag = false;
             };
             this.execs.push(func);
-            
+
             // reset nameset counter [all nodes]
             func = function (state) {
                 state.tmp.nameset_counter = 0;
@@ -149,7 +149,7 @@ CSL.Node.layout = {
 
         if (this.tokentype === CSL.START) {
             state.build.layout_flag = true;
-                            
+
             // Only run the following once, to set up the final layout node ...
             if (!this.locale_raw) {
                 //
@@ -163,7 +163,7 @@ CSL.Node.layout = {
                 state[state.build.area].opt.layout_delimiter = this.strings.delimiter;
 
                 state[state.build.area].opt.layout_decorations = this.decorations;
-                
+
                 // Only do this if we're running conditionals
                 if (state.tmp.cite_affixes[state.build.area]) {
                     // if build_layout_locale_flag is true,
@@ -257,9 +257,9 @@ CSL.Node.layout = {
                     if (state.opt.development_extensions.apply_citation_wrapper
                         && state.sys.wrapCitationEntry
                         && !state.tmp.just_looking
-                        && Item.system_id 
-                        && state.tmp.area === "citation") { 
-                        
+                        && Item.system_id
+                        && state.tmp.area === "citation") {
+
                         state.output.endTag(); // closes citation link wrapper
                     }
                 };

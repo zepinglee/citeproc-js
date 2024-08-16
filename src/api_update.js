@@ -18,8 +18,8 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
     }
     var doneIDs = {};
     var itemIDs = [];
-    for (var i=0,ilen=citations.length;i<ilen;i+=1) {
-        for (var j=0,jlen=citations[i].citationItems.length;j<jlen;j+=1) {
+    for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
+        for (var j = 0, jlen = citations[i].citationItems.length; j < jlen; j += 1) {
             var itemID = "" + citations[i].citationItems[j].id;
             if (!doneIDs[itemID]) {
                 itemIDs.push(itemID);
@@ -33,12 +33,12 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
     var ret = [];
     var oldMode = this.opt.mode;
     this.setOutputFormat(mode);
-    for (var i=0,ilen=citations.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = citations.length; i < ilen; i += 1) {
         // res contains a result report and a list of [index,string] pairs
         // index begins at 0
-        var res = this.processCitationCluster(citations[i],pre,post,CSL.ASSUME_ALL_ITEMS_REGISTERED);
-        pre.push([citations[i].citationID,citations[i].properties.noteIndex]);
-        for (var j=0,jlen=res[1].length;j<jlen;j+=1) {
+        var res = this.processCitationCluster(citations[i], pre, post, CSL.ASSUME_ALL_ITEMS_REGISTERED);
+        pre.push([citations[i].citationID, citations[i].properties.noteIndex]);
+        for (var j = 0, jlen = res[1].length; j < jlen; j += 1) {
             var index = res[1][j][0];
             ret[index] = [
                 pre[index][0],
@@ -55,14 +55,14 @@ CSL.Engine.prototype.rebuildProcessorState = function (citations, mode, uncitedI
 
 CSL.Engine.prototype.restoreProcessorState = function (citations) {
     var i, ilen, j, jlen, item, Item, newitem, citationList, itemList, sortedItems;
-    
+
     // This function is deprecated.
     // Use rebuildProcessorState() instead.
 
     // Quickly restore state from citation details retained by
     // calling application.
     //
-    // if citations are provided, position details and sortkeys 
+    // if citations are provided, position details and sortkeys
     // on the citation objects are are assumed to be correct.  Item
     // data is retrieved, and sortedItems arrays are created and
     // sorted as required by the current style.
@@ -88,7 +88,7 @@ CSL.Engine.prototype.restoreProcessorState = function (citations) {
     // then reassign index and noteIndex numbers.
     var oldCitations = citations.slice();
     oldCitations.sort(
-        function (a,b) {
+        function (a, b) {
             if (a.properties.index < b.properties.index) {
                 return -1;
             } else if (a.properties.index > b.properties.index) {
@@ -165,21 +165,21 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs, impli
     //SNIP-END
     this.registry.init(idList);
 
-	if (rerun_ambigs) {
-		for (var ambig in this.registry.ambigcites) {
-			this.registry.ambigsTouched[ambig] = true;
-		}
-	}
+    if (rerun_ambigs) {
+        for (var ambig in this.registry.ambigcites) {
+            this.registry.ambigsTouched[ambig] = true;
+        }
+    }
 
     this.registry.dodeletes(this.registry.myhash);
-    
+
     this.registry.doinserts(this.registry.mylist);
-    
+
     this.registry.dorefreshes();
 
     // *** affects reflist
     this.registry.rebuildlist(nosort);
-    
+
     this.registry.setsortkeys();
 
     // taints always
@@ -191,7 +191,7 @@ CSL.Engine.prototype.updateItems = function (idList, nosort, rerun_ambigs, impli
     // *** affects reflist
     // taints if numbered style
     this.registry.renumber();
-    
+
     // taints always
     //this.registry.yearsuffix();
 
@@ -227,7 +227,7 @@ CSL.Engine.prototype.updateUncitedItems = function (idList, nosort) {
             }
         } else if ("number" == typeof idList.length) {
             idHash = {};
-            for (var i=0,ilen=idList.length;i<ilen;i+=1) {
+            for (var i = 0, ilen = idList.length; i < ilen; i += 1) {
                 idHash[idList[i]] = true;
             }
         }

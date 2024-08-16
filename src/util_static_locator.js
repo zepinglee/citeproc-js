@@ -3,7 +3,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
     // be mapped to the locator field (on item). We simply prepend it as
     // a string here, and handle all parsing of the resulting string
     // in processNumber(). Plurals and numeric are set in processNumber().
-    
+
     // Because the target is in the citation item (lowercase), the
     // remapping cannot take place when the Item data is received.
     // Citation provides a list of Item/item pairs, hence the iteration
@@ -12,8 +12,8 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
         var Item = inputList[i][0];
         var item = inputList[i][1];
 
-        if (["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1) {
-             // If a locator value exists, then
+        if (["bill", "gazette", "legislation", "regulation", "treaty"].indexOf(Item.type) > -1) {
+            // If a locator value exists, then
             //   (a) Leave be an overriding label at the start of the locator field, defaulting to label value
             if (item.locator) {
                 item.locator = item.locator.trim();
@@ -42,14 +42,14 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
             // If section is nil, then
             //   (a) Do nothing
             if (Item.section) {
-            // If section exists and locator is nil
-            //   (a) Set section string in locator field
+                // If section exists and locator is nil
+                //   (a) Set section string in locator field
                 if (!item.locator) {
                     item.locator = Item.section;
                 } else {
-            // If both section and locator exist, then
-            //   (a) If locator starts with p., remove p., merge with space or no-space, and set in locator field
-            //   (b) If locator starts with non-p., prepend section value to locator with space, and set in locator field
+                    // If both section and locator exist, then
+                    //   (a) If locator starts with p., remove p., merge with space or no-space, and set in locator field
+                    //   (b) If locator starts with non-p., prepend section value to locator with space, and set in locator field
                     var m = item.locator.match(/^([^ ]*)\s*(.*)/);
                     var space = " ";
                     if (m) {
@@ -60,7 +60,7 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
                             space = "";
                         }
                     } else {
-                       space = ""; 
+                        space = "";
                     }
                     item.locator = Item.section + space + item.locator;
                 }
@@ -74,8 +74,8 @@ CSL.Engine.prototype.remapSectionVariable = function (inputList) {
 
 
 CSL.Engine.prototype.setNumberLabels = function (Item) {
-     if (Item.number
-        && ["bill", "gazette", "legislation","regulation","treaty"].indexOf(Item.type) > -1
+    if (Item.number
+        && ["bill", "gazette", "legislation", "regulation", "treaty"].indexOf(Item.type) > -1
         && this.opt.development_extensions.consolidate_legal_items
         && !this.tmp.shadow_numbers["number"]) {
 
@@ -84,7 +84,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
         this.tmp.shadow_numbers["number"].plural = 0;
         this.tmp.shadow_numbers["number"].numeric = false;
         this.tmp.shadow_numbers["number"].label = false;
-        
+
         // Labels embedded in number variable
         var value = "" + Item.number;
         value = value.split("\\").join("");
@@ -97,7 +97,7 @@ CSL.Engine.prototype.setNumberLabels = function (Item) {
             if (splt.length > 1) {
                 // Convert matches to localized form
                 var lst = [];
-                for (var j=1, jlen=splt.length; j < jlen; j += 1) {
+                for (var j = 1, jlen = splt.length; j < jlen; j += 1) {
                     lst.push(splt[j].replace(/\s*$/, "").replace(/^\s*/, ""));
                 }
                 // Preemptively save to shadow_numbers

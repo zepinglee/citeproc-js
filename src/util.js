@@ -7,7 +7,7 @@ CSL.Util.Match = function () {
 
     this.any = function (token, state, tests) {
         return function (Item, item) {
-            for (var i=0, ilen=tests.length; i < ilen; i += 1) {
+            for (var i = 0, ilen = tests.length; i < ilen; i += 1) {
                 var result = tests[i](Item, item);
                 if (result) {
                     return true;
@@ -19,8 +19,8 @@ CSL.Util.Match = function () {
 
     this.none = function (token, state, tests) {
         return function (Item, item) {
-            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
-                var result = tests[i](Item,item);
+            for (var i = 0, ilen = tests.length; i < ilen; i += 1) {
+                var result = tests[i](Item, item);
                 if (result) {
                     return false;
                 }
@@ -31,8 +31,8 @@ CSL.Util.Match = function () {
 
     this.all = function (token, state, tests) {
         return function (Item, item) {
-            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
-                var result = tests[i](Item,item);
+            for (var i = 0, ilen = tests.length; i < ilen; i += 1) {
+                var result = tests[i](Item, item);
                 if (!result) {
                     return false;
                 }
@@ -45,8 +45,8 @@ CSL.Util.Match = function () {
 
     this.nand = function (token, state, tests) {
         return function (Item, item) {
-            for (var i=0,ilen=tests.length;i<ilen;i+=1) {
-                var result = tests[i](Item,item);
+            for (var i = 0, ilen = tests.length; i < ilen; i += 1) {
+                var result = tests[i](Item, item);
                 if (!result) {
                     return true;
                 }

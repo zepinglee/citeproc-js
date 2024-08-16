@@ -2,7 +2,7 @@
 
 CSL.Util.fixDateNode = function (parent, pos, node) {
     var form, variable, datexml, subnode, partname, attr, val, prefix, suffix, children, subchildren, display, cslid;
-    
+
     var lingo = this.cslXml.getAttributeValue(node, "lingo");
 
     var default_locale = this.cslXml.getAttributeValue(node, "default-locale");
@@ -104,7 +104,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
             }
         }
     }
-    
+
     if ("year" === this.cslXml.getAttributeValue(node, "date-parts")) {
 
         //
@@ -115,7 +115,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
         // Xml: Find one node by attribute and delete
         //
         this.cslXml.deleteNodeByNameAttribute(datexml, 'day');
-        
+
     } else if ("year-month" === this.cslXml.getAttributeValue(node, "date-parts")) {
         //
         // Xml: Find one node by attribute and delete
@@ -126,7 +126,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
         // Xml: Get child nodes
         //
         var childNodes = this.cslXml.children(datexml);
-        for (var i=1,ilen=this.cslXml.numberofnodes(childNodes);i<ilen;i++) {
+        for (var i = 1, ilen = this.cslXml.numberofnodes(childNodes); i < ilen; i++) {
             //
             // Xml: Get attribute value (for string comparison)
             //
@@ -134,7 +134,7 @@ CSL.Util.fixDateNode = function (parent, pos, node) {
                 //
                 // Xml: Set attribute value
                 //
-                this.cslXml.setAttribute(childNodes[i-1], "suffix", "");
+                this.cslXml.setAttribute(childNodes[i - 1], "suffix", "");
                 break;
             }
         }

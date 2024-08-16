@@ -11,7 +11,7 @@ CSL.Node.institution = {
                     state.tmp.institution_delimiter = state.tmp.name_delimiter;
                 }
 
-                // This is the same code for the same result as in node_name.js, 
+                // This is the same code for the same result as in node_name.js,
                 // but when cs:institution comes on stream, it may produce
                 // different results.
                 if ("text" === state.inheritOpt(this, "and")) {
@@ -50,7 +50,7 @@ CSL.Node.institution = {
                         this.and_prefix_multiple = " ";
                     }
                 }
-                
+
                 this.and = {};
                 if ("undefined" !== typeof this.and_term) {
                     state.output.append(this.and_term, "empty", true);

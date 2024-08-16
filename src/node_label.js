@@ -2,7 +2,7 @@
 
 CSL.Node.label = {
     build: function (state, target) {
-        
+
         if (this.strings.term) {
             // Non-names labels
             var func = function (state, Item, item) {
@@ -41,8 +41,8 @@ CSL.Node.label = {
             }
             // Names labels
             // Picked up in names END
-            var namevars = state.build.names_variables[state.build.names_variables.length-1];
-            var namelabels = state.build.name_label[state.build.name_label.length-1];
+            var namevars = state.build.names_variables[state.build.names_variables.length - 1];
+            var namelabels = state.build.name_label[state.build.name_label.length - 1];
             for (var i = 0, ilen = namevars.length; i < ilen; i += 1) {
                 if (!namelabels[namevars[i]]) {
                     namelabels[namevars[i]] = {};

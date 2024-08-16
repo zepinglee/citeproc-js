@@ -6,7 +6,7 @@
   Style and locale JSON should be formatted as follows. Note that
   an empty literal should be set as an explicit empty strings within
   children:[]
-  
+
   {
     name:"term",
     children:[
@@ -24,18 +24,18 @@
 CSL.XmlJSON = function (dataObj) {
     this.dataObj = dataObj;
     this.institution = {
-        name:"institution",
-        attrs:{
-            "institution-parts":"long",
-            "delimiter":", "
+        name: "institution",
+        attrs: {
+            "institution-parts": "long",
+            "delimiter": ", "
         },
-        children:[
+        children: [
             {
-                name:"institution-part",
-                attrs:{
-                    name:"long"
+                name: "institution-part",
+                attrs: {
+                    name: "long"
                 },
-                children:[]
+                children: []
             }
         ]
     };
@@ -59,10 +59,10 @@ CSL.XmlJSON.prototype.getStyleId = function (myjson, styleName) {
     }
     var ret = "";
     var children = myjson.children;
-    for (var i=0,ilen=children.length;i<ilen;i++) {
+    for (var i = 0, ilen = children.length; i < ilen; i++) {
         if (children[i].name === 'info') {
             var grandkids = children[i].children;
-            for (var j=0,jlen=grandkids.length;j<jlen;j++) {
+            for (var j = 0, jlen = grandkids.length; j < jlen; j++) {
                 if (grandkids[j].name === tagName) {
                     ret = grandkids[j].children[0];
                 }
@@ -90,7 +90,7 @@ CSL.XmlJSON.prototype.attributes = function (myjson) {
     //print("attributes()");
     var ret = {};
     for (var attrname in myjson.attrs) {
-        ret["@"+attrname] = myjson.attrs[attrname];
+        ret["@" + attrname] = myjson.attrs[attrname];
     }
     return ret;
 };
@@ -105,7 +105,7 @@ CSL.XmlJSON.prototype.content = function (myjson) {
     if (!myjson || !myjson.children) {
         return ret;
     }
-    for (var i=0, ilen=myjson.children.length; i < ilen; i += 1) {
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if ("string" === typeof myjson.children[i]) {
             ret += myjson.children[i];
         }
@@ -127,11 +127,11 @@ CSL.XmlJSON.prototype.numberofnodes = function (myjson) {
 
 // getAttributeName() removed. Looks like it was not being used.
 
-CSL.XmlJSON.prototype.getAttributeValue = function (myjson,name,namespace) {
+CSL.XmlJSON.prototype.getAttributeValue = function (myjson, name, namespace) {
     //print("getAttributeValue()");
     var ret = "";
     if (namespace) {
-        name = namespace+":"+name;
+        name = namespace + ":" + name;
     }
     if (myjson) {
         if (myjson.attrs) {
@@ -145,11 +145,11 @@ CSL.XmlJSON.prototype.getAttributeValue = function (myjson,name,namespace) {
     return ret;
 }
 
-CSL.XmlJSON.prototype.getNodeValue = function (myjson,name) {
+CSL.XmlJSON.prototype.getNodeValue = function (myjson, name) {
     //print("getNodeValue()");
     var ret = "";
-    if (name){
-        for (var i=0, ilen=myjson.children.length; i < ilen; i += 1) {
+    if (name) {
+        for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
             if (myjson.children[i].name === name) {
                 // This will always be Object() unless empty
                 if (myjson.children[i].children.length) {
@@ -162,7 +162,7 @@ CSL.XmlJSON.prototype.getNodeValue = function (myjson,name) {
     } else if (myjson) {
         ret = myjson;
     }
-    // Just being careful here, following the former DOM code. The JSON object we receive 
+    // Just being careful here, following the former DOM code. The JSON object we receive
     // for this should be fully normalized.
     if (ret && ret.children && ret.children.length == 1 && "string" === typeof ret.children[0]) {
         ret = ret.children[0];
@@ -170,21 +170,21 @@ CSL.XmlJSON.prototype.getNodeValue = function (myjson,name) {
     return ret;
 }
 
-CSL.XmlJSON.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myjson,nodename,partname,attrname,val) {
+CSL.XmlJSON.prototype.setAttributeOnNodeIdentifiedByNameAttribute = function (myjson, nodename, partname, attrname, val) {
     //print("setAttributeOnNodeIdentifiedByNameAttribute()");
     var pos, len, xml, nodes, node;
-    if (attrname.slice(0,1) === '@'){
+    if (attrname.slice(0, 1) === '@') {
         attrname = attrname.slice(1);
     }
     // In the one place this is used in citeproc-js code, it doesn't need to recurse.
-    for (var i=0,ilen=myjson.children.length; i<ilen; i += 1) {
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if (myjson.children[i].name === nodename && myjson.children[i].attrs.name === partname) {
             myjson.children[i].attrs[attrname] = val;
         }
     }
 }
 
-CSL.XmlJSON.prototype.deleteNodeByNameAttribute = function (myjson,val) {
+CSL.XmlJSON.prototype.deleteNodeByNameAttribute = function (myjson, val) {
     //print("deleteNodeByNameAttribute()");
     var i, ilen;
     for (i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
@@ -192,12 +192,12 @@ CSL.XmlJSON.prototype.deleteNodeByNameAttribute = function (myjson,val) {
             continue;
         }
         if (myjson.children[i].attrs.name == val) {
-            myjson.children = myjson.children.slice(0,i).concat(myjson.children.slice(i+1));
+            myjson.children = myjson.children.slice(0, i).concat(myjson.children.slice(i + 1));
         }
     }
 }
 
-CSL.XmlJSON.prototype.deleteAttribute = function (myjson,attrname) {
+CSL.XmlJSON.prototype.deleteAttribute = function (myjson, attrname) {
     //print("deleteAttribute()");
     var i, ilen;
     if ("undefined" !== typeof myjson.attrs[attrname]) {
@@ -205,13 +205,13 @@ CSL.XmlJSON.prototype.deleteAttribute = function (myjson,attrname) {
     }
 }
 
-CSL.XmlJSON.prototype.setAttribute = function (myjson,attr,val) {
+CSL.XmlJSON.prototype.setAttribute = function (myjson, attr, val) {
     //print("setAttribute()");
     myjson.attrs[attr] = val;
     return false;
 }
 
-CSL.XmlJSON.prototype.nodeCopy = function (myjson,clone) {
+CSL.XmlJSON.prototype.nodeCopy = function (myjson, clone) {
     //print("nodeCopy()");
     if (!clone) {
         var clone = {};
@@ -223,27 +223,27 @@ CSL.XmlJSON.prototype.nodeCopy = function (myjson,clone) {
                 clone[key] = myjson[key];
             } else if ("object" === typeof myjson[key]) {
                 if ("undefined" === typeof myjson[key].length) {
-                    clone[key] = this.nodeCopy(myjson[key],{});
+                    clone[key] = this.nodeCopy(myjson[key], {});
                 } else {
-                    clone[key] = this.nodeCopy(myjson[key],[]);
+                    clone[key] = this.nodeCopy(myjson[key], []);
                 }
             }
         }
     } else {
         // myjson is an array
-        for (var i=0,ilen=myjson.length;i<ilen; i += 1) {
+        for (var i = 0, ilen = myjson.length; i < ilen; i += 1) {
             if ("string" === typeof myjson[i]) {
                 clone[i] = myjson[i];
             } else {
                 // If it's at the first level of an array, it's an object.
-                clone[i] = this.nodeCopy(myjson[i],{});
+                clone[i] = this.nodeCopy(myjson[i], {});
             }
         }
     }
     return clone;
 }
 
-CSL.XmlJSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
+CSL.XmlJSON.prototype.getNodesByName = function (myjson, name, nameattrval, ret) {
     //print("getNodesByName()");
     var nodes, node, pos, len;
     if (!ret) {
@@ -261,16 +261,16 @@ CSL.XmlJSON.prototype.getNodesByName = function (myjson,name,nameattrval,ret) {
             ret.push(myjson);
         }
     }
-    for (var i=0,ilen=myjson.children.length;i<ilen;i+=1){
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if ("object" !== typeof myjson.children[i]) {
             continue;
         }
-        this.getNodesByName(myjson.children[i],name,nameattrval,ret);
+        this.getNodesByName(myjson.children[i], name, nameattrval, ret);
     }
     return ret;
 }
 
-CSL.XmlJSON.prototype.nodeNameIs = function (myjson,name) {
+CSL.XmlJSON.prototype.nodeNameIs = function (myjson, name) {
     //print("nodeNameIs()");
     if (typeof myjson === "undefined") {
         return false;
@@ -293,12 +293,12 @@ CSL.XmlJSON.prototype.makeXml = function (myjson) {
     return myjson;
 };
 
-CSL.XmlJSON.prototype.insertChildNodeAfter = function (parent,node,pos,datejson) {
+CSL.XmlJSON.prototype.insertChildNodeAfter = function (parent, node, pos, datejson) {
     //print("insertChildNodeAfter()");
     // Function is misnamed: this replaces the node
-    for (var i=0,ilen=parent.children.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = parent.children.length; i < ilen; i += 1) {
         if (node === parent.children[i]) {
-            parent.children = parent.children.slice(0,i).concat([datejson]).concat(parent.children.slice(i+1));
+            parent.children = parent.children.slice(0, i).concat([datejson]).concat(parent.children.slice(i + 1));
             break;
         }
     }
@@ -306,15 +306,15 @@ CSL.XmlJSON.prototype.insertChildNodeAfter = function (parent,node,pos,datejson)
 };
 
 
-CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myjson) {
+CSL.XmlJSON.prototype.insertPublisherAndPlace = function (myjson) {
     if (myjson.name === "group") {
         var useme = true;
-        var mustHaves = ["publisher","publisher-place"];
-        for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+        var mustHaves = ["publisher", "publisher-place"];
+        for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
             var haveVarname = mustHaves.indexOf(myjson.children[i].attrs.variable);
             var isText = myjson.children[i].name === "text";
             if (isText && haveVarname > -1 && !myjson.children[i].attrs.prefix && !myjson.children[i].attrs.suffix) {
-                mustHaves = mustHaves.slice(0,haveVarname).concat(mustHaves.slice(haveVarname+1));
+                mustHaves = mustHaves.slice(0, haveVarname).concat(mustHaves.slice(haveVarname + 1));
             } else {
                 useme = false;
                 break;
@@ -322,13 +322,13 @@ CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myjson) {
         }
         if (useme && !mustHaves.length) {
             myjson.attrs["has-publisher-and-publisher-place"] = true;
-       }
+        }
     }
-    for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if ("object" === typeof myjson.children[i]) {
             this.insertPublisherAndPlace(myjson.children[i]);
         }
-    }    
+    }
 }
 /*
 CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myxml) {
@@ -347,7 +347,7 @@ CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myxml) {
                 if (skippers.indexOf(j) > -1) {
                     continue;
                 }
-                var child = node.childNodes.item(j);                    
+                var child = node.childNodes.item(j);
                 var subskippers = [];
                 for (var k = 0, klen = child.childNodes.length; k < klen; k += 1) {
                     if (child.childNodes.item(k).nodeType !== 1) {
@@ -371,7 +371,7 @@ CSL.XmlJSON.prototype.insertPublisherAndPlace = function(myxml) {
 };
 */
 
-CSL.XmlJSON.prototype.isChildOfSubstitute = function(parents) {
+CSL.XmlJSON.prototype.isChildOfSubstitute = function (parents) {
     if (parents.length > 0) {
         var myparents = parents.slice();
         var parent = myparents.pop();
@@ -384,7 +384,7 @@ CSL.XmlJSON.prototype.isChildOfSubstitute = function(parents) {
     return false;
 };
 
-CSL.XmlJSON.prototype.addMissingNameNodes = function(myjson,parents) {
+CSL.XmlJSON.prototype.addMissingNameNodes = function (myjson, parents) {
     if (!parents) {
         parents = [];
     }
@@ -392,28 +392,28 @@ CSL.XmlJSON.prototype.addMissingNameNodes = function(myjson,parents) {
         // Trawl through children to decide whether a name node is needed here
         if (!this.isChildOfSubstitute(parents)) {
             var addName = true;
-            for (var i=0,ilen=myjson.children.length;i<ilen;i++) {
+            for (var i = 0, ilen = myjson.children.length; i < ilen; i++) {
                 if (myjson.children[i].name === "name") {
                     addName = false;
                     break;
                 }
             }
             if (addName) {
-                myjson.children = [{name:"name",attrs:{},children:[]}].concat(myjson.children);
+                myjson.children = [{ name: "name", attrs: {}, children: [] }].concat(myjson.children);
             }
         }
     }
     parents.push(myjson.name);
-    for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if ("object" === typeof myjson.children[i]) {
-            this.addMissingNameNodes(myjson.children[i],parents);
+            this.addMissingNameNodes(myjson.children[i], parents);
         }
     }
     parents.pop();
 }
 
 
-CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
+CSL.XmlJSON.prototype.addInstitutionNodes = function (myjson) {
     //print("addInstitutionNodes()");
     var names, thenames, institution, theinstitution, name, thename, xml, pos, len;
     // The idea here is to map relevant attributes from name and nampart=family
@@ -423,7 +423,7 @@ CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
         // do stuff
         var attributes = {};
         var insertPos = -1;
-        for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+        for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
             if (myjson.children[i].name == "name") {
                 for (var key in myjson.children[i].attrs) {
                     attributes[key] = myjson.children[i].attrs[key];
@@ -431,7 +431,7 @@ CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
                 attributes.delimiter = myjson.children[i].attrs.delimiter;
                 attributes.and = myjson.children[i].attrs.and;
                 insertPos = i;
-                for (var k=0,klen=myjson.children[i].children.length;k<klen;k+=1) {
+                for (var k = 0, klen = myjson.children[i].children.length; k < klen; k += 1) {
                     if (myjson.children[i].children[k].attrs.name !== 'family') {
                         continue;
                     }
@@ -447,7 +447,7 @@ CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
         }
         if (insertPos > -1) {
             var institution = this.nodeCopy(this.institution);
-            for (var i=0,ilen = CSL.INSTITUTION_KEYS.length;i<ilen;i+=1) {
+            for (var i = 0, ilen = CSL.INSTITUTION_KEYS.length; i < ilen; i += 1) {
                 var attrname = CSL.INSTITUTION_KEYS[i];
                 if ("undefined" !== typeof attributes[attrname]) {
                     institution.children[0].attrs[attrname] = attributes[attrname];
@@ -459,10 +459,10 @@ CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
                     institution.attrs.and = attributes.and;
                 }
             }
-            myjson.children = myjson.children.slice(0,insertPos+1).concat([institution]).concat(myjson.children.slice(insertPos+1));
+            myjson.children = myjson.children.slice(0, insertPos + 1).concat([institution]).concat(myjson.children.slice(insertPos + 1));
         }
     }
-    for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if ("string" === typeof myjson.children[i]) {
             continue;
         }
@@ -470,9 +470,9 @@ CSL.XmlJSON.prototype.addInstitutionNodes = function(myjson) {
         this.addInstitutionNodes(myjson.children[i]);
     }
 }
-CSL.XmlJSON.prototype.flagDateMacros = function(myjson) {
+CSL.XmlJSON.prototype.flagDateMacros = function (myjson) {
     // print("flagDateMacros()");
-    for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
         if (myjson.children[i].name === "macro") {
             if (this.inspectDateMacros(myjson.children[i])) {
                 myjson.children[i].attrs["macro-has-date"] = "true";
@@ -480,7 +480,7 @@ CSL.XmlJSON.prototype.flagDateMacros = function(myjson) {
         }
     }
 }
-CSL.XmlJSON.prototype.inspectDateMacros = function(myjson) {
+CSL.XmlJSON.prototype.inspectDateMacros = function (myjson) {
     //print("inspectDateMacros()");
     if (!myjson || !myjson.children) {
         return false;
@@ -488,7 +488,7 @@ CSL.XmlJSON.prototype.inspectDateMacros = function(myjson) {
     if (myjson.name === "date") {
         return true;
     } else {
-        for (var i=0,ilen=myjson.children.length;i<ilen;i+=1) {
+        for (var i = 0, ilen = myjson.children.length; i < ilen; i += 1) {
             if (this.inspectDateMacros(myjson.children[i])) {
                 return true;
             }
@@ -515,21 +515,21 @@ CSL.stripXmlProcessingInstruction = function (xml) {
 /*
  * String parser for XML inputs
  */
-CSL.parseXml = function(str) {
+CSL.parseXml = function (str) {
 
     var _pos = 0;
-    var _obj = {children:[]};
+    var _obj = { children: [] };
     var _stack = [_obj.children];
 
     function _listifyString(str) {
         str = str.split(/(?:\r\n|\n|\r)/).join(" ").replace(/>[	 ]+</g, "><").replace(/<\!--.*?-->/g, "");
         var lst = str.split("><");
         var stylePos = null;
-        for (var i=0,ilen=lst.length;i<ilen;i++) {
+        for (var i = 0, ilen = lst.length; i < ilen; i++) {
             if (i > 0) {
                 lst[i] = "<" + lst[i];
             }
-            if (i < (lst.length-1)) {
+            if (i < (lst.length - 1)) {
                 lst[i] = lst[i] + ">";
             }
             if ("number" != typeof stylePos) {
@@ -542,19 +542,19 @@ CSL.parseXml = function(str) {
         // Combine open/close elements for empty terms,
         // so that they will be passed through correctly
         // as empty strings.
-        for (var i=lst.length-2;i>-1;i--) {
+        for (var i = lst.length - 2; i > -1; i--) {
             if (lst[i].slice(1).indexOf("<") === -1) {
                 var stub = lst[i].slice(0, 5);
                 if (lst[i].slice(-2) !== "/>") {
                     if (stub === "<term") {
-                        if (lst[i+1].slice(0, 6) === "</term") {
-                            lst[i] = lst[i] + lst[i+1];
-                            lst = lst.slice(0, i+1).concat(lst.slice(i+2));
+                        if (lst[i + 1].slice(0, 6) === "</term") {
+                            lst[i] = lst[i] + lst[i + 1];
+                            lst = lst.slice(0, i + 1).concat(lst.slice(i + 2));
                         }
                     } else if (["<sing", "<mult"].indexOf(stub) > -1) {
-                        if (lst[i].slice(-2) !== "/>" && lst[i+1].slice(0, 1) === "<") {
-                            lst[i] = lst[i] + lst[i+1];
-                            lst = lst.slice(0, i+1).concat(lst.slice(i+2));
+                        if (lst[i].slice(-2) !== "/>" && lst[i + 1].slice(0, 1) === "<") {
+                            lst[i] = lst[i] + lst[i + 1];
+                            lst = lst.slice(0, i + 1).concat(lst.slice(i + 2));
                         }
                     }
                 }
@@ -568,11 +568,11 @@ CSL.parseXml = function(str) {
             .split("&amp;").join("&")
             .split("&quot;").join("\"")
             .split("&gt;").join(">").split("&lt;").join("<")
-            .replace(/&#([0-9]{1,6});/gi, function(match, numStr) {
+            .replace(/&#([0-9]{1,6});/gi, function (match, numStr) {
                 var num = parseInt(numStr, 10); // read num as normal number
                 return String.fromCharCode(num);
             })
-            .replace(/&#x([a-f0-9]{1,6});/gi, function(match, numStr){
+            .replace(/&#x([a-f0-9]{1,6});/gi, function (match, numStr) {
                 var num = parseInt(numStr, 16); // read num as hex
                 return String.fromCharCode(num);
             });
@@ -581,7 +581,7 @@ CSL.parseXml = function(str) {
     function _getAttributes(elem) {
         var m = elem.match(/([^\'\"=	 ]+)=(?:\"[^\"]*\"|\'[^\']*\')/g);
         if (m) {
-            for (var i=0,ilen=m.length;i<ilen;i++) {
+            for (var i = 0, ilen = m.length; i < ilen; i++) {
                 m[i] = m[i].replace(/=.*/, "");
             }
         }
@@ -599,7 +599,7 @@ CSL.parseXml = function(str) {
         var m = elem.match(rex);
         return m ? m[1] : null;
     }
-    
+
 
     function _castObjectFromOpeningTag(elem) {
         var obj = {};
@@ -607,7 +607,7 @@ CSL.parseXml = function(str) {
         obj.attrs = {};
         var attributes = _getAttributes(elem);
         if (attributes) {
-            for (var i=0,ilen=attributes.length;i<ilen;i++) {
+            for (var i = 0, ilen = attributes.length; i < ilen; i++) {
                 var attr = {
                     name: attributes[i],
                     value: _getAttribute(elem, attributes[i])
@@ -636,7 +636,7 @@ CSL.parseXml = function(str) {
         var obj;
         if (elem.slice(1).indexOf('<') > -1) {
             // withtext
-            var tag = elem.slice(0, elem.indexOf('>')+1);
+            var tag = elem.slice(0, elem.indexOf('>') + 1);
             obj = _castObjectFromOpeningTag(tag);
             obj.children = [_extractTextFromCompositeElement(elem)];
             _appendToChildren(obj);
@@ -661,7 +661,7 @@ CSL.parseXml = function(str) {
 
     var lst = _listifyString(str);
 
-    for (var i=0,ilen=lst.length;i<ilen;i++) {
+    for (var i = 0, ilen = lst.length; i < ilen; i++) {
         var elem = lst[i];
         processElement(elem);
     }

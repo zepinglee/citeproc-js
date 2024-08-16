@@ -1,6 +1,6 @@
 /*global CSL: true */
 
-CSL.NameOutput = function(state, Item, item) {
+CSL.NameOutput = function (state, Item, item) {
     this.debug = false;
     this.state = state;
     //SNIP-START
@@ -68,7 +68,7 @@ CSL.NameOutput.prototype.init = function (names) {
         for (var i in this.variables) {
             var idx = this.state.tmp.done_vars.indexOf(this.variables[i]);
             if (idx > -1) {
-                this.state.tmp.done_vars = this.state.tmp.done_vars.slice(0, idx).concat(this.state.tmp.done_vars.slice(i+1));
+                this.state.tmp.done_vars = this.state.tmp.done_vars.slice(0, idx).concat(this.state.tmp.done_vars.slice(i + 1));
             }
         }
         this.state.tmp.common_term_match_fail = true;
@@ -87,7 +87,7 @@ CSL.NameOutput.prototype.reinit = function (names, labelVariable) {
         // names node, and on what conditions? For each attribute,
         // and decoration, is it an override, or is it additive?
         this.variables = names.variables;
-        
+
         // Not sure why this is necessary. Guards against a memory leak perhaps?
         var oldval = this.state.tmp.value.slice();
         this.state.tmp.value = [];
@@ -113,7 +113,7 @@ CSL.NameOutput.prototype.reinit = function (names, labelVariable) {
         for (var i in this.variables) {
             var idx = this.state.tmp.done_vars.indexOf(this.variables[i]);
             if (idx > -1) {
-                this.state.tmp.done_vars = this.state.tmp.done_vars.slice(0, idx).concat(this.state.tmp.done_vars.slice(i+1));
+                this.state.tmp.done_vars = this.state.tmp.done_vars.slice(0, idx).concat(this.state.tmp.done_vars.slice(i + 1));
             }
         }
         this.variables = [];
@@ -396,7 +396,7 @@ CSL.NameOutput.prototype.outputNames = function () {
                     this.state.tmp.done_vars.push("title");
                     this.state.output.append(this.state.transform.abbrevs["default"].classic[author_title], "empty", true);
                     blob = this.state.output.pop();
-				    this.state.tmp.name_node.top.blobs.pop();
+                    this.state.tmp.name_node.top.blobs.pop();
                     this.state.tmp.name_node.top.blobs.push(blob);
                 }
             }
@@ -408,7 +408,7 @@ CSL.NameOutput.prototype.outputNames = function () {
 
     // For name_SubstituteOnNamesSpanNamesSpanFail
     this.variables = [];
-    
+
     // Reset stop-last after rendering
     this.state.tmp.authority_stop_last = 0;
 
@@ -456,7 +456,7 @@ CSL.NameOutput.prototype._applyLabels = function (blob, v) {
         this.state.output.append(blob, "literal", true);
         this.state.output.append(txt, this.label[this.labelVariable].after, true);
         this.state.tmp.label_blob = this.state.output.pop();
-        this.state.output.append(this.state.tmp.label_blob,"literal",true);
+        this.state.output.append(this.state.tmp.label_blob, "literal", true);
         this.state.output.closeLevel("empty");
         blob = this.state.output.pop();
     }
@@ -488,8 +488,8 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
         this._first_creator_variable = this.variables[0];
     }
     if ((this.state[this.state.tmp.area].opt.collapse
-            && this.state[this.state.tmp.area].opt.collapse.length)
-        || (this.state[this.state.tmp.area].opt.cite_group_delimiter 
+        && this.state[this.state.tmp.area].opt.collapse.length)
+        || (this.state[this.state.tmp.area].opt.cite_group_delimiter
             && this.state[this.state.tmp.area].opt.cite_group_delimiter.length)) {
 
         if (this.state.tmp.authorstring_request) {
@@ -505,7 +505,7 @@ CSL.NameOutput.prototype._collapseAuthor = function () {
             this.state.tmp.offset_characters = oldchars;
             this.state.registry.authorstrings[this.Item.id] = mystr;
         } else if (!this.state.tmp.just_looking
-                   && !this.state.tmp.suppress_decorations && ((this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
+            && !this.state.tmp.suppress_decorations && ((this.state[this.state.tmp.area].opt.collapse && this.state[this.state.tmp.area].opt.collapse.length) || this.state[this.state.tmp.area].opt.cite_group_delimiter && this.state[this.state.tmp.area].opt.cite_group_delimiter)) {
             // XX1 this.state.sys.print("RENDER: "+this.Item.id);
             mystr = "";
             myqueue = this.state.tmp.name_node.top.blobs.slice(-1)[0].blobs;

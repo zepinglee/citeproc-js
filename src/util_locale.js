@@ -16,7 +16,7 @@ CSL.localeResolve = function (langstr, defaultLocale) {
     ret.base = CSL.LANG_BASES[langlst[0]];
     if ("undefined" === typeof ret.base) {
         //CSL.debug("Warning: unknown locale "+langstr+", setting fallback to "+defaultLocale);
-        return {base:defaultLocale, best:langstr, bare:langlst[0]};
+        return { base: defaultLocale, best: langstr, bare: langlst[0] };
     }
     if (langlst.length === 1) {
         ret.generic = true;
@@ -46,7 +46,7 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
             this.localeSet(localexml, langspec.base, langspec.best);
         }
         localexml = CSL.setupXml(this.sys.retrieveLocale(langspec.best));
-        this.localeSet(localexml, langspec.best, langspec.best);        
+        this.localeSet(localexml, langspec.best, langspec.best);
     }
     this.localeSet(this.cslXml, "", langspec.best);
     this.localeSet(this.cslXml, langspec.bare, langspec.best);
@@ -68,16 +68,16 @@ CSL.Engine.prototype.localeConfigure = function (langspec, beShy) {
         this.locale[langspec.best].terms["citation-range-delimiter"] = "\u2013";
     }
     if (this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
-        var localeLists = ["default-locale","locale-sort","locale-translit","locale-translat"];
-        for (var i=0,ilen=localeLists.length;i<ilen;i+=1) {
-            for (var j=0,jlen=this.opt[localeLists[i]].length;j<jlen;j+=1) {
+        var localeLists = ["default-locale", "locale-sort", "locale-translit", "locale-translat"];
+        for (var i = 0, ilen = localeLists.length; i < ilen; i += 1) {
+            for (var j = 0, jlen = this.opt[localeLists[i]].length; j < jlen; j += 1) {
                 this.opt[localeLists[i]][j] = this.opt[localeLists[i]][j].toLowerCase();
             }
         }
         this.opt.lang = this.opt.lang.toLowerCase();
     }
 };
-    
+
 //
 // XXXXX: Got it.  The locales objects need to be reorganized,
 // with a top-level local specifier, and terms, opts, dates
@@ -105,7 +105,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         }
         this.locale[lang_out].dates = {};
         // For ordinals
-        this.locale[lang_out].ord = {'1.0.1':false,keys:{}};
+        this.locale[lang_out].ord = { '1.0.1': false, keys: {} };
         this.locale[lang_out]["noun-genders"] = {};
     }
 
@@ -172,12 +172,12 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         for (var key in this.locale[lang_out].ord.keys) {
             delete this.locale[lang_out].terms[key];
         }
-        this.locale[lang_out].ord = {"1.0.1":false,keys:{}};
+        this.locale[lang_out].ord = { "1.0.1": false, keys: {} };
     }
 
     nodes = myxml.getNodesByName(locale, 'term');
     // Collect ordinals info as for 1.0.1, but save only if 1.0.1 toggle triggers
-    var ordinals101 = {"last-digit":{},"last-two-digits":{},"whole-number":{}};
+    var ordinals101 = { "last-digit": {}, "last-two-digits": {}, "whole-number": {} };
     var ordinals101_toggle = false;
     var genderized_terms = {};
     for (pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
@@ -189,7 +189,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         if (termname === "sub verbo") {
             termname = "sub-verbo";
         }
-        if (termname.slice(0,7) === "ordinal") {
+        if (termname.slice(0, 7) === "ordinal") {
             if (termname === "ordinal") {
                 ordinals101_toggle = true;
             } else {
@@ -201,11 +201,11 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                 }
                 if (!match) {
                     match = "last-two-digits";
-                    if (termstub.slice(0,1) === "0") {
+                    if (termstub.slice(0, 1) === "0") {
                         match = "last-digit";
                     }
                 }
-                if (termstub.slice(0,1) === "0") {
+                if (termstub.slice(0, 1) === "0") {
                     termstub = termstub.slice(1);
                 }
                 if (!ordinals101[match][termstub]) {
@@ -228,14 +228,14 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
         }
         //
         // Xml: get string value of gender attribute, if any
-        // 
+        //
         if (myxml.getAttributeValue(term, 'gender-form')) {
             genderform = myxml.getAttributeValue(term, 'gender-form');
         }
         //
         // Xml: set global gender assignment for variable associated
         // with term name
-        // 
+        //
         if (myxml.getAttributeValue(term, 'gender')) {
             this.locale[lang_out]["noun-genders"][termname] = myxml.getAttributeValue(term, 'gender');
         }
@@ -293,7 +293,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
             var gender_segments = {};
             var form_segments = 0;
             for (var jkey in this.locale[lang_out].terms[ikey]) {
-                if (["masculine","feminine"].indexOf(jkey) > -1) {
+                if (["masculine", "feminine"].indexOf(jkey) > -1) {
                     gender_segments[jkey] = this.locale[lang_out].terms[ikey][jkey];
                 } else {
                     form_segments += 1;
@@ -307,7 +307,7 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                         this.locale[lang_out].terms[ikey][jkey] = gender_segments.feminine[jkey];
                     }
                 } else if (gender_segments.masculine) {
-                    // Otherwise link each masculine form segment to default 
+                    // Otherwise link each masculine form segment to default
                     for (var jkey in gender_segments.masculine) {
                         this.locale[lang_out].terms[ikey][jkey] = gender_segments.masculine[jkey];
                     }
@@ -365,21 +365,21 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
                         // Fallback is okay here.
                         this.locale[lang_out].opts["name-as-sort-order"] = {};
                         var lst = attributes[attrname].split(/\s+/);
-                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                        for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
                             this.locale[lang_out].opts["name-as-sort-order"][lst[i]] = true;
                         }
                     } else if (attrname === "@name-as-reverse-order") {
                         // Fallback is okay here.
                         this.locale[lang_out].opts["name-as-reverse-order"] = {};
                         var lst = attributes[attrname].split(/\s+/);
-                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                        for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
                             this.locale[lang_out].opts["name-as-reverse-order"][lst[i]] = true;
                         }
                     } else if (attrname === "@name-never-short") {
                         // Here too.
                         this.locale[lang_out].opts["name-never-short"] = {};
                         var lst = attributes[attrname].split(/\s+/);
-                        for (var i=0,ilen=lst.length;i<ilen;i+=1) {
+                        for (var i = 0, ilen = lst.length; i < ilen; i += 1) {
                             this.locale[lang_out].opts["name-never-short"][lst[i]] = true;
                         }
                     }
@@ -405,4 +405,3 @@ CSL.Engine.prototype.localeSet = function (myxml, lang_in, lang_out) {
     //
     CSL.SET_COURT_CLASSES(this, lang_out, myxml, locale);
 };
-

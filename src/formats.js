@@ -5,7 +5,7 @@
  * Output specifications.
  * @class
  */
-CSL.Output.Formats = function () {};
+CSL.Output.Formats = function () { };
 
 /**
  * HTML output format specification.
@@ -32,10 +32,10 @@ CSL.Output.Formats.prototype.html = {
             .replace(/>/g, "&#62;")
             .replace(/\s\s/g, "\u00A0 ")
             .replace(CSL.SUPERSCRIPTS_REGEXP,
-                     function(aChar) {
-                         // return "&#60;sup&#62;" + CSL.SUPERSCRIPTS[aChar] + "&#60;/sup&#62;";
-                         return "<sup>" + CSL.SUPERSCRIPTS[aChar] + "</sup>";
-                     });
+                function (aChar) {
+                    // return "&#60;sup&#62;" + CSL.SUPERSCRIPTS[aChar] + "&#60;/sup&#62;";
+                    return "<sup>" + CSL.SUPERSCRIPTS[aChar] + "</sup>";
+                });
     },
     "bibstart": "<div class=\"csl-bib-body\">\n",
     "bibend": "</div>",
@@ -76,7 +76,7 @@ CSL.Output.Formats.prototype.html = {
     //},
     "@cite/entry": function (state, str) {
         return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
-	},
+    },
     "@bibliography/entry": function (state, str) {
         // Test for this.item_id to add decorations to
         // bibliography output of individual entries.
@@ -110,7 +110,7 @@ CSL.Output.Formats.prototype.html = {
         return "<div class=\"csl-indent\">" + str + "</div>\n  ";
     },
     "@showid/true": function (state, str, cslid) {
-        if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
+        if (!state.tmp.just_looking && !state.tmp.suppress_decorations) {
             if (cslid) {
                 return "<span class=\"" + state.opt.nodenames[cslid] + "\" cslid=\"" + cslid + "\">" + str + "</span>";
             } else if (this.params && "string" === typeof str) {
@@ -123,7 +123,7 @@ CSL.Output.Formats.prototype.html = {
                 var postPunct = "";
                 if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
                     postPunct = str.slice(-1);
-                    str = str.slice(0,-1);
+                    str = str.slice(0, -1);
                 }
                 return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
             } else {
@@ -202,13 +202,13 @@ CSL.Output.Formats.prototype.text = {
     //    return "<div class=\"csl-bib-body\">\n"+str+"</div>";
     //},
     "@cite/entry": function (state, str) {
-		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
-	},
+        return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+    },
     "@bibliography/entry": function (state, str) {
-        return str+"\n";
+        return str + "\n";
     },
     "@display/block": function (state, str) {
-        return "\n"+str;
+        return "\n" + str;
     },
     "@display/left-margin": function (state, str) {
         return str + " ";
@@ -217,7 +217,7 @@ CSL.Output.Formats.prototype.text = {
         return str;
     },
     "@display/indent": function (state, str) {
-        return "\n    "+str;
+        return "\n    " + str;
     },
     "@showid/true": function (state, str) {
         return str;
@@ -248,29 +248,29 @@ CSL.Output.Formats.prototype.rtf = {
             text = "";
         }
         return text
-        .replace(/([\\{}])/g, "\\$1")
-        .replace(CSL.SUPERSCRIPTS_REGEXP,
-                 function(aChar) {
-                     return "\\super " + CSL.SUPERSCRIPTS[aChar] + "\\nosupersub{}";
-                 })
-        .replace(/[\u007F-\uFFFF]/g,
-                 function(aChar) { return "\\uc0\\u"+aChar.charCodeAt(0).toString()+"{}"; })
-        .split("\t").join("\\tab{}");
+            .replace(/([\\{}])/g, "\\$1")
+            .replace(CSL.SUPERSCRIPTS_REGEXP,
+                function (aChar) {
+                    return "\\super " + CSL.SUPERSCRIPTS[aChar] + "\\nosupersub{}";
+                })
+            .replace(/[\u007F-\uFFFF]/g,
+                function (aChar) { return "\\uc0\\u" + aChar.charCodeAt(0).toString() + "{}"; })
+            .split("\t").join("\\tab{}");
     },
     "@passthrough/true": CSL.Output.Formatters.passthrough,
-    "@font-style/italic":"{\\i{}%%STRING%%}",
-    "@font-style/normal":"{\\i0{}%%STRING%%}",
-    "@font-style/oblique":"{\\i{}%%STRING%%}",
-    "@font-variant/small-caps":"{\\scaps %%STRING%%}",
-    "@font-variant/normal":"{\\scaps0{}%%STRING%%}",
-    "@font-weight/bold":"{\\b{}%%STRING%%}",
-    "@font-weight/normal":"{\\b0{}%%STRING%%}",
-    "@font-weight/light":false,
-    "@text-decoration/none":false,
-    "@text-decoration/underline":"{\\ul{}%%STRING%%}",
-    "@vertical-align/baseline":false,
-    "@vertical-align/sup":"\\super %%STRING%%\\nosupersub{}",
-    "@vertical-align/sub":"\\sub %%STRING%%\\nosupersub{}",
+    "@font-style/italic": "{\\i{}%%STRING%%}",
+    "@font-style/normal": "{\\i0{}%%STRING%%}",
+    "@font-style/oblique": "{\\i{}%%STRING%%}",
+    "@font-variant/small-caps": "{\\scaps %%STRING%%}",
+    "@font-variant/normal": "{\\scaps0{}%%STRING%%}",
+    "@font-weight/bold": "{\\b{}%%STRING%%}",
+    "@font-weight/normal": "{\\b0{}%%STRING%%}",
+    "@font-weight/light": false,
+    "@text-decoration/none": false,
+    "@text-decoration/underline": "{\\ul{}%%STRING%%}",
+    "@vertical-align/baseline": false,
+    "@vertical-align/sup": "\\super %%STRING%%\\nosupersub{}",
+    "@vertical-align/sub": "\\sub %%STRING%%\\nosupersub{}",
     "@strip-periods/true": CSL.Output.Formatters.passthrough,
     "@strip-periods/false": CSL.Output.Formatters.passthrough,
     "@quotes/true": function (state, str) {
@@ -286,28 +286,28 @@ CSL.Output.Formats.prototype.rtf = {
         return CSL.Output.Formats.rtf.text_escape(state.getTerm("open-inner-quote")) + str + CSL.Output.Formats.rtf.text_escape(state.getTerm("close-inner-quote"));
     },
     "@quotes/false": false,
-    "bibstart":"{\\rtf ",
-    "bibend":"}",
+    "bibstart": "{\\rtf ",
+    "bibend": "}",
     "@display/block": "\\line{}%%STRING%%\\line\r\n",
     "@cite/entry": function (state, str) {
-        // If wrapCitationEntry does not exist, cite/entry 
+        // If wrapCitationEntry does not exist, cite/entry
         // is not applied.
-		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
-	},
-    "@bibliography/entry": function(state,str){
+        return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+    },
+    "@bibliography/entry": function (state, str) {
         return str;
     },
-    "@display/left-margin": function(state,str){
-        return str+"\\tab ";
+    "@display/left-margin": function (state, str) {
+        return str + "\\tab ";
     },
     "@display/right-inline": function (state, str) {
-        return str+"\r\n";
+        return str + "\r\n";
     },
     "@display/indent": function (state, str) {
-        return "\n\\tab "+str+"\\line\r\n";
+        return "\n\\tab " + str + "\\line\r\n";
     },
     "@showid/true": function (state, str) {
-        if (!state.tmp.just_looking && ! state.tmp.suppress_decorations) {
+        if (!state.tmp.just_looking && !state.tmp.suppress_decorations) {
             var prePunct = "";
             if (str) {
                 var m = str.match(CSL.VARIABLE_WRAPPER_PREPUNCT_REX);
@@ -317,7 +317,7 @@ CSL.Output.Formats.prototype.rtf = {
             var postPunct = "";
             if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
                 postPunct = str.slice(-1);
-                str = str.slice(0,-1);
+                str = str.slice(0, -1);
             }
             return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
         } else {
@@ -363,7 +363,7 @@ CSL.Output.Formats.prototype.asciidoc = {
             .replace("~", "pass:[~]", "g")
             .replace("[[", "pass:[[[]", "g")
             .replace("  ", "&#160; ", "g")
-            .replace(CSL.SUPERSCRIPTS_REGEXP, function(aChar) {
+            .replace(CSL.SUPERSCRIPTS_REGEXP, function (aChar) {
                 return "^" + CSL.SUPERSCRIPTS[aChar] + "^";
             });
     },
@@ -428,7 +428,7 @@ CSL.Output.Formats.prototype.asciidoc = {
             var postPunct = "";
             if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
                 postPunct = str.slice(-1);
-                str = str.slice(0,-1);
+                str = str.slice(0, -1);
             }
             return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
         } else {
@@ -463,7 +463,7 @@ CSL.Output.Formats.prototype.fo = {
             .replace(/</g, "&#60;")
             .replace(/>/g, "&#62;")
             .replace("  ", "&#160; ", "g")
-            .replace(CSL.SUPERSCRIPTS_REGEXP, function(aChar) {
+            .replace(CSL.SUPERSCRIPTS_REGEXP, function (aChar) {
                 return "<fo:inline vertical-align=\"super\">" + CSL.SUPERSCRIPTS[aChar] + "</fo:inline>";
             });
     },
@@ -505,7 +505,7 @@ CSL.Output.Formats.prototype.fo = {
         var indent = "";
         if (state.bibliography && state.bibliography.opt && state.bibliography.opt.hangingindent) {
             var hi = state.bibliography.opt.hangingindent;
-            indent = " start-indent=\"" + hi +"em\" text-indent=\"-" + hi + "em\"";
+            indent = " start-indent=\"" + hi + "em\" text-indent=\"-" + hi + "em\"";
         }
         var insert = "";
         if (state.sys.embedBibliographyEntry) {
@@ -518,17 +518,17 @@ CSL.Output.Formats.prototype.fo = {
     },
     "@display/left-margin": function (state, str) {
         return "\n  <fo:table table-layout=\"fixed\" width=\"100%\">\n    " +
-                "<fo:table-column column-number=\"1\" column-width=\"$$$__COLUMN_WIDTH_1__$$$\"/>\n    " +
-                "<fo:table-column column-number=\"2\" column-width=\"proportional-column-width(1)\"/>\n    " +
-                "<fo:table-body>\n      " +
-                    "<fo:table-row>\n        " +
-                        "<fo:table-cell>\n          " +
-                            "<fo:block>" + str + "</fo:block>\n        " +
-                        "</fo:table-cell>\n        ";
+            "<fo:table-column column-number=\"1\" column-width=\"$$$__COLUMN_WIDTH_1__$$$\"/>\n    " +
+            "<fo:table-column column-number=\"2\" column-width=\"proportional-column-width(1)\"/>\n    " +
+            "<fo:table-body>\n      " +
+            "<fo:table-row>\n        " +
+            "<fo:table-cell>\n          " +
+            "<fo:block>" + str + "</fo:block>\n        " +
+            "</fo:table-cell>\n        ";
     },
     "@display/right-inline": function (state, str) {
         return "<fo:table-cell>\n          " +
-                "<fo:block>" + str + "</fo:block>\n        " +
+            "<fo:block>" + str + "</fo:block>\n        " +
             "</fo:table-cell>\n      " +
             "</fo:table-row>\n    " +
             "</fo:table-body>\n  " +
@@ -548,7 +548,7 @@ CSL.Output.Formats.prototype.fo = {
             var postPunct = "";
             if (str && CSL.SWAPPING_PUNCTUATION.indexOf(str.slice(-1)) > -1) {
                 postPunct = str.slice(-1);
-                str = str.slice(0,-1);
+                str = str.slice(0, -1);
             }
             return state.sys.variableWrapper(this.params, prePunct, str, postPunct);
         } else {
@@ -617,13 +617,13 @@ CSL.Output.Formats.prototype.latex = {
     //    return "<div class=\"csl-bib-body\">\n"+str+"</div>";
     //},
     "@cite/entry": function (state, str) {
-		return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
-	},
+        return state.sys.wrapCitationEntry(str, this.item_id, this.locator_txt, this.suffix_txt);
+    },
     "@bibliography/entry": function (state, str) {
         return "\\bibitem{" + state.sys.embedBibliographyEntry(this.item_id) + "}\n";
     },
     "@display/block": function (state, str) {
-        return "\n"+str;
+        return "\n" + str;
     },
     "@display/left-margin": function (state, str) {
         return str;
@@ -632,7 +632,7 @@ CSL.Output.Formats.prototype.latex = {
         return str;
     },
     "@display/indent": function (state, str) {
-        return "\n    "+str;
+        return "\n    " + str;
     },
     "@showid/true": function (state, str, cslid) {
         return str;

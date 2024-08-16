@@ -42,12 +42,12 @@ CSL.Util.Dates.year.imperial = function (state, num, end) {
     }
     end = end ? "_end" : "";
     var month = state.tmp.date_object["month" + end];
-    month = month ? ""+month : "1";
+    month = month ? "" + month : "1";
     while (month.length < 2) {
         month = "0" + month;
     }
     var day = state.tmp.date_object["day" + end];
-    day = day ? ""+day : "1";
+    day = day ? "" + day : "1";
     while (day.length < 2) {
         day = "0" + day;
     }
@@ -78,7 +78,7 @@ CSL.Util.Dates.year.imperial = function (state, num, end) {
         }
         if (!state.transform.abbrevs['default']['number'][normalizedKey]) {
             // loadAbbreviation normally takes an item as fourth argument.
-            // It is not available here, 
+            // It is not available here,
             state.transform.loadAbbreviation('default', "number", normalizedKey, null);
         }
         if (state.transform.abbrevs['default']['number'][normalizedKey]) {
@@ -139,7 +139,7 @@ CSL.Util.Dates.normalizeMonth = function (num, useSeason) {
     }
     num = parseInt(num, 10);
     if (useSeason) {
-        var res = {stub: "month-", num: num};
+        var res = { stub: "month-", num: num };
         if (res.num < 1 || res.num > 24) {
             res.num = 0;
         } else {
