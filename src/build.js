@@ -5,7 +5,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.processor_version = CSL.PROCESSOR_VERSION;
     this.csl_version = "1.0";
     this.sys = sys;
-    
+
     if (typeof Object.assign != 'function') {
         // Must be writable: true, enumerable: false, configurable: true
         Object.defineProperty(Object, "assign", {
@@ -59,7 +59,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.setParseNames = function (val) {
         this.opt['parse-names'] = val;
     };
-    
+
     this.opt = new CSL.Engine.Opt();
     this.tmp = new CSL.Engine.Tmp();
     this.build = new CSL.Engine.Build();
@@ -91,14 +91,14 @@ CSL.Engine = function (sys, style, lang, forceLang) {
         if ("boolean" === typeof this.sys[option]) {
             this.opt.development_extensions[option] = this.sys[option];
         }
-        
+
     }
     if (this.opt.development_extensions.uppercase_subtitles || this.opt.development_extensions.implicit_short_title) {
         this.opt.development_extensions.main_title_from_short_title = true;
     }
     if (this.opt.development_extensions.csl_reverse_lookup_support) {
         this.build.cslNodeId = 0;
-        this.setCslNodeIds = function(myxml, nodename) {
+        this.setCslNodeIds = function (myxml, nodename) {
             var children = this.cslXml.children(myxml);
             this.cslXml.setAttribute(myxml, 'cslid', this.build.cslNodeId);
             this.opt.nodenames.push(nodename);
@@ -126,11 +126,11 @@ CSL.Engine = function (sys, style, lang, forceLang) {
 
     // Locale resolution
     //
-    // (1) Get three locale strings 
+    // (1) Get three locale strings
     //     -- default-locale (stripped)
     //     -- processor-locale
     //     -- en_US
-    
+
     this.setStyleAttributes();
 
     this.opt.xclass = this.cslXml.getAttributeValue(this.cslXml.dataObj, "class");
@@ -138,7 +138,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     this.opt.styleID = this.cslXml.getStyleId(this.cslXml.dataObj);
     this.opt.styleName = this.cslXml.getStyleId(this.cslXml.dataObj, true);
 
-    if (this.opt.version.slice(0,4) === "1.1m") {
+    if (this.opt.version.slice(0, 4) === "1.1m") {
         this.opt.development_extensions.consolidate_legal_items = true;
         this.opt.development_extensions.consolidate_container_items = true;
         this.opt.development_extensions.main_title_from_short_title = true;
@@ -192,7 +192,7 @@ CSL.Engine = function (sys, style, lang, forceLang) {
     // Build skip-word regexp
     function makeRegExp(lst) {
         var lst = lst.slice();
-        var ret = new RegExp( "(?:(?:[?!:]*\\s+|-|^)(?:" + lst.join("|") + ")(?=[!?:]*\\s+|-|$))", "g");
+        var ret = new RegExp("(?:(?:[?!:]*\\s+|-|^)(?:" + lst.join("|") + ")(?=[!?:]*\\s+|-|$))", "g");
         return ret;
     }
     this.locale[this.opt.lang].opts["skip-words-regexp"] = makeRegExp(this.locale[this.opt.lang].opts["skip-words"]);
@@ -275,18 +275,18 @@ CSL.Engine.prototype.setCloseQuotesArray = function () {
 CSL.makeBuilder = function (me, target) {
     var var_stack = [];
     var node_stack = [];
-    function runStart (node) {
+    function runStart(node) {
         node_stack.push(node);
         CSL.XmlToToken.call(node, me, CSL.START, target, var_stack);
     }
-    function runEnd () {
+    function runEnd() {
         var node = node_stack.pop();
         CSL.XmlToToken.call(node, me, CSL.END, target, var_stack);
     }
-    function runSingle (node) {
+    function runSingle(node) {
         CSL.XmlToToken.call(node, me, CSL.SINGLETON, target, var_stack);
     }
-    function buildStyle (nodes, parent, node_stack) {
+    function buildStyle(nodes, parent, node_stack) {
         if (!node_stack) {
             node_stack = [];
         }
@@ -296,7 +296,7 @@ CSL.makeBuilder = function (me, target) {
         if ("undefined" === typeof nodes.length) {
             nodes = [nodes];
         }
-        for (var i=0; i<nodes.length; i++) {
+        for (var i = 0; i < nodes.length; i++) {
             var node = nodes[i];
             if (me.cslXml.nodename(node) === null) {
                 continue;
@@ -337,7 +337,7 @@ CSL.Engine.prototype.setStyleAttributes = function () {
     var dummy, attributes, attrname;
     // Protect against DOM engines that deliver a top-level document
     // (needed for createElement) that does not contain our top-level node.
-    // 
+    //
     // The string coercion on this.cslXml.tagName addresses a bizarre
     // condition on the top-level node in jsdom running under node.js, in which:
     //   (1) typeof this.cslXml.tagName === "undefined"; and
@@ -356,7 +356,7 @@ CSL.Engine.prototype.setStyleAttributes = function () {
 
 CSL.Engine.prototype.getTerm = function (term, form, plural, gender, mode, forceDefaultLocale) {
     if (term && term.match(/[A-Z]/) && term === term.toUpperCase()) {
-        CSL.debug("Warning: term key is in uppercase form: "+term);
+        CSL.debug("Warning: term key is in uppercase form: " + term);
         term = term.toLowerCase();
     }
     var lang;
@@ -535,13 +535,13 @@ CSL.Engine.prototype.retrieveItem = function (id) {
     if (this.opt.development_extensions.normalize_lang_keys_to_lowercase &&
         "boolean" === typeof this.opt.development_extensions.normalize_lang_keys_to_lowercase) {
         // This is a hack. Should properly be configured by a processor method after build.
-        for (var i=0,ilen=this.opt["default-locale"].length; i<ilen; i+=1) {
+        for (var i = 0, ilen = this.opt["default-locale"].length; i < ilen; i += 1) {
             this.opt["default-locale"][i] = this.opt["default-locale"][i].toLowerCase();
         }
-        for (var i=0,ilen=this.opt["locale-translit"].length; i<ilen; i+=1) {
+        for (var i = 0, ilen = this.opt["locale-translit"].length; i < ilen; i += 1) {
             this.opt["locale-translit"][i] = this.opt["locale-translit"][i].toLowerCase();
         }
-        for (var i=0,ilen=this.opt["locale-translat"].length; i<ilen; i+=1) {
+        for (var i = 0, ilen = this.opt["locale-translat"].length; i < ilen; i += 1) {
             this.opt["locale-translat"][i] = this.opt["locale-translat"][i].toLowerCase();
         }
         this.opt.development_extensions.normalize_lang_keys_to_lowercase = 100;
@@ -571,10 +571,10 @@ CSL.Engine.prototype.retrieveItem = function (id) {
                 }
             }
         }
-        for (var i=0, ilen=CSL.NAME_VARIABLES.length; i>ilen; i+=1) {
+        for (var i = 0, ilen = CSL.NAME_VARIABLES.length; i > ilen; i += 1) {
             var ctype = CSL.NAME_VARIABLES[i];
             if (Item[ctype] && Item[ctype].multi) {
-                for (var j=0, jlen=Item[ctype].length; j<jlen; j+=1) {
+                for (var j = 0, jlen = Item[ctype].length; j < jlen; j += 1) {
                     var creator = Item[ctype][j];
                     if (creator.multi) {
                         if (creator.multi._key) {
@@ -645,26 +645,26 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         }
     }
     if (this.opt.development_extensions.consolidate_legal_items) {
-        if (Item.type && ["bill","gazette","legislation","regulation","treaty"].indexOf(Item.type) > -1) {
+        if (Item.type && ["bill", "gazette", "legislation", "regulation", "treaty"].indexOf(Item.type) > -1) {
             var varname;
             var elements = ["type", "title", "jurisdiction", "genre", "volume", "container-title"];
             var legislation_id = [];
             for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
                 varname = elements[i];
-				if (Item[varname]) {
-					legislation_id.push(Item[varname]);
-				}
-			}
+                if (Item[varname]) {
+                    legislation_id.push(Item[varname]);
+                }
+            }
             elements = ["original-date", "issued"];
-			for (var i = 0, ilen=elements.length; i < ilen; i += 1) {
+            for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
                 varname = elements[i];
-				if (Item[varname] && Item[varname].year) {
-					var value = Item[varname].year;
-					legislation_id.push(value);
-					break;
-				}
-			}
-			Item.legislation_id = legislation_id.join("::");
+                if (Item[varname] && Item[varname].year) {
+                    var value = Item[varname].year;
+                    legislation_id.push(value);
+                    break;
+                }
+            }
+            Item.legislation_id = legislation_id.join("::");
         }
     }
     if (this.bibliography.opt.track_container_items) {
@@ -674,11 +674,11 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             var container_id = [];
             for (var i = 0, ilen = elements.length; i < ilen; i += 1) {
                 varname = elements[i];
-				if (Item[varname]) {
-					container_id.push(Item[varname]);
-				}
-			}
-			Item.container_id = container_id.join("::");
+                if (Item[varname]) {
+                    container_id.push(Item[varname]);
+                }
+            }
+            Item.container_id = container_id.join("::");
         }
     }
     // For authority to name shape in legal styles
@@ -711,7 +711,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
         var narrowSpaceLocale = this.opt["default-locale"][0].slice(0, 2).toLowerCase() === "fr";
         CSL.extractTitleAndSubtitle.call(this, Item, narrowSpaceLocale);
     }
-    var isLegalType = ["bill","legal_case","legislation","gazette","regulation"].indexOf(Item.type) > -1;
+    var isLegalType = ["bill", "legal_case", "legislation", "gazette", "regulation"].indexOf(Item.type) > -1;
     if (this.opt.development_extensions.force_jurisdiction && isLegalType) {
         if (!Item.jurisdiction) {
             Item.jurisdiction = "us";
@@ -724,7 +724,7 @@ CSL.Engine.prototype.retrieveItem = function (id) {
             noHints = true;
         }
         if (this.sys.normalizeAbbrevsKey) {
-             normalizedKey = this.sys.normalizeAbbrevsKey("title", Item.title);
+            normalizedKey = this.sys.normalizeAbbrevsKey("title", Item.title);
         } else {
             normalizedKey = Item.title;
         }

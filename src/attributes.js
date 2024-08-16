@@ -3,7 +3,7 @@
 CSL.Attributes = {};
 
 CSL.Attributes["@disambiguate"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     if (arg === "true") {
         state.opt.has_disambiguate = true;
         var func = function (Item) {
@@ -35,12 +35,12 @@ CSL.Attributes["@disambiguate"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-numeric"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var variables = arg.split(/\s+/);
-    var maketest = function(variable) {
+    var maketest = function (variable) {
         return function (Item, item) {
             var myitem = Item;
-            if (item && ["locator","locator-extra"].indexOf(variable) > -1) {
+            if (item && ["locator", "locator-extra"].indexOf(variable) > -1) {
                 myitem = item;
             }
             if (!myitem[variable]) {
@@ -53,7 +53,7 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
                 if (state.tmp.shadow_numbers[variable].numeric) {
                     return true;
                 }
-            } else if (["title","version"].indexOf(variable) > -1) {
+            } else if (["title", "version"].indexOf(variable) > -1) {
                 if (myitem[variable].slice(-1) === "" + parseInt(myitem[variable].slice(-1), 10)) {
                     return true;
                 }
@@ -61,18 +61,18 @@ CSL.Attributes["@is-numeric"] = function (state, arg) {
             return false;
         };
     };
-    for (var i=0; i<variables.length; i+=1) {
+    for (var i = 0; i < variables.length; i += 1) {
         this.tests.push(maketest(variables[i]));
     }
 };
 
 
 CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var variables = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (myvariable) {
-        return function(Item) {
+        return function (Item) {
             if (Item[myvariable] && Item[myvariable].circa) {
                 return true;
             } else {
@@ -80,19 +80,19 @@ CSL.Attributes["@is-uncertain-date"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=variables.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = variables.length; i < ilen; i += 1) {
         this.tests.push(maketest(variables[i]));
     }
 };
 
 
 CSL.Attributes["@locator"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (trylabel) {
-        return function(Item, item) {
+        return function (Item, item) {
             var label;
             state.processNumber(false, item, "locator");
             label = state.tmp.shadow_numbers.locator.label;
@@ -103,14 +103,14 @@ CSL.Attributes["@locator"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
         this.tests.push(maketest(trylabels[i]));
     }
 };
 
 
 CSL.Attributes["@position"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var tryposition;
     state.opt.update_mode = CSL.POSITION;
     var trypositions = arg.split(/\s+/);
@@ -126,7 +126,7 @@ CSL.Attributes["@position"] = function (state, arg) {
         }
         return false;
     };
-    var maketest = function(tryposition) {
+    var maketest = function (tryposition) {
         return function (Item, item) {
             if (state.tmp.area === "bibliography") {
                 return false;
@@ -146,7 +146,7 @@ CSL.Attributes["@position"] = function (state, arg) {
             return false;
         };
     };
-    for (var i=0,ilen=trypositions.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trypositions.length; i < ilen; i += 1) {
         var tryposition = trypositions[i];
         if (tryposition === "first") {
             tryposition = CSL.POSITION_FIRST;
@@ -170,12 +170,12 @@ CSL.Attributes["@position"] = function (state, arg) {
 };
 
 CSL.Attributes["@type"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     // XXX This is ALWAYS composed as an "any" match
     var types = arg.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (mytype) {
-        return function(Item) {
+        return function (Item) {
             var ret = (Item.type === mytype);
             if (ret) {
                 return true;
@@ -185,14 +185,14 @@ CSL.Attributes["@type"] = function (state, arg) {
         };
     };
     var tests = [];
-    for (var i=0,ilen=types.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = types.length; i < ilen; i += 1) {
         tests.push(maketest(types[i]));
     }
     this.tests.push(state.fun.match.any(this, state, tests));
 };
 
 CSL.Attributes["@variable"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var func;
     this.variables = arg.split(/\s+/);
     this.variables_real = this.variables.slice();
@@ -214,12 +214,12 @@ CSL.Attributes["@variable"] = function (state, arg) {
             for (var i = this.variables.length - 1; i > -1; i += -1) {
                 this.variables.pop();
             }
-            for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
+            for (var i = 0, ilen = this.variables_real.length; i < ilen; i++) {
                 // set variable name if not quashed, and if not the title of a legal case w/suppress-author
-                if (state.tmp.done_vars.indexOf(this.variables_real[i]) === -1 
-// This looks nuts. Why suppress a case name if not required by context?
-//                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
-                   ) {
+                if (state.tmp.done_vars.indexOf(this.variables_real[i]) === -1
+                    // This looks nuts. Why suppress a case name if not required by context?
+                    //                    && !(item && Item.type === "legal_case" && item["suppress-author"] && this.variables_real[i] === "title")
+                ) {
                     this.variables.push(this.variables_real[i]);
                 }
                 if (state.tmp.can_block_substitute) {
@@ -232,7 +232,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
         // check for output
         func = function (state, Item, item) {
             var output = false;
-            for (var i=0,ilen=this.variables.length;i<ilen;i++) {
+            for (var i = 0, ilen = this.variables.length; i < ilen; i++) {
                 var variable = this.variables[i];
                 if (["authority", "committee"].indexOf(variable) > -1
                     && "string" === typeof Item[variable]
@@ -241,7 +241,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     // Great! So for each of these, we split.
                     // And we only recombine everything if the length
                     // of all the splits matches.
-                    
+
                     // Preflight
                     var isValid = true;
                     var rawNames = Item[variable].split(/\s*;\s*/);
@@ -261,14 +261,14 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     }
                     for (var j = 0, jlen = rawNames.length; j < jlen; j++) {
                         var creatorParent = {
-                            literal:rawNames[j],
-                            multi:{
-                                _key:{}
+                            literal: rawNames[j],
+                            multi: {
+                                _key: {}
                             }
                         };
                         for (var langTag in rawMultiNames) {
                             var creatorChild = {
-                                literal:rawMultiNames[langTag][j]
+                                literal: rawMultiNames[langTag][j]
                             };
                             creatorParent.multi._key[langTag] = creatorChild;
                         }
@@ -320,7 +320,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                         output = true;
                     }
                     break;
-                } else if (["citation-number","citation-label"].indexOf(variable) > -1) {
+                } else if (["citation-number", "citation-label"].indexOf(variable) > -1) {
                     output = true;
                     break;
                 } else if ("first-reference-note-number" === variable) {
@@ -337,7 +337,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     if (state.transform.abbrevs["default"].hereinafter[Item.id]
                         && state.sys.getAbbreviation
                         && Item.id) {
-						
+
                         output = true;
                     }
                     break;
@@ -357,7 +357,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
             //print("-- VAR: "+variable);
             //flag = state.tmp.group_context.tip;
             if (output) {
-                for (var i=0,ilen=this.variables_real.length;i<ilen;i++) {
+                for (var i = 0, ilen = this.variables_real.length; i < ilen; i++) {
                     var variable = this.variables_real[i];
                     if (variable !== "citation-number" || state.tmp.area !== "bibliography") {
                         state.tmp.cite_renders_content = true;
@@ -365,7 +365,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                     //print("  setting [2] to true based on: " + arg);
                     state.tmp.group_context.tip.variable_success = true;
                     // For util_substitute.js, subsequent-author-substitute
-                    if (state.tmp.can_substitute.value() 
+                    if (state.tmp.can_substitute.value()
                         && state.tmp.area === "bibliography"
                         && "string" === typeof Item[variable]) {
 
@@ -373,7 +373,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                         state.tmp.rendered_name.push(Item[variable]);
                     }
                 }
-                state.tmp.can_substitute.replace(false,  CSL.LITERAL);
+                state.tmp.can_substitute.replace(false, CSL.LITERAL);
             } else {
                 //print("  setting [1] to true based on: " + arg);
                 state.tmp.group_context.tip.variable_attempt = true;
@@ -381,11 +381,11 @@ CSL.Attributes["@variable"] = function (state, arg) {
             //state.tmp.group_context.replace(flag);
         };
         this.execs.push(func);
-    } else if (["if",  "else-if", "condition"].indexOf(this.name) > -1) {
+    } else if (["if", "else-if", "condition"].indexOf(this.name) > -1) {
         // Strip off any boolean prefix.
         // Now the conditionals.
         var maketest = function (variable) {
-            return function(Item,item){
+            return function (Item, item) {
                 var myitem = Item;
                 if (item && ["locator", "locator-extra", "first-reference-note-number", "first-container-reference-note-number", "locator-date"].indexOf(variable) > -1) {
                     myitem = item;
@@ -416,7 +416,7 @@ CSL.Attributes["@variable"] = function (state, arg) {
                 return false;
             };
         };
-        for (var i=0,ilen=this.variables.length;i<ilen;i+=1) {
+        for (var i = 0, ilen = this.variables.length; i < ilen; i += 1) {
             this.tests.push(maketest(this.variables[i]));
         }
     }
@@ -424,12 +424,12 @@ CSL.Attributes["@variable"] = function (state, arg) {
 
 
 CSL.Attributes["@page"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trylabels = arg.replace("sub verbo", "sub-verbo");
     trylabels = trylabels.split(/\s+/);
     // Strip off any boolean prefix.
     var maketest = function (trylabel) {
-        return function(Item) {
+        return function (Item) {
             var label;
             state.processNumber(false, Item, "page", Item.type);
             if (!state.tmp.shadow_numbers.page.label) {
@@ -451,7 +451,7 @@ CSL.Attributes["@page"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
         this.tests.push(maketest(trylabels[i]));
     }
 };
@@ -459,9 +459,9 @@ CSL.Attributes["@page"] = function (state, arg) {
 
 // a near duplicate of code above
 CSL.Attributes["@number"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trylabels = arg.split(/\s+/);
-    var maketest = function(trylabel) {
+    var maketest = function (trylabel) {
         return function (Item) {
             var label;
             state.processNumber(false, Item, "number", Item.type);
@@ -477,23 +477,23 @@ CSL.Attributes["@number"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=trylabels.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trylabels.length; i < ilen; i += 1) {
         this.tests.push(maketest(trylabels[i]));
     }
 };
 
 CSL.Attributes["@jurisdiction"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var tryjurisdictions = arg.split(/\s+/);
-    
+
     // This forces a match=any method, similar to @type
     var maketests = function (tryjurisdictions) {
-        return function(Item) {
+        return function (Item) {
             if (!Item.jurisdiction) {
                 return false;
             }
             var jurisdiction = Item.jurisdiction;
-            for (var i=0,ilen=tryjurisdictions.length;i<ilen;i++) {
+            for (var i = 0, ilen = tryjurisdictions.length; i < ilen; i++) {
                 if (jurisdiction === tryjurisdictions[i]) {
                     return true;
                 }
@@ -505,17 +505,17 @@ CSL.Attributes["@jurisdiction"] = function (state, arg) {
 };
 
 CSL.Attributes["@country"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trycountries = arg.split(/\s+/);
-    
+
     // This forces a match=any method, similar to @type
     var maketests = function (trycountries) {
-        return function(Item) {
+        return function (Item) {
             if (!Item.country) {
                 return false;
             }
             var country = Item.country;
-            for (var i=0,ilen=trycountries.length;i<ilen;i++) {
+            for (var i = 0, ilen = trycountries.length; i < ilen; i++) {
                 if (country === trycountries[i]) {
                     return true;
                 }
@@ -527,14 +527,14 @@ CSL.Attributes["@country"] = function (state, arg) {
 };
 
 CSL.Attributes["@context"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var func = function () {
         if (["bibliography", "citation"].indexOf(arg) > -1) {
-		    var area = state.tmp.area.slice(0, arg.length);
-		    if (area === arg) {
-			    return true;
-		    }
-		    return false;
+            var area = state.tmp.area.slice(0, arg.length);
+            if (area === arg) {
+                return true;
+            }
+            return false;
         } else if ("alternative" === arg) {
             return !!state.tmp.abort_alternative;
         }
@@ -543,10 +543,10 @@ CSL.Attributes["@context"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-year-only"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
-        return function(Item) {
+        return function (Item) {
             var date = Item[trydate];
             if (!date || date.month || date.season) {
                 return false;
@@ -555,16 +555,16 @@ CSL.Attributes["@has-year-only"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
         this.tests.push(maketest(trydates[i]));
     }
 };
 
 CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
-        return function(Item) {
+        return function (Item) {
             var date = Item[trydate];
             if (!date || (!date.month && !date.season) || date.day) {
                 return false;
@@ -573,16 +573,16 @@ CSL.Attributes["@has-to-month-or-season"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
         this.tests.push(maketest(trydates[i]));
     }
 };
 
 CSL.Attributes["@has-day"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var trydates = arg.split(/\s+/);
     var maketest = function (trydate) {
-        return function(Item) {
+        return function (Item) {
             var date = Item[trydate];
             if (!date || !date.day) {
                 return false;
@@ -591,13 +591,13 @@ CSL.Attributes["@has-day"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=trydates.length;i<ilen;i+=1) {
+    for (var i = 0, ilen = trydates.length; i < ilen; i += 1) {
         this.tests.push(maketest(trydates[i]));
     }
 };
 
 CSL.Attributes["@is-plural"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var func = function (Item) {
         var nameList = Item[arg];
         if (nameList && nameList.length) {
@@ -628,7 +628,7 @@ CSL.Attributes["@is-plural"] = function (state, arg) {
 };
 
 CSL.Attributes["@is-multiple"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var func = function (Item) {
         var val = ("" + Item[arg]);
         var lst = val.split(/(?:,\s|\s(?:tot\sen\smet|līdz|oraz|and|bis|έως|και|och|až|do|en|et|in|ir|ja|og|sa|to|un|und|és|și|i|u|y|à|e|a|и|-|–)\s|—|\&)/);
@@ -644,7 +644,7 @@ CSL.Attributes["@is-multiple"] = function (state, arg) {
 
 
 CSL.Attributes["@locale"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var ret, langspec, lang, lst, i, ilen;
     // Style default
     var locale_default = state.opt["default-locale"][0];
@@ -657,7 +657,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 state.opt.multi_layout = [];
             }
             var locale_data = [];
-            // Register the primary locale in the set, and others that "map" to it, 
+            // Register the primary locale in the set, and others that "map" to it,
             // so that they can be used when generating sort keys. See node_sort.js.
             // Not idempotent. Only do this once.
             var locales = arg.split(/\s+/);
@@ -669,7 +669,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             } else {
                 sort_locale[localeMaster.best] = localeMaster.best;
             }
-            for (var i=1,ilen=locales.length;i<ilen;i+=1) {
+            for (var i = 1, ilen = locales.length; i < ilen; i += 1) {
                 var localeServant = CSL.localeResolve(locales[i], locale_default);
                 locale_data.push(localeServant);
                 if (localeServant.generic) {
@@ -694,7 +694,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
         for (i = 0, ilen = lst.length; i < ilen; i += 1) {
             // Parse out language string
             lang = lst[i];
-        
+
             // Analyze the locale
             langspec = CSL.localeResolve(lang, locale_default);
             if (lst[i].length === 2) {
@@ -704,7 +704,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
             // Load the locale terms etc.
             // (second argument causes immediate return if locale already exists)
             state.localeConfigure(langspec, true);
-            
+
             // Replace string with locale spec object
             lst[i] = langspec;
         }
@@ -713,7 +713,7 @@ CSL.Attributes["@locale"] = function (state, arg) {
 
         // check for variable value
         // Closure probably not necessary here.
-        var maketest = function (locale_list, locale_default,locale_bares) {
+        var maketest = function (locale_list, locale_default, locale_bares) {
             return function (Item) {
                 var res;
                 ret = [];
@@ -745,14 +745,14 @@ CSL.Attributes["@locale"] = function (state, arg) {
                 return res;
             };
         };
-        this.tests.push(maketest(locale_list,locale_default,locale_bares));
+        this.tests.push(maketest(locale_list, locale_default, locale_bares));
     }
 };
 
 CSL.Attributes["@alternative-node-internal"] = function (state) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var maketest = function () {
-        return function() {
+        return function () {
             return !state.tmp.abort_alternative;
         };
     };
@@ -761,93 +761,93 @@ CSL.Attributes["@alternative-node-internal"] = function (state) {
 };
 
 CSL.Attributes["@locale-internal"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
+    if (!this.tests) { this.tests = []; };
     var langspec, lang, lst, i, ilen;
-        // For if and if-else
+    // For if and if-else
 
-        // Split argument
-        lst = arg.split(/\s+/);
+    // Split argument
+    lst = arg.split(/\s+/);
 
-        // Expand each list element
-        this.locale_bares = [];
-        for (i = 0, ilen = lst.length; i < ilen; i += 1) {
-            // Parse out language string
-            lang = lst[i];
-        
-            // Analyze the locale
-            langspec = CSL.localeResolve(lang, state.opt["default-locale"][0]);
-            if (lst[i].length === 2) {
-                // For fallback
-                this.locale_bares.push(langspec.bare);
-            }
-            // Load the locale terms etc.
-            state.localeConfigure(langspec);
-            
-            // Replace string with locale spec object
-            lst[i] = langspec;
+    // Expand each list element
+    this.locale_bares = [];
+    for (i = 0, ilen = lst.length; i < ilen; i += 1) {
+        // Parse out language string
+        lang = lst[i];
+
+        // Analyze the locale
+        langspec = CSL.localeResolve(lang, state.opt["default-locale"][0]);
+        if (lst[i].length === 2) {
+            // For fallback
+            this.locale_bares.push(langspec.bare);
         }
-        // Set locale tag on node
-        this.locale_default = state.opt["default-locale"][0];
-        // The locale to set on node children if match is successful
-        this.locale = lst[0].best;
-        // Locales to test
-        this.locale_list = lst.slice();
-        
-        // check for variable value
-        // Closure probably not necessary here.
-        var maketest = function (me) {
-            return function (Item) {
-                var ret, res;
-                ret = [];
-                res = false;
-                var langspec = false;
-                if (Item.language) {
-                    lang = Item.language;
-                    langspec = CSL.localeResolve(lang, state.opt["default-locale"][0]);
-                    if (langspec.best === state.opt["default-locale"][0]) {
-                        langspec = false;
-                    }
+        // Load the locale terms etc.
+        state.localeConfigure(langspec);
+
+        // Replace string with locale spec object
+        lst[i] = langspec;
+    }
+    // Set locale tag on node
+    this.locale_default = state.opt["default-locale"][0];
+    // The locale to set on node children if match is successful
+    this.locale = lst[0].best;
+    // Locales to test
+    this.locale_list = lst.slice();
+
+    // check for variable value
+    // Closure probably not necessary here.
+    var maketest = function (me) {
+        return function (Item) {
+            var ret, res;
+            ret = [];
+            res = false;
+            var langspec = false;
+            if (Item.language) {
+                lang = Item.language;
+                langspec = CSL.localeResolve(lang, state.opt["default-locale"][0]);
+                if (langspec.best === state.opt["default-locale"][0]) {
+                    langspec = false;
                 }
-                if (langspec) {
-                    // We attempt to match a specific locale from the
-                    // list of parameters.  If that fails, we fall back
-                    // to the base locale of the first element.  The
-                    // locale applied is always the first local 
-                    // in the list of parameters (or base locale, for a 
-                    // single two-character language code) 
-                    for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
-                        if (langspec.best === me.locale_list[i].best) {
-                            state.opt.lang = me.locale;
-                            state.tmp.last_cite_locale = me.locale;
-                            // Set empty group open tag with locale set marker
-                            state.output.openLevel("empty");
-                            state.output.current.value().new_locale = me.locale;
-                            res = true;
-                            break;
-                        }
-                    }
-                    if (!res && me.locale_bares.indexOf(langspec.bare) > -1) {
+            }
+            if (langspec) {
+                // We attempt to match a specific locale from the
+                // list of parameters.  If that fails, we fall back
+                // to the base locale of the first element.  The
+                // locale applied is always the first local
+                // in the list of parameters (or base locale, for a
+                // single two-character language code)
+                for (i = 0, ilen = me.locale_list.length; i < ilen; i += 1) {
+                    if (langspec.best === me.locale_list[i].best) {
                         state.opt.lang = me.locale;
                         state.tmp.last_cite_locale = me.locale;
                         // Set empty group open tag with locale set marker
                         state.output.openLevel("empty");
                         state.output.current.value().new_locale = me.locale;
                         res = true;
+                        break;
                     }
                 }
-                return res;
-            };
+                if (!res && me.locale_bares.indexOf(langspec.bare) > -1) {
+                    state.opt.lang = me.locale;
+                    state.tmp.last_cite_locale = me.locale;
+                    // Set empty group open tag with locale set marker
+                    state.output.openLevel("empty");
+                    state.output.current.value().new_locale = me.locale;
+                    res = true;
+                }
+            }
+            return res;
         };
-        var me = this;
-        this.tests.push(maketest(me));
+    };
+    var me = this;
+    this.tests.push(maketest(me));
 };
 
 
 CSL.Attributes["@court-class"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
-	var tryclasses = arg.split(/\s+/);
+    if (!this.tests) { this.tests = []; };
+    var tryclasses = arg.split(/\s+/);
     var maketest = function (tryclass) {
-        return function(Item) {
+        return function (Item) {
             var cls = CSL.GET_COURT_CLASS(state, Item);
             if (cls === tryclass) {
                 return true;
@@ -856,16 +856,16 @@ CSL.Attributes["@court-class"] = function (state, arg) {
             }
         };
     };
-    for (var i=0,ilen=tryclasses.length; i<ilen; i++) {
+    for (var i = 0, ilen = tryclasses.length; i < ilen; i++) {
         this.tests.push(maketest(tryclasses[i]));
     }
 };
 
 CSL.Attributes["@container-multiple"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
-	var retval = "true" === arg ? true : false;
+    if (!this.tests) { this.tests = []; };
+    var retval = "true" === arg ? true : false;
     var maketest = function (retval) {
-        return function(Item) {
+        return function (Item) {
             if (!state.tmp.container_item_count[Item.container_id]) {
                 return !retval;
             } else if (state.tmp.container_item_count[Item.container_id] > 1) {
@@ -878,10 +878,10 @@ CSL.Attributes["@container-multiple"] = function (state, arg) {
 };
 
 CSL.Attributes["@container-subsequent"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
-	var retval = "true" === arg ? true : false;
+    if (!this.tests) { this.tests = []; };
+    var retval = "true" === arg ? true : false;
     var maketest = function (retval) {
-        return function(Item) {
+        return function (Item) {
             if (state.tmp.container_item_pos[Item.container_id] > 1) {
                 return retval;
             }
@@ -892,8 +892,8 @@ CSL.Attributes["@container-subsequent"] = function (state, arg) {
 };
 
 CSL.Attributes["@has-subunit"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
-    var maketest = function(namevar) {
+    if (!this.tests) { this.tests = []; };
+    var maketest = function (namevar) {
         return function (Item) {
             var subunit_count = 0;
             for (var i in Item[namevar]) {
@@ -913,8 +913,8 @@ CSL.Attributes["@has-subunit"] = function (state, arg) {
 }
 
 CSL.Attributes["@cite-form"] = function (state, arg) {
-    if (!this.tests) {this.tests = []; };
-    var maketest = function(citeForm) {
+    if (!this.tests) { this.tests = []; };
+    var maketest = function (citeForm) {
         return function (Item) {
             if (Item["cite-form"] === citeForm) {
                 return true;
@@ -926,7 +926,7 @@ CSL.Attributes["@cite-form"] = function (state, arg) {
 }
 
 CSL.Attributes["@disable-duplicate-year-suppression"] = function (state, arg) {
-	state.opt.disable_duplicate_year_suppression = arg.split(/\s+/);
+    state.opt.disable_duplicate_year_suppression = arg.split(/\s+/);
 }
 
 CSL.Attributes["@consolidate-containers"] = function (state, arg) {
@@ -978,7 +978,7 @@ CSL.Attributes["@parallel-last-to-first"] = function (state, arg) {
     state.opt.parallel.enable = true;
     var vars = arg.split(/\s+/);
     this.parallel_last_to_first = {};
-    for (var i=0,ilen=vars.length;i<ilen;i++) {
+    for (var i = 0, ilen = vars.length; i < ilen; i++) {
         this.parallel_last_to_first[vars[i]] = true;
     }
 };
@@ -1043,7 +1043,7 @@ CSL.Attributes["@gender"] = function (state, arg) {
 CSL.Attributes["@cslid"] = function (state, arg) {
     // @cslid is a noop
     // The value set on this attribute is used to
-    // generate reverse lookup wrappers on output when 
+    // generate reverse lookup wrappers on output when
     // this.development_extensions.csl_reverse_lookup_support is
     // set to true in state.js (there is no runtime option,
     // it must be set in state.js)
@@ -1161,7 +1161,7 @@ CSL.Attributes["@term"] = function (state, arg) {
  * @name CSL.Attributes.@xmlns
  * @function
  */
-CSL.Attributes["@xmlns"] = function () {};
+CSL.Attributes["@xmlns"] = function () { };
 
 
 /*
@@ -1179,7 +1179,7 @@ CSL.Attributes["@lang"] = function (state, arg) {
 
 
 // Used as a flag during dates processing
-CSL.Attributes["@lingo"] = function () {};
+CSL.Attributes["@lingo"] = function () { };
 
 // Used as a flag during dates processing
 CSL.Attributes["@macro-has-date"] = function () {
@@ -1460,9 +1460,9 @@ CSL.Attributes["@hanging-indent"] = function (state, arg) {
     if (arg === "true") {
         if (state.opt.development_extensions.hanging_indent_legacy_number) {
             state[this.name].opt.hangingindent = 2;
-	    } else {
+        } else {
             state[this.name].opt.hangingindent = true;
-	    }
+        }
     }
 };
 
@@ -1607,4 +1607,3 @@ CSL.Attributes["@display"] = function (state, arg) {
     }
     this.strings.cls = arg;
 };
-

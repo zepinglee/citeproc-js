@@ -39,7 +39,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     // display_names starts as the original length of this list of names.
     var display_names = lst[key];
     var discretionary_names_length = this.state.tmp["et-al-min"];
-    
+
     // Mappings, to allow existing disambiguation machinery to
     // remain untouched.
     if (this.state.tmp.suppress_decorations) {
@@ -52,7 +52,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
             discretionary_names_length = this.etal_use_first;
         }
     } else {
-        if (this.state.tmp.disambig_request 
+        if (this.state.tmp.disambig_request
             && this.state.tmp.disambig_request.names[pos] > this.etal_use_first) {
 
             if (count[key] < this.etal_min) {
@@ -70,7 +70,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
         // in-text citation to be close (and indistinguishable)
         // matches to a single bibliography entry.
         //
-        // 
+        //
         if (this.etal_use_last && discretionary_names_length > (this.etal_min - 2)) {
             discretionary_names_length = this.etal_min - 2;
         }
@@ -96,7 +96,7 @@ CSL.NameOutput.prototype._imposeNameConstraints = function (lst, count, key, pos
     }
     this.state.tmp.disambig_settings.names[pos] = lst[key].length;
     this.state.disambiguate.padBase(this.state.tmp.disambig_settings);
-    
+
 
     // ???
     //if (!this.state.tmp.disambig_request) {

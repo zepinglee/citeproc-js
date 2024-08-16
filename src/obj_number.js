@@ -38,7 +38,7 @@ CSL.NumericBlob = function (state, particle, num, mother_token, id) {
         this.splice_prefix = mother_token.splice_prefix;
         this.formatter = mother_token.formatter;
         if (!this.formatter) {
-            this.formatter =  new CSL.Output.DefaultFormatter();
+            this.formatter = new CSL.Output.DefaultFormatter();
         }
         if (this.formatter) {
             this.type = this.formatter.format(1);
@@ -61,13 +61,13 @@ CSL.NumericBlob.prototype.setFormatter = function (formatter) {
 };
 
 
-CSL.Output.DefaultFormatter = function () {};
+CSL.Output.DefaultFormatter = function () { };
 
 CSL.Output.DefaultFormatter.prototype.format = function (num) {
     return num.toString();
 };
 
-CSL.NumericBlob.prototype.checkNext = function (next,start) {
+CSL.NumericBlob.prototype.checkNext = function (next, start) {
     if (start) {
         this.status = CSL.START;
         if ("object" === typeof next) {
@@ -77,12 +77,12 @@ CSL.NumericBlob.prototype.checkNext = function (next,start) {
                 next.status = CSL.SEEN;
             }
         }
-    } else if (! next || !next.num || this.type !== next.type || next.num !== (this.num + 1)) {
+    } else if (!next || !next.num || this.type !== next.type || next.num !== (this.num + 1)) {
         if (this.status === CSL.SUCCESSOR_OF_SUCCESSOR) {
             this.status = CSL.END;
         }
-        if ("object" === typeof next) { 
-           next.status = CSL.SEEN;
+        if ("object" === typeof next) {
+            next.status = CSL.SEEN;
         }
     } else { // next number is in the sequence
         if (this.status === CSL.START || this.status === CSL.SEEN) {
@@ -105,8 +105,8 @@ CSL.NumericBlob.prototype.checkNext = function (next,start) {
 
 CSL.NumericBlob.prototype.checkLast = function (last) {
     // Used to adjust final non-range join
-    if (this.status === CSL.SEEN 
-    || (last.num !== (this.num - 1) && this.status === CSL.SUCCESSOR)) {
+    if (this.status === CSL.SEEN
+        || (last.num !== (this.num - 1) && this.status === CSL.SUCCESSOR)) {
         this.status = CSL.SUCCESSOR;
         return true;
     }

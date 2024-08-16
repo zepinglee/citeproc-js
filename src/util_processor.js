@@ -57,7 +57,7 @@ CSL.Mode = function (mode) {
             val = params[param];
             args = param.split('/');
 
-            if (typeof val === "string" && val.indexOf("%%STRING%%") > -1)  {
+            if (typeof val === "string" && val.indexOf("%%STRING%%") > -1) {
                 if (val.indexOf("%%PARAM%%") > -1) {
                     func = CSL.substituteTwo(val);
                 } else {
@@ -114,7 +114,7 @@ CSL.setDecorations = function (state, attributes) {
     return ret;
 };
 
-CSL.Doppeler = function(rexStr, stringMangler) {
+CSL.Doppeler = function (rexStr, stringMangler) {
     var matchRex = new RegExp("(" + rexStr + ")", "g");
     var splitRex = new RegExp(rexStr, "g");
     this.split = function (str) {
@@ -130,14 +130,14 @@ CSL.Doppeler = function(rexStr, stringMangler) {
             };
         }
         var split = str.split(splitRex);
-        for (var i=match.length-1; i> -1; i--) {
+        for (var i = match.length - 1; i > -1; i--) {
             if (typeof match[i] === "number") {
                 match[i] = "";
             }
             var tag = match[i];
-            if (tag === "\'" && split[i+1].length > 0) {
+            if (tag === "\'" && split[i + 1].length > 0) {
                 // Fixes https://forums.zotero.org/discussion/comment/294317
-                split[i+1] = match[i] + split[i+1];
+                split[i + 1] = match[i] + split[i + 1];
                 match[i] = "";
             }
         }
@@ -149,7 +149,7 @@ CSL.Doppeler = function(rexStr, stringMangler) {
     };
     this.join = function (obj) {
         var lst = obj.strings.slice(-1);
-        for (var i=obj.tags.length-1; i>-1; i--) {
+        for (var i = obj.tags.length - 1; i > -1; i--) {
             lst.push(obj.tags[i]);
             lst.push(obj.strings[i]);
         }

@@ -20,12 +20,12 @@ CSL.Node.name = {
             // counterparts.
             if (state.inheritOpt(this, "et-al-subsequent-min")
                 && (state.inheritOpt(this, "et-al-subsequent-min") !== state.inheritOpt(this, "et-al-min"))) {
-                
+
                 state.opt.update_mode = CSL.POSITION;
             }
             if (state.inheritOpt(this, "et-al-subsequent-use-first")
                 && (state.inheritOpt(this, "et-al-subsequent-use-first") !== state.inheritOpt(this, "et-al-use-first"))) {
-                
+
                 state.opt.update_mode = CSL.POSITION;
             }
 
@@ -40,7 +40,7 @@ CSL.Node.name = {
                 // empty strings.
                 state.tmp.name_delimiter = state.inheritOpt(this, "delimiter", "name-delimiter", ", ");
                 state.tmp["delimiter-precedes-et-al"] = state.inheritOpt(this, "delimiter-precedes-et-al");
-                
+
                 // And
                 if ("text" === state.inheritOpt(this, "and")) {
                     this.and_term = state.getTerm("and", "long", 0);
@@ -114,7 +114,7 @@ CSL.Node.name = {
                     // identified for find and replace operations.
                     // Source: http://en.wikipedia.org/wiki/Ellipsis#Computer_representations
                     //
-                    
+
                     // Eventually, this should be localized as a term in CSL, with some
                     // mechanism for triggering appropriate punctuation handling around
                     // the ellipsis placeholder (Polish is a particularly tough case for that).
@@ -122,7 +122,7 @@ CSL.Node.name = {
                     // Similar treatment to "and", above, will be needed
                     // here when this becomes a locale term.
                     this.ellipsis_prefix_single = " ";
-                    this.ellipsis_prefix_multiple =  state.inheritOpt(this, "delimiter", "name-delimiter", ", ");
+                    this.ellipsis_prefix_multiple = state.inheritOpt(this, "delimiter", "name-delimiter", ", ");
                     this.ellipsis_suffix = " ";
                     this.ellipsis.single = new CSL.Blob(this.ellipsis_term);
                     this.ellipsis.single.strings.prefix = this.ellipsis_prefix_single;
@@ -160,7 +160,7 @@ CSL.Node.name = {
 
                 state.nameOutput.name = this;
             };
-            
+
             state.build.name_flag = true;
 
             this.execs.push(func);
@@ -168,5 +168,3 @@ CSL.Node.name = {
         target.push(this);
     }
 };
-
-

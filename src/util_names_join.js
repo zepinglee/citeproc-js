@@ -17,7 +17,7 @@ CSL.NameOutput.prototype.joinPersons = function (blobs, pos, j, tokenname) {
     }
     if ("undefined" === typeof j) {
         if (this.etal_spec[pos].freeters === 1) {
-           ret = this._joinEtAl(blobs);
+            ret = this._joinEtAl(blobs);
         } else if (this.etal_spec[pos].freeters === 2) {
             ret = this._joinEllipsis(blobs);
         } else if (!this.state.tmp.sort_key_flag) {
@@ -72,7 +72,7 @@ CSL.NameOutput.prototype.joinFreetersAndInstitutionSets = function (blobs) {
     return ret;
 };
 
-CSL.NameOutput.prototype._getAfterInvertedName = function(blobs, delimiter, finalJoin) {
+CSL.NameOutput.prototype._getAfterInvertedName = function (blobs, delimiter, finalJoin) {
     if (finalJoin && blobs.length > 1) {
         if (this.state.inheritOpt(this.name, "delimiter-precedes-last") === "after-inverted-name") {
             var prevBlob = blobs[blobs.length - 2];
@@ -106,7 +106,7 @@ CSL.NameOutput.prototype._getAndJoin = function (blobs, delimiter) {
 CSL.NameOutput.prototype._joinEtAl = function (blobs) {
     var delimiter = this.state.inheritOpt(this.name, "delimiter", "name-delimiter", ", ");
     var blob = this._join(blobs, delimiter);
-    
+
     // notSerious
     this.state.output.openLevel(this._getToken("name"));
     // Delimiter is applied from separately saved source in this case,
@@ -132,8 +132,8 @@ CSL.NameOutput.prototype._joinEllipsis = function (blobs) {
             singleOrMultiple = "multiple";
         }
         finalJoin = JSON.parse(JSON.stringify(this.name.ellipsis[singleOrMultiple]));
-        finalJoin = this._getAfterInvertedName(blobs, delimiter , finalJoin);
-        
+        finalJoin = this._getAfterInvertedName(blobs, delimiter, finalJoin);
+
     }
     return this._join(blobs, delimiter, finalJoin);
 };
@@ -169,7 +169,7 @@ CSL.NameOutput.prototype._join = function (blobs, delimiter, finalJoin) {
                 offset = 0;
             }
             var blob = blobs.pop();
-            for (var i=0,ilen=blobs.length - offset;i<ilen;i++) {
+            for (var i = 0, ilen = blobs.length - offset; i < ilen; i++) {
                 blobs[i].strings.suffix += delimiter;
             }
             blobs.push(finalJoin);

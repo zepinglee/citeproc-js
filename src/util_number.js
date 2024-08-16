@@ -15,7 +15,7 @@ CSL.Util.padding = function (num) {
     return num;
 };
 
-CSL.Util.LongOrdinalizer = function () {};
+CSL.Util.LongOrdinalizer = function () { };
 
 CSL.Util.LongOrdinalizer.prototype.init = function (state) {
     this.state = state;
@@ -27,11 +27,11 @@ CSL.Util.LongOrdinalizer.prototype.format = function (num, gender) {
     }
     // Argument true means "loose".
     var ret = CSL.Engine.getField(
-        CSL.LOOSE, 
+        CSL.LOOSE,
         this.state.locale[this.state.opt.lang].terms,
         "long-ordinal-" + num,
-        "long", 
-        0, 
+        "long",
+        0,
         gender
     );
     if (!ret) {
@@ -77,17 +77,17 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
     }
     trygenders.push("neuter");
     if (this.state.locale[this.state.opt.lang].ord["1.0.1"]) {
-        suffix = this.state.getTerm("ordinal",false,0,gender);
+        suffix = this.state.getTerm("ordinal", false, 0, gender);
         var trygender;
         for (var i = 0, ilen = trygenders.length; i < ilen; i += 1) {
             trygender = trygenders[i];
             var ordinfo = this.state.locale[this.state.opt.lang].ord["1.0.1"];
             if (ordinfo["whole-number"][str] && ordinfo["whole-number"][str][trygender]) {
-                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str][trygender],false,0,gender);
+                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["whole-number"][str][trygender], false, 0, gender);
             } else if (ordinfo["last-two-digits"][str.slice(str.length - 2)] && ordinfo["last-two-digits"][str.slice(str.length - 2)][trygender]) {
-                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)][trygender],false,0,gender);
+                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-two-digits"][str.slice(str.length - 2)][trygender], false, 0, gender);
             } else if (ordinfo["last-digit"][str.slice(str.length - 1)] && ordinfo["last-digit"][str.slice(str.length - 1)][trygender]) {
-                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)][trygender],false,0,gender);
+                suffix = this.state.getTerm(this.state.locale[this.state.opt.lang].ord["1.0.1"]["last-digit"][str.slice(str.length - 1)][trygender], false, 0, gender);
             }
             if (suffix) {
                 break;
@@ -116,7 +116,7 @@ CSL.Util.Ordinalizer.prototype.format = function (num, gender) {
     return str;
 };
 
-CSL.Util.Romanizer = function () {};
+CSL.Util.Romanizer = function () { };
 
 CSL.Util.Romanizer.prototype.format = function (num) {
     var ret, pos, n, numstr, len;
@@ -162,9 +162,9 @@ CSL.Util.Suffixator.prototype.format = function (N) {
     var key = "";
     do {
         X = ((N % 26) === 0) ? 26 : (N % 26);
-        var key = this.slist[X-1] + key;
+        var key = this.slist[X - 1] + key;
         N = (N - X) / 26;
-    } while ( N !== 0 );
+    } while (N !== 0);
     return key;
 };
 
@@ -183,7 +183,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         fullformAnd += "|,\\s+" + this.getTerm("and") + "\\s+|\\s+" + this.getTerm("and") + "\\s+";
     }
     var symbolAnd = "\\s*&\\s*";
-    var andRex = new RegExp("^" + symbolAnd+ "$");
+    var andRex = new RegExp("^" + symbolAnd + "$");
     var joinerMatchRex = new RegExp("(" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*)", "g");
     var joinerSplitRex = new RegExp("(?:" + symbolAnd + "|" + fullformAnd + "|;\\s+|,\\s+|\\s*\\\\*[\\-\\u2013]+\\s*)");
 
@@ -205,7 +205,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     // The capture pattern below would apply affixes to all sub-elements,
     // which is not what we want. Sub-elements should nest within, or
     // affixes should be edited. The latter is probably easier to handle.
-    
+
     // values = [
     //   {
     //     label: "sec.",
@@ -224,7 +224,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     //     joiningSuffix: ""
     //   }
     // ]
-    
+
     function normalizeFieldValue(str) {
         str = str.trim();
         var m = str.match(/^([^ ]+)/);
@@ -245,14 +245,14 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
         return str;
     }
-    
+
 
     function composeNumberInfo(origLabel, label, val, joiningSuffix, parsePosition) {
         joiningSuffix = joiningSuffix ? joiningSuffix : "";
         var info = {};
 
         if (!label && !CSL.STATUTE_SUBDIV_STRINGS_REVERSE[variable]) {
-            label = "var:"+ variable;
+            label = "var:" + variable;
         }
 
         if (label) {
@@ -268,7 +268,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             info.labelSuffix = m[3] ? m[3] : "";
             info.plural = 0;
         }
-        
+
         var m = val.match(/^([0-9]*[a-zA-Z]+0*)?([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
         //var m = val.match(/^([0-9]*[a-zA-Z]0*)([0-9]+(?:[a-zA-Z]*|[-,a-zA-Z]+))$/);
         if (m) {
@@ -285,12 +285,12 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     function fixupSubsections(elems) {
         // This catches things like p. 12a-c, recombining content to yield
         // numeric true despite the hyphen.
-        for (var i=elems.length-2;i>-1;i-=2) {
+        for (var i = elems.length - 2; i > -1; i -= 2) {
             if (elems[i] === "-"
-               && elems[i-1].match(/^(?:(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\.  *)*[0-9]+[,a-zA-Z]+$/)
-               && elems[i+1].match(/^[,a-zA-Z]+$/)) {
-                elems[i-1] = elems.slice(i-1,i+2).join("");
-                elems = elems.slice(0,i).concat(elems.slice(i+2));
+                && elems[i - 1].match(/^(?:(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z])\.  *)*[0-9]+[,a-zA-Z]+$/)
+                && elems[i + 1].match(/^[,a-zA-Z]+$/)) {
+                elems[i - 1] = elems.slice(i - 1, i + 2).join("");
+                elems = elems.slice(0, i).concat(elems.slice(i + 2));
             }
         }
         return elems;
@@ -298,7 +298,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
     function parseString(str, defaultLabel) {
         defaultLabel = defaultLabel ? defaultLabel : "";
-        
+
         str = normalizeFieldValue(str, defaultLabel);
 
         var jmrex, jsrex, mystr;
@@ -311,7 +311,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             jmrex = new RegExp(joinerMatchRex.source.replace("\\-", ""));
             jsrex = new RegExp(joinerSplitRex.source.replace("\\-", ""));
             var lst = str.split("\\-");
-            for (var i=0,ilen=lst.length;i<ilen;i++) {
+            for (var i = 0, ilen = lst.length; i < ilen; i++) {
                 lst[i] = lst[i].replace(/\-/g, "\u2013");
             }
             mystr = lst.join("\\-");
@@ -323,13 +323,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
         // jmrex = joinerMatchRex;
         // jsrex = joinerSplitRex;
-        
+
         // Split chunks and collate delimiters.
         var elems = [];
         var m = mystr.match(jmrex);
         if (m) {
             var lst = mystr.split(jsrex);
-            for (var i=0, ilen=m.length; i<ilen; i++) {
+            for (var i = 0, ilen = m.length; i < ilen; i++) {
                 if (m[i].match(andRex)) {
                     if (lst[i].match(/[a-zA-Z]$/) && lst[i].match(/^[a-zA-Z]/)) {
                         m[i] = localeAmpersand;
@@ -348,11 +348,11 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             if (recombine) {
                 elems = [mystr];
             } else {
-                for (var i=0,ilen=lst.length-1; i<ilen; i++) {
+                for (var i = 0, ilen = lst.length - 1; i < ilen; i++) {
                     elems.push(lst[i]);
                     elems.push(m[i]);
                 }
-                elems.push(lst[lst.length-1]);
+                elems.push(lst[lst.length - 1]);
                 //print("ELEMS: "+elems);
                 elems = fixupSubsections(elems);
                 //print("  fixup: "+elems);
@@ -364,21 +364,21 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var values = [];
         var label = defaultLabel;
         var origLabel = "";
-        for (var i=0,ilen=elems.length;i<ilen;i += 2) {
-            
+        for (var i = 0, ilen = elems.length; i < ilen; i += 2) {
+
             // AHA! HERE'S THE CULPRIT!!!
             // Words up to four characters are treated as honorary short-form labels.
             // Some valid labels are longer than four chars, so we stir those in explicitly
-            
+
             var m = elems[i].match(/((?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z]|subpara|subch|amend|bibliog|annot|illus|princ|intro|sched|subdiv|subsec)(?:\.| ) *)/g);
             if (m) {
                 var lst = elems[i].split(/(?:(?:^| )(?:[a-z]|[a-z][a-z]|[a-z][a-z][a-z]|[a-z][a-z][a-z][a-z]|subpara|subch|amend|bibliog|annot|illus|princ|intro|sched|subdiv|subsec)(?:\.| ) *)/);
                 // Head off disaster by merging parsed labels on non-numeric values into content
-                for (var j=lst.length-1;j>0;j--) {
-                    if (lst[j-1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j-1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
-                        lst[j-1] = lst[j-1] + m[j-1] + lst[j];
-                        lst = lst.slice(0,j).concat(lst.slice(j+1));
-                        m = m.slice(0,j-1).concat(m.slice(j));
+                for (var j = lst.length - 1; j > 0; j--) {
+                    if (lst[j - 1] && (!lst[j].match(/^[0-9]+([-;,:a-zA-Z]*)$/) || !lst[j - 1].match(/^[0-9]+([-;,:a-zA-Z]*)$/))) {
+                        lst[j - 1] = lst[j - 1] + m[j - 1] + lst[j];
+                        lst = lst.slice(0, j).concat(lst.slice(j + 1));
+                        m = m.slice(0, j - 1).concat(m.slice(j));
                     }
                 }
                 // merge bad leading label into content
@@ -391,17 +391,17 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                         if (i === 0) {
                             m = m.slice(1);
                             lst[0] = lst[0] + " " + slug + " " + lst[1];
-                            lst = lst.slice(0,1).concat(lst.slice(2));
+                            lst = lst.slice(0, 1).concat(lst.slice(2));
                         }
                     } else {
                         origLabel = slug;
                     }
                 }
 
-                for (var j=0,jlen=lst.length; j<jlen; j++) {
-                    if (lst[j] || j === (lst.length-1)) {
+                for (var j = 0, jlen = lst.length; j < jlen; j++) {
+                    if (lst[j] || j === (lst.length - 1)) {
                         var filteredOrigLabel;
-                        label = m[j-1] ? m[j-1] : label;
+                        label = m[j - 1] ? m[j - 1] : label;
                         if (origLabel === label.trim()) {
                             filteredOrigLabel = "";
                         } else {
@@ -409,8 +409,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                         }
                         //var origLabel = j > 1 ? m[j-1] : "";
                         mystr = lst[j] ? lst[j].trim() : "";
-                        if (j === (lst.length-1)) {
-                            values.push(composeNumberInfo(filteredOrigLabel, label, mystr, elems[i+1], i));
+                        if (j === (lst.length - 1)) {
+                            values.push(composeNumberInfo(filteredOrigLabel, label, mystr, elems[i + 1], i));
                         } else {
                             values.push(composeNumberInfo(filteredOrigLabel, label, mystr, null, i));
                         }
@@ -423,7 +423,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 } else {
                     filteredOrigLabel = origLabel;
                 }
-                values.push(composeNumberInfo(filteredOrigLabel, label, elems[i], elems[i+1]));
+                values.push(composeNumberInfo(filteredOrigLabel, label, elems[i], elems[i + 1]));
             }
         }
         return values;
@@ -431,8 +431,8 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
     function setSpaces(values) {
         // Add space joins (is this really right?)
-        for (var i=0,ilen=values.length-1;i<ilen;i++) {
-            if (!values[i].joiningSuffix && values[i+1].label) {
+        for (var i = 0, ilen = values.length - 1; i < ilen; i++) {
+            if (!values[i].joiningSuffix && values[i + 1].label) {
                 values[i].joiningSuffix = " ";
             }
         }
@@ -460,7 +460,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             currentLabelInfo.collapsible = false;
         }
         if (undefined === values[i].collapsible) {
-            for (var j=i,jlen=i+currentLabelInfo.count;j<jlen;j++) {
+            for (var j = i, jlen = i + currentLabelInfo.count; j < jlen; j++) {
                 if (isNaN(parseInt(values[j].value)) && !values[j].value.match(/^[ivxlcmIVXLCM]+$/)) {
                     values[j].collapsible = false;
                 } else {
@@ -470,7 +470,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             currentLabelInfo.collapsible = values[i].collapsible;
         }
         var isCollapsible = currentLabelInfo.collapsible;
-        for (var j=currentLabelInfo.pos,jlen=(currentLabelInfo.pos + currentLabelInfo.count); j<jlen; j++) {
+        for (var j = currentLabelInfo.pos, jlen = (currentLabelInfo.pos + currentLabelInfo.count); j < jlen; j++) {
             if (currentLabelInfo.count > 1 && isCollapsible) {
                 values[j].plural = 1;
             }
@@ -506,16 +506,16 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             }
         }
     }
-    
+
     function setPluralsAndNumerics(values) {
         if (values.length === 0) {
             return;
         }
         var groupStartPos = 0;
         var groupCount = 1;
-        
-        for (var i=1,ilen=values.length;i<ilen;i++) {
-            var lastVal = values[i-1];
+
+        for (var i = 1, ilen = values.length; i < ilen; i++) {
+            var lastVal = values[i - 1];
             var thisVal = values[i];
             if (lastVal.label === thisVal.label && lastVal.particle === lastVal.particle) {
                 groupCount++;
@@ -544,7 +544,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 values[0].plural = 1;
             }
         }
-    }        
+    }
 
     function stripHyphenBackslash(joiningSuffix) {
         return joiningSuffix.replace("\\-", "-");
@@ -572,7 +572,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
         var masterLabel = values.length ? values[0].label : null;
         if (values.length) {
-            for (var i=0,ilen=values.length; i<ilen; i++) {
+            for (var i = 0, ilen = values.length; i < ilen; i++) {
                 var val = values[i];
                 // Clone node, make styling parameters on each instance sane.
                 var newnode = CSL.Util.cloneToken(masterNode);
@@ -587,9 +587,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
                 val.styling = newnode;
             }
             if (!me.tmp.just_looking) {
-                if (values[0].value.slice(0,1) === "\"" && values[values.length-1].value.slice(-1) === "\"") {
+                if (values[0].value.slice(0, 1) === "\"" && values[values.length - 1].value.slice(-1) === "\"") {
                     values[0].value = values[0].value.slice(1);
-                    values[values.length-1].value = values[values.length-1].value.slice(0,-1);
+                    values[values.length - 1].value = values[values.length - 1].value.slice(0, -1);
                     masterStyling.decorations.push(["@quotes", true]);
                 }
             }
@@ -615,7 +615,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         return "page" === variable
             || (["locator", "locator-extra"].indexOf(variable) > -1 && (["p."].indexOf(val.label) > -1 || ["p."].indexOf(val.origLabel) > -1));
     }
-    
+
     function fixupRangeDelimiter(variable, val, rangeDelimiter, isNumeric) {
         var isPage = checkPage(variable, val);
         var hasTerm = checkTerm(variable, val);
@@ -642,51 +642,51 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     }
 
     function manglePageNumbers(values, i, currentInfo) {
-        if (i<1) {
+        if (i < 1) {
             return;
         }
         if (currentInfo.count !== 2) {
             return;
         }
-        if (values[i-1].particle !== values[i].particle) {
+        if (values[i - 1].particle !== values[i].particle) {
             return;
         }
-        if (values[i-1].joiningSuffix !== "-") {
+        if (values[i - 1].joiningSuffix !== "-") {
             currentInfo.count = 1;
             return;
         }
-        if (!me.opt["page-range-format"] && (parseInt(values[i-1].value, 10) > parseInt(values[i].value, 10))) {
-            values[i-1].joiningSuffix = fixupRangeDelimiter(variable, values[i], values[i-1].joiningSuffix, true);
+        if (!me.opt["page-range-format"] && (parseInt(values[i - 1].value, 10) > parseInt(values[i].value, 10))) {
+            values[i - 1].joiningSuffix = fixupRangeDelimiter(variable, values[i], values[i - 1].joiningSuffix, true);
             return;
         }
         var val = values[i];
 
         var isPage = checkPage(variable, val);
         var str;
-        if (isPage && !isNaN(parseInt(values[i-1].value)) && !isNaN(parseInt(values[i].value))) {
-            str = values[i-1].particle + values[i-1].value + " - " + values[i].particle + values[i].value;
+        if (isPage && !isNaN(parseInt(values[i - 1].value)) && !isNaN(parseInt(values[i].value))) {
+            str = values[i - 1].particle + values[i - 1].value + " - " + values[i].particle + values[i].value;
             str = me.fun.page_mangler(str);
         } else {
             // if (("" + values[i-1].value).match(/[0-9]$/) && ("" + values[i].value).match(/^[0-9]/)) {
-            if (("" + values[i-1].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/) && ("" + values[i].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/)) {
-                values[i-1].joiningSuffix = me.getTerm("page-range-delimiter");
+            if (("" + values[i - 1].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/) && ("" + values[i].value).match(/^([0-9]+|[ivxlcmIVXLCM]+)$/)) {
+                values[i - 1].joiningSuffix = me.getTerm("page-range-delimiter");
             }
-            str = values[i-1].value + stripHyphenBackslash(values[i-1].joiningSuffix) + values[i].value;
+            str = values[i - 1].value + stripHyphenBackslash(values[i - 1].joiningSuffix) + values[i].value;
         }
         var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+[a-z]*)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+[a-z]*)$/);
         // var m = str.match(/^((?:[0-9]*[a-zA-Z]+0*))?([0-9]+[a-z]*)(\s*[^0-9]+\s*)([-,a-zA-Z]?0*)([0-9]+[a-z]*)$/);
         if (m) {
             var rangeDelimiter = m[3];
             rangeDelimiter = fixupRangeDelimiter(variable, val, rangeDelimiter, values[i].numeric);
-            values[i-1].particle = m[1];
-            values[i-1].value = m[2];
-            values[i-1].joiningSuffix = rangeDelimiter;
+            values[i - 1].particle = m[1];
+            values[i - 1].value = m[2];
+            values[i - 1].joiningSuffix = rangeDelimiter;
             values[i].particle = m[4];
             values[i].value = m[5];
         }
         currentInfo.count = 0;
     }
-    
+
     function fixRanges(values) {
 
         if (!node) {
@@ -702,7 +702,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             lastHadRangeDelimiter: false
         };
 
-        for (var i=0,ilen=values.length; i<ilen; i++) {
+        for (var i = 0, ilen = values.length; i < ilen; i++) {
             var val = values[i];
             if (!val.collapsible) {
                 currentInfo.count = 0;
@@ -731,7 +731,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         }
         // Finally clear, if needed
         if (currentInfo.count === 2) {
-            manglePageNumbers(values, values.length-1, currentInfo);
+            manglePageNumbers(values, values.length - 1, currentInfo);
         }
     }
 
@@ -755,7 +755,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
         var values = this.tmp.shadow_numbers[realVariable].values;
         fixRanges(values);
         //if (!this.tmp.shadow_numbers[variable].masterStyling && !this.tmp.just_looking) {
-            this.tmp.shadow_numbers[realVariable].masterStyling = setStyling(values);
+        this.tmp.shadow_numbers[realVariable].masterStyling = setStyling(values);
         //}
         return;
     }
@@ -767,7 +767,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     // XXX Now params are set on individual objects, of which there may be several after parsing.
     if (!this.tmp.shadow_numbers[realVariable]) {
         this.tmp.shadow_numbers[realVariable] = {
-            values:[]
+            values: []
         };
     }
     //this.tmp.shadow_numbers[variable].values = [];
@@ -783,7 +783,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     var languageRole = CSL.LangPrefsMap[variable];
     if (languageRole) {
         var localeType = this.opt["cite-lang-prefs"][languageRole][0];
-        val = this.transform.getTextSubField(ItemObject, realVariable, "locale-"+localeType, true);
+        val = this.transform.getTextSubField(ItemObject, realVariable, "locale-" + localeType, true);
         val = val.name;
     } else {
         val = ItemObject[realVariable];
@@ -811,9 +811,9 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
             if (this.transform.abbrevs[jurisdiction].number[normval]) {
                 val = this.transform.abbrevs[jurisdiction].number[normval];
             } else {
-                
+
                 // *** This is terrible ***
-                
+
                 // Strings rendered via cs:number should not be added to the abbreviations
                 // UI unless they test non-numeric. The test happens below.
                 if ("undefined" !== typeof this.transform.abbrevs[jurisdiction].number[normval]) {
@@ -858,13 +858,13 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
 
             if (node) {
                 fixRanges(values);
-                
+
                 this.tmp.shadow_numbers[realVariable].masterStyling = setStyling(values);
                 // me.sys.print("setStyling(): "+JSON.stringify(values, null, 2));
             }
             setVariableParams(this.tmp.shadow_numbers, realVariable, values);
         }
-        
+
         // hack in support for non-numeric numerics like "91 Civ. 5442 (RPP)|91 Civ. 5471"
         var info = this.tmp.shadow_numbers[realVariable];
         if (variable === "number") {
@@ -899,7 +899,7 @@ CSL.Engine.prototype.processNumber = function (node, ItemObject, variable) {
     }
 };
 
-CSL.Util.outputNumericField = function(state, varname, itemID) {
+CSL.Util.outputNumericField = function (state, varname, itemID) {
 
     state.output.openLevel(state.tmp.shadow_numbers[varname].masterStyling);
     var masterStyling = state.tmp.shadow_numbers[varname].masterStyling;
@@ -918,12 +918,12 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
     var labelDecorations = state.tmp.shadow_numbers[varname].labelDecorations;
     var lastLabelName = null;
 
-    for (var i=0,ilen=nums.length;i<ilen;i++) {
+    for (var i = 0, ilen = nums.length; i < ilen; i++) {
         var num = nums[i];
         var label = "";
         var labelName;
         if (num.label) {
-            if ('var:' === num.label.slice(0,4)) {
+            if ('var:' === num.label.slice(0, 4)) {
                 labelName = num.label.slice(4);
             } else {
                 labelName = CSL.STATUTE_SUBDIV_STRINGS[num.label];
@@ -965,10 +965,10 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         numStyling.type = num.styling.type;
         numStyling.num = num.styling.num;
         numStyling.gender = num.styling.gender;
-        
-        if (labelPlaceholderPos > 0 && labelPlaceholderPos < (label.length-2)) {
-            numStyling.strings.prefix += label.slice(0,labelPlaceholderPos);
-            numStyling.strings.suffix = label.slice(labelPlaceholderPos+2) + numStyling.strings.suffix;
+
+        if (labelPlaceholderPos > 0 && labelPlaceholderPos < (label.length - 2)) {
+            numStyling.strings.prefix += label.slice(0, labelPlaceholderPos);
+            numStyling.strings.suffix = label.slice(labelPlaceholderPos + 2) + numStyling.strings.suffix;
         } else if (num.labelVisibility) {
             if (!label) {
                 label = num.label;
@@ -977,10 +977,10 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
             if (labelPlaceholderPos > 0) {
                 var prefixLabelStyling = new CSL.Token();
                 prefixLabelStyling.decorations = labelDecorations;
-                state.output.append(label.slice(0,labelPlaceholderPos), prefixLabelStyling);
-            } else if (labelPlaceholderPos === (label.length-2) || labelPlaceholderPos === -1) {
+                state.output.append(label.slice(0, labelPlaceholderPos), prefixLabelStyling);
+            } else if (labelPlaceholderPos === (label.length - 2) || labelPlaceholderPos === -1) {
                 // And add a trailing delimiter.
-                state.output.append(label+num.labelSuffix, "empty");
+                state.output.append(label + num.labelSuffix, "empty");
             }
         }
         CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, masterStyling.strings.prefix, null, masterStyling, `${num.particle}${num.value}`);
@@ -998,15 +998,15 @@ CSL.Util.outputNumericField = function(state, varname, itemID) {
         } else {
             state.output.append(num.particle + num.value, numStyling);
         }
-        if (labelPlaceholderPos === 0 && labelPlaceholderPos < (label.length-2)) {
+        if (labelPlaceholderPos === 0 && labelPlaceholderPos < (label.length - 2)) {
             // Only and always if this is the last entry of this label
             if (lastLabelName === null) {
                 lastLabelName = labelName;
             }
-            if (labelName !== lastLabelName || i === (nums.length-1)) {
+            if (labelName !== lastLabelName || i === (nums.length - 1)) {
                 var suffixLabelStyling = new CSL.Token();
                 suffixLabelStyling.decorations = labelDecorations;
-                state.output.append(label.slice(labelPlaceholderPos+2), suffixLabelStyling);
+                state.output.append(label.slice(labelPlaceholderPos + 2), suffixLabelStyling);
             }
         }
         lastLabelName = labelName;

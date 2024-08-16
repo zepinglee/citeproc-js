@@ -16,7 +16,7 @@ CSL.evaluateLabel = function (node, state, Item, item) {
     } else {
         myterm = node.strings.term;
     }
-    
+
     // Plurals detection.
     var plural = node.strings.plural;
     if ("number" !== typeof plural) {
@@ -35,13 +35,13 @@ CSL.evaluateLabel = function (node, state, Item, item) {
                 state.tmp.shadow_numbers[node.strings.term].labelCapitalizeIfFirst = node.strings.capitalize_if_first;
                 state.tmp.shadow_numbers[node.strings.term].labelDecorations = node.decorations.slice();
             }
-            
+
             if (["locator", "number", "page"].indexOf(node.strings.term) > -1 && state.tmp.shadow_numbers[node.strings.term].label) {
                 myterm = state.tmp.shadow_numbers[node.strings.term].label;
             }
             if (node.decorations && state.opt.development_extensions.csl_reverse_lookup_support) {
                 node.decorations.reverse();
-                node.decorations.push(["@showid","true", node.cslid]);
+                node.decorations.push(["@showid", "true", node.cslid]);
                 node.decorations.reverse();
             }
         }

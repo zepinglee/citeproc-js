@@ -4,7 +4,7 @@ CSL.Engine.Opt = function () {
     this.parallel = {
         enable: false,
     },
-    this.has_disambiguate = false;
+        this.has_disambiguate = false;
     this.mode = "html";
     this.dates = {};
     this.jurisdictions_seen = {};
@@ -14,88 +14,88 @@ CSL.Engine.Opt = function () {
     this["locale-translit"] = [];
     this["locale-translat"] = [];
     this.citeAffixes = {
-        persons:{
-            "locale-orig":{
-                prefix:"",
-                suffix:""
+        persons: {
+            "locale-orig": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translit":{
-                prefix:"",
-                suffix:""
+            "locale-translit": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translat":{
-                prefix:"",
-                suffix:""
+            "locale-translat": {
+                prefix: "",
+                suffix: ""
             }
         },
-        institutions:{
-            "locale-orig":{
-                prefix:"",
-                suffix:""
+        institutions: {
+            "locale-orig": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translit":{
-                prefix:"",
-                suffix:""
+            "locale-translit": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translat":{
-                prefix:"",
-                suffix:""
+            "locale-translat": {
+                prefix: "",
+                suffix: ""
             }
         },
-        titles:{
-            "locale-orig":{
-                prefix:"",
-                suffix:""
+        titles: {
+            "locale-orig": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translit":{
-                prefix:"",
-                suffix:""
+            "locale-translit": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translat":{
-                prefix:"",
-                suffix:""
+            "locale-translat": {
+                prefix: "",
+                suffix: ""
             }
         },
-        journals:{
-            "locale-orig":{
-                prefix:"",
-                suffix:""
+        journals: {
+            "locale-orig": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translit":{
-                prefix:"",
-                suffix:""
+            "locale-translit": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translat":{
-                prefix:"",
-                suffix:""
+            "locale-translat": {
+                prefix: "",
+                suffix: ""
             }
         },
-        publishers:{
-            "locale-orig":{
-                prefix:"",
-                suffix:""
+        publishers: {
+            "locale-orig": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translit":{
-                prefix:"",
-                suffix:""
+            "locale-translit": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translat":{
-                prefix:"",
-                suffix:""
+            "locale-translat": {
+                prefix: "",
+                suffix: ""
             }
         },
-        places:{
-            "locale-orig":{
-                prefix:"",
-                suffix:""
+        places: {
+            "locale-orig": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translit":{
-                prefix:"",
-                suffix:""
+            "locale-translit": {
+                prefix: "",
+                suffix: ""
             },
-            "locale-translat":{
-                prefix:"",
-                suffix:""
+            "locale-translat": {
+                prefix: "",
+                suffix: ""
             }
         }
     };
@@ -118,7 +118,7 @@ CSL.Engine.Opt = function () {
 
     this["demote-non-dropping-particle"] = "display-and-sort";
     // default of true, because none of our consuming
-    // applications so far store the various prefixes and 
+    // applications so far store the various prefixes and
     // suffixes we support in separate fields.
     this["parse-names"] = true;
     // this["auto-vietnamese-names"] = true;
@@ -130,13 +130,13 @@ CSL.Engine.Opt = function () {
 
     this.gender = {};
     this['cite-lang-prefs'] = {
-        persons:['orig'],
-        institutions:['orig'],
-        titles:['orig'],
-        journals:['orig'],
-        publishers:['orig'],
-        places:['orig'],
-        number:['orig']
+        persons: ['orig'],
+        institutions: ['orig'],
+        titles: ['orig'],
+        journals: ['orig'],
+        publishers: ['orig'],
+        places: ['orig'],
+        number: ['orig']
     };
 
     this.has_layout_locale = false;
@@ -243,7 +243,7 @@ CSL.Engine.Tmp = function () {
         variable_attempt: false,
         variable_success: false,
         output_tip: undefined,
-        label_form:  undefined,
+        label_form: undefined,
         parallel_first: undefined,
         parallel_last: undefined,
         parallel_delimiter_override: undefined,
@@ -330,9 +330,9 @@ CSL.Engine.Tmp = function () {
     // Used for conditional locale switching.
     this.cite_locales = [];
     this.cite_affixes = {
-        citation: false, 
+        citation: false,
         bibliography: false,
-        citation_sort: false, 
+        citation_sort: false,
         bibliography_sort: false
     };
     this.strip_periods = 0;
@@ -465,10 +465,10 @@ CSL.Engine.Configure = function () {
 
 
 CSL.Engine.Citation = function (state) {
-     // Citation options area.
-     // Holds a mixture of persistent and ephemeral
-     // options and scratch data used during processing of
-     // a citation.</p>
+    // Citation options area.
+    // Holds a mixture of persistent and ephemeral
+    // options and scratch data used during processing of
+    // a citation.</p>
     this.opt = {
         inheritedAttributes: {}
     };
@@ -550,10 +550,10 @@ CSL.Engine.CitationSort = function () {
 };
 
 CSL.Engine.InText = function () {
-     // InText options area.
-     // Holds a mixture of persistent and ephemeral
-     // options and scratch data used during processing of
-     // a citation.</p>
+    // InText options area.
+    // Holds a mixture of persistent and ephemeral
+    // options and scratch data used during processing of
+    // a citation.</p>
     this.opt = {
         inheritedAttributes: {}
     };

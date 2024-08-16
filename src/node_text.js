@@ -24,11 +24,11 @@ CSL.Node.text = {
             // ...
             //
             // Do non-macro stuff
-            
+
             // Guess again. this.variables is ephemeral, adjusted by an initial
             // function set on the node via @variable attribute setup.
             //variable = this.variables[0];
-            
+
             if (!this.variables_real) {
                 this.variables_real = [];
             }
@@ -135,7 +135,7 @@ CSL.Node.text = {
                             state.output.append(number, "literal");
                             firstoutput = false;
                             // XXX Can we do something better for length here?
-                            for (var i=0,ilen=state.tmp.group_context.mystack.length; i<ilen; i++) {
+                            for (var i = 0, ilen = state.tmp.group_context.mystack.length; i < ilen; i++) {
                                 var flags = state.tmp.group_context.mystack[i];
                                 if (!flags.variable_success && (flags.variable_attempt || (!flags.variable_attempt && !flags.term_intended))) {
                                     firstoutput = true;
@@ -173,7 +173,7 @@ CSL.Node.text = {
                 }
             } else {
                 if (this.strings.term) {
-                    
+
                     // printterm
                     func = function (state, Item) {
                         var gender = state.opt.gender[Item.type];
@@ -186,7 +186,7 @@ CSL.Node.text = {
                             state.tmp.group_context.tip.term_intended = true;
                         }
                         CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, term, null, this);
-                        
+
                         // capitalize the first letter of a term, if it is the
                         // first thing rendered in a citation (or if it is
                         // being rendered immediately after terminal punctuation,
@@ -197,7 +197,7 @@ CSL.Node.text = {
                         } else {
                             myterm = term;
                         }
-                        
+
                         // XXXXX Cut-and-paste code in multiple locations. This code block should be
                         // collected in a function.
                         // Tag: strip-periods-block
@@ -214,7 +214,7 @@ CSL.Node.text = {
                         state.output.append(myterm, this);
                         if (state.tmp.can_block_substitute) {
                             // Black magic here. This causes the cs:substitution condition to pass,
-                            // blocking further rendering within its scope. 
+                            // blocking further rendering within its scope.
                             state.tmp.can_substitute.replace(false, CSL.LITERAL);
                         }
                     };
@@ -251,7 +251,7 @@ CSL.Node.text = {
                         || this.variables_real[0].indexOf("-main") > -1
                         || this.variables_real[0].indexOf("-sub") > -1
                         || ["language-name", "language-name-original"].indexOf(this.variables_real[0]) > -1
-                       ) {
+                    ) {
 
                         // multi-fields
                         // Initialize transform factory according to whether
@@ -274,7 +274,7 @@ CSL.Node.text = {
                         } else {
                             transfall = true;
                             abbrfall = true;
-						}
+                        }
 
                         func = state.transform.getOutputFunction(this.variables, abbrevfam, abbrfall, altvar, transfall);
                     } else {
@@ -285,7 +285,7 @@ CSL.Node.text = {
                                 if (item && item[this.variables[0]]) {
                                     // Code copied to page variable as well; both
                                     // become cs:number in MLZ extended schema
-                                    
+
                                     // If locator, use cs:number. Otherwise, render
                                     // normally.
 
@@ -297,15 +297,15 @@ CSL.Node.text = {
                                     // XXX END
 
                                     if (["locator", "locator-extra"].indexOf(this.variables_real[0]) > -1
-                                       && !state.tmp.just_looking) { 
+                                        && !state.tmp.just_looking) {
                                         state.tmp.done_vars.push(this.variables_real[0]);
                                     }
                                 }
                             };
-                        } else  if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume"].indexOf(this.variables_real[0]) > -1) {
+                        } else if (["page", "page-first", "chapter-number", "collection-number", "edition", "issue", "number", "number-of-pages", "number-of-volumes", "volume"].indexOf(this.variables_real[0]) > -1) {
                             // page gets mangled with the correct collapsing
                             // algorithm
-                            func = function(state, Item) {
+                            func = function (state, Item) {
                                 state.processNumber(this, Item, this.variables[0], Item.type);
                                 CSL.Util.outputNumericField(state, this.variables[0], Item.id);
                             };
@@ -344,7 +344,7 @@ CSL.Node.text = {
                                                             prefix = "https://doi.org/";
                                                         }
                                                         // set any string prefix on the clone
-                                                        clonetoken.strings.prefix = this.strings.prefix.slice(0, clonetoken.strings.prefix.length-16);
+                                                        clonetoken.strings.prefix = this.strings.prefix.slice(0, clonetoken.strings.prefix.length - 16);
                                                     }
                                                     // cast a text blob
                                                     // set the prefix as the content of the blob
@@ -371,9 +371,9 @@ CSL.Node.text = {
                                         } else {
                                             // This is totally unnecessary, isn't it?
                                             if (this.decorations.length) {
-                                                for (var i=this.decorations.length-1; i>-1; i--) {
+                                                for (var i = this.decorations.length - 1; i > -1; i--) {
                                                     if (this.decorations[i][0] === "@" + this.variables[0]) {
-                                                        this.decorations = this.decorations.slice(0, i).concat(this.decorations.slice(i+1));
+                                                        this.decorations = this.decorations.slice(0, i).concat(this.decorations.slice(i + 1));
                                                     }
                                                 }
                                             }
@@ -426,7 +426,7 @@ CSL.Node.text = {
                         state.output.append(this.strings.value, this);
                         if (state.tmp.can_block_substitute) {
                             // Black magic here. This causes the cs:substitution condition to pass,
-                            // blocking further rendering within its scope. 
+                            // blocking further rendering within its scope.
                             state.tmp.can_substitute.replace(false, CSL.LITERAL);
                         }
                     };
@@ -439,5 +439,3 @@ CSL.Node.text = {
         }
     }
 };
-
-

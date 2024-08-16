@@ -16,25 +16,25 @@ CSL.Node.group = {
             // newoutput
             func = function (state) {
                 state.output.startTag("group", this);
-                
+
                 if (this.strings.label_form_override) {
                     if (!state.tmp.group_context.tip.label_form) {
                         state.tmp.group_context.tip.label_form = this.strings.label_form_override;
                     }
                 }
-                
+
                 if (this.strings.label_capitalize_if_first_override) {
                     if (!state.tmp.group_context.tip.label_capitalize_if_first) {
                         state.tmp.group_context.tip.label_capitalize_if_first = this.strings.label_capitalize_if_first_override;
                     }
                 }
-                
+
                 if (this.realGroup) {
-                    
+
                     if (state.tmp.group_context.tip.condition) {
                         CSL.UPDATE_GROUP_CONTEXT_CONDITION(state, this.strings.prefix, null, this);
                     }
-                    
+
                     var condition = false;
                     var force_suppress = false;
 
@@ -42,13 +42,13 @@ CSL.Node.group = {
                     if (state.tmp.group_context.mystack.length) {
                         state.output.current.value().parent = state.tmp.group_context.tip.output_tip;
                     }
-                    
+
                     // fieldcontextflag
                     var label_form = state.tmp.group_context.tip.label_form;
                     if (!label_form) {
                         label_form = this.strings.label_form_override;
                     }
-                    
+
                     var label_capitalize_if_first = state.tmp.group_context.tip.label_capitalize_if_first;
                     if (!label_capitalize_if_first) {
                         label_capitalize_if_first = this.strings.label_capitalize_if_first;
@@ -84,7 +84,7 @@ CSL.Node.group = {
                         force_suppress: force_suppress,
                         done_vars: state.tmp.group_context.tip.done_vars.slice()
                     };
-                    if(this.non_parallel) {
+                    if (this.non_parallel) {
                         var non_parallel = state.tmp.group_context.tip.non_parallel;
                         if (!non_parallel) {
                             non_parallel = {};
@@ -92,7 +92,7 @@ CSL.Node.group = {
                         Object.assign(non_parallel, this.non_parallel);
                         context.non_parallel = non_parallel;
                     }
-                    if(this.parallel_first) {
+                    if (this.parallel_first) {
                         var parallel_first = state.tmp.group_context.tip.parallel_first;
                         if (!parallel_first) {
                             parallel_first = {};
@@ -100,7 +100,7 @@ CSL.Node.group = {
                         Object.assign(parallel_first, this.parallel_first);
                         context.parallel_first = parallel_first;
                     }
-                    if(this.parallel_last) {
+                    if (this.parallel_last) {
                         var parallel_last = state.tmp.group_context.tip.parallel_last;
                         if (!parallel_last) {
                             parallel_last = {};
@@ -119,7 +119,7 @@ CSL.Node.group = {
                             }
                         }
                     }
-                    
+
                     /*
                     if(this.parallel_last_override) {
                         var parallel_last_override = state.tmp.group_context.tip.parallel_last_override;
@@ -140,7 +140,7 @@ CSL.Node.group = {
                             state.tmp.abbrev_trimmer.LAST_TO_FIRST[varname] = true;
                         }
                     }
-                    
+
                     //if (!state.tmp.just_looking) {
                     //    print("       flags="+JSON.stringify(state.tmp.group_context.tip, params))
                     //}
@@ -203,12 +203,12 @@ CSL.Node.group = {
                 //     juris- macros only, which either runs diverted code,
                 //     or proceeds as per normal through the token list. [TODO]
                 // I think that's all there is to it.
-                
+
                 // Code for fetching an instantiating?
 
                 var choose_start = new CSL.Token("choose", CSL.START);
                 CSL.Node.choose.build.call(choose_start, state, target);
-                
+
                 var if_start = new CSL.Token("if", CSL.START);
 
                 func = (function (macroName) {
@@ -216,7 +216,7 @@ CSL.Node.group = {
                         return CSL.INIT_JURISDICTION_MACROS(state, Item, item, macroName);
                     }
                 }(this.juris));
-                
+
                 if_start.tests ? {} : if_start.tests = [];
                 if_start.tests.push(func);
                 if_start.test = state.fun.match.any(if_start, state, if_start.tests);
@@ -247,7 +247,7 @@ CSL.Node.group = {
         }
 
         if (this.tokentype === CSL.END) {
-            
+
             // Unbundle and print publisher lists
             // Same constraints on creating the necessary function here
             // as above. The full content of the group formatting token
@@ -263,7 +263,7 @@ CSL.Node.group = {
                 };
                 this.execs.push(func);
             }
-            
+
             // quashnonfields
             func = function (state, Item, item) {
                 if (!state.tmp.group_context.tip.condition) {
@@ -305,7 +305,7 @@ CSL.Node.group = {
                     if (state.tmp.group_context.tip.condition) {
                         state.tmp.group_context.tip.force_suppress = flags.force_suppress;
                     }
-                            
+
                     if (!flags.force_suppress && (flags.variable_success || (flags.term_intended && !flags.variable_attempt))) {
                         if (!this.isJurisLocatorLabel) {
                             state.tmp.group_context.tip.variable_success = true;
@@ -326,7 +326,7 @@ CSL.Node.group = {
                             }
                             if (state.tmp.cite_index > 0 && (hasRepeat || (!flags.parallel_first && !flags.parallel_last && !flags.non_parallel))) {
                                 //state.sys.print(`${state.tmp.cite_index} ${JSON.stringify(state.tmp.suppress_repeats, null, 2)}`)
-                                var info = state.tmp.suppress_repeats[state.tmp.cite_index-1];
+                                var info = state.tmp.suppress_repeats[state.tmp.cite_index - 1];
                                 if (hasRepeat && flags.parallel_delimiter_override_on_suppress && (info.SIBLING || info.ORPHAN)) {
                                     state.output.queue.slice(-1)[0].parallel_delimiter = flags.parallel_delimiter_override_on_suppress;
                                 } else if (flags.parallel_delimiter_override && info.SIBLING) {
@@ -348,11 +348,11 @@ CSL.Node.group = {
                             // Ah. This is a FAILURE. So removing from done_vars allows it to re-render
                             // later in the cite if desired.
                             // Currently no tests fail from removing the condition, but leaving it in.
-                            for (var i=0,ilen=flags.done_vars.length;i<ilen;i++) {
+                            for (var i = 0, ilen = flags.done_vars.length; i < ilen; i++) {
                                 var doneVar = flags.done_vars[i];
-                                for (var j=0,jlen=state.tmp.done_vars.length; j<jlen; j++) {
+                                for (var j = 0, jlen = state.tmp.done_vars.length; j < jlen; j++) {
                                     if (state.tmp.done_vars[j] === doneVar) {
-                                        state.tmp.done_vars = state.tmp.done_vars.slice(0, j).concat(state.tmp.done_vars.slice(j+1));
+                                        state.tmp.done_vars = state.tmp.done_vars.slice(0, j).concat(state.tmp.done_vars.slice(j + 1));
                                     }
                                 }
                             }
@@ -364,7 +364,7 @@ CSL.Node.group = {
                 }
             };
             this.execs.push(func);
-            
+
             if (this.juris) {
                 var else_end = new CSL.Token("else", CSL.END);
                 CSL.Node["else"].build.call(else_end, state, target);

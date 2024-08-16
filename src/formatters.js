@@ -2,14 +2,14 @@
 
 CSL.Output.Formatters = (function () {
     var rexStr = "(?:\u2018|\u2019|\u201C|\u201D| \"| \'|\"|\'|[-\u2013\u2014\/.,;?!:]|\\[|\\]|\\(|\\)|<span style=\"font-variant: small-caps;\">|<span class=\"no(?:case|decor)\">|<\/span>|<\/?(?:i|sc|b|sub|sup)>)";
-    var tagDoppel = new CSL.Doppeler(rexStr, function(str) {
+    var tagDoppel = new CSL.Doppeler(rexStr, function (str) {
         return str.replace(/(<span)\s+(class=\"no(?:case|decor)\")[^>]*(>)/g, "$1 $2$3").replace(/(<span)\s+(style=\"font-variant:)\s*(small-caps);?(\")[^>]*(>)/g, "$1 $2 $3;$4$5");
     });
     var rexNameStr = "(?:[-\\s]*<\\/*(?:span\s+class=\"no(?:case|decor)\"|i|sc|b|sub|sup)>[-\\s]*|[-\\s]+)";
     var nameDoppel = new CSL.Doppeler(rexNameStr);
-    
+
     var wordDoppel = new CSL.Doppeler("(?:[\u00A0\u0020\u00A0\u2000-\u200B\u205F\u3000]+)");
-    
+
     /**
      * INTERNAL
      */
@@ -23,7 +23,7 @@ CSL.Output.Formatters = (function () {
         "<sup>": "</sup>"
     };
 
-    function _capitalise (word) {
+    function _capitalise(word) {
         // Weird stuff is (.) transpiled with regexpu
         //   https://github.com/mathiasbynens/regexpu
         var m = word.match(/(^\s*)((?:[\0-\t\x0B\f\x0E-\u2027\u202A-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]))(.*)/);
@@ -67,7 +67,7 @@ CSL.Output.Formatters = (function () {
                 });
                 return false;
             } else {
-                var prevPos = config.quoteState[config.quoteState.length-1].pos;
+                var prevPos = config.quoteState[config.quoteState.length - 1].pos;
                 config.quoteState.pop();
                 config.quoteState.push({
                     opener: quoteParams[tag].opener,
@@ -92,7 +92,7 @@ CSL.Output.Formatters = (function () {
                 return tryClose(tag, pos);
             }
         }
-        function quoteFix (tag, positions) {
+        function quoteFix(tag, positions) {
             var m = tag.match(/(^(?:\u2018|\u2019|\u201C|\u201D|\"|\')|(?: \"| \')$)/);
             if (m) {
                 return pushQuoteState(m[1], positions);
@@ -103,9 +103,9 @@ CSL.Output.Formatters = (function () {
             config.doppel.strings[0] = config.capitaliseWords(config.doppel.strings[0], 0, config.doppel.tags[0]);
         }
 
-    	for (var i=0,ilen=config.doppel.tags.length;i<ilen;i++) {
+        for (var i = 0, ilen = config.doppel.tags.length; i < ilen; i++) {
             var tag = config.doppel.tags[i];
-            var str = config.doppel.strings[i+1];
+            var str = config.doppel.strings[i + 1];
 
             if (config.tagState !== null) {
                 // Evaluate tag state for current string
@@ -125,18 +125,18 @@ CSL.Output.Formatters = (function () {
 
             // Process if outside tag scope, else noop for upper-casing
             if (config.tagState.length === 0) {
-                config.doppel.strings[i+1] = config.capitaliseWords(str, i+1, config.doppel,config.doppel.tags[i+1]);
-                
-            } else if (config.doppel.strings[i+1].trim()) {
+                config.doppel.strings[i + 1] = config.capitaliseWords(str, i + 1, config.doppel, config.doppel.tags[i + 1]);
+
+            } else if (config.doppel.strings[i + 1].trim()) {
                 config.lastWordPos = null;
             }
-            
+
             if (config.quoteState !== null) {
                 // Evaluate quote state of current string and fix chars that have flown
                 var quotePos = quoteFix(tag, i);
                 if (quotePos || quotePos === 0) {
-                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
-                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                    var origChar = config.doppel.origStrings[quotePos + 1].slice(0, 1);
+                    config.doppel.strings[quotePos + 1] = origChar + config.doppel.strings[quotePos + 1].slice(1);
                     config.lastWordPos = null;
                 }
             }
@@ -154,13 +154,13 @@ CSL.Output.Formatters = (function () {
             }
         }
         if (config.quoteState) {
-            for (var i=0,ilen=config.quoteState.length;i<ilen;i++) {
+            for (var i = 0, ilen = config.quoteState.length; i < ilen; i++) {
                 var quotePos = config.quoteState[i].pos;
                 // Test for quotePos avoids a crashing error:
                 //   https://github.com/citation-style-language/test-suite/blob/master/processor-tests/humans/flipflop_OrphanQuote.txt
                 if (typeof quotePos !== 'undefined') {
-                    var origChar = config.doppel.origStrings[quotePos+1].slice(0, 1);
-                    config.doppel.strings[quotePos+1] = origChar + config.doppel.strings[quotePos+1].slice(1);
+                    var origChar = config.doppel.origStrings[quotePos + 1].slice(0, 1);
+                    config.doppel.strings[quotePos + 1] = origChar + config.doppel.strings[quotePos + 1].slice(1);
                 }
             }
         }
@@ -186,7 +186,7 @@ CSL.Output.Formatters = (function () {
     /**
      * A noop that just delivers the string.
      */
-    function passthrough (state, str) {
+    function passthrough(state, str) {
         return str;
     }
 
@@ -196,9 +196,9 @@ CSL.Output.Formatters = (function () {
     function lowercase(state, string) {
         var config = {
             quoteState: null,
-            capitaliseWords: function(str) {
+            capitaliseWords: function (str) {
                 var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
+                for (var i = 0, ilen = words.length; i < ilen; i++) {
                     var word = words[i];
                     if (word) {
                         words[i] = CSL.toLocaleLowerCase.call(state, word);
@@ -220,9 +220,9 @@ CSL.Output.Formatters = (function () {
     function uppercase(state, string) {
         var config = {
             quoteState: null,
-            capitaliseWords: function(str) {
+            capitaliseWords: function (str) {
                 var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
+                for (var i = 0, ilen = words.length; i < ilen; i++) {
                     var word = words[i];
                     if (word) {
                         // Okay.
@@ -253,9 +253,9 @@ CSL.Output.Formatters = (function () {
     function sentence(state, string) {
         var config = {
             quoteState: [],
-            capitaliseWords: function(str) {
+            capitaliseWords: function (str) {
                 var words = str.split(" ");
-                for (var i=0,ilen=words.length;i<ilen;i++) {
+                for (var i = 0, ilen = words.length; i < ilen; i++) {
                     var word = words[i];
                     if (word) {
                         if (config.isFirst) {
@@ -279,11 +279,11 @@ CSL.Output.Formatters = (function () {
     function title(state, string) {
         var config = {
             quoteState: [],
-            capitaliseWords: function(str, i, followingTag) {
+            capitaliseWords: function (str, i, followingTag) {
                 if (str.trim()) {
                     var wordle = wordDoppel.split(str);
                     var words = wordle.strings;
-                    for (var j=0,jlen=words.length;j<jlen;j++) {
+                    for (var j = 0, jlen = words.length; j < jlen; j++) {
                         var word = words[j];
                         if (!word) {
                             continue;
@@ -324,8 +324,8 @@ CSL.Output.Formatters = (function () {
         };
         return _textcaseEngine.call(state, config, string);
     }
-    
-    
+
+
     /**
      * Force capitalization of the first letter in the string, leave
      * the rest of the characters untouched.
@@ -333,10 +333,10 @@ CSL.Output.Formatters = (function () {
     function capitalizeFirst(state, string) {
         var config = {
             quoteState: [],
-            capitaliseWords: function(str) {
+            capitaliseWords: function (str) {
                 var wordle = wordDoppel.split(str);
                 var words = wordle.strings;
-                for (var i=0,ilen=words.length;i<ilen;i++) {
+                for (var i = 0, ilen = words.length; i < ilen; i++) {
                     var word = words[i];
                     if (word) {
                         if (config.isFirst) {
@@ -365,13 +365,13 @@ CSL.Output.Formatters = (function () {
      * of the string untouched.  Single characters are forced
      * to uppercase.
      */
-    function capitalizeAll (state, string) {
+    function capitalizeAll(state, string) {
         var config = {
             quoteState: [],
-            capitaliseWords: function(str) {
+            capitaliseWords: function (str) {
                 var wordle = wordDoppel.split(str);
                 var words = wordle.strings;
-                for (var i=0,ilen=words.length;i<ilen;i++) {
+                for (var i = 0, ilen = words.length; i < ilen; i++) {
                     var word = words[i];
                     if (word) {
                         // Don't capitalize if word already contains capitalization

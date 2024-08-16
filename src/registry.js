@@ -67,10 +67,10 @@ CSL.Registry = function (state) {
     // See CSL.NameOutput.prototype.outputNames
     // and CSL.Registry.prototype.doinserts
     this.authorstrings = {};
-    
+
     // for parallel delimiter support
     this.masterMap = {};
-    
+
     //
     // shared scratch vars
     this.mylist = [];
@@ -181,7 +181,7 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
         // If uncited_flag is non-nil, add any missing itemIDs to this.mylist
         // from itemIDs input list, and set the itemIDs in itemIDs on this.uncited.
         this.uncited = {};
-        for (var i=0,ilen=itemIDs.length;i<ilen; i += 1) {
+        for (var i = 0, ilen = itemIDs.length; i < ilen; i += 1) {
             if (!this.myhash[itemIDs[i]]) {
                 this.mylist.push("" + itemIDs[i]);
             }
@@ -196,7 +196,7 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
             itemIDs.push(key);
         }
         var myhash = {};
-        for (i=itemIDs.length-1;i>-1; i += -1) {
+        for (i = itemIDs.length - 1; i > -1; i += -1) {
             if (myhash[itemIDs[i]]) {
                 itemIDs = itemIDs.slice(0, i).concat(itemIDs.slice(i + 1));
             } else {
@@ -217,13 +217,13 @@ CSL.Registry.prototype.init = function (itemIDs, uncited_flag) {
 
 CSL.Registry.prototype.dopurge = function (myhash) {
     // Remove any uncited items not in myhash
-    for (var i=this.mylist.length-1;i>-1;i+=-1) {
+    for (var i = this.mylist.length - 1; i > -1; i += -1) {
         // Might not want to be quite this restrictive.
         if (this.citationreg.citationsByItemId) {
             if ((!this.citationreg.citationsByItemId || !this.citationreg.citationsByItemId[this.mylist[i]]) && !myhash[this.mylist[i]]) {
                 delete this.myhash[this.mylist[i]];
                 delete this.uncited[this.mylist[i]];
-                this.mylist = this.mylist.slice(0,i).concat(this.mylist.slice(i+1));
+                this.mylist = this.mylist.slice(0, i).concat(this.mylist.slice(i + 1));
             }
         }
     }
@@ -266,7 +266,7 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             mypos = this.ambigcites[ambig].indexOf(key);
             if (mypos > -1) {
                 items = this.ambigcites[ambig].slice();
-                this.ambigcites[ambig] = items.slice(0, mypos).concat(items.slice(mypos+1, items.length));
+                this.ambigcites[ambig] = items.slice(0, mypos).concat(items.slice(mypos + 1, items.length));
                 this.ambigresets[ambig] = this.ambigcites[ambig].length;
             }
             //
@@ -319,9 +319,9 @@ CSL.Registry.prototype.dodeletes = function (myhash) {
             }
             //
             // 3d-1. Remove item from reflist
-            for (var i=this.reflist.length-1;i>-1;i--) {
+            for (var i = this.reflist.length - 1; i > -1; i--) {
                 if (this.reflist[i].id === key) {
-                    this.reflist = this.reflist.slice(0, i).concat(this.reflist.slice(i+1));
+                    this.reflist = this.reflist.slice(0, i).concat(this.reflist.slice(i + 1));
                 }
             }
             //
@@ -603,19 +603,19 @@ CSL.Registry.prototype.setsortkeys = function () {
     }
 };
 
-CSL.Registry.prototype._insertItem = function(element, array) {
+CSL.Registry.prototype._insertItem = function (element, array) {
     array.splice(this._locationOf(element, array) + 1, 0, element);
     return array;
 };
 
-CSL.Registry.prototype._locationOf = function(element, array, start, end) {
+CSL.Registry.prototype._locationOf = function (element, array, start, end) {
     if (array.length === 0) {
         return -1;
     }
     start = start || 0;
     end = end || array.length;
     var pivot = (start + end) >> 1;  // should be faster than dividing by 2
-    
+
     var c = this.sorter.compareKeys(element, array[pivot]);
     if (end - start <= 1) {
         return c == -1 ? pivot - 1 : pivot;
@@ -647,15 +647,15 @@ CSL.Registry.prototype.sorttokens = function (nosort) {
         for (var key in this.state.tmp.taintedItemIDs) {
             if (this.registry[key] && !this.registry[key].newItem) {
                 // Move tainted items from reflist to reflist_inserts
-                for (var i=this.reflist.length-1;i>-1;i--) {
+                for (var i = this.reflist.length - 1; i > -1; i--) {
                     if (this.reflist[i].id === key) {
                         this.reflist_inserts.push(this.reflist[i]);
-                        this.reflist = this.reflist.slice(0, i).concat(this.reflist.slice(i+1));
+                        this.reflist = this.reflist.slice(0, i).concat(this.reflist.slice(i + 1));
                     }
                 }
             }
         }
-        for (var i=0,ilen=this.reflist_inserts.length;i<ilen;i++) {
+        for (var i = 0, ilen = this.reflist_inserts.length; i < ilen; i++) {
             var Item = this.reflist_inserts[i];
             delete Item.newItem;
             this.reflist = this._insertItem(Item, this.reflist);
@@ -736,7 +736,7 @@ CSL.Registry.prototype.compareRegistryTokens = function (a, b) {
 CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
     //SNIP-START
     if (!this.registry[id]) {
-        CSL.debug("Warning: unregistered item: itemID=("+id+"), akey=("+akey+")");
+        CSL.debug("Warning: unregistered item: itemID=(" + id + "), akey=(" + akey + ")");
     }
     //SNIP-END
     // Taint if number of names to be included has changed
@@ -748,7 +748,7 @@ CSL.Registry.prototype.registerAmbigToken = function (akey, id, ambig_config) {
                 this.state.tmp.taintedItemIDs[id] = true;
             } else if (ambig_config.givens[i]) {
                 // Compare givenses only if the number of names is aligned.
-                for (var j=0,jlen=ambig_config.givens[i].length;j<jlen;j+=1) {
+                for (var j = 0, jlen = ambig_config.givens[i].length; j < jlen; j += 1) {
                     var new_gnames_params = ambig_config.givens[i][j];
                     var old_gnames_params = this.registry[id].disambig.givens[i][j];
                     if (new_gnames_params !== old_gnames_params) {
@@ -787,7 +787,7 @@ CSL.getSortKeys = function (Item, key_type) {
     strip_prepositions = CSL.Util.Sort.strip_prepositions;
     this.tmp.area = key_type;
     // Gawdawful, this.
-    this.tmp.root = key_type.indexOf("_") > -1 ? key_type.slice(0,-5) : key_type;
+    this.tmp.root = key_type.indexOf("_") > -1 ? key_type.slice(0, -5) : key_type;
     this.tmp.extension = "_sort";
     this.tmp.disambig_override = true;
     this.tmp.disambig_request = false;
@@ -804,10 +804,9 @@ CSL.getSortKeys = function (Item, key_type) {
         CSL.debug("sort keys (" + key_type + "): " + this[key_type].keys);
     }
     //SNIP-END
-    
+
     this.tmp.area = area;
     this.tmp.root = root;
     this.tmp.extension = extension;
     return this[key_type].keys;
 };
-

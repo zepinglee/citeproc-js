@@ -1,6 +1,6 @@
 /*global CSL: true */
 
-CSL.ambigConfigDiff = function(a, b) {
+CSL.ambigConfigDiff = function (a, b) {
     var pos, len, ppos, llen;
     // return of true means the ambig configs differ
     if (a.names.length !== b.names.length) {
@@ -9,12 +9,12 @@ CSL.ambigConfigDiff = function(a, b) {
     } else {
         for (pos = 0, len = a.names.length; pos < len; pos += 1) {
             if (a.names[pos] !== b.names[pos]) {
-        //print("   (2) "+a.names[pos]+" "+b.names[pos]);
+                //print("   (2) "+a.names[pos]+" "+b.names[pos]);
                 return 1;
             } else {
                 for (ppos = 0, llen = a.givens[pos]; ppos < llen; ppos += 1) {
                     if (a.givens[pos][ppos] !== b.givens[pos][ppos]) {
-        //print("   (3): "+a.givens[pos][ppos]+" "+b.givens[pos][ppos]+" "+pos+"/"+ppos+" "+b.givens[pos]);
+                        //print("   (3): "+a.givens[pos][ppos]+" "+b.givens[pos][ppos]+" "+pos+"/"+ppos+" "+b.givens[pos]);
                         return 1;
                     }
                 }
@@ -46,7 +46,7 @@ CSL.cloneAmbigConfig = function (config, oldconfig) {
         // items.
         ret.names[i] = param;
     }
-    for (i  = 0, ilen = config.givens.length; i < ilen; i += 1) {
+    for (i = 0, ilen = config.givens.length; i < ilen; i += 1) {
         param = [];
         for (j = 0, jlen = config.givens[i].length; j < jlen; j += 1) {
             // condition at line 312 of disambiguate.js protects against negative

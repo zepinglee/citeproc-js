@@ -23,7 +23,7 @@
  *
  * The balance of multilingual variables are rendered with
  * the first matching value in the transform locales spec
- * (no transform, state.opt['locale-translit'], or 
+ * (no transform, state.opt['locale-translit'], or
  * state.opt['locale-translat']) mapped to the target
  * slot.
  *
@@ -71,10 +71,10 @@ CSL.Transform = function (state) {
                     value = "";
                 }
             }
-	    }
-	    return value;
+        }
+        return value;
     }
-    
+
     // Internal function
     function abbreviate(state, tok, Item, altvar, basevalue, family_var, use_field) {
 
@@ -99,8 +99,8 @@ CSL.Transform = function (state) {
         if (["jurisdiction", "country"].indexOf(family_var) > -1 && basevalue === basevalue.toLowerCase()) {
             normalizedKey = basevalue.toUpperCase();
         }
-        
-        
+
+
         // Lazy retrieval of abbreviations.
         if (state.sys.getAbbreviation) {
 
@@ -143,20 +143,20 @@ CSL.Transform = function (state) {
                         value = abbrev;
                     }
                 } else {
-	                value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
+                    value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
                 }
             }
         }
-        
-        // Was for: 
-        if (!value 
-            && (!state.opt.development_extensions.require_explicit_legal_case_title_short || Item.type !== 'legal_case') 
+
+        // Was for:
+        if (!value
+            && (!state.opt.development_extensions.require_explicit_legal_case_title_short || Item.type !== 'legal_case')
             && altvar && Item[altvar] && use_field) {
             value = Item[altvar];
         }
         if (!value && !state.sys.getAbbreviation && state.sys.getHumanForm) {
-	        value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
-	    }
+            value = getCountryOrJurisdiction(variable, normalizedKey, quashCountry);
+        }
         if (!value && !quashCountry && (!state.sys.getHumanForm || variable !== "jurisdiction")) {
             value = basevalue;
         }
@@ -168,7 +168,7 @@ CSL.Transform = function (state) {
         return value;
     }
 
-    function getFieldLocale(Item,field) {
+    function getFieldLocale(Item, field) {
         var ret = state.opt["default-locale"][0].slice(0, 2);
         var localeRex;
         if (state.opt.development_extensions.strict_text_case_locales) {
@@ -197,15 +197,15 @@ CSL.Transform = function (state) {
     }
 
     // Internal functions
-    function getTextSubField (Item, field, locale_type, use_default, stopOrig, family_var) {
+    function getTextSubField(Item, field, locale_type, use_default, stopOrig, family_var) {
         var opt, o, ret, opts;
         var usedOrig = stopOrig;
         var usingOrig = false;
 
         if (!Item[field]) {
             return {
-                name:"",
-                usedOrig:stopOrig,
+                name: "",
+                usedOrig: stopOrig,
                 token: CSL.Util.cloneToken(this)
             };
         }
@@ -230,11 +230,11 @@ CSL.Transform = function (state) {
             fieldsToTry.push(field);
         }
 
-        for (var h=0,hlen=fieldsToTry.length; h<hlen; h++) {
+        for (var h = 0, hlen = fieldsToTry.length; h < hlen; h++) {
             var variantMatch = false;
             var field = fieldsToTry[h];
 
-            ret = {name:"", usedOrig:stopOrig,locale:getFieldLocale(Item,field)};
+            ret = { name: "", usedOrig: stopOrig, locale: getFieldLocale(Item, field) };
 
             opts = state.opt[locale_type] ? state.opt[locale_type].slice() : [];
             var hasVal = false;
@@ -247,7 +247,7 @@ CSL.Transform = function (state) {
                 hasVal = true;
                 usingOrig = true;
             } else if (use_default && ("undefined" === typeof opts || opts.length === 0)) {
-                // If we want the original, or if we don't have any specific guidance and we 
+                // If we want the original, or if we don't have any specific guidance and we
                 // definitely want output, just return the original value.
                 ret.name = Item[field];
                 ret.usedOrig = true;
@@ -276,7 +276,7 @@ CSL.Transform = function (state) {
                     }
                 }
                 if (!ret.name && use_default) {
-                    ret = {name:Item[field], usedOrig:true, locale:getFieldLocale(Item,field)};
+                    ret = { name: Item[field], usedOrig: true, locale: getFieldLocale(Item, field) };
                     usingOrig = true;
                 }
             }
@@ -312,7 +312,7 @@ CSL.Transform = function (state) {
                     } else {
                         lang = ret.locale;
                     }
-                    var seg = field.slice(0,-5);
+                    var seg = field.slice(0, -5);
                     var sentenceCase = ret.token.strings["text-case"] === "sentence" ? true : false;
                     ret.name = CSL.titlecaseSentenceOrNormal(state, Item, seg, lang, sentenceCase);
                     delete ret.token.strings["text-case"];
@@ -325,7 +325,7 @@ CSL.Transform = function (state) {
         return ret;
     }
     this.getTextSubField = getTextSubField;
-    
+
     // Setter for abbreviation lists
     // This initializes a single abbreviation based on known
     // data.
@@ -367,10 +367,10 @@ CSL.Transform = function (state) {
     }
     this.loadAbbreviation = loadAbbreviation;
 
-    function publisherCheck (tok, Item, primary, family_var) {
+    function publisherCheck(tok, Item, primary, family_var) {
         var varname = tok.variables[0];
         if (state.publisherOutput && primary) {
-            if (["publisher","publisher-place"].indexOf(varname) === -1) {
+            if (["publisher", "publisher-place"].indexOf(varname) === -1) {
                 return false;
             } else {
                 // In this case, the publisher bundle will be rendered
@@ -398,7 +398,7 @@ CSL.Transform = function (state) {
             Item["cite-form"] = m[1];
         }
     }
-    
+
     // The name transform code is placed here to keep similar things
     // in one place.  Obviously this module could do with a little
     // tidying up.
@@ -467,7 +467,7 @@ CSL.Transform = function (state) {
                     return null;
                 }
             }
-            var slot = {primary:false, secondary:false, tertiary:false};
+            var slot = { primary: false, secondary: false, tertiary: false };
             if (state.tmp.area.slice(-5) === "_sort") {
                 slot.primary = 'locale-sort';
             } else {
@@ -477,7 +477,7 @@ CSL.Transform = function (state) {
                 } else if (localesets && !state.tmp.multi_layout) {
                     var slotnames = ["primary", "secondary", "tertiary"];
                     for (var i = 0, ilen = slotnames.length; i < ilen; i += 1) {
-                        if (localesets.length - 1 <  i) {
+                        if (localesets.length - 1 < i) {
                             break;
                         }
                         if (localesets[i]) {
@@ -488,13 +488,13 @@ CSL.Transform = function (state) {
                     slot.primary = 'locale-orig';
                 }
             }
-            
-            if (variables[0] === "title-short" 
+
+            if (variables[0] === "title-short"
                 || (state.tmp.area !== "bibliography"
                     && !(state.tmp.area === "citation"
-                         && state.opt.xclass === "note"
-                         && item && !item.position))) {
-                
+                        && state.opt.xclass === "note"
+                        && item && !item.position))) {
+
                 slot.secondary = false;
                 slot.tertiary = false;
             }
@@ -503,7 +503,7 @@ CSL.Transform = function (state) {
                 slot.secondary = false;
                 slot.tertiary = false;
             }
-            
+
             // Problem for multilingual: we really should be
             // checking for sanity on the basis of the output
             // strings to be actually used. (also below)
@@ -515,7 +515,7 @@ CSL.Transform = function (state) {
                 }
                 return null;
             }
-            
+
             // tmp.lang_array carries the current locale IDs of the style
             // and the item. Field-level locale IDs are added here, so
             // we clone it to allow reset.
@@ -575,12 +575,12 @@ CSL.Transform = function (state) {
                 }
                 //print("XXX tertiary_locale: "+tertiary_locale);
             }
-            
+
             // Decoration of primary (currently translit only) goes here
             var primaryPrefix;
             if (slot.primary === "locale-translit") {
                 primaryPrefix = state.opt.citeAffixes[langPrefs][slot.primary].prefix;
-            }                
+            }
             // XXX This should probably protect against italics at higher
             // levels.
 
@@ -589,7 +589,7 @@ CSL.Transform = function (state) {
                 for (var i = 0, ilen = primary_tok.decorations.length; i < ilen; i += 1) {
                     if (primary_tok.decorations[i][0] === "@font-style"
                         && primary_tok.decorations[i][1] === "italic") {
-                        
+
                         hasItalic = true;
                     }
                 }
@@ -602,7 +602,7 @@ CSL.Transform = function (state) {
             if (primary_locale !== "en" && primary_tok.strings["text-case"] === "title") {
                 primary_tok.strings["text-case"] = "passthrough";
             }
-            
+
             if ("title" === variables[0]) {
                 primary = CSL.demoteNoiseWords(state, primary, this["leading-noise-words"]);
             }
@@ -611,7 +611,7 @@ CSL.Transform = function (state) {
                 state.output.openLevel("empty");
 
                 // A little too aggressive maybe.
-                primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/,"");
+                primary_tok.strings.suffix = primary_tok.strings.suffix.replace(/[ .,]+$/, "");
                 if (primary_locale) {
                     state.tmp.lang_array = [primary_locale].concat(oldLangArray);
                 }
@@ -656,7 +656,7 @@ CSL.Transform = function (state) {
                 if (primary === tertiary) {
                     tertiary = false;
                 }
-                
+
                 if (tertiary) {
                     tertiary_tok.strings.prefix = state.opt.citeAffixes[langPrefs][slot.tertiary].prefix;
                     tertiary_tok.strings.suffix = state.opt.citeAffixes[langPrefs][slot.tertiary].suffix;
@@ -701,7 +701,7 @@ CSL.Transform = function (state) {
             }
 
             state.tmp.lang_array = oldLangArray;
-                
+
             if (state.tmp.can_block_substitute) {
                 state.tmp.name_node.children.push(state.output.current.value());
             }

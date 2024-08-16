@@ -37,14 +37,14 @@ var CSL = {
 
     PROCESSOR_VERSION: "1.4.61",
 
-    error: function(str) { // default error function
+    error: function (str) { // default error function
         if ("undefined" === typeof Error) {
             throw new Error("citeproc-js error: " + str);
         } else {
             throw "citeproc-js error: " + str;
         }
     },
-    debug: function(str) { // default debug function
+    debug: function (str) { // default debug function
         if ("undefined" === typeof console) {
             dump("CSL: " + str + "\n");
         } else {
@@ -76,10 +76,10 @@ var CSL = {
 
     STATUTE_SUBDIV_PLAIN_REGEX: /(?:(?:^| )(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|rn|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
     STATUTE_SUBDIV_PLAIN_REGEX_FRONT: /(?:^\s*[.,;]*\s*(?:vrs|sv|subpara|op|subch|add|amend|annot|app|art|bibliog|bk|ch|cl|col|cmt|dec|dept|div|ex|fig|fld|fol|n|hypo|illus|intro|l|no|p|pp|para|pt|pmbl|princ|pub|r|rn|sched|sec|ser|subdiv|subsec|supp|tbl|tit|vol)\. *)/,
- 
+
     STATUTE_SUBDIV_STRINGS: {
         "vrs.": "verse",
-		"sv.": "sub-verbo",
+        "sv.": "sub-verbo",
         "subpara.": "subparagraph",
         "op.": "opus",
         "subch.": "subchapter",
@@ -127,7 +127,7 @@ var CSL = {
     },
     STATUTE_SUBDIV_STRINGS_REVERSE: {
         "verse": "vrs.",
-		"sub-verbo": "sv.",
+        "sub-verbo": "sv.",
         "sub verbo": "sv.",
         "subparagraph": "subpara.",
         "opus": "op.",
@@ -176,7 +176,7 @@ var CSL = {
 
     LOCATOR_LABELS_MAP: {
         "vrs": "verse",
-		"sv": "sub-verbo",
+        "sv": "sub-verbo",
         "subpara": "subparagraph",
         "op": "opus",
         "subch": "subchapter",
@@ -245,16 +245,16 @@ var CSL = {
         "patent": true,
         "locator": true
     },
-    checkNestedBrace: function(state) {
+    checkNestedBrace: function (state) {
         if (state.opt.xclass === "note") {
             this.depth = 0;
-            this.update = function(str) {
-                
+            this.update = function (str) {
+
                 // Receives affix string, returns with flipped parens.
-                
+
                 var str = str ? str : "";
                 var lst = str.split(/([\(\)])/);
-                for (var i=1,ilen=lst.length;i<ilen;i += 2) {
+                for (var i = 1, ilen = lst.length; i < ilen; i += 2) {
                     if (lst[i] === "(") {
                         if (1 === (this.depth % 2)) {
                             lst[i] = "[";
@@ -271,33 +271,33 @@ var CSL = {
                 return ret;
             };
         } else {
-            this.update = function(str) {
+            this.update = function (str) {
                 return str;
             };
         }
     },
 
-    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority","genre","title-short","medium","country","jurisdiction","archive","archive-place"],
+    MULTI_FIELDS: ["event", "publisher", "publisher-place", "event-place", "title", "container-title", "collection-title", "authority", "genre", "title-short", "medium", "country", "jurisdiction", "archive", "archive-place"],
 
     LangPrefsMap: {
-        "title":"titles",
-        "title-short":"titles",
-        "event":"titles",
-        "genre":"titles",
-        "medium":"titles",
-        "container-title":"journals",
-        "collection-title":"titles",
-        "archive":"journals",
-        "publisher":"publishers",
-        "authority":"publishers",
+        "title": "titles",
+        "title-short": "titles",
+        "event": "titles",
+        "genre": "titles",
+        "medium": "titles",
+        "container-title": "journals",
+        "collection-title": "titles",
+        "archive": "journals",
+        "publisher": "publishers",
+        "authority": "publishers",
         "publisher-place": "places",
         "event-place": "places",
         "archive-place": "places",
         "jurisdiction": "places",
         "number": "places",
-        "edition":"places",
-        "issue":"places",
-        "volume":"places"
+        "edition": "places",
+        "issue": "places",
+        "volume": "places"
     },
 
     AbbreviationSegments: function () {
@@ -316,33 +316,33 @@ var CSL = {
     },
 
     getAbbrevsDomain: function (state, country, lang) {
-		var domain = null;
+        var domain = null;
         if (state.opt.availableAbbrevDomains && country && country !== "default") {
-	        var globalDomainPreference = state.locale[state.opt.lang].opts["jurisdiction-preference"];
-		    var itemDomainPreference = null;
-		    if (state.locale[lang]) {
-			    itemDomainPreference = state.locale[lang].opts["jurisdiction-preference"];
-		    }
-		    if (itemDomainPreference) {
-			    for (var j=itemDomainPreference.length-1; j > -1; j--) {
-				    if (state.opt.availableAbbrevDomains[country].indexOf(itemDomainPreference[j]) > -1) {
-					    domain = itemDomainPreference[j];
-					    break;
-				    }
-			    }
-		    }
-		    if (!domain && globalDomainPreference) {
-			    for (var j=globalDomainPreference.length-1; j > -1; j--) {
-				    if (state.opt.availableAbbrevDomains[country].indexOf(globalDomainPreference[j]) > -1) {
-					    domain = globalDomainPreference[j];
-					    break;
-				    }
-			    }
-		    }
+            var globalDomainPreference = state.locale[state.opt.lang].opts["jurisdiction-preference"];
+            var itemDomainPreference = null;
+            if (state.locale[lang]) {
+                itemDomainPreference = state.locale[lang].opts["jurisdiction-preference"];
+            }
+            if (itemDomainPreference) {
+                for (var j = itemDomainPreference.length - 1; j > -1; j--) {
+                    if (state.opt.availableAbbrevDomains[country].indexOf(itemDomainPreference[j]) > -1) {
+                        domain = itemDomainPreference[j];
+                        break;
+                    }
+                }
+            }
+            if (!domain && globalDomainPreference) {
+                for (var j = globalDomainPreference.length - 1; j > -1; j--) {
+                    if (state.opt.availableAbbrevDomains[country].indexOf(globalDomainPreference[j]) > -1) {
+                        domain = globalDomainPreference[j];
+                        break;
+                    }
+                }
+            }
         }
         return domain;
     },
-    
+
     FIELD_CATEGORY_REMAP: {
         "title": "title",
         "container-title": "container-title",
@@ -355,12 +355,12 @@ var CSL = {
         "genre": "title",
         "event": "title",
         "medium": "title",
-		"archive-place": "place",
-		"publisher-place": "place",
-		"event-place": "place",
-		"jurisdiction": "place",
-		"language-name": "place",
-		"language-name-original": "place",
+        "archive-place": "place",
+        "publisher-place": "place",
+        "event-place": "place",
+        "jurisdiction": "place",
+        "language-name": "place",
+        "language-name-original": "place",
         "call-number": "number",
         "chapter-number": "number",
         "collection-number": "number",
@@ -375,8 +375,8 @@ var CSL = {
         "citation-number": "number",
         "publisher": "institution-part"
     },
-    
-    parseLocator: function(item) {
+
+    parseLocator: function (item) {
         if (this.opt.development_extensions.locator_date_and_revision) {
             // Break out locator elements if necessary
             if (item.locator) {
@@ -401,7 +401,7 @@ var CSL = {
         return item;
     },
 
-    normalizeLocaleStr: function(str) {
+    normalizeLocaleStr: function (str) {
         if (!str) {
             return;
         }
@@ -413,30 +413,30 @@ var CSL = {
         return lst.join("-");
     },
 
-    parseNoteFieldHacks: function(Item, validFieldsForType, allowDateOverride) {
+    parseNoteFieldHacks: function (Item, validFieldsForType, allowDateOverride) {
         if ("string" !== typeof Item.note) {
             return;
         }
         var elems = [];
         var lines = Item.note.split('\n');
         // Normalize entries
-        for (var i=0, ilen=lines.length; i<ilen; i++) {
+        for (var i = 0, ilen = lines.length; i < ilen; i++) {
             var line = lines[i];
             var elems = [];
             var m = line.match(CSL.NOTE_FIELDS_REGEXP);
             if (m) {
                 var splt = line.split(CSL.NOTE_FIELDS_REGEXP);
-                for (var j=0,jlen=(splt.length-1);j<jlen;j++) {
+                for (var j = 0, jlen = (splt.length - 1); j < jlen; j++) {
                     elems.push(splt[j]);
                     elems.push(m[j]);
                 }
-                elems.push(splt[splt.length-1]);
-                for (var j=1,jlen=elems.length;j<jlen;j += 2) {
+                elems.push(splt[splt.length - 1]);
+                for (var j = 1, jlen = elems.length; j < jlen; j += 2) {
                     // Abort conversions if preceded by unparseable text
-                    if (elems[j-1].trim() && (i>0 || j>1) && !elems[j-1].match(CSL.NOTE_FIELD_REGEXP)) {
+                    if (elems[j - 1].trim() && (i > 0 || j > 1) && !elems[j - 1].match(CSL.NOTE_FIELD_REGEXP)) {
                         break;
                     } else {
-                        elems[j] = '\n' + elems[j].slice(2,-1).trim() + '\n';
+                        elems[j] = '\n' + elems[j].slice(2, -1).trim() + '\n';
                     }
                 }
                 lines[i] = elems.join('');
@@ -446,7 +446,7 @@ var CSL = {
         lines = lines.join('\n').split('\n');
         var offset = 0;
         var names = {};
-        for (var i=0,ilen=lines.length;i<ilen;i++) {
+        for (var i = 0, ilen = lines.length; i < ilen; i++) {
             var line = lines[i];
             var mm = line.match(CSL.NOTE_FIELD_REGEXP);
             if (!line.trim()) {
@@ -478,9 +478,9 @@ var CSL = {
                     }
                     var lst = val.split(/\s*\|\|\s*/);
                     if (lst.length === 1) {
-                        names[key].push({literal:lst[0]});
+                        names[key].push({ literal: lst[0] });
                     } else if (lst.length === 2) {
-                        var name = {family:lst[0],given:lst[1]};
+                        var name = { family: lst[0], given: lst[1] };
                         CSL.parseParticles(name);
                         names[key].push(name);
                     }
@@ -500,7 +500,7 @@ var CSL = {
             if (lines[offset].trim()) {
                 lines[offset] = '\n' + lines[offset];
             }
-            for (var i=offset-1;i>-1;i--) {
+            for (var i = offset - 1; i > -1; i--) {
                 if (!lines[i].trim()) {
                     lines = lines.slice(0, i).concat(lines.slice(i + 1));
                 }
@@ -523,11 +523,11 @@ var CSL = {
         // U+00bb = right double angle bracket (guillemet)
         // U+202f = non-breaking thin space
         // U+00a0 = non-breaking space
-        var test_prefix = prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g,"");
+        var test_prefix = prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g, "");
         var test_char = test_prefix.slice(-1);
         if (test_prefix.match(CSL.ENDSWITH_ROMANESQUE_REGEXP)) {
             sp = " ";
-        } else if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1) {
+        } else if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(test_char) > -1) {
             sp = " ";
         } else if (test_char.match(/[\)\],0-9]/)) {
             sp = " ";
@@ -538,29 +538,29 @@ var CSL = {
         return prefix;
     },
 
-    checkIgnorePredecessor: function(state, prefix) {
+    checkIgnorePredecessor: function (state, prefix) {
         var ignorePredecessor = false;
-        var test_prefix = prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g,"");
+        var test_prefix = prefix.replace(/<[^>]+>/g, "").replace(/["'\u201d\u2019\u00bb\u202f\u00a0 ]+$/g, "");
         var test_char = test_prefix.slice(-1);
-        if (CSL.TERMINAL_PUNCTUATION.slice(0,-1).indexOf(test_char) > -1 && prefix.trim().indexOf(" ") > -1) {
+        if (CSL.TERMINAL_PUNCTUATION.slice(0, -1).indexOf(test_char) > -1 && prefix.trim().indexOf(" ") > -1) {
             state.tmp.term_predecessor = false;
             return true;
         }
         return false;
     },
 
-    checkSuffixSpacePrepend: function(state, suffix) {
+    checkSuffixSpacePrepend: function (state, suffix) {
         if (!suffix) {
             return "";
         }
-        if (suffix.match(CSL.STARTSWITH_ROMANESQUE_REGEXP) || ['[','('].indexOf(suffix.slice(0,1)) > -1) {
+        if (suffix.match(CSL.STARTSWITH_ROMANESQUE_REGEXP) || ['[', '('].indexOf(suffix.slice(0, 1)) > -1) {
             suffix = " " + suffix;
         }
         return suffix;
     },
-    
+
     GENDERS: ["masculine", "feminine"],
-    
+
     ERROR_NO_RENDERED_FORM: 1,
 
     PREVIEW: "Just for laughs.",
@@ -588,7 +588,7 @@ var CSL = {
 
     PRIMARY: 1,
     SECONDARY: 2,
-    
+
     POSITION_FIRST: 0,
     POSITION_SUBSEQUENT: 1,
     POSITION_IBID: 2,
@@ -602,7 +602,7 @@ var CSL = {
         "2": 3,
         "3": 4
     },
-    
+
     POSITION_TEST_VARS: ["position", "first-reference-note-number", "near-note"],
 
     AREAS: ["citation", "citation_sort", "bibliography", "bibliography_sort", "intext"],
@@ -672,7 +672,7 @@ var CSL = {
     // locale caps version with existing version, character by character.
     // hard stuff, but if it breaks, that's what to do.
     // \u0600-\u06ff is Arabic/Persian
-    // \u200c-\u200e and \u202a-\u202e are special spaces and left-right 
+    // \u200c-\u200e and \u202a-\u202e are special spaces and left-right
     // control characters
 
 
@@ -691,8 +691,8 @@ var CSL = {
     NOTE_FIELDS_REGEXP: /\{:(?:[\-_a-z]+|[A-Z]+):[^\}]+\}/g,
     NOTE_FIELD_REGEXP: /^([\-_a-z]+|[A-Z]+):\s*([^\}]+)$/,
 
-	PARTICLE_GIVEN_REGEXP: /^([^ ]+(?:\u02bb |\u2019 | |\' ) *)(.+)$/,
-	PARTICLE_FAMILY_REGEXP: /^([^ ]+(?:\-|\u02bb|\u2019| |\') *)(.+)$/,
+    PARTICLE_GIVEN_REGEXP: /^([^ ]+(?:\u02bb |\u2019 | |\' ) *)(.+)$/,
+    PARTICLE_FAMILY_REGEXP: /^([^ ]+(?:\-|\u02bb|\u2019| |\') *)(.+)$/,
 
     DISPLAY_CLASSES: ["block", "left-margin", "right-inline", "indent"],
 
@@ -707,14 +707,14 @@ var CSL = {
         "curator",
         "director",
         "editor",
-        "editor-translator", 
+        "editor-translator",
         "editorial-director",
         "executive-producer",
         "guest",
         "host",
         "illustrator",
         "interviewer",
-        "narrator", 
+        "narrator",
         "organizer",
         "original-author",
         "performer",
@@ -737,14 +737,14 @@ var CSL = {
         "curator",
         "director",
         "editor",
-        "editor-translator", 
+        "editor-translator",
         "editorial-director",
         "executive-producer",
         "guest",
         "host",
         "illustrator",
         "interviewer",
-        "narrator", 
+        "narrator",
         "organizer",
         "original-author",
         "performer",
@@ -785,10 +785,10 @@ var CSL = {
     //x = x.concat(["revision-date"]);
     //NUMERIC_VARIABLES = x.slice();
     DATE_VARIABLES: [
-        "locator-date", 
-        "issued", 
-        "event-date", 
-        "accessed", 
+        "locator-date",
+        "issued",
+        "event-date",
+        "accessed",
         "original-date",
         "publication-date",
         "available-date",
@@ -800,22 +800,22 @@ var CSL = {
         "title",
         "container-title"
     ],
-    TITLE_FIELD_SPLITS: function(seg) {
+    TITLE_FIELD_SPLITS: function (seg) {
         var keys = ["title", "short", "main", "sub", "subjoin"];
         var ret = {};
-        for (var i=0,ilen=keys.length;i<ilen;i++) {
+        for (var i = 0, ilen = keys.length; i < ilen; i++) {
             ret[keys[i]] = seg + "title" + (keys[i] === "title" ? "" : "-" + keys[i]);
         }
         return ret;
     },
-    
+
     demoteNoiseWords: function (state, fld, drop_or_demote) {
         var SKIP_WORDS = state.locale[state.opt.lang].opts["leading-noise-words"];
         if (fld && drop_or_demote) {
             fld = fld.split(/\s+/);
             fld.reverse();
             var toEnd = [];
-            for (var j  = fld.length - 1; j > -1; j += -1) {
+            for (var j = fld.length - 1; j > -1; j += -1) {
                 if (SKIP_WORDS.indexOf(fld[j].toLowerCase()) > -1) {
                     toEnd.push(fld.pop());
                 } else {
@@ -842,7 +842,7 @@ var CSL = {
         if (this.opt.development_extensions.split_container_title) {
             segments.push("container-");
         }
-        for (var i=0,ilen=segments.length;i<ilen;i++) {
+        for (var i = 0, ilen = segments.length; i < ilen; i++) {
             var seg = segments[i];
             var title = CSL.TITLE_FIELD_SPLITS(seg);
             var langs = [false];
@@ -851,7 +851,7 @@ var CSL = {
                     langs.push(lang);
                 }
             }
-            for (var j=0,jlen=langs.length;j<jlen;j++) {
+            for (var j = 0, jlen = langs.length; j < jlen; j++) {
                 var lang = langs[j];
                 var vals = {};
                 if (lang) {
@@ -926,7 +926,7 @@ var CSL = {
                     if (vals[title.subjoin]) {
                         if (vals[title.subjoin].match(/([\?\!])/)) {
                             var m = vals[title.subjoin].match(/(\s*)$/)
-                            vals[title.main] = vals[title.main] + narrowSpace +vals[title.subjoin].trim();
+                            vals[title.main] = vals[title.main] + narrowSpace + vals[title.subjoin].trim();
                             vals[title.subjoin] = m[1];
                         }
                     }
@@ -955,7 +955,7 @@ var CSL = {
         }
     },
 
-    titlecaseSentenceOrNormal: function(state, Item, seg, lang, sentenceCase) {
+    titlecaseSentenceOrNormal: function (state, Item, seg, lang, sentenceCase) {
         // Hold on here.
         // What is seg here?
         // It's ... either "" or "container-". Which is ugly, but works.
@@ -1000,10 +1000,10 @@ var CSL = {
             } else if (state.opt.development_extensions.uppercase_subtitles) {
                 // Split and apply everywhere.
                 var splits = CSL.TITLE_SPLIT(vals[title.title]);
-                for (var i=0,ilen=splits.length; i<ilen; i += 2) {
+                for (var i = 0, ilen = splits.length; i < ilen; i += 2) {
                     splits[i] = CSL.Output.Formatters["capitalize-first"](state, splits[i]);
                 }
-                for (var i=1, ilen=splits.length-1; i < ilen; i += 2) {
+                for (var i = 1, ilen = splits.length - 1; i < ilen; i += 2) {
                     var m = splits[i].match(/([:\?\!] )/);
                     if (m) {
                         var narrowSpace = state.opt["default-locale"][0].slice(0, 2).toLowerCase() === "fr" ? "\u202f" : "";
@@ -1023,7 +1023,7 @@ var CSL = {
         }
     },
 
-    getSafeEscape: function(state) {
+    getSafeEscape: function (state) {
         if (["bibliography", "citation"].indexOf(state.tmp.area) > -1) {
             // Callback to apply thin space hack
             // Callback to force LTR/RTL on parens and braces
@@ -1049,7 +1049,7 @@ var CSL = {
         }
     },
 
-    SKIP_WORDS: ["about","above","across","afore","after","against","al", "along","alongside","amid","amidst","among","amongst","anenst","apropos","apud","around","as","aside","astride","at","athwart","atop","barring","before","behind","below","beneath","beside","besides","between","beyond","but","by","circa","despite","down","during","et", "except","for","forenenst","from","given","in","inside","into","lest","like","modulo","near","next","notwithstanding","of","off","on","onto","out","over","per","plus","pro","qua","sans","since","than","through"," thru","throughout","thruout","till","to","toward","towards","under","underneath","until","unto","up","upon","versus","vs.","v.","vs","v","via","vis-à-vis","with","within","without","according to","ahead of","apart from","as for","as of","as per","as regards","aside from","back to","because of","close to","due to","except for","far from","inside of","instead of","near to","next to","on to","out from","out of","outside of","prior to","pursuant to","rather than","regardless of","such as","that of","up to","where as","or", "yet", "so", "for", "and", "nor", "a", "an", "the", "de", "d'", "von", "van", "c", "ca"],
+    SKIP_WORDS: ["about", "above", "across", "afore", "after", "against", "al", "along", "alongside", "amid", "amidst", "among", "amongst", "anenst", "apropos", "apud", "around", "as", "aside", "astride", "at", "athwart", "atop", "barring", "before", "behind", "below", "beneath", "beside", "besides", "between", "beyond", "but", "by", "circa", "despite", "down", "during", "et", "except", "for", "forenenst", "from", "given", "in", "inside", "into", "lest", "like", "modulo", "near", "next", "notwithstanding", "of", "off", "on", "onto", "out", "over", "per", "plus", "pro", "qua", "sans", "since", "than", "through", " thru", "throughout", "thruout", "till", "to", "toward", "towards", "under", "underneath", "until", "unto", "up", "upon", "versus", "vs.", "v.", "vs", "v", "via", "vis-à-vis", "with", "within", "without", "according to", "ahead of", "apart from", "as for", "as of", "as per", "as regards", "aside from", "back to", "because of", "close to", "due to", "except for", "far from", "inside of", "instead of", "near to", "next to", "on to", "out from", "out of", "outside of", "prior to", "pursuant to", "rather than", "regardless of", "such as", "that of", "up to", "where as", "or", "yet", "so", "for", "and", "nor", "a", "an", "the", "de", "d'", "von", "van", "c", "ca"],
 
     FORMAT_KEY_SEQUENCE: [
         "@strip-periods",
@@ -1071,61 +1071,61 @@ var CSL = {
 
     SUFFIX_CHARS: "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z",
     ROMAN_NUMERALS: [
-        [ "", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix" ],
-        [ "", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc" ],
-        [ "", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm" ],
-        [ "", "m", "mm", "mmm", "mmmm", "mmmmm"]
+        ["", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix"],
+        ["", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc"],
+        ["", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm"],
+        ["", "m", "mm", "mmm", "mmmm", "mmmmm"]
     ],
 
     LANGS: {
-        "af-ZA":"Afrikaans",
-        "ar":"Arabic",
-        "bg-BG":"Bulgarian",
-        "ca-AD":"Catalan",
-        "cs-CZ":"Czech",
-        "da-DK":"Danish",
-        "de-AT":"Austrian",
-        "de-CH":"German (CH)",
-        "de-DE":"German (DE)",
-        "el-GR":"Greek",
-        "en-GB":"English (GB)",
-        "en-US":"English (US)",
-        "es-ES":"Spanish",
-        "et-EE":"Estonian",
-        "eu":"European",
-        "fa-IR":"Persian",
-        "fi-FI":"Finnish",
-        "fr-CA":"French (CA)",
-        "fr-FR":"French (FR)",
-        "he-IL":"Hebrew",
-        "hr-HR":"Croatian",
-        "hu-HU":"Hungarian",
-        "is-IS":"Icelandic",
-        "it-IT":"Italian",
-        "ja-JP":"Japanese",
-        "km-KH":"Khmer",
-        "ko-KR":"Korean",
-        "lt-LT":"Lithuanian",
-        "lv-LV":"Latvian",
-        "mn-MN":"Mongolian",
-        "nb-NO":"Norwegian (Bokmål)",
-        "nl-NL":"Dutch",
-        "nn-NO":"Norwegian (Nynorsk)",
-        "pl-PL":"Polish",
-        "pt-BR":"Portuguese (BR)",
-        "pt-PT":"Portuguese (PT)",
-        "ro-RO":"Romanian",
-        "ru-RU":"Russian",
-        "sk-SK":"Slovak",
-        "sl-SI":"Slovenian",
-        "sr-RS":"Serbian",
-        "sv-SE":"Swedish",
-        "th-TH":"Thai",
-        "tr-TR":"Turkish",
-        "uk-UA":"Ukrainian",
-        "vi-VN":"Vietnamese",
-        "zh-CN":"Chinese (CN)",
-        "zh-TW":"Chinese (TW)"
+        "af-ZA": "Afrikaans",
+        "ar": "Arabic",
+        "bg-BG": "Bulgarian",
+        "ca-AD": "Catalan",
+        "cs-CZ": "Czech",
+        "da-DK": "Danish",
+        "de-AT": "Austrian",
+        "de-CH": "German (CH)",
+        "de-DE": "German (DE)",
+        "el-GR": "Greek",
+        "en-GB": "English (GB)",
+        "en-US": "English (US)",
+        "es-ES": "Spanish",
+        "et-EE": "Estonian",
+        "eu": "European",
+        "fa-IR": "Persian",
+        "fi-FI": "Finnish",
+        "fr-CA": "French (CA)",
+        "fr-FR": "French (FR)",
+        "he-IL": "Hebrew",
+        "hr-HR": "Croatian",
+        "hu-HU": "Hungarian",
+        "is-IS": "Icelandic",
+        "it-IT": "Italian",
+        "ja-JP": "Japanese",
+        "km-KH": "Khmer",
+        "ko-KR": "Korean",
+        "lt-LT": "Lithuanian",
+        "lv-LV": "Latvian",
+        "mn-MN": "Mongolian",
+        "nb-NO": "Norwegian (Bokmål)",
+        "nl-NL": "Dutch",
+        "nn-NO": "Norwegian (Nynorsk)",
+        "pl-PL": "Polish",
+        "pt-BR": "Portuguese (BR)",
+        "pt-PT": "Portuguese (PT)",
+        "ro-RO": "Romanian",
+        "ru-RU": "Russian",
+        "sk-SK": "Slovak",
+        "sl-SI": "Slovenian",
+        "sr-RS": "Serbian",
+        "sv-SE": "Swedish",
+        "th-TH": "Thai",
+        "tr-TR": "Turkish",
+        "uk-UA": "Ukrainian",
+        "vi-VN": "Vietnamese",
+        "zh-CN": "Chinese (CN)",
+        "zh-TW": "Chinese (TW)"
     },
 
     LANG_BASES: {
@@ -1285,7 +1285,7 @@ var CSL = {
     // since they have different effects between comma-safe and comma-safe-numbers-only.
     // Either that, or -- oh, we could just bang the two together for the test where
     // necessary.
-    
+
     UPDATE_GROUP_CONTEXT_CONDITION: function (state, str, valueTerm, token, value) {
         if (!state.opt.use_context_condition) return;
         var flags = state.tmp.group_context.tip;
@@ -1319,7 +1319,7 @@ var CSL = {
         }
     },
 
-    EVALUATE_GROUP_CONDITION: function(state, flags) {
+    EVALUATE_GROUP_CONDITION: function (state, flags) {
         if (!state.opt.use_context_condition) return;
         var testres;
         var numbersOnly = flags.condition.test === "comma-safe-numbers-only";
@@ -1331,7 +1331,7 @@ var CSL = {
             var locale_term = flags.condition.termtxt;
             var termStartAlpha = false;
             if (flags.condition.termtxt) {
-                termStartAlpha = flags.condition.termtxt.slice(0,1).match(CSL.ALL_ROMANESQUE_REGEXP);
+                termStartAlpha = flags.condition.termtxt.slice(0, 1).match(CSL.ALL_ROMANESQUE_REGEXP);
             }
             var num = state.tmp.just_did_number;
             if (num) {
@@ -1370,7 +1370,7 @@ var CSL = {
         }
         return force_suppress;
     },
-    
+
     SYS_OPTIONS: [
         "prioritize_disambiguate_condition",
         "csl_reverse_lookup_support",
@@ -1381,7 +1381,7 @@ var CSL = {
         "split_container_title"
     ],
 
-    TITLE_SPLIT_REGEXP: (function() {
+    TITLE_SPLIT_REGEXP: (function () {
         var splits = [
             "\\.\\s+",
             "\\!\\s+",
@@ -1398,27 +1398,27 @@ var CSL = {
         }
     })(),
 
-    TITLE_SPLIT: function(str) {
+    TITLE_SPLIT: function (str) {
         if (!str) {
             return str;
         }
         var m = str.match(CSL.TITLE_SPLIT_REGEXP.match);
         var lst = str.split(CSL.TITLE_SPLIT_REGEXP.split);
-        for (var i=lst.length-2; i>-1; i--) {
+        for (var i = lst.length - 2; i > -1; i--) {
             lst[i] = lst[i].trim();
             if (lst[i] && lst[i].slice(-1).toLowerCase() !== lst[i].slice(-1)) {
                 // recombine
-                lst[i] = lst[i] + m[i] + lst[i+1];
-                lst = lst.slice(0, i+1).concat(lst.slice(i+2))
+                lst[i] = lst[i] + m[i] + lst[i + 1];
+                lst = lst.slice(0, i + 1).concat(lst.slice(i + 2))
             } else {
                 // merge
-                lst = lst.slice(0, i+1).concat([m[i]]).concat(lst.slice(i+1))
+                lst = lst.slice(0, i + 1).concat([m[i]]).concat(lst.slice(i + 1))
             }
         }
         return lst;
     },
-    
-    GET_COURT_CLASS: function(state, Item, sortKey){
+
+    GET_COURT_CLASS: function (state, Item, sortKey) {
         // Get authority as a string
         var cls = "";
         var authority = null;
@@ -1447,7 +1447,7 @@ var CSL = {
         return cls;
     },
 
-    SET_COURT_CLASSES: function(state, lang, myxml, dataObj) {
+    SET_COURT_CLASSES: function (state, lang, myxml, dataObj) {
         var nodes = myxml.getNodesByName(dataObj, 'court-class');
         for (var pos = 0, len = myxml.numberofnodes(nodes); pos < len; pos += 1) {
             var courtclass = nodes[pos];
@@ -1455,7 +1455,7 @@ var CSL = {
             var cls = attributes["@name"];
             var country = attributes["@country"];
             var courts = attributes["@courts"];
-            
+
             // Okay, this is a hack.
             // If state.registry IS NOT yet defined, this is an in-style declaration.
             // If state.registry IS defined, this is an in-module declaration.
@@ -1463,7 +1463,7 @@ var CSL = {
             if (state.registry) {
                 classType = "court_condition_classes";
             }
-            
+
             if (cls && country && courts) {
                 courts = courts.trim().split(/\s+/);
                 if (!state.locale[lang].opts[classType]) {
@@ -1472,7 +1472,7 @@ var CSL = {
                 if (!state.locale[lang].opts[classType][country]) {
                     state.locale[lang].opts[classType][country] = {};
                 }
-                for (var i=0,ilen=courts.length;i<ilen;i++) {
+                for (var i = 0, ilen = courts.length; i < ilen; i++) {
                     state.locale[lang].opts[classType][country][courts[i]] = cls;
                 }
             }
@@ -1509,14 +1509,14 @@ var CSL = {
             }
         }
         // Identify the best jurisdiction for the item and return true, otherwise return false
-        for (var i=0,ilen=jurisdictionList.length;i<ilen;i++) {
+        for (var i = 0, ilen = jurisdictionList.length; i < ilen; i++) {
             var jurisdiction = jurisdictionList[i];
             if (item) {
                 if (state.juris[jurisdiction] && !item["best-jurisdiction"] && state.juris[jurisdiction].types.locator) {
                     Item["best-jurisdiction"] = jurisdiction;
                 }
             }
-            if(state.juris[jurisdiction] && state.juris[jurisdiction].types[Item.type]) {
+            if (state.juris[jurisdiction] && state.juris[jurisdiction].types[Item.type]) {
                 Item["best-jurisdiction"] = jurisdiction;
                 return true;
             }

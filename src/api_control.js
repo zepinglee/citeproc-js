@@ -10,7 +10,7 @@ CSL.Engine.prototype.setOutputFormat = function (mode) {
 };
 
 CSL.Engine.prototype.getSortFunc = function () {
-    return function (a,b) {
+    return function (a, b) {
         a = a.split("-");
         b = b.split("-");
         if (a.length < b.length) {
@@ -41,7 +41,7 @@ CSL.Engine.prototype.setLangTagsForCslSort = function (tags) {
     }
     this.opt['locale-sort'].sort(this.getSortFunc());
 };
-    
+
 CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     var i, ilen;
     this.opt['locale-translit'] = [];
@@ -52,7 +52,7 @@ CSL.Engine.prototype.setLangTagsForCslTransliteration = function (tags) {
     }
     this.opt['locale-translit'].sort(this.getSortFunc());
 };
-    
+
 CSL.Engine.prototype.setLangTagsForCslTranslation = function (tags) {
     var i, ilen;
     this.opt['locale-translat'] = [];
@@ -87,7 +87,7 @@ CSL.Engine.prototype.setLangPrefsForCites = function (obj, conv) {
         while (obj[clientSegment].length > 1) {
             supplements.push(obj[clientSegment].pop());
         }
-        var sortval = {orig:1,translit:2,translat:3};
+        var sortval = { orig: 1, translit: 2, translat: 3 };
         if (supplements.length === 2 && sortval[supplements[0]] < sortval[supplements[1]]) {
             supplements.reverse();
         }
@@ -118,8 +118,8 @@ CSL.Engine.prototype.setLangPrefsForCiteAffixes = function (affixList) {
             for (var j = 0, jlen = forms.length; j < jlen; j += 1) {
                 value = "";
                 if ((count % 8) === 4) {
-                    if (!affixes[settings[i]]["locale-"+forms[j]].prefix
-                        && !affixes[settings[i]]["locale-"+forms[j]].suffix) {
+                    if (!affixes[settings[i]]["locale-" + forms[j]].prefix
+                        && !affixes[settings[i]]["locale-" + forms[j]].suffix) {
 
                         value = affixList[count] ? affixList[count] : "";
                         affixes[settings[i]]["locale-" + forms[j]].prefix = value;

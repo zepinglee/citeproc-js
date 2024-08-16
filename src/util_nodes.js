@@ -39,9 +39,9 @@ CSL.tokenExec = function (token, Item, item) {
         }
     };
     if (token.test) {
-        next = record.call(this,token.test(Item, item));
+        next = record.call(this, token.test(Item, item));
     }
-    for (var i=0,ilen=token.execs.length;i<ilen;i++) {
+    for (var i = 0, ilen = token.execs.length; i < ilen; i++) {
         exec = token.execs[i];
         maybenext = exec.call(token, this, Item, item);
         if (maybenext) {
@@ -66,15 +66,15 @@ CSL.expandMacro = function (macro_key_token, target) {
     mkey = macro_key_token.postponed_macro;
 
     var sort_direction = macro_key_token.strings.sort_direction;
-    
+
     // Decorations and affixes are in wrapper applied in cs:text
     macro_key_token = new CSL.Token("group", CSL.START);
-    
+
     var hasDate = false;
     var macroid = false;
     macro_nodes = this.cslXml.getNodesByName(this.cslXml.dataObj, 'macro', mkey);
     if (macro_nodes.length) {
-        macroid = this.cslXml.getAttributeValue(macro_nodes[0],'cslid');
+        macroid = this.cslXml.getAttributeValue(macro_nodes[0], 'cslid');
         hasDate = this.cslXml.getAttributeValue(macro_nodes[0], "macro-has-date");
     }
     if (hasDate) {
@@ -114,7 +114,7 @@ CSL.expandMacro = function (macro_key_token, target) {
         CSL.configureMacro.call(this, mytarget);
     }
     if (!this.build.extension) {
-        var func = (function(macro_name) {
+        var func = (function (macro_name) {
             return function (state, Item, item) {
                 var next = 0;
                 while (next < state.macros[macro_name].length) {
@@ -130,7 +130,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     // Decorations and affixes are in wrapper applied in cs:text
     end_of_macro = new CSL.Token("group", CSL.END);
     end_of_macro.strings.sort_direction = sort_direction;
-    
+
     if (hasDate) {
         func = function (state) {
             if (state.tmp.extension) {
@@ -141,7 +141,7 @@ CSL.expandMacro = function (macro_key_token, target) {
     }
     if (macro_key_token.juris) {
         end_of_macro.juris = mkey;
-     }
+    }
     // Macro group is treated as a real node in the style
     CSL.Node.group.build.call(end_of_macro, this, target, true);
 
@@ -230,7 +230,7 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget, var_stack) {
                             CSL.error(key + " attribute: " + e);
                         }
                     } else {
-                        CSL.debug("warning: undefined attribute \""+key+"\" in style");
+                        CSL.debug("warning: undefined attribute \"" + key + "\" in style");
                     }
                 }
             }
@@ -258,5 +258,3 @@ CSL.XmlToToken = function (state, tokentype, explicitTarget, var_stack) {
     // True flags real nodes in the style
     CSL.Node[name].build.call(token, state, target, true);
 };
-
-

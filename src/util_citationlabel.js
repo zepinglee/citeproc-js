@@ -86,25 +86,25 @@ CSL.Engine.prototype.getCitationLabel = function (Item) {
 CSL.Engine.prototype.getTrigraphParams = function () {
     var params = [];
     var ilst = this.opt.trigraph.split(":");
-    if (!this.opt.trigraph || this.opt.trigraph.slice(0,1) !== "A") {
-        CSL.error("Bad trigraph definition: "+this.opt.trigraph);
+    if (!this.opt.trigraph || this.opt.trigraph.slice(0, 1) !== "A") {
+        CSL.error("Bad trigraph definition: " + this.opt.trigraph);
     }
     for (var i = 0, ilen = ilst.length; i < ilen; i += 1) {
         var str = ilst[i];
-        var config = {authors:[], year:0};
+        var config = { authors: [], year: 0 };
         for (var j = 0, jlen = str.length; j < jlen; j += 1) {
-            switch (str.slice(j,j+1)) {
-            case "A":
-                config.authors.push(1);
-                break;
-            case "a":
-                config.authors[config.authors.length - 1] += 1;
-                break;
-            case "0":
-                config.year += 1;
-                break;
-            default:
-                CSL.error("Invalid character in trigraph definition: "+this.opt.trigraph);
+            switch (str.slice(j, j + 1)) {
+                case "A":
+                    config.authors.push(1);
+                    break;
+                case "a":
+                    config.authors[config.authors.length - 1] += 1;
+                    break;
+                case "0":
+                    config.year += 1;
+                    break;
+                default:
+                    CSL.error("Invalid character in trigraph definition: " + this.opt.trigraph);
             }
         }
         params.push(config);

@@ -16,7 +16,7 @@ CSL.NameOutput.prototype.disambigNames = function () {
             if ("undefined" === typeof this.state.tmp.disambig_settings.givens[pos]) {
                 this.state.tmp.disambig_settings.givens[pos] = [];
             }
-            for (var j=0,jlen=this.institutions[v].length;j<jlen;j+=1) {
+            for (var j = 0, jlen = this.institutions[v].length; j < jlen; j += 1) {
                 if ("undefined" === typeof this.state.tmp.disambig_settings.givens[pos][j]) {
                     this.state.tmp.disambig_settings.givens[pos].push(2);
                 }
@@ -58,8 +58,8 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
         }
         chk = this.state.tmp.disambig_settings.givens[pos][i];
         //if ("undefined" !== typeof chk && this.state.tmp.root === 'citation') {
-            //this.state.tmp.disambig_settings.givens[pos] = [];
-            //chk = undefined;
+        //this.state.tmp.disambig_settings.givens[pos] = [];
+        //chk = undefined;
         //}
         if ("undefined" === typeof chk) {
             myform = this.state.inheritOpt(this.name, "form", "name-form", "long");
@@ -79,10 +79,10 @@ CSL.NameOutput.prototype._runDisambigNames = function (lst, pos) {
             var val = this.state.tmp.disambig_settings.givens[pos][i];
             // This is limited to by-cite disambiguation.
             // 2012-09-13: added lst[i].given check to condition
-            if (val === 1 && 
-                this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite" && 
+            if (val === 1 &&
+                this.state.citation.opt["givenname-disambiguation-rule"] === "by-cite" &&
                 ("undefined" === typeof this.state.inheritOpt(this.name, "initialize-with")
-                 || "undefined" === typeof lst[i].given)) {
+                    || "undefined" === typeof lst[i].given)) {
                 val = 2;
             }
             param = val;

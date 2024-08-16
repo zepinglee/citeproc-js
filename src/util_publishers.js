@@ -39,7 +39,7 @@ CSL.PublisherOutput.prototype.composeAndBlob = function () {
     tok.strings.prefix = this.group_tok.strings["subgroup-delimiter"];
     this.state.output.append(and_term, tok, true);
     var with_delim = this.state.output.pop();
-    
+
     this.and_blob.single = false;
     this.and_blob.multiple = false;
     if (and_term) {

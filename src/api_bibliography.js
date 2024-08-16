@@ -105,16 +105,16 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.tmp.last_rendered_name = false;
     this.tmp.bibliography_errors = [];
     this.tmp.bibliography_pos = 0;
-    
+
     // For paged returns: disable generated entries and
     // do not fetch full items as a batch (input variable
     // consists of ids only in this case)
     if (bibsection && bibsection.page_start && bibsection.page_length) {
-        input = this.registry.getSortedIds();        
+        input = this.registry.getSortedIds();
     } else {
         input = this.refetchItems(this.registry.getSortedIds());
     }
-    
+
     this.tmp.disambig_override = true;
     function eval_string(a, b) {
         if (a === b) {
@@ -196,7 +196,7 @@ CSL.getBibliographyEntries = function (bibsection) {
     this.tmp.container_item_pos = {};
 
     for (i = 0, ilen = input.length; i < ilen; i += 1) {
-        
+
         // For paged returns
         if (bibsection && bibsection.page_start && bibsection.page_length) {
             if (skips[input[i]]) {
@@ -287,7 +287,7 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             this.tmp.container_item_pos[item.container_id]++;
         }
-        
+
         //SNIP-END
         bib_entry = new CSL.Token("group", CSL.START);
         bib_entry.decorations = [["@bibliography", "entry"]].concat(this.bibliography.opt.layout_decorations);
@@ -304,10 +304,10 @@ CSL.getBibliographyEntries = function (bibsection) {
         if (this.registry.registry[item.id].master
             && !(bibsection && bibsection.page_start && bibsection.page_length)) {
             // Fetch item content
-            sortedItems = [[item, {id: item.id}]];
+            sortedItems = [[item, { id: item.id }]];
             siblings = this.registry.registry[item.id].siblings;
-            for (var j=0,jlen=siblings.length; j<jlen; j++) {
-               sortedItems.push([this.refetchItem(siblings[j]), {id: siblings[j]}]);
+            for (var j = 0, jlen = siblings.length; j < jlen; j++) {
+                sortedItems.push([this.refetchItem(siblings[j]), { id: siblings[j] }]);
             }
             // Adjust parameters
             this.parallel.StartCitation(sortedItems);
@@ -367,14 +367,14 @@ CSL.getBibliographyEntries = function (bibsection) {
             }
             topblobs[0].strings.prefix = this.bibliography.opt.layout_prefix + topblobs[0].strings.prefix;
         }
-        for (j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+        for (j = 0, jlen = this.output.queue.length; j < jlen; j += 1) {
             CSL.Output.Queue.purgeEmptyBlobs(this.output.queue[j]);
             //print("XXX: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
         }
-        for (j=0,jlen=this.output.queue.length;j<jlen;j+=1) {
+        for (j = 0, jlen = this.output.queue.length; j < jlen; j += 1) {
             this.output.adjust.upward(this.output.queue[j]);
             this.output.adjust.leftward(this.output.queue[j]);
-            this.output.adjust.downward(this.output.queue[j],true);
+            this.output.adjust.downward(this.output.queue[j], true);
             this.output.adjust.fix(this.output.queue[j]);
             //print("OUTPUT: "+JSON.stringify(this.output.queue[j],['strings','prefix','suffix','delimiter','blobs','decorations'],2))
         }
@@ -389,7 +389,7 @@ CSL.getBibliographyEntries = function (bibsection) {
         //print("JSON "+JSON.stringify(this.output.queue[0].blobs, null, 2));
 
         res = this.output.string(this, this.output.queue)[0];
-        
+
         if (!res && this.opt.update_mode === CSL.NUMERIC) {
             var err = (ret.length + 1) + ". [CSL STYLE ERROR: reference with no printed form.]";
             res = CSL.Output.Formats[this.opt.mode]["@bibliography/entry"](this, err);

@@ -9,6 +9,6 @@ CSL.error = function (str) {
 };
 
 function DOMParser() {
-	return Components.classes["@mozilla.org/xmlextras/domparser;1"]
-		.createInstance(Components.interfaces.nsIDOMParser);
+    return Components.classes["@mozilla.org/xmlextras/domparser;1"]
+        .createInstance(Components.interfaces.nsIDOMParser);
 }

@@ -16,17 +16,17 @@ CSL.Util.Names.unInitialize = function (state, name) {
     punctlist = name.match(/(\-|\s+)/g);
     ret = "";
     for (i = 0, ilen = namelist.length; i < ilen; i += 1) {
-        // if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[i].slice(0,-1)) 
-        //    && namelist[i] 
+        // if (CSL.ALL_ROMANESQUE_REGEXP.exec(namelist[i].slice(0,-1))
+        //    && namelist[i]
         //    && namelist[i] !== namelist[i].toUpperCase()) {
 
-            // More or less like this, to address the following fault report:
-            // http://forums.zotero.org/discussion/17610/apsa-problems-with-capitalization-of-mc-mac-etc/
+        // More or less like this, to address the following fault report:
+        // http://forums.zotero.org/discussion/17610/apsa-problems-with-capitalization-of-mc-mac-etc/
 
-            // Leaving the name string untouched because name capitalization is varied and wonderful.
-            // https://github.com/Juris-M/citeproc-js/issues/43
-            
-            //namelist[i] = namelist[i].slice(0, 1) + namelist[i].slice(1, 2).toLowerCase() + namelist[i].slice(2);
+        // Leaving the name string untouched because name capitalization is varied and wonderful.
+        // https://github.com/Juris-M/citeproc-js/issues/43
+
+        //namelist[i] = namelist[i].slice(0, 1) + namelist[i].slice(1, 2).toLowerCase() + namelist[i].slice(2);
         // }
         ret += namelist[i];
         if (i < ilen - 1) {
@@ -69,9 +69,9 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     name = name.replace(/\s*\-\s*/g, "-").replace(/\s+/g, " ");
     name = name.replace(/-([a-z])/g, "\u2013$1");
 
-    for (var i=name.length-2; i>-1; i += -1) {
-        if (name.slice(i, i+1) === "." && name.slice(i+1, i+2) !== " ") {
-            name = name.slice(0, i) + ". " + name.slice(i+1);
+    for (var i = name.length - 2; i > -1; i += -1) {
+        if (name.slice(i, i + 1) === "." && name.slice(i + 1, i + 2) !== " ") {
+            name = name.slice(0, i) + ". " + name.slice(i + 1);
         }
     }
 
@@ -102,11 +102,11 @@ CSL.Util.Names.initializeWith = function (state, name, terminator, normalizeOnly
     return ret;
 };
 
-CSL.Util.Names.notag = function(str) {
+CSL.Util.Names.notag = function (str) {
     return str.replace(/^(?:<[^>]+>)*/, "");
 };
 
-CSL.Util.Names.mergetag = function(state, tagstr, newstr) {
+CSL.Util.Names.mergetag = function (state, tagstr, newstr) {
     var m = tagstr.match(/(?:-*<[^>]+>-*)/g);
     if (!m) {
         return newstr;
@@ -123,7 +123,7 @@ CSL.Util.Names.mergetag = function(state, tagstr, newstr) {
     return newstr;
 };
 
-CSL.Util.Names.tagonly = function(state, str) {
+CSL.Util.Names.tagonly = function (state, str) {
     var m = str.match(/(?:<[^>]+>)+/);
     if (!m) {
         return str;
@@ -156,18 +156,18 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator) {
             // For all elements but the last
             if (i < namelist.length - 2) {
                 // Start from scratch on space-like things following an abbreviation
-                namelist[i + 1] = this.tagonly(state, namelist[i+1]);
-                if (!isAbbrev[i+2]) {
-                    namelist[i + 1] = this.tagonly(state, namelist[i+1]) + " ";
+                namelist[i + 1] = this.tagonly(state, namelist[i + 1]);
+                if (!isAbbrev[i + 2]) {
+                    namelist[i + 1] = this.tagonly(state, namelist[i + 1]) + " ";
                 }
-                
+
                 // Add the terminator to the element
                 // If the following element is not a single-character abbreviation, remove a trailing zero-width non-break space, if present
                 // These ops may leave some duplicate cruft in the elements and separators. This will be cleaned at the end of the function.
                 if (namelist[i + 2].length > 1) {
-                    namelist[i+1] = terminator.replace(/\ufeff$/, "") + namelist[i+1];
+                    namelist[i + 1] = terminator.replace(/\ufeff$/, "") + namelist[i + 1];
                 } else {
-                    namelist[i+1] = this.mergetag(state, namelist[i+1], terminator);
+                    namelist[i + 1] = this.mergetag(state, namelist[i + 1], terminator);
                 }
             }
             // For the last element (if it is an abbreviation), just append the terminator
@@ -177,7 +177,7 @@ CSL.Util.Names.doNormalize = function (state, namelist, terminator) {
         }
     }
     // Remove trailing cruft and duplicate spaces, and return
-    return namelist.join("").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/,"").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
+    return namelist.join("").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/, "").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
 };
 
 CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
@@ -218,9 +218,9 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
                     namelist[i] = terminator.replace("%s", namelist[i]);
                 } else {
                     if (namelist[i + 1].indexOf("-") > -1) {
-                        namelist[i + 1] = this.mergetag(state, namelist[i+1].replace("-", ""), terminator) + "-";
+                        namelist[i + 1] = this.mergetag(state, namelist[i + 1].replace("-", ""), terminator) + "-";
                     } else {
-                        namelist[i + 1] = this.mergetag(state, namelist[i+1], terminator);
+                        namelist[i + 1] = this.mergetag(state, namelist[i + 1], terminator);
                     }
                 }
             } else {
@@ -235,7 +235,7 @@ CSL.Util.Names.doInitialize = function (state, namelist, terminator) {
         }
     }
     var ret = namelist.join("");
-    ret = ret.replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/,"").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
+    ret = ret.replace(/[\u0009\u000a\u000b\u000c\u000d\u0020\ufeff\u00a0]+$/, "").replace(/\s*\-\s*/g, "-").replace(/[\u0009\u000a\u000b\u000c\u000d\u0020]+/g, " ");
     return ret;
 };
 

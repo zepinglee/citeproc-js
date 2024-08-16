@@ -14,7 +14,7 @@ CSL.dateAsSortKey = function (state, Item, isMacro) {
     }
     dp = Item[variable];
     if ("undefined" === typeof dp) {
-        dp = {"date-parts": [[0]] };
+        dp = { "date-parts": [[0]] };
     }
     if ("undefined" === typeof this.dateparts) {
         this.dateparts = ["year", "month", "day"];

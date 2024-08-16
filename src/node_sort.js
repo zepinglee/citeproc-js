@@ -16,15 +16,15 @@ CSL.Node.sort = {
             }
             state.build.area = state.build.root + "_sort";
             state.build.extension = "_sort";
-            
+
             var func = function (state, Item) {
                 //state.tmp.area = state.tmp.root + "_sort";
                 //state.tmp.extension = "_sort";
                 if (state.opt.has_layout_locale) {
                     var langspec = CSL.localeResolve(Item.language, state.opt["default-locale"][0]);
-                    var sort_locales = state[state.tmp.area.slice(0,-5)].opt.sort_locales;
+                    var sort_locales = state[state.tmp.area.slice(0, -5)].opt.sort_locales;
                     var langForItem;
-                    for (var i=0,ilen=sort_locales.length;i<ilen;i+=1) {
+                    for (var i = 0, ilen = sort_locales.length; i < ilen; i += 1) {
                         langForItem = sort_locales[i][langspec.bare];
                         if (!langForItem) {
                             langForItem = sort_locales[i][langspec.best];
@@ -41,7 +41,7 @@ CSL.Node.sort = {
                 }
             };
             this.execs.push(func);
-            
+
         }
         if (this.tokentype === CSL.END) {
             state.build.area = state.build.root;
@@ -66,5 +66,3 @@ CSL.Node.sort = {
         target.push(this);
     }
 };
-
-

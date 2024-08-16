@@ -1,6 +1,6 @@
 /*global CSL: true */
 
-CSL.setupXml = function(xmlObject) {
+CSL.setupXml = function (xmlObject) {
     var dataObj = {};
     var parser = null;
     if ("undefined" !== typeof xmlObject) {

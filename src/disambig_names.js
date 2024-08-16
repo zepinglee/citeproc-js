@@ -17,7 +17,7 @@ CSL.Registry.NameReg = function (state) {
         if (!str) {
             str = "";
         }
-        return str.replace(/\./g, " ").replace(/\s+/g, " ").replace(/\s+$/,"");
+        return str.replace(/\./g, " ").replace(/\s+/g, " ").replace(/\s+$/, "");
     };
 
     set_keys = function (state, itemid, nameobj) {
@@ -26,7 +26,7 @@ CSL.Registry.NameReg = function (state) {
         if (state.opt["demote-non-dropping-particle"] === "never" && nameobj["non-dropping-particle"] && nameobj["family"]) {
             pkey = `${pkey} ${nameobj["non-dropping-particle"]}`;
         }
-        
+
         skey = strip_periods(nameobj.given);
         // Drop lowercase suffixes (such as et al.) from given name field
         // for disambiguation purposes.
@@ -106,9 +106,9 @@ CSL.Registry.NameReg = function (state) {
             if (this.namereg[pkey].count > 1) {
                 param = 1;
             }
-            if ((this.namereg[pkey].ikey 
-                 && this.namereg[pkey].ikey[ikey].count > 1)
-                || (this.namereg[pkey].count > 1 
+            if ((this.namereg[pkey].ikey
+                && this.namereg[pkey].ikey[ikey].count > 1)
+                || (this.namereg[pkey].count > 1
                     && "string" !== typeof initials)) {
 
                 param = 2;
@@ -236,13 +236,13 @@ CSL.Registry.NameReg = function (state) {
         if (state.citation.opt["givenname-disambiguation-rule"]
             && state.citation.opt["givenname-disambiguation-rule"].slice(0, 8) === "primary-"
             && pos !== 0) {
-                return;
+            return;
         }
 
         // A hack. Safe if the name object is used only here, for disambiguation purposes.
         /*
         */
-        
+
         //CSL.debug("INS");
         set_keys(this.state, "" + item_id, nameobj);
         // pkey, ikey and skey should be stored in separate cascading objects.
@@ -263,9 +263,9 @@ CSL.Registry.NameReg = function (state) {
             } else if (this.namereg[pkey].items.indexOf(item_id) === -1) {
                 this.namereg[pkey].items.push(item_id);
             }
-//            if (this.namereg[pkey].items.indexOf(item_id) === -1) {
-//                this.namereg[pkey].items.push(item_id);
-//            }
+            //            if (this.namereg[pkey].items.indexOf(item_id) === -1) {
+            //                this.namereg[pkey].items.push(item_id);
+            //            }
         }
         if (pkey && ikey) {
             if ("undefined" === typeof this.namereg[pkey].ikey[ikey]) {
@@ -282,9 +282,9 @@ CSL.Registry.NameReg = function (state) {
             } else if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
                 this.namereg[pkey].ikey[ikey].items.push(item_id);
             }
-//            if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
-//                this.namereg[pkey].ikey[ikey].items.push(item_id);
-//            }
+            //            if (this.namereg[pkey].ikey[ikey].items.indexOf(item_id) === -1) {
+            //                this.namereg[pkey].ikey[ikey].items.push(item_id);
+            //            }
         }
         if (pkey && ikey && skey) {
             if ("undefined" === typeof this.namereg[pkey].ikey[ikey].skey[skey]) {
@@ -299,9 +299,9 @@ CSL.Registry.NameReg = function (state) {
             } else if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
                 this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
             }
-//            if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
-//                this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
-//            }
+            //            if (this.namereg[pkey].ikey[ikey].skey[skey].items.indexOf(item_id) === -1) {
+            //                this.namereg[pkey].ikey[ikey].skey[skey].items.push(item_id);
+            //            }
         }
         if ("undefined" === typeof this.nameind[item_id]) {
             this.nameind[item_id] = {};

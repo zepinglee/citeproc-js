@@ -101,11 +101,11 @@ CSL.Node["date-part"] = {
                 }
 
                 // For gendered locales
-                var monthnameid = ""+state.tmp.date_object.month;
+                var monthnameid = "" + state.tmp.date_object.month;
                 while (monthnameid.length < 2) {
-                    monthnameid = "0"+monthnameid;
+                    monthnameid = "0" + monthnameid;
                 }
-                monthnameid = "month-"+monthnameid;
+                monthnameid = "month-" + monthnameid;
                 var gender = state.locale[state.opt.lang]["noun-genders"][monthnameid];
                 if (this.strings.form) {
                     var myform = this.strings.form;
